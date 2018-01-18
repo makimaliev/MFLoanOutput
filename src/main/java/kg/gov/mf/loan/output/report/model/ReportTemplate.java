@@ -11,6 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import kg.gov.mf.loan.output.report.model.*;
+
 @Entity
 @Table(name="report_template")
 
@@ -21,6 +23,10 @@ public class ReportTemplate {
  
     @Column(name="name", nullable=false)
     private String name;
+    
+    @ManyToOne(targetEntity=Report.class, fetch = FetchType.EAGER)
+    @JoinColumn(name="report_template_id")
+    Report report;      
 
 	public long getId() {
 		return id;
