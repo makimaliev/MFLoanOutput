@@ -25,7 +25,7 @@ public class ReportTemplate {
     private String name;
     
     @ManyToOne(targetEntity=Report.class, fetch = FetchType.EAGER)
-    @JoinColumn(name="report_template_id")
+    @JoinColumn(name="report_id")
     Report report;      
 
 	public long getId() {
@@ -42,6 +42,14 @@ public class ReportTemplate {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public Report getReport() {
+		return report;
+	}
+
+	public void setReport(Report report) {
+		this.report = report;
 	}
     
     
