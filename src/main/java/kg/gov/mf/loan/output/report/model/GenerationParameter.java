@@ -1,6 +1,8 @@
 package kg.gov.mf.loan.output.report.model;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -30,9 +33,8 @@ public class GenerationParameter {
     @Column(name="name", nullable=false)
     private String name;
     
-    @ManyToOne(targetEntity=ReportTemplate.class, fetch = FetchType.EAGER)
-    @JoinColumn(name="report_template_id")
-    ReportTemplate reportTemplate;
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "generationParameters")
+    private Set<ReportTemplate> reportTemplates = new HashSet<ReportTemplate>(0);
     
     @DateTimeFormat(pattern = "dd.mm.yyyy")
     @Temporal(TemporalType.DATE)
@@ -57,13 +59,6 @@ public class GenerationParameter {
 		this.name = name;
 	}
 
-	public ReportTemplate getReportTemplate() {
-		return reportTemplate;
-	}
-
-	public void setReportTemplate(ReportTemplate reportTemplate) {
-		this.reportTemplate = reportTemplate;
-	}
 
 	public Date getDate() {
 		return date;
@@ -80,9 +75,15 @@ public class GenerationParameter {
 	public void setRefId(long refId) {
 		this.refId = refId;
 	}
-    
-    
-    
+
+	public Set<ReportTemplate> getReportTemplates() {
+		return reportTemplates;
+	}
+
+	public void setReportTemplates(Set<ReportTemplate> reportTemplates) {
+		this.reportTemplates = reportTemplates;
+	}
+
 
     
 }

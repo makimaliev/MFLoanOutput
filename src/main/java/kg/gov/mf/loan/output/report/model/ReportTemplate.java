@@ -11,11 +11,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
 
 import kg.gov.mf.loan.output.report.model.*;
 
@@ -34,10 +35,12 @@ public class ReportTemplate {
     @JoinColumn(name="report_id")
     Report report;   
     
-    @OneToMany(mappedBy = "generation_parameter", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
-    private Set<GenerationParameter> generationParameter = new HashSet<GenerationParameter>();      
-
-  
+    @ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "report_template_generation_parameter", joinColumns = { 
+			@JoinColumn(name = "report_template_id", nullable = false, updatable = false) }, 
+			inverseJoinColumns = { @JoinColumn(name = "generation_parameter_id", 
+					nullable = false, updatable = false) })
+    private Set<GenerationParameter> generationParameters = new HashSet<GenerationParameter>(0);
     
     
 	public long getId() {
@@ -65,13 +68,14 @@ public class ReportTemplate {
 	}
 
 	public Set<GenerationParameter> getGenerationParameter() {
-		return generationParameter;
+		return generationParameters;
 	}
 
 	public void setGenerationParameter(Set<GenerationParameter> generationParameter) {
-		this.generationParameter = generationParameter;
+		this.generationParameters = generationParameter;
 	}
-    
+
+
 	
     
 }
