@@ -1,6 +1,7 @@
 package kg.gov.mf.loan.output.report.model;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -67,15 +68,38 @@ public class ReportTemplate {
 		this.report = report;
 	}
 
-	public Set<GenerationParameter> getGenerationParameter() {
-		return generationParameters;
+	public Set<GenerationParameter> getGenerationParameter() { return generationParameters; }
+
+	public void setGenerationParameter(Set<GenerationParameter> generationParameters) {
+		this.generationParameters = generationParameters;
 	}
 
-	public void setGenerationParameter(Set<GenerationParameter> generationParameter) {
-		this.generationParameters = generationParameter;
+	@Override
+	public String toString() {
+		return "Report Template  [id=" + id + ", name=" + name + "]";
 	}
 
+	@Override
+	public int hashCode() {
+		int hash = 5;
+		hash = 83 * hash + Objects.hashCode(this.id);
+		return hash;
+	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final ReportTemplate other = (ReportTemplate) obj;
+		if (!Objects.equals(this.id, other.id)) {
+			return false;
+		}
+		return true;
+	}
 	
     
 }

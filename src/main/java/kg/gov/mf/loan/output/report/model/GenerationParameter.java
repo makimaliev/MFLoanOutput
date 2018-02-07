@@ -2,6 +2,7 @@ package kg.gov.mf.loan.output.report.model;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -72,6 +73,31 @@ public class GenerationParameter {
 	public void setRefId(long refId) {
 		this.refId = refId;
 	}
+/*
+	@Override
+	public String toString() {
+		return "GenerationParameter [id=" + id + ", name=" + name + "]";
+	}
+*/
+	@Override
+	public int hashCode() {
+		int hash = 5;
+		hash = 83 * hash + Objects.hashCode(this.id);
+		return hash;
+	}
 
-
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final GenerationParameter other = (GenerationParameter) obj;
+		if (!Objects.equals(this.id, other.id)) {
+			return false;
+		}
+		return true;
+	}
 }
