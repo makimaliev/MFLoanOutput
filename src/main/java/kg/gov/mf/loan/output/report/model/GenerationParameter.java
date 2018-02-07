@@ -33,9 +33,6 @@ public class GenerationParameter {
     @Column(name="name", nullable=false)
     private String name;
     
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "generationParameters")
-    private Set<ReportTemplate> reportTemplates = new HashSet<ReportTemplate>(0);
-    
     @DateTimeFormat(pattern = "dd.mm.yyyy")
     @Temporal(TemporalType.DATE)
     private Date date;  
@@ -76,14 +73,5 @@ public class GenerationParameter {
 		this.refId = refId;
 	}
 
-	public Set<ReportTemplate> getReportTemplates() {
-		return reportTemplates;
-	}
 
-	public void setReportTemplates(Set<ReportTemplate> reportTemplates) {
-		this.reportTemplates = reportTemplates;
-	}
-
-
-    
 }

@@ -32,7 +32,7 @@ public class Report {
     private String name;
     
     @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
-    private Set<ReportTemplate> reportTemplate = new HashSet<ReportTemplate>();    
+    private Set<ReportTemplate> reportTemplates = new HashSet<ReportTemplate>();
 
 	public long getId() {
 		return id;
@@ -51,11 +51,11 @@ public class Report {
 	}
 
 	public Set<ReportTemplate> getReportTemplate() {
-		return reportTemplate;
+		return reportTemplates;
 	}
 
-	public void setReportTemplate(Set<ReportTemplate> reportTemplate) {
-		this.reportTemplate = reportTemplate;
+	public void setReportTemplate(Set<ReportTemplate> reportTemplates) {
+		this.reportTemplates = reportTemplates;
 	}
 	
 	@Override
