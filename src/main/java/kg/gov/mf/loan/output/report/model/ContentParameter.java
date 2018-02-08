@@ -7,9 +7,9 @@ import java.util.Date;
 import java.util.Objects;
 
 @Entity
-@Table(name="filter_parameter")
+@Table(name="content_parameter")
 
-public class FilterParameter {
+public class ContentParameter {
  
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
@@ -73,7 +73,7 @@ public class FilterParameter {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		final FilterParameter other = (FilterParameter) obj;
+		final ContentParameter other = (ContentParameter) obj;
 		if (!Objects.equals(this.id, other.id)) {
 			return false;
 		}
