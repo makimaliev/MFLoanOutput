@@ -36,10 +36,11 @@ public class GenerationParameter {
     
     @DateTimeFormat(pattern = "dd.mm.yyyy")
     @Temporal(TemporalType.DATE)
-    private Date date;  
-    
+    private Date date;
+
     @Column(name="ref_id")
     private long refId;
+
 
 	public long getId() {
 		return id;
@@ -73,12 +74,7 @@ public class GenerationParameter {
 	public void setRefId(long refId) {
 		this.refId = refId;
 	}
-/*
-	@Override
-	public String toString() {
-		return "GenerationParameter [id=" + id + ", name=" + name + "]";
-	}
-*/
+
 	@Override
 	public int hashCode() {
 		int hash = 5;

@@ -36,14 +36,13 @@ public class ReportTemplate {
     @JoinColumn(name="report_id")
     Report report;   
     
-    @ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "report_template_generation_parameter", joinColumns = { 
-			@JoinColumn(name = "report_template_id", nullable = false, updatable = false) }, 
-			inverseJoinColumns = { @JoinColumn(name = "generation_parameter_id", 
-					nullable = false, updatable = false) })
-    private Set<GenerationParameter> generationParameters = new HashSet<GenerationParameter>(0);
-    
-    
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+			name="report_template_generation_parameter",
+			joinColumns = { @JoinColumn(name = "report_template_id") },
+			inverseJoinColumns = { @JoinColumn(name = "generation_parameter_id") })
+	Set<GenerationParameter> generationParameters = new HashSet<GenerationParameter>();
+
 	public long getId() {
 		return id;
 	}
@@ -68,15 +67,12 @@ public class ReportTemplate {
 		this.report = report;
 	}
 
-	public Set<GenerationParameter> getGenerationParameter() { return generationParameters; }
-
-	public void setGenerationParameter(Set<GenerationParameter> generationParameters) {
-		this.generationParameters = generationParameters;
+	public Set<GenerationParameter> getGenerationParameters() {
+		return generationParameters;
 	}
 
-	@Override
-	public String toString() {
-		return "Report Template  [id=" + id + ", name=" + name + "]";
+	public void setGenerationParameters(Set<GenerationParameter> generationParameters) {
+		this.generationParameters = generationParameters;
 	}
 
 	@Override
@@ -100,6 +96,6 @@ public class ReportTemplate {
 		}
 		return true;
 	}
-	
-    
+
+
 }
