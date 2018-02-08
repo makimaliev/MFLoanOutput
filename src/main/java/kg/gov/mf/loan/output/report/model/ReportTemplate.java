@@ -43,6 +43,24 @@ public class ReportTemplate {
 			inverseJoinColumns = { @JoinColumn(name = "generation_parameter_id") })
 	Set<GenerationParameter> generationParameters = new HashSet<GenerationParameter>();
 
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+			name="report_template_filter_parameter",
+			joinColumns = { @JoinColumn(name = "report_template_id") },
+			inverseJoinColumns = { @JoinColumn(name = "filter_parameter_id") })
+	Set<FilterParameter> filterParameters = new HashSet<FilterParameter>();
+
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+			name="report_template_content_parameter",
+			joinColumns = { @JoinColumn(name = "report_template_id") },
+			inverseJoinColumns = { @JoinColumn(name = "content_parameter_id") })
+	Set<ContentParameter> contentParameters = new HashSet<ContentParameter>();
+
+
+
 	public long getId() {
 		return id;
 	}
@@ -73,6 +91,23 @@ public class ReportTemplate {
 
 	public void setGenerationParameters(Set<GenerationParameter> generationParameters) {
 		this.generationParameters = generationParameters;
+	}
+
+
+	public Set<FilterParameter> getFilterParameters() {
+		return filterParameters;
+	}
+
+	public void setFilterParameters(Set<FilterParameter> filterParameters) {
+		this.filterParameters = filterParameters;
+	}
+
+	public Set<ContentParameter> getContentParameters() {
+		return contentParameters;
+	}
+
+	public void setContentParameters(Set<ContentParameter> contentParameters) {
+		this.contentParameters = contentParameters;
 	}
 
 	@Override
