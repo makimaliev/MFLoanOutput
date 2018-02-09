@@ -5,19 +5,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -41,6 +29,16 @@ public class GenerationParameter {
     @Column(name="ref_id")
     private long refId;
 
+	@Column(name="position")
+	private long postion;
+
+	@Column(name="position_in_list")
+	private long postionInList;
+
+
+	@ManyToOne(targetEntity=GenerationParameterType.class, fetch = FetchType.EAGER)
+	@JoinColumn(name="generation_parameter_type__id")
+	GenerationParameterType generationParameterType;
 
 	public long getId() {
 		return id;
@@ -58,7 +56,6 @@ public class GenerationParameter {
 		this.name = name;
 	}
 
-
 	public Date getDate() {
 		return date;
 	}
@@ -73,6 +70,30 @@ public class GenerationParameter {
 
 	public void setRefId(long refId) {
 		this.refId = refId;
+	}
+
+	public long getPostion() {
+		return postion;
+	}
+
+	public void setPostion(long postion) {
+		this.postion = postion;
+	}
+
+	public long getPostionInList() {
+		return postionInList;
+	}
+
+	public void setPostionInList(long postionInList) {
+		this.postionInList = postionInList;
+	}
+
+	public GenerationParameterType getGenerationParameterType() {
+		return generationParameterType;
+	}
+
+	public void setGenerationParameterType(GenerationParameterType generationParameterType) {
+		this.generationParameterType = generationParameterType;
 	}
 
 	@Override
