@@ -17,13 +17,39 @@ public class ContentParameter {
     @Column(name="name", nullable=false)
     private String name;
     
+
+    @Column(name="object_type_id")
+    private long objectTypeId;
+
+    @Column(name="field_name", nullable=false)
+    private String fieldName;
+    
+    @Column(name="classificator_id")
+    private long classificatorId;
+
+    @Column(name="classificator_value_id")
+    private long classificatorValueId;
+
+    @Column(name="constant_value")
+    private double constantValue;
+
+    @Column(name="constant_text", nullable=false)
+    private String constantText;
+    
     @DateTimeFormat(pattern = "dd.mm.yyyy")
     @Temporal(TemporalType.DATE)
-    private Date date;
+    private Date constant_date;
 
-    @Column(name="ref_id")
-    private long refId;
+    
+    
 
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;
@@ -33,29 +59,60 @@ public class ContentParameter {
 		this.name = name;
 	}
 
-	public Date getDate() {
-		return date;
+	public long getObjectTypeId() {
+		return objectTypeId;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setObjectTypeId(long objectTypeId) {
+		this.objectTypeId = objectTypeId;
 	}
 
-	public long getRefId() {
-		return refId;
+	public String getFieldName() {
+		return fieldName;
 	}
 
-	public void setRefId(long refId) {
-		this.refId = refId;
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
 	}
 
-	public long getId() {
-
-		return id;
+	public long getClassificatorId() {
+		return classificatorId;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setClassificatorId(long classificatorId) {
+		this.classificatorId = classificatorId;
+	}
+
+	public long getClassificatorValueId() {
+		return classificatorValueId;
+	}
+
+	public void setClassificatorValueId(long classificatorValueId) {
+		this.classificatorValueId = classificatorValueId;
+	}
+
+	public double getConstantValue() {
+		return constantValue;
+	}
+
+	public void setConstantValue(double constantValue) {
+		this.constantValue = constantValue;
+	}
+
+	public String getConstantText() {
+		return constantText;
+	}
+
+	public void setConstantText(String constantText) {
+		this.constantText = constantText;
+	}
+
+	public Date getConstant_date() {
+		return constant_date;
+	}
+
+	public void setConstant_date(Date constant_date) {
+		this.constant_date = constant_date;
 	}
 
 	@Override

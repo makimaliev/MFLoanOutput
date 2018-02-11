@@ -17,13 +17,31 @@ public class FilterParameter {
     @Column(name="name", nullable=false)
     private String name;
     
-    @DateTimeFormat(pattern = "dd.mm.yyyy")
-    @Temporal(TemporalType.DATE)
-    private Date date;
+	@ManyToOne(targetEntity=ObjectList.class, fetch = FetchType.EAGER)
+	@JoinColumn(name="object_list_id")
+	ObjectList objectList;
 
-    @Column(name="ref_id")
-    private long refId;
+	@ManyToOne(targetEntity=ContentParameter.class, fetch = FetchType.EAGER)
+	@JoinColumn(name="content_parameter_id")
+	ContentParameter contentParameter;
 
+    @Column(name="comparator_id")
+    private long comparatorId;
+
+    
+    @Column(name="compared_value", nullable=false)
+    private String comparedValue;
+	
+	
+    
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
 
 	public String getName() {
 		return name;
@@ -33,29 +51,36 @@ public class FilterParameter {
 		this.name = name;
 	}
 
-	public Date getDate() {
-		return date;
+	public ObjectList getObjectList() {
+		return objectList;
 	}
 
-	public void setDate(Date date) {
-		this.date = date;
+	public void setObjectList(ObjectList objectList) {
+		this.objectList = objectList;
 	}
 
-	public long getRefId() {
-		return refId;
+	public ContentParameter getContentParameter() {
+		return contentParameter;
 	}
 
-	public void setRefId(long refId) {
-		this.refId = refId;
+	public void setContentParameter(ContentParameter contentParameter) {
+		this.contentParameter = contentParameter;
 	}
 
-	public long getId() {
-
-		return id;
+	public long getComparatorId() {
+		return comparatorId;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setComparatorId(long comparatorId) {
+		this.comparatorId = comparatorId;
+	}
+
+	public String getComparedValue() {
+		return comparedValue;
+	}
+
+	public void setComparedValue(String comparedValue) {
+		this.comparedValue = comparedValue;
 	}
 
 	@Override
