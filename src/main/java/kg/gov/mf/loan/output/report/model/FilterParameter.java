@@ -25,14 +25,15 @@ public class FilterParameter {
 	@JoinColumn(name="content_parameter_id")
 	ContentParameter contentParameter;
 
-    @Column(name="comparator_id")
-    private long comparatorId;
+	@Enumerated(EnumType.STRING)
+	private Comparator comparator;
 
     
     @Column(name="compared_value", nullable=false)
     private String comparedValue;
 	
-	
+	@Enumerated(EnumType.STRING)
+	private FilterParameterType filterParameterType;
     
 
 	public long getId() {
@@ -67,12 +68,12 @@ public class FilterParameter {
 		this.contentParameter = contentParameter;
 	}
 
-	public long getComparatorId() {
-		return comparatorId;
+	public Comparator getComparator() {
+		return comparator;
 	}
 
-	public void setComparatorId(long comparatorId) {
-		this.comparatorId = comparatorId;
+	public void setComparator(Comparator comparator) {
+		this.comparator = comparator;
 	}
 
 	public String getComparedValue() {
@@ -81,6 +82,14 @@ public class FilterParameter {
 
 	public void setComparedValue(String comparedValue) {
 		this.comparedValue = comparedValue;
+	}
+
+	public FilterParameterType getFilterParameterType() {
+		return filterParameterType;
+	}
+
+	public void setFilterParameterType(FilterParameterType filterParameterType) {
+		this.filterParameterType = filterParameterType;
 	}
 
 	@Override
