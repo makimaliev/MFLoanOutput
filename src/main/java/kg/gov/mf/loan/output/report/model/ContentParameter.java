@@ -18,10 +18,10 @@ public class ContentParameter {
     private String name;
     
 
-    @Column(name="object_type_id")
-    private long objectTypeId;
+	@Enumerated(EnumType.STRING)
+	private ContentType contentType;
 
-    @Column(name="field_name", nullable=false)
+    @Column(name="field_name")
     private String fieldName;
     
     @Column(name="classificator_id")
@@ -33,15 +33,15 @@ public class ContentParameter {
     @Column(name="constant_value")
     private double constantValue;
 
-    @Column(name="constant_text", nullable=false)
+    @Column(name="constant_text")
     private String constantText;
     
     @DateTimeFormat(pattern = "dd.mm.yyyy")
     @Temporal(TemporalType.DATE)
-    private Date constant_date;
+    private Date constantDate;
 
     
-    
+
 
 	public long getId() {
 		return id;
@@ -59,12 +59,12 @@ public class ContentParameter {
 		this.name = name;
 	}
 
-	public long getObjectTypeId() {
-		return objectTypeId;
+	public ContentType getContentType() {
+		return contentType;
 	}
 
-	public void setObjectTypeId(long objectTypeId) {
-		this.objectTypeId = objectTypeId;
+	public void setContentType(ContentType contentType) {
+		this.contentType = contentType;
 	}
 
 	public String getFieldName() {
@@ -107,12 +107,12 @@ public class ContentParameter {
 		this.constantText = constantText;
 	}
 
-	public Date getConstant_date() {
-		return constant_date;
+	public Date getConstantDate() {
+		return constantDate;
 	}
 
-	public void setConstant_date(Date constant_date) {
-		this.constant_date = constant_date;
+	public void setConstantDate(Date constantDate) {
+		this.constantDate = constantDate;
 	}
 
 	@Override
