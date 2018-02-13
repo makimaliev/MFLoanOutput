@@ -1,13 +1,31 @@
 package kg.gov.mf.loan.output.report.utils;
 
+import kg.gov.mf.loan.admin.org.model.Address;
+import kg.gov.mf.loan.admin.org.model.District;
+import kg.gov.mf.loan.admin.org.model.Person;
+import kg.gov.mf.loan.admin.org.service.OrganizationService;
+import kg.gov.mf.loan.admin.org.service.PersonService;
+import kg.gov.mf.loan.admin.sys.service.InformationService;
+import kg.gov.mf.loan.manage.model.debtor.Debtor;
+import kg.gov.mf.loan.manage.model.loan.Loan;
+import kg.gov.mf.loan.manage.service.loan.LoanService;
+import kg.gov.mf.loan.output.report.model.GenerationParameter;
+import kg.gov.mf.loan.output.report.model.LoanData;
+import kg.gov.mf.loan.output.report.model.LoanReportData;
 import kg.gov.mf.loan.output.report.model.ReportTemplate;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.*;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.io.*;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 public class ReportGenerator {
@@ -15,7 +33,19 @@ public class ReportGenerator {
 	/**
      * Report GENERATION TOOL
      */
+
+	@Autowired
+	LoanService loanService;
+
+    @Autowired
+    PersonService personService;
+
+    @Autowired
+    OrganizationService organizationService;
+
     public Workbook generateReportByTemplate(ReportTemplate reportTemplate){
+
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
         System.out.println("Report Generated!!!");
 
@@ -25,6 +55,48 @@ public class ReportGenerator {
         * WORKBOOK CREATE
         *
         * */
+
+        Set<Loan> loans =  new HashSet<Loan>(this.getLoanByTemplate(reportTemplate));
+
+        LoanReportData SummaryLoan = new LoanReportData();
+
+        SummaryLoan.setLoans(loans);
+
+        SummaryLoan = this.getReportDataGrouped(SummaryLoan,reportTemplate);
+
+        int regionCount=0;
+        for(LoanReportData groupA : SummaryLoan.getChilds())
+        {
+            regionCount++;
+            System.out.println(regionCount+". region == "+groupA.getName());
+
+            int districtCount=0;
+            for(LoanReportData groupB : groupA.getChilds())
+            {
+                districtCount++;
+                System.out.println(regionCount+"."+districtCount+". district == "+groupB.getName());
+
+                int debtorCount=0;
+                for(LoanReportData debtor : groupB.getChilds())
+                {
+                    debtorCount++;
+                    System.out.println(regionCount+"."+districtCount+"."+debtorCount+". debtor == "+debtor.getName());
+
+                    int loanCount=0;
+                    for(LoanReportData loan : debtor.getChilds())
+                    {
+                        loanCount++;
+                        System.out.println(regionCount+"."+districtCount+"."+debtorCount+"."+loanCount+". loan == "+loan.getName());
+                    }
+
+                }
+
+
+            }
+
+
+        }
+
 
         HSSFWorkbook     WorkBook       = new HSSFWorkbook();
 
@@ -515,16 +587,267 @@ public class ReportGenerator {
         Cell.setCellStyle(CellStyleTitleBlue);
         Cell.setCellValue("");
 
-/*
-        sContentType = "application/vnd.ms-excel" ;
-        response.setContentType(sContentType);
-        response.setHeader("Content-disposition","attachment; filename=report.xls");
-        OutputStream out = response.getOutputStream();
-        WorkBook.write(out);
-        out.close();
-*/
         return WorkBook;
 
     }
 
+    public List<Loan> getLoanByTemplate(ReportTemplate reportTemplate)
+    {
+
+
+
+
+
+
+
+
+
+        return this.loanService.list();
+    }
+
+    public LoanReportData getReportDataGrouped(LoanReportData reportData,ReportTemplate reportTemplate)
+    {
+
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+
+//        List<kg.gov.mf.loan.admin.org.model.Region> regions = new ArrayList<kg.gov.mf.loan.admin.org.model.Region>();
+
+        int level=1;
+
+        Set<kg.gov.mf.loan.admin.org.model.Region> regions = new HashSet<kg.gov.mf.loan.admin.org.model.Region>();
+
+        // Group Summary to Regions
+
+
+        // detect unique regions
+
+        for (Loan loan:reportData.getLoans())
+        {
+            LoanData loanData = new LoanData(loan);
+
+
+            kg.gov.mf.loan.admin.org.model.Region region = loanData.getRegion();
+
+            if(!regions.contains(region))
+            {
+                regions.add(region);
+            }
+        }
+
+
+        // add regions to summary
+
+        for (kg.gov.mf.loan.admin.org.model.Region region: regions)
+        {
+            LoanReportData child = reportData.addChild();
+            child.setName(region.getName());
+            child.setLevel((short)1);
+        }
+
+
+
+
+        for (LoanReportData regionReportData: reportData.getChilds())
+        {
+
+            Set<District> districts = new HashSet<District>();
+
+            // add loans to region
+
+            for (Loan loan:reportData.getLoans())
+            {
+                LoanData loanData = new LoanData(loan);
+
+                if(loanData.getRegion().getName().equals(regionReportData.getName()))
+                {
+                    regionReportData.getLoans().add(loan);
+                }
+
+            }
+
+
+            // Detect unique districts of Region
+
+            for (Loan loan:regionReportData.getLoans())
+            {
+                LoanData loanData = new LoanData(loan);
+
+                District district = loanData.getDistrict();
+
+                if(!districts.contains(district))
+                {
+                    districts.add(district);
+                }
+            }
+
+
+            // add districts to region
+
+            for (District district: districts)
+            {
+                LoanReportData child = regionReportData.addChild();
+                child.setName(district.getName());
+                child.setLevel((short)2);
+            }
+
+            // add loans to district
+
+            for (LoanReportData districtReportData: regionReportData.getChilds())
+            {
+                Set<Debtor> debtors = new HashSet<Debtor>();
+
+                for (Loan loan:regionReportData.getLoans())
+                {
+                    LoanData loanData = new LoanData(loan);
+
+                    if(loanData.getDistrict().getName().equals(districtReportData.getName()))
+                    {
+                        districtReportData.getLoans().add(loan);
+                    }
+
+
+
+                }
+
+
+                // Detect unique Debtors of District
+
+                for (Loan loan:districtReportData.getLoans())
+                {
+                    LoanData loanData = new LoanData(loan);
+
+                    Debtor debtor = loanData.getDebtor();
+
+                    if(!debtors.contains(debtor))
+                    {
+                        debtors.add(debtor);
+                    }
+                }
+
+
+                // add debtors to district
+
+                for (Debtor debtor: debtors)
+                {
+                    LoanReportData child = districtReportData.addChild();
+                    child.setName(debtor.getName());
+                    child.setLevel((short)3);
+                }
+
+                // add loans to debtor
+
+                for (LoanReportData debtorReportData: districtReportData.getChilds())
+                {
+
+                    Set<Loan> loans = new HashSet<Loan>();
+
+                    for (Loan loan:districtReportData.getLoans())
+                    {
+                        LoanData loanData = new LoanData(loan);
+
+                        if(loanData.getDebtor().getName().equals(debtorReportData.getName()))
+                        {
+                            debtorReportData.getLoans().add(loan);
+                        }
+
+                    }
+
+                    // Detect unique Loans of Debtor
+
+                    for (Loan loan:debtorReportData.getLoans())
+                    {
+                        LoanData loanData = new LoanData(loan);
+
+                        Loan loanOfDebtor = loanData.getLoan();
+
+                        if(!loans.contains(loanOfDebtor))
+                        {
+                            loans.add(loanOfDebtor);
+                        }
+                    }
+
+
+                    // add debtors to district
+
+                    for (Loan loanLast: loans)
+                    {
+                        LoanReportData child = debtorReportData.addChild();
+                        child.setName(loanLast.getRegNumber()+" от "+loanLast.getRegDate());
+                        child.setLevel((short)4);
+                    }
+
+                    // add loans to debtor
+
+                    for (LoanReportData loanReportData: debtorReportData.getChilds())
+                    {
+                        for (Loan loan:debtorReportData.getLoans())
+                        {
+                            LoanData loanData = new LoanData(loan);
+
+                            if(loanData.getLoan().equals(loanReportData))
+                            {
+                                loanReportData.getLoans().add(loan);
+                            }
+
+                        }
+
+                    }
+
+                }
+
+
+            }
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+/*
+        for (kg.gov.mf.loan.admin.org.model.Region region: regions)
+        {
+            System.out.println(region.getName());
+        }
+
+/*
+        LoanReportData groupA1 = reportData.addChild();
+        groupA1.setName("GroupA1");
+        groupA1.setLevel((short)1);
+
+        LoanReportData groupB1 = groupA1.addChild();
+        groupB1.setName("GroupB1");
+        groupB1.setLevel((short)2);
+
+        LoanReportData groupB2 = groupA1.addChild();
+        groupB2.setName("GroupB2");
+        groupB2.setLevel((short)2);
+
+
+
+
+        LoanReportData groupA2 = reportData.addChild();
+        groupA2.setName("GroupA2");
+        groupA2.setLevel((short)1);
+
+        LoanReportData groupB3 = groupA2.addChild();
+        groupB3.setName("GroupB3");
+        groupB3.setLevel((short)2);
+
+        LoanReportData groupB4 = groupA2.addChild();
+        groupB4.setName("GroupB4");
+        groupB4.setLevel((short)2);
+
+
+*/
+
+        return reportData;
+    }
 }
