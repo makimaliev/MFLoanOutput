@@ -17,8 +17,7 @@ public class LoanReportData
 
 	private String Name                 = "";
 
-	private Set<Loan> loans = new HashSet<Loan>(0);
-
+	private Set<LoanView> loanViews = new HashSet<LoanView>(0);
 
 	public LoanReportData()
 	{
@@ -88,11 +87,11 @@ public class LoanReportData
 	}
 
 
-	public Set<Loan> getLoans() {
-		return loans;
+	public Set<LoanView> getLoanViews() {
+		return loanViews;
 	}
 
-	public void setLoans(Set<Loan> loans) {
-		this.loans = loans;
+	public void setLoanViews(Set<LoanView> loanViews) {
+		this.loanViews = loanViews;
 	}
 }

@@ -1,31 +1,17 @@
 package kg.gov.mf.loan.output.report.utils;
 
-import kg.gov.mf.loan.admin.org.model.Address;
-import kg.gov.mf.loan.admin.org.model.District;
-import kg.gov.mf.loan.admin.org.model.Person;
-import kg.gov.mf.loan.admin.org.service.OrganizationService;
-import kg.gov.mf.loan.admin.org.service.PersonService;
-import kg.gov.mf.loan.admin.sys.service.InformationService;
-import kg.gov.mf.loan.manage.model.debtor.Debtor;
 import kg.gov.mf.loan.manage.model.loan.Loan;
-import kg.gov.mf.loan.manage.service.loan.LoanService;
-import kg.gov.mf.loan.output.report.model.GenerationParameter;
-import kg.gov.mf.loan.output.report.model.LoanData;
-import kg.gov.mf.loan.output.report.model.LoanReportData;
-import kg.gov.mf.loan.output.report.model.ReportTemplate;
+import kg.gov.mf.loan.output.report.model.*;
+import kg.gov.mf.loan.output.report.service.LoanViewService;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.io.*;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public class ReportGenerator {
@@ -34,33 +20,38 @@ public class ReportGenerator {
      * Report GENERATION TOOL
      */
 
+    @Autowired
+    LoanViewService loanViewService;
+
+
+    /*
 	@Autowired
 	LoanService loanService;
+
+
+
 
     @Autowired
     PersonService personService;
 
     @Autowired
     OrganizationService organizationService;
-
+*/
     public Workbook generateReportByTemplate(ReportTemplate reportTemplate){
 
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
+
         System.out.println("Report Generated!!!");
 
 
-        /*
-        *
-        * WORKBOOK CREATE
-        *
-        * */
+        Set<LoanView> loanViews =  new HashSet<LoanView>();
 
-        Set<Loan> loans =  new HashSet<Loan>(this.getLoanByTemplate(reportTemplate));
+        loanViews.addAll(loanViewService.findAll());
 
         LoanReportData SummaryLoan = new LoanReportData();
 
-        SummaryLoan.setLoans(loans);
+        SummaryLoan.setLoanViews(loanViews);
 
         SummaryLoan = this.getReportDataGrouped(SummaryLoan,reportTemplate);
 
@@ -69,6 +60,7 @@ public class ReportGenerator {
         {
             regionCount++;
             System.out.println(regionCount+". region == "+groupA.getName());
+
 
             int districtCount=0;
             for(LoanReportData groupB : groupA.getChilds())
@@ -98,14 +90,10 @@ public class ReportGenerator {
         }
 
 
+
         HSSFWorkbook     WorkBook       = new HSSFWorkbook();
 
-
-        /*
-        *
-        * SHEET CREATE
-        *
-        * */
+/*
 
         HSSFSheet        Sheet          = WorkBook.createSheet();
 
@@ -586,128 +574,158 @@ public class ReportGenerator {
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
         Cell.setCellStyle(CellStyleTitleBlue);
         Cell.setCellValue("");
-
+*/
         return WorkBook;
 
     }
 
-    public List<Loan> getLoanByTemplate(ReportTemplate reportTemplate)
+
+    public List<LoanView> getLoanViewByTemplate(ReportTemplate reportTemplate)
     {
 
-
-
-
-
-
-
-
-
-        return this.loanService.list();
+        return this.loanViewService.findAll();
     }
+
 
     public LoanReportData getReportDataGrouped(LoanReportData reportData,ReportTemplate reportTemplate)
     {
 
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
-//        List<kg.gov.mf.loan.admin.org.model.Region> regions = new ArrayList<kg.gov.mf.loan.admin.org.model.Region>();
+        Set<Long> groupAIds = new HashSet<Long>();
 
-        int level=1;
-
-        Set<kg.gov.mf.loan.admin.org.model.Region> regions = new HashSet<kg.gov.mf.loan.admin.org.model.Region>();
-
-        // Group Summary to Regions
-
-
-        // detect unique regions
-
-        for (Loan loan:reportData.getLoans())
+        for (LoanView loanView:reportData.getLoanViews())
         {
-            LoanData loanData = new LoanData(loan);
+            groupAIds.add(loanView.getV_debtor_region_id());
+        }
 
+        for (Long groupAId: groupAIds)
+        {
+            LoanReportData childA = reportData.addChild();
+            childA.setName(groupAId.toString());
+            childA.setLevel((short)1);
 
-            kg.gov.mf.loan.admin.org.model.Region region = loanData.getRegion();
+            LinkedHashMap<String,List<Long>> parameterA = new LinkedHashMap<String,List<Long>>();
 
-            if(!regions.contains(region))
+            List<Long> regionIds = new ArrayList<>();
+            regionIds.add(groupAId);
+
+            parameterA.put("region",regionIds);
+
+            childA.getLoanViews().addAll(loanViewService.findByParameter(parameterA));
+
+            Set<Long> groupBIds = new HashSet<Long>();
+
+            for (LoanView loanView:childA.getLoanViews())
             {
-                regions.add(region);
+                groupBIds.add(loanView.getV_debtor_district_id());
             }
+
+            for (Long groupBId: groupBIds)
+            {
+                LoanReportData childB = childA.addChild();
+                childB.setName(groupBId.toString());
+                childB.setLevel((short)2);
+
+                LinkedHashMap<String,List<Long>> parameterB = new LinkedHashMap<String,List<Long>>();
+
+                List<Long> districtIds = new ArrayList<>();
+                districtIds.add(groupBId);
+
+                parameterB.put("region",regionIds);
+                parameterB.put("district",districtIds);
+
+                Set<LoanView> loanViewsB =  new HashSet<LoanView>();
+
+                loanViewsB.addAll(loanViewService.findByParameter(parameterB));
+
+                childB.setLoanViews(loanViewsB);
+
+                Set<Long> debtorIds = new HashSet<Long>();
+
+                for (LoanView loanViewD:childB.getLoanViews())
+                {
+                    debtorIds.add(loanViewD.getV_debtor_id());
+                }
+
+                for (Long debtorId: debtorIds)
+                {
+                    LoanReportData debtor = childB.addChild();
+                    debtor.setName(debtorId.toString());
+                    debtor.setLevel((short)3);
+
+                    LinkedHashMap<String,List<Long>> parameterD = new LinkedHashMap<String,List<Long>>();
+
+                    List<Long> debtorDIds = new ArrayList<>();
+                    debtorDIds.add(debtorId);
+
+                    parameterD.put("region",regionIds);
+                    parameterD.put("district",districtIds);
+                    parameterD.put("debtor",debtorDIds);
+
+
+                    Set<LoanView> loanViewsD =  new HashSet<LoanView>();
+
+                    loanViewsD.addAll(loanViewService.findByParameter(parameterD));
+
+                    debtor.setLoanViews(loanViewsD);
+
+                    Set<Long> loanIds = new HashSet<Long>();
+
+                    for (LoanView loanViewL:debtor.getLoanViews())
+                    {
+                        loanIds.add(loanViewL.getV_loan_id());
+                    }
+
+                    for (Long loanId: loanIds)
+                    {
+                        LoanReportData loan = debtor.addChild();
+                        loan.setName(loanId.toString());
+                        loan.setLevel((short)4);
+
+                        LinkedHashMap<String,List<Long>> parameterL = new LinkedHashMap<String,List<Long>>();
+
+                        List<Long> loanLIds = new ArrayList<>();
+                        loanLIds.add(loanId);
+
+                        parameterB.put("region",regionIds);
+                        parameterB.put("district",districtIds);
+                        parameterB.put("debtor",debtorDIds);
+                        parameterB.put("loan",loanLIds);
+
+
+                        Set<LoanView> loanViewsL =  new HashSet<LoanView>();
+
+                        loanViewsD.addAll(loanViewService.findByParameter(parameterL));
+
+                        debtor.setLoanViews(loanViewsL);
+
+                    }
+
+
+                }
+
+
+            }
+
+
+
         }
 
 
-        // add regions to summary
-
-        for (kg.gov.mf.loan.admin.org.model.Region region: regions)
-        {
-            LoanReportData child = reportData.addChild();
-            child.setName(region.getName());
-            child.setLevel((short)1);
-        }
 
 
+        /*
 
 
         for (LoanReportData regionReportData: reportData.getChilds())
         {
 
-            Set<District> districts = new HashSet<District>();
-
-            // add loans to region
-
-            for (Loan loan:reportData.getLoans())
-            {
-                LoanData loanData = new LoanData(loan);
-
-                if(loanData.getRegion().getName().equals(regionReportData.getName()))
-                {
-                    regionReportData.getLoans().add(loan);
-                }
-
-            }
-
-
-            // Detect unique districts of Region
-
-            for (Loan loan:regionReportData.getLoans())
-            {
-                LoanData loanData = new LoanData(loan);
-
-                District district = loanData.getDistrict();
-
-                if(!districts.contains(district))
-                {
-                    districts.add(district);
-                }
-            }
-
-
-            // add districts to region
-
-            for (District district: districts)
-            {
-                LoanReportData child = regionReportData.addChild();
-                child.setName(district.getName());
-                child.setLevel((short)2);
-            }
-
-            // add loans to district
-
-            for (LoanReportData districtReportData: regionReportData.getChilds())
-            {
-                Set<Debtor> debtors = new HashSet<Debtor>();
-
-                for (Loan loan:regionReportData.getLoans())
-                {
-                    LoanData loanData = new LoanData(loan);
-
-                    if(loanData.getDistrict().getName().equals(districtReportData.getName()))
-                    {
-                        districtReportData.getLoans().add(loan);
-                    }
 
 
 
-                }
+
+
 
 
                 // Detect unique Debtors of District
