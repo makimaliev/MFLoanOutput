@@ -47,13 +47,13 @@ public class ReportGenerator {
 
         Set<LoanView> loanViews =  new HashSet<LoanView>();
 
-        loanViews.addAll(loanViewService.findAll());
+        //loanViews.addAll(loanViewService.findAll());
 
         LoanReportData SummaryLoan = new LoanReportData();
 
-        SummaryLoan.setLoanViews(loanViews);
+        //SummaryLoan.setLoanViews(loanViews);
 
-        SummaryLoan = this.getReportDataGrouped(SummaryLoan,reportTemplate);
+        SummaryLoan = new LoanReportDataManager().getReportDataGrouped(SummaryLoan,reportTemplate);
 
         int regionCount=0;
         for(LoanReportData groupA : SummaryLoan.getChilds())
@@ -92,8 +92,6 @@ public class ReportGenerator {
 
 
         HSSFWorkbook     WorkBook       = new HSSFWorkbook();
-
-/*
 
         HSSFSheet        Sheet          = WorkBook.createSheet();
 
@@ -563,7 +561,7 @@ public class ReportGenerator {
         Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleTitleBlue);
-        Cell.setCellValue("по состоянию на _______________г.");
+        Cell.setCellValue("по состоянию на "+SummaryLoan.getOnDate()+"_г.");
 
         RowCount++;
         ColumnCount=0;
@@ -574,7 +572,975 @@ public class ReportGenerator {
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
         Cell.setCellStyle(CellStyleTitleBlue);
         Cell.setCellValue("");
-*/
+
+
+
+        Row = Sheet.createRow(RowCount);
+        Row.setRowNum(( short ) RowCount);
+
+        ColumnCount=0;
+
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("Кол. Суб.");
+        ColumnCount++;
+
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("Кол. Дог.");
+        ColumnCount++;
+
+        if(iDetail4)
+        {
+            Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+
+            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+            Cell.setCellStyle(CellStyleHeader);
+            Cell.setCellValue("ID");
+            ColumnCount++;
+        }
+
+
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("Наименование");
+        ColumnCount++;
+
+        if(iDetail4)
+        {
+            Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+
+            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+            Cell.setCellStyle(CellStyleHeader);
+            Cell.setCellValue("Вид кредита");
+            ColumnCount++;
+        }
+
+
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("Основная сумма по договору");
+        ColumnCount++;
+
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("Фактически получено");
+        ColumnCount++;
+
+        if(iDetail4)
+        {
+            Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+
+            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+            Cell.setCellStyle(CellStyleHeader);
+            Cell.setCellValue("Срок");
+            ColumnCount++;
+        }
+
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("Фактически возвращено");
+        ColumnCount++;
+
+
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("Остаток задолженности");
+        ColumnCount++;
+
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+2)));
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("в том числе по");
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell.setCellStyle(CellStyleHeader);
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell.setCellStyle(CellStyleHeader);
+        ColumnCount++;
+
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("Просроченная задолженность");
+        ColumnCount++;
+
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+2)));
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("в том числе по");
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell.setCellStyle(CellStyleHeader);
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell.setCellStyle(CellStyleHeader);
+        ColumnCount++;
+
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("Примечание");
+        ColumnCount++;
+
+        RowCount++;
+        Row = Sheet.createRow(RowCount);
+        Row.setRowNum(( short ) RowCount);
+        Row.setHeightInPoints(60);
+
+        //******************* Summary ************************************************************************
+        //*******************************************************************************************
+        ColumnCount=0;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell.setCellStyle(CellStyleHeader);
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell.setCellStyle(CellStyleHeader);
+        ColumnCount++;
+
+        if(iDetail4)
+        {
+            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+            Cell.setCellStyle(CellStyleHeader);
+            ColumnCount++;
+        }
+
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell.setCellStyle(CellStyleHeader);
+        ColumnCount++;
+
+        if(iDetail4)
+        {
+            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+            Cell.setCellStyle(CellStyleHeader);
+            ColumnCount++;
+        }
+
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell.setCellStyle(CellStyleHeader);
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell.setCellStyle(CellStyleHeader);
+        ColumnCount++;
+
+        if(iDetail4)
+        {
+            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+            Cell.setCellStyle(CellStyleHeader);
+            ColumnCount++;
+        }
+
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell.setCellStyle(CellStyleHeader);
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell.setCellStyle(CellStyleHeader);
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("основной сумме");
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("процентам ");
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("штрафам");
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell.setCellStyle(CellStyleHeader);
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("основной сумме");
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("процентам");
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("штрафам");
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell.setCellStyle(CellStyleHeader);
+        ColumnCount++;
+
+
+        // REPEATING HEADER END
+
+
+        int Thousands = 1;
+
+        LoanReportData MainData = SummaryLoan;
+
+        ColumnCount=0;
+        RowCount++;
+
+        Row = Sheet.createRow(RowCount);
+        Row.setRowNum(( short ) RowCount);
+        Row.setHeightInPoints(20);
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+        Cell.setCellStyle(CellStyleDataSumInt);
+        Cell.setCellValue(MainData.getCount());
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+        Cell.setCellStyle(CellStyleDataSumInt);
+        Cell.setCellValue(MainData.getDetailsCount());
+        ColumnCount++;
+
+        if(iDetail4)
+        {
+            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+            Cell.setCellStyle(CellStyleDataSum);
+            Cell.setCellValue("");
+            ColumnCount++;
+        }
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleDataSum);
+        Cell.setCellValue("ИТОГО");
+        ColumnCount++;
+
+        if(iDetail4)
+        {
+            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+            Cell.setCellStyle(CellStyleDataSum);
+            Cell.setCellValue("");
+            ColumnCount++;
+        }
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+        Cell.setCellStyle(CellStyleDataSum);
+        Cell.setCellValue((MainData.getLoanAmount()/Thousands));
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+        Cell.setCellStyle(CellStyleDataSum);
+        Cell.setCellValue((MainData.getTotalDisbursment()/Thousands));
+        ColumnCount++;
+
+        if(iDetail4)
+        {
+            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+            Cell.setCellStyle(CellStyleDataSum);
+            ColumnCount++;
+        }
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+        Cell.setCellStyle(CellStyleDataSum);
+        Cell.setCellValue((MainData.getTotalPaid()/Thousands));
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+        Cell.setCellStyle(CellStyleDataSum);
+        Cell.setCellValue(((MainData.getRemainingSum())/Thousands));
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+        Cell.setCellStyle(CellStyleDataSum);
+        Cell.setCellValue((MainData.getRemainingPrincipal()/Thousands));
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+        Cell.setCellStyle(CellStyleDataSum);
+        Cell.setCellValue((MainData.getRemainingInterest()/Thousands));
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+        Cell.setCellStyle(CellStyleDataSum);
+        Cell.setCellValue((MainData.getRemainingPenalty()/Thousands));
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+        Cell.setCellStyle(CellStyleDataSum);
+        Cell.setCellValue(((MainData.getOverdueAll())/Thousands));
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+        Cell.setCellStyle(CellStyleDataSum);
+        Cell.setCellValue((MainData.getOverduePrincipal()/Thousands));
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+        Cell.setCellStyle(CellStyleDataSum);
+        Cell.setCellValue((MainData.getOverdueInterest()/Thousands));
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+        Cell.setCellStyle(CellStyleDataSum);
+        Cell.setCellValue((MainData.getOverduePenalty()/Thousands));
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleDataSum);
+        Cell.setCellValue("");
+        ColumnCount++;
+
+
+
+        // SUMMARY DATA END
+
+
+
+
+        boolean iDetail1 = true;
+
+        LoanReportData GroupData1[] = MainData.getChilds();
+
+        for(int x=0;x<GroupData1.length;x++)
+        {
+            if(iDetail1)
+            {
+
+                ColumnCount=0;
+                RowCount++;
+
+                Row = Sheet.createRow(RowCount);
+                Row.setRowNum(( short ) RowCount);
+
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                Cell.setCellStyle(CellStyleDataGroup1Int);
+                Cell.setCellValue(GroupData1[x].getCount());
+                ColumnCount++;
+
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                Cell.setCellStyle(CellStyleDataGroup1Int);
+                Cell.setCellValue(GroupData1[x].getDetailsCount());
+                ColumnCount++;
+
+                if(iDetail4)
+                {
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                    Cell.setCellStyle(CellStyleDataStringGroup1);
+                    Cell.setCellValue("");
+                    ColumnCount++;
+                }
+
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                Cell.setCellStyle(CellStyleDataStringGroup1);
+                Cell.setCellValue(GroupData1[x].getName());
+                ColumnCount++;
+
+                if(iDetail4)
+                {
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                    Cell.setCellStyle(CellStyleDataStringGroup1);
+                    Cell.setCellValue("");
+                    ColumnCount++;
+                }
+
+
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                Cell.setCellStyle(CellStyleDataGroup1);
+                Cell.setCellValue((GroupData1[x].getLoanAmount()/Thousands));
+                ColumnCount++;
+
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                Cell.setCellStyle(CellStyleDataGroup1);
+                Cell.setCellValue((GroupData1[x].getTotalDisbursment()/Thousands));
+                ColumnCount++;
+
+                if(iDetail4)
+                {
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+                    Cell.setCellStyle(CellStyleDataGroup1);
+                    ColumnCount++;
+                }
+
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                Cell.setCellStyle(CellStyleDataGroup1);
+                Cell.setCellValue((GroupData1[x].getTotalPaid()/Thousands));
+                ColumnCount++;
+
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                Cell.setCellStyle(CellStyleDataGroup1);
+                Cell.setCellValue(((GroupData1[x].getRemainingSum())/Thousands));
+                ColumnCount++;
+
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                Cell.setCellStyle(CellStyleDataGroup1);
+                Cell.setCellValue((GroupData1[x].getRemainingPrincipal()/Thousands));
+                ColumnCount++;
+
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                Cell.setCellStyle(CellStyleDataGroup1);
+                Cell.setCellValue((GroupData1[x].getRemainingInterest()/Thousands));
+                ColumnCount++;
+
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                Cell.setCellStyle(CellStyleDataGroup1);
+                Cell.setCellValue((GroupData1[x].getRemainingPenalty()/Thousands));
+                ColumnCount++;
+
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                Cell.setCellStyle(CellStyleDataGroup1);
+                Cell.setCellValue(((GroupData1[x].getOverdueAll())/Thousands));
+                ColumnCount++;
+
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                Cell.setCellStyle(CellStyleDataGroup1);
+                Cell.setCellValue((GroupData1[x].getOverduePrincipal()/Thousands));
+                ColumnCount++;
+
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                Cell.setCellStyle(CellStyleDataGroup1);
+                Cell.setCellValue((GroupData1[x].getOverdueInterest()/Thousands));
+                ColumnCount++;
+
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                Cell.setCellStyle(CellStyleDataGroup1);
+                Cell.setCellValue((GroupData1[x].getOverduePenalty()/Thousands));
+                ColumnCount++;
+
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                Cell.setCellStyle(CellStyleDataGroup1);
+                Cell.setCellValue("");
+                ColumnCount++;
+
+            }//if closed
+
+            LoanReportData GroupData2[] = GroupData1[x].getChilds();
+
+            boolean iDetail2 = true;
+
+            for(int y=0;y<GroupData2.length;y++)
+            {
+                if(iDetail2)
+                {
+                    ColumnCount=0;
+                    RowCount++;
+
+                    Row = Sheet.createRow(RowCount);
+                    Row.setRowNum(( short ) RowCount);
+
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                    Cell.setCellStyle(CellStyleDataGroup2Int);
+                    Cell.setCellValue(GroupData2[y].getCount());
+                    ColumnCount++;
+
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                    Cell.setCellStyle(CellStyleDataGroup2Int);
+                    Cell.setCellValue(GroupData2[y].getDetailsCount());
+                    ColumnCount++;
+
+
+                    if(iDetail4)
+                    {
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                        Cell.setCellStyle(CellStyleDataStringGroup2);
+                        Cell.setCellValue("");
+                        ColumnCount++;
+                    }
+
+
+
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                    Cell.setCellStyle(CellStyleDataStringGroup2);
+                    Cell.setCellValue(GroupData2[y].getName());
+                    ColumnCount++;
+
+
+                    if(iDetail4)
+                    {
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                        Cell.setCellStyle(CellStyleDataStringGroup2);
+                        Cell.setCellValue("");
+                        ColumnCount++;
+                    }
+
+
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                    Cell.setCellStyle(CellStyleDataGroup2);
+                    Cell.setCellValue((GroupData2[y].getLoanAmount()/Thousands));
+                    ColumnCount++;
+
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                    Cell.setCellStyle(CellStyleDataGroup2);
+                    Cell.setCellValue((GroupData2[y].getTotalDisbursment()/Thousands));
+                    ColumnCount++;
+
+
+                    if(iDetail4)
+                    {
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+                        Cell.setCellStyle(CellStyleDataGroup2);
+                        ColumnCount++;
+                    }
+
+
+
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                    Cell.setCellStyle(CellStyleDataGroup2);
+                    Cell.setCellValue((GroupData2[y].getTotalPaid()/Thousands));
+                    ColumnCount++;
+
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                    Cell.setCellStyle(CellStyleDataGroup2);
+                    Cell.setCellValue(((GroupData2[y].getRemainingSum())/Thousands));
+                    ColumnCount++;
+
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                    Cell.setCellStyle(CellStyleDataGroup2);
+                    Cell.setCellValue((GroupData2[y].getRemainingPrincipal()/Thousands));
+                    ColumnCount++;
+
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                    Cell.setCellStyle(CellStyleDataGroup2);
+                    Cell.setCellValue((GroupData2[y].getRemainingInterest()/Thousands));
+                    ColumnCount++;
+
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                    Cell.setCellStyle(CellStyleDataGroup2);
+                    Cell.setCellValue((GroupData2[y].getRemainingPenalty()/Thousands));
+                    ColumnCount++;
+
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                    Cell.setCellStyle(CellStyleDataGroup2);
+                    Cell.setCellValue(((GroupData2[y].getOverdueAll())/Thousands));
+                    ColumnCount++;
+
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                    Cell.setCellStyle(CellStyleDataGroup2);
+                    Cell.setCellValue((GroupData2[y].getOverduePrincipal()/Thousands));
+                    ColumnCount++;
+
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                    Cell.setCellStyle(CellStyleDataGroup2);
+                    Cell.setCellValue((GroupData2[y].getOverdueInterest()/Thousands));
+                    ColumnCount++;
+
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                    Cell.setCellStyle(CellStyleDataGroup2);
+                    Cell.setCellValue((GroupData2[y].getOverduePenalty()/Thousands));
+                    ColumnCount++;
+
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                    Cell.setCellStyle(CellStyleDataGroup2);
+                    Cell.setCellValue("");
+                    ColumnCount++;
+
+
+
+                }//if closed
+
+
+                LoanReportData PersonData[] = GroupData2[y].getChilds();
+
+                boolean iDetail3 = true;
+
+                for(int p=0;p<PersonData.length;p++)
+                {
+                    if(iDetail3)
+                    {
+
+                        ColumnCount=0;
+                        RowCount++;
+
+                        Row = Sheet.createRow(RowCount);
+                        Row.setRowNum(( short ) RowCount);
+
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+                        Cell.setCellStyle(CellStyleDataStringPerson);
+                        ColumnCount++;
+
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                        Cell.setCellStyle(CellStyleDataPersonInt);
+                        Cell.setCellValue(PersonData[p].getDetailsCount());
+                        ColumnCount++;
+
+                        if(iDetail4)
+                        {
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                            Cell.setCellStyle(CellStyleDataStringPerson);
+                            Cell.setCellValue("");
+                            ColumnCount++;
+                        }
+
+
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                        Cell.setCellStyle(CellStyleDataStringPerson);
+                        Cell.setCellValue(PersonData[p].getName());
+                        ColumnCount++;
+
+                        if(iDetail4)
+                        {
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                            Cell.setCellStyle(CellStyleDataStringPerson);
+                            Cell.setCellValue("");
+                            ColumnCount++;
+                        }
+
+
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                        Cell.setCellStyle(CellStyleDataPerson);
+                        Cell.setCellValue((PersonData[p].getLoanAmount()/Thousands));
+                        ColumnCount++;
+
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                        Cell.setCellStyle(CellStyleDataPerson);
+                        Cell.setCellValue((PersonData[p].getTotalDisbursment()/Thousands));
+                        ColumnCount++;
+
+
+                        if(iDetail4)
+                        {
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+                            Cell.setCellStyle(CellStyleDataPerson);
+                            ColumnCount++;
+                        }
+
+
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                        Cell.setCellStyle(CellStyleDataPerson);
+                        Cell.setCellValue((PersonData[p].getTotalPaid()/Thousands));
+                        ColumnCount++;
+
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                        Cell.setCellStyle(CellStyleDataPerson);
+                        Cell.setCellValue(((PersonData[p].getRemainingSum())/Thousands));
+                        ColumnCount++;
+
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                        Cell.setCellStyle(CellStyleDataPerson);
+                        Cell.setCellValue((PersonData[p].getRemainingPrincipal()/Thousands));
+                        ColumnCount++;
+
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                        Cell.setCellStyle(CellStyleDataPerson);
+                        Cell.setCellValue((PersonData[p].getRemainingInterest()/Thousands));
+                        ColumnCount++;
+
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                        Cell.setCellStyle(CellStyleDataPerson);
+                        Cell.setCellValue((PersonData[p].getRemainingPenalty()/Thousands));
+                        ColumnCount++;
+
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                        Cell.setCellStyle(CellStyleDataPerson);
+                        Cell.setCellValue(((PersonData[p].getOverdueAll())/Thousands));
+                        ColumnCount++;
+
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                        Cell.setCellStyle(CellStyleDataPerson);
+                        Cell.setCellValue((PersonData[p].getOverduePrincipal()/Thousands));
+                        ColumnCount++;
+
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                        Cell.setCellStyle(CellStyleDataPerson);
+                        Cell.setCellValue((PersonData[p].getOverdueInterest()/Thousands));
+                        ColumnCount++;
+
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                        Cell.setCellStyle(CellStyleDataPerson);
+                        Cell.setCellValue((PersonData[p].getOverduePenalty()/Thousands));
+                        ColumnCount++;
+
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                        Cell.setCellStyle(CellStyleDataPerson);
+                        Cell.setCellValue("");
+                        ColumnCount++;
+
+
+
+                    } // if person
+                    if(iDetail4)
+                    {
+
+                        LoanReportData CreditData[] = PersonData[p].getChilds();
+
+                        for(int c=0;c<CreditData.length;c++)
+                        {
+                            double ExRate = CreditData[c].getExchangeRate();
+
+                            ColumnCount=0;
+                            RowCount++;
+
+                            Row = Sheet.createRow(RowCount);
+                            Row.setRowNum(( short ) RowCount);
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+                            Cell.setCellStyle(CellStyleDataString);
+                            ColumnCount++;
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+                            Cell.setCellStyle(CellStyleDataString);
+                            ColumnCount++;
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                            Cell.setCellStyle(CellStyleDataString);
+                            Cell.setCellValue(CreditData[c].getID());
+                            ColumnCount++;
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                            Cell.setCellStyle(CellStyleDataString);
+
+                          String Det = CreditData[c].getOrderRegNumber()+" от  "
+                                + CreditData[c].getLoanRegDate()
+                                    + " №"    + CreditData[c].getLoanRegNumber();
+
+
+                            if(Thousands==1) Det=Det+" в ";
+                            else    if(Thousands==1000) Det=Det+" в тыс. ";
+                            else    if(Thousands==1000000) Det=Det+" в млн. ";
+
+                            if(CreditData[c].getCurrency() != 1)
+                            {
+                                Det=Det+CreditData[c].getCurrency();
+                            }
+                            else Det=Det+" сомах ";
+
+                            Cell.setCellValue(Det);
+                            ColumnCount++;
+
+
+                            short iCreditType = CreditData[c].getLoanType();
+
+                            String sCreditLine2 ="";
+
+                            switch (iCreditType)
+                            {
+                                case 1: sCreditLine2="Бюджетная ссуда";      break;
+                                case 2: sCreditLine2="Иностранный кредит";   break;
+                                case 3: sCreditLine2="Гр. Японии";           break;
+                                case 4: sCreditLine2="Гр. Швейцарии";        break;
+                                case 5: sCreditLine2="Бюджетная ссуда";      break;
+                                case 6: sCreditLine2="Гр. КНР";              break;
+                                case 7: sCreditLine2="Гр. Японии";           break;
+                                case 8: sCreditLine2="Гр. КНР";              break;
+                                case 9: sCreditLine2="ГМР";                  break;
+
+                            }
+
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                            Cell.setCellStyle(CellStyleDataString);
+                            Cell.setCellValue(sCreditLine2);
+                            ColumnCount++;
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                            Cell.setCellStyle(CellStyleData);
+                            Cell.setCellValue((CreditData[c].getLoanAmount()/(Thousands*ExRate)));
+                            ColumnCount++;
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                            Cell.setCellStyle(CellStyleData);
+                            Cell.setCellValue((CreditData[c].getTotalDisbursment()/(Thousands*ExRate)));
+                            ColumnCount++;
+
+                            CellDate = Row.createCell(ColumnCount);
+                            CellDate.setCellValue("");
+                            CellDate.setCellStyle(CellStyleDate);
+                            ColumnCount++;
+/*
+                            CellDate = Row.createCell(ColumnCount);
+                            CellDate.setCellValue((Date)CreditData[c].getLastDate());
+                            CellDate.setCellStyle(CellStyleDate);
+                            ColumnCount++;
+  */
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                            Cell.setCellStyle(CellStyleData);
+                            Cell.setCellValue((CreditData[c].getTotalPaidInCurrency()/Thousands));
+                            ColumnCount++;
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                            Cell.setCellStyle(CellStyleData);
+                            Cell.setCellValue(((CreditData[c].getRemainingSum())/(Thousands*ExRate)));
+                            ColumnCount++;
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                            Cell.setCellStyle(CellStyleData);
+                            Cell.setCellValue((CreditData[c].getRemainingPrincipal()/(Thousands*ExRate)));
+                            ColumnCount++;
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                            Cell.setCellStyle(CellStyleData);
+                            Cell.setCellValue((CreditData[c].getRemainingInterest()/(Thousands*ExRate)));
+                            ColumnCount++;
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                            Cell.setCellStyle(CellStyleData);
+                            Cell.setCellValue((CreditData[c].getRemainingPenalty()/(Thousands*ExRate)));
+                            ColumnCount++;
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                            Cell.setCellStyle(CellStyleData);
+                            Cell.setCellValue(((CreditData[c].getOverdueAll())/(Thousands*ExRate)));
+                            ColumnCount++;
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                            Cell.setCellStyle(CellStyleData);
+                            Cell.setCellValue((CreditData[c].getOverduePrincipal()/(Thousands*ExRate)));
+                            ColumnCount++;
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                            Cell.setCellStyle(CellStyleData);
+                            Cell.setCellValue((CreditData[c].getOverdueInterest()/(Thousands*ExRate)));
+                            ColumnCount++;
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                            Cell.setCellStyle(CellStyleData);
+                            Cell.setCellValue((CreditData[c].getOverduePenalty()/(Thousands*ExRate)));
+                            ColumnCount++;
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                            Cell.setCellStyle(CellStyleDataLeft);
+                            Cell.setCellValue(CreditData[c].getDetails());
+                            ColumnCount++;
+
+
+                            if(CreditData[c].getCurrency() != 1)
+                            {
+                                ColumnCount=0;
+                                RowCount++;
+
+                                Row = Sheet.createRow(RowCount);
+                                Row.setRowNum(( short ) RowCount);
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+                                Cell.setCellStyle(CellStyleData);
+                                ColumnCount++;
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+                                Cell.setCellStyle(CellStyleDataString);
+                                ColumnCount++;
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+                                Cell.setCellStyle(CellStyleDataString);
+                                ColumnCount++;
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                                Cell.setCellStyle(CellStyleDataString);
+
+                                String Det2="";
+
+                                if(Thousands==1) Det2=Det2+" в сомах";
+                                else    if(Thousands==1000) Det2=Det2+" в тыс. сомах";
+                                else    if(Thousands==1000000) Det2=Det2+" в млн. сомах ";
+
+                                else    Det2=Det2+" по курсу "+CreditData[c].getExchangeRate();
+
+                                Cell.setCellValue(Det2);
+                                ColumnCount++;
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+                                Cell.setCellStyle(CellStyleDataString);
+                                ColumnCount++;
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getLoanAmount()/Thousands));
+                                ColumnCount++;
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getTotalDisbursment()/Thousands));
+                                ColumnCount++;
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+                                Cell.setCellStyle(CellStyleData);
+                                ColumnCount++;
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getTotalPaid()/Thousands));
+                                ColumnCount++;
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue(((CreditData[c].getRemainingSum())/Thousands));
+                                ColumnCount++;
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getRemainingPrincipal()/Thousands));
+                                ColumnCount++;
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getRemainingInterest()/Thousands));
+                                ColumnCount++;
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getRemainingPenalty()/Thousands));
+                                ColumnCount++;
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue(((CreditData[c].getOverdueAll())/Thousands));
+                                ColumnCount++;
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getOverduePrincipal()/Thousands));
+                                ColumnCount++;
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getOverdueInterest()/Thousands));
+                                ColumnCount++;
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getOverduePenalty()/Thousands));
+                                ColumnCount++;
+
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue("");
+                                ColumnCount++;
+
+                            } //if Credit
+                        }
+                    } //for
+                    // Last Loop
+                } //Third
+            }// Second Loop
+        } // First Loop
+
         return WorkBook;
 
     }
@@ -587,285 +1553,5 @@ public class ReportGenerator {
     }
 
 
-    public LoanReportData getReportDataGrouped(LoanReportData reportData,ReportTemplate reportTemplate)
-    {
 
-        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-
-        Set<Long> groupAIds = new HashSet<Long>();
-
-        for (LoanView loanView:reportData.getLoanViews())
-        {
-            groupAIds.add(loanView.getV_debtor_region_id());
-        }
-
-        for (Long groupAId: groupAIds)
-        {
-            LoanReportData childA = reportData.addChild();
-            childA.setName(groupAId.toString());
-            childA.setLevel((short)1);
-
-            LinkedHashMap<String,List<Long>> parameterA = new LinkedHashMap<String,List<Long>>();
-
-            List<Long> regionIds = new ArrayList<>();
-            regionIds.add(groupAId);
-
-            parameterA.put("region",regionIds);
-
-            childA.getLoanViews().addAll(loanViewService.findByParameter(parameterA));
-
-            Set<Long> groupBIds = new HashSet<Long>();
-
-            for (LoanView loanView:childA.getLoanViews())
-            {
-                groupBIds.add(loanView.getV_debtor_district_id());
-            }
-
-            for (Long groupBId: groupBIds)
-            {
-                LoanReportData childB = childA.addChild();
-                childB.setName(groupBId.toString());
-                childB.setLevel((short)2);
-
-                LinkedHashMap<String,List<Long>> parameterB = new LinkedHashMap<String,List<Long>>();
-
-                List<Long> districtIds = new ArrayList<>();
-                districtIds.add(groupBId);
-
-                parameterB.put("region",regionIds);
-                parameterB.put("district",districtIds);
-
-                Set<LoanView> loanViewsB =  new HashSet<LoanView>();
-
-                loanViewsB.addAll(loanViewService.findByParameter(parameterB));
-
-                childB.setLoanViews(loanViewsB);
-
-                Set<Long> debtorIds = new HashSet<Long>();
-
-                for (LoanView loanViewD:childB.getLoanViews())
-                {
-                    debtorIds.add(loanViewD.getV_debtor_id());
-                }
-
-                for (Long debtorId: debtorIds)
-                {
-                    LoanReportData debtor = childB.addChild();
-                    debtor.setName(debtorId.toString());
-                    debtor.setLevel((short)3);
-
-                    LinkedHashMap<String,List<Long>> parameterD = new LinkedHashMap<String,List<Long>>();
-
-                    List<Long> debtorDIds = new ArrayList<>();
-                    debtorDIds.add(debtorId);
-
-                    parameterD.put("region",regionIds);
-                    parameterD.put("district",districtIds);
-                    parameterD.put("debtor",debtorDIds);
-
-
-                    Set<LoanView> loanViewsD =  new HashSet<LoanView>();
-
-                    loanViewsD.addAll(loanViewService.findByParameter(parameterD));
-
-                    debtor.setLoanViews(loanViewsD);
-
-                    Set<Long> loanIds = new HashSet<Long>();
-
-                    for (LoanView loanViewL:debtor.getLoanViews())
-                    {
-                        loanIds.add(loanViewL.getV_loan_id());
-                    }
-
-                    for (Long loanId: loanIds)
-                    {
-                        LoanReportData loan = debtor.addChild();
-                        loan.setName(loanId.toString());
-                        loan.setLevel((short)4);
-
-                        LinkedHashMap<String,List<Long>> parameterL = new LinkedHashMap<String,List<Long>>();
-
-                        List<Long> loanLIds = new ArrayList<>();
-                        loanLIds.add(loanId);
-
-                        parameterB.put("region",regionIds);
-                        parameterB.put("district",districtIds);
-                        parameterB.put("debtor",debtorDIds);
-                        parameterB.put("loan",loanLIds);
-
-
-                        Set<LoanView> loanViewsL =  new HashSet<LoanView>();
-
-                        loanViewsD.addAll(loanViewService.findByParameter(parameterL));
-
-                        debtor.setLoanViews(loanViewsL);
-
-                    }
-
-
-                }
-
-
-            }
-
-
-
-        }
-
-
-
-
-        /*
-
-
-        for (LoanReportData regionReportData: reportData.getChilds())
-        {
-
-
-
-
-
-
-
-
-                // Detect unique Debtors of District
-
-                for (Loan loan:districtReportData.getLoans())
-                {
-                    LoanData loanData = new LoanData(loan);
-
-                    Debtor debtor = loanData.getDebtor();
-
-                    if(!debtors.contains(debtor))
-                    {
-                        debtors.add(debtor);
-                    }
-                }
-
-
-                // add debtors to district
-
-                for (Debtor debtor: debtors)
-                {
-                    LoanReportData child = districtReportData.addChild();
-                    child.setName(debtor.getName());
-                    child.setLevel((short)3);
-                }
-
-                // add loans to debtor
-
-                for (LoanReportData debtorReportData: districtReportData.getChilds())
-                {
-
-                    Set<Loan> loans = new HashSet<Loan>();
-
-                    for (Loan loan:districtReportData.getLoans())
-                    {
-                        LoanData loanData = new LoanData(loan);
-
-                        if(loanData.getDebtor().getName().equals(debtorReportData.getName()))
-                        {
-                            debtorReportData.getLoans().add(loan);
-                        }
-
-                    }
-
-                    // Detect unique Loans of Debtor
-
-                    for (Loan loan:debtorReportData.getLoans())
-                    {
-                        LoanData loanData = new LoanData(loan);
-
-                        Loan loanOfDebtor = loanData.getLoan();
-
-                        if(!loans.contains(loanOfDebtor))
-                        {
-                            loans.add(loanOfDebtor);
-                        }
-                    }
-
-
-                    // add debtors to district
-
-                    for (Loan loanLast: loans)
-                    {
-                        LoanReportData child = debtorReportData.addChild();
-                        child.setName(loanLast.getRegNumber()+" от "+loanLast.getRegDate());
-                        child.setLevel((short)4);
-                    }
-
-                    // add loans to debtor
-
-                    for (LoanReportData loanReportData: debtorReportData.getChilds())
-                    {
-                        for (Loan loan:debtorReportData.getLoans())
-                        {
-                            LoanData loanData = new LoanData(loan);
-
-                            if(loanData.getLoan().equals(loanReportData))
-                            {
-                                loanReportData.getLoans().add(loan);
-                            }
-
-                        }
-
-                    }
-
-                }
-
-
-            }
-
-
-        }
-
-
-
-
-
-
-
-
-
-
-
-/*
-        for (kg.gov.mf.loan.admin.org.model.Region region: regions)
-        {
-            System.out.println(region.getName());
-        }
-
-/*
-        LoanReportData groupA1 = reportData.addChild();
-        groupA1.setName("GroupA1");
-        groupA1.setLevel((short)1);
-
-        LoanReportData groupB1 = groupA1.addChild();
-        groupB1.setName("GroupB1");
-        groupB1.setLevel((short)2);
-
-        LoanReportData groupB2 = groupA1.addChild();
-        groupB2.setName("GroupB2");
-        groupB2.setLevel((short)2);
-
-
-
-
-        LoanReportData groupA2 = reportData.addChild();
-        groupA2.setName("GroupA2");
-        groupA2.setLevel((short)1);
-
-        LoanReportData groupB3 = groupA2.addChild();
-        groupB3.setName("GroupB3");
-        groupB3.setLevel((short)2);
-
-        LoanReportData groupB4 = groupA2.addChild();
-        groupB4.setName("GroupB4");
-        groupB4.setLevel((short)2);
-
-
-*/
-
-        return reportData;
-    }
 }
