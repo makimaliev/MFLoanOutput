@@ -1,20 +1,20 @@
 package kg.gov.mf.loan.output.report.utils;
 
-import kg.gov.mf.loan.manage.model.loan.Payment;
-import kg.gov.mf.loan.output.report.model.*;
+import kg.gov.mf.loan.output.report.model.LoanView;
+import kg.gov.mf.loan.output.report.model.PaymentReportData;
+import kg.gov.mf.loan.output.report.model.ReportTemplate;
 import kg.gov.mf.loan.output.report.service.LoanViewService;
 import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.hssf.util.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.hssf.util.Region;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import java.io.*;
-import java.net.URLConnection;
-import java.util.*;
+import java.util.List;
 
 
-public class ReportGenerator {
+public class ReportGeneratorPayment {
 	
 	/**
      * Report GENERATION TOOL

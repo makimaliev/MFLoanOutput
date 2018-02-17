@@ -4,18 +4,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 
 import kg.gov.mf.loan.output.report.model.*;
@@ -33,6 +22,9 @@ public class Report {
     
     @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
     private Set<ReportTemplate> reportTemplates = new HashSet<ReportTemplate>();
+
+	@Enumerated(EnumType.STRING)
+	private ReportType reportType;
 
 	public long getId() {
 		return id;
@@ -57,7 +49,15 @@ public class Report {
 	public void setReportTemplate(Set<ReportTemplate> reportTemplates) {
 		this.reportTemplates = reportTemplates;
 	}
-	
+
+	public ReportType getReportType() {
+		return reportType;
+	}
+
+	public void setReportType(ReportType reportType) {
+		this.reportType = reportType;
+	}
+
 	@Override
 	public int hashCode() {
 		int hash = 5;

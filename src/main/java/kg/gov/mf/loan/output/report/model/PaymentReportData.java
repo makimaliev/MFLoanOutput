@@ -1,23 +1,21 @@
 package kg.gov.mf.loan.output.report.model;
 
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.sql.Date;
 import java.util.Set;
 
-import kg.gov.mf.loan.manage.model.loan.Loan;
 
-
-public class LoanReportData extends  ReportData
+public class PaymentReportData extends ReportData
 {
-	private LoanReportData Parent                = null;
-	private LinkedList<LoanReportData> ChildDataList = null;
+	private PaymentReportData Parent                = null;
+	private LinkedList<PaymentReportData> ChildDataList = null;
 
 	private short  Level             = 0;
 
 	private String Name                 = "";
 
-	private Set<LoanView> loanViews = new HashSet<LoanView>(0);
+	private Set<PaymentView> paymentViews = new HashSet<PaymentView>(0);
 
 
 	//*************************************************************
@@ -39,7 +37,7 @@ public class LoanReportData extends  ReportData
 	private double RemainingSum   		= 0;
 	private double RemainingPrincipal 	= 0;
 	private double RemainingInterest  	= 0;
-	private double RemainingPenalty 		= 0;
+	private double RemainingPenalty 	= 0;
 
 	private double OverdueAll      		= 0;
 	private double OverduePrincipal     = 0;
@@ -53,17 +51,28 @@ public class LoanReportData extends  ReportData
 	private String details     			= "";
 
 
+	private String paymentNumber        = "";
+	private String paymentTypeName      = "";
+	private Date   paymentDate          = null;
+	private int    PaymentCount         = 0;
+
+	private long   paymentID            = 0;
+	private double paymentPrincipal     = 0;
+	private double paymentInterest     	= 0;
+	private double paymentPenalty     	= 0;
+	private double paymentFee     		= 0;
+	private double paymentTotalAmount   = 0;
 
 
-	public LoanReportData()
+	public PaymentReportData()
 	{
-		ChildDataList = new LinkedList<LoanReportData>();
+		ChildDataList = new LinkedList<PaymentReportData>();
 	}
 
 
-	public LoanReportData addChild()
+	public PaymentReportData addChild()
 	{
-		LoanReportData ChildData = new LoanReportData();
+		PaymentReportData ChildData = new PaymentReportData();
 		ChildData.setParent(this);
 		ChildDataList.add(ChildData);
 
@@ -71,27 +80,27 @@ public class LoanReportData extends  ReportData
 	}
 
 
-	public LoanReportData[] getChilds()
+	public PaymentReportData[] getChilds()
 	{
-		return  (LoanReportData [])ChildDataList.toArray(new LoanReportData[ChildDataList.size()]);
+		return  (PaymentReportData[])ChildDataList.toArray(new PaymentReportData[ChildDataList.size()]);
 	}
 
 
-	public LinkedList<LoanReportData> getChildDataList() {
+	public LinkedList<PaymentReportData> getChildDataList() {
 		return ChildDataList;
 	}
 
-	public void setChildDataList(LinkedList<LoanReportData> childDataList) {
+	public void setChildDataList(LinkedList<PaymentReportData> childDataList) {
 		ChildDataList = childDataList;
 	}
 
-	public LinkedList<LoanReportData> getData()
+	public LinkedList<PaymentReportData> getData()
 	{
 		return ChildDataList;
 	}
 
 
-	public void setData(LinkedList<LoanReportData> data)
+	public void setData(LinkedList<PaymentReportData> data)
 	{
 		ChildDataList = data;
 	}
@@ -105,11 +114,11 @@ public class LoanReportData extends  ReportData
 	{
 		Name = name;
 	}
-	public LoanReportData getParent()
+	public PaymentReportData getParent()
 	{
 		return Parent;
 	}
-	public void setParent(LoanReportData parent)
+	public void setParent(PaymentReportData parent)
 	{
 		Parent = parent;
 	}
@@ -123,12 +132,12 @@ public class LoanReportData extends  ReportData
 	}
 
 
-	public Set<LoanView> getLoanViews() {
-		return loanViews;
+	public Set<PaymentView> getPaymentViews() {
+		return paymentViews;
 	}
 
-	public void setLoanViews(Set<LoanView> loanViews) {
-		this.loanViews = loanViews;
+	public void setPaymentViews(Set<PaymentView> paymentViews) {
+		this.paymentViews = paymentViews;
 	}
 
 
@@ -323,5 +332,86 @@ public class LoanReportData extends  ReportData
 
 	public void setDetails(String details) {
 		this.details = details;
+	}
+
+
+	public String getPaymentNumber() {
+		return paymentNumber;
+	}
+
+	public void setPaymentNumber(String paymentNumber) {
+		this.paymentNumber = paymentNumber;
+	}
+
+	public String getPaymentTypeName() {
+		return paymentTypeName;
+	}
+
+	public void setPaymentTypeName(String paymentTypeName) {
+		this.paymentTypeName = paymentTypeName;
+	}
+
+	public Date getPaymentDate() {
+		return paymentDate;
+	}
+
+	public void setPaymentDate(Date paymentDate) {
+		this.paymentDate = paymentDate;
+	}
+
+	public int getPaymentCount() {
+		return PaymentCount;
+	}
+
+	public void setPaymentCount(int paymentCount) {
+		PaymentCount = paymentCount;
+	}
+
+	public long getPaymentID() {
+		return paymentID;
+	}
+
+	public void setPaymentID(long paymentID) {
+		this.paymentID = paymentID;
+	}
+
+	public double getPaymentPrincipal() {
+		return paymentPrincipal;
+	}
+
+	public void setPaymentPrincipal(double paymentPrincipal) {
+		this.paymentPrincipal = paymentPrincipal;
+	}
+
+	public double getPaymentInterest() {
+		return paymentInterest;
+	}
+
+	public void setPaymentInterest(double paymentInterest) {
+		this.paymentInterest = paymentInterest;
+	}
+
+	public double getPaymentPenalty() {
+		return paymentPenalty;
+	}
+
+	public void setPaymentPenalty(double paymentPenalty) {
+		this.paymentPenalty = paymentPenalty;
+	}
+
+	public double getPaymentFee() {
+		return paymentFee;
+	}
+
+	public void setPaymentFee(double paymentFee) {
+		this.paymentFee = paymentFee;
+	}
+
+	public double getPaymentTotalAmount() {
+		return paymentTotalAmount;
+	}
+
+	public void setPaymentTotalAmount(double paymentTotalAmount) {
+		this.paymentTotalAmount = paymentTotalAmount;
 	}
 }

@@ -1,29 +1,16 @@
 package kg.gov.mf.loan.output.report.model;
 
-import kg.gov.mf.loan.admin.org.model.Address;
-import kg.gov.mf.loan.admin.org.model.District;
-import kg.gov.mf.loan.admin.org.model.Region;
-import kg.gov.mf.loan.admin.org.service.DistrictService;
-import kg.gov.mf.loan.admin.org.service.OrganizationService;
-import kg.gov.mf.loan.admin.org.service.PersonService;
-import kg.gov.mf.loan.admin.org.service.RegionService;
-import kg.gov.mf.loan.manage.model.debtor.Debtor;
-import kg.gov.mf.loan.manage.model.loan.Loan;
-import kg.gov.mf.loan.manage.service.loan.LoanService;
 import org.hibernate.annotations.Immutable;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name="loan_view")
+@Table(name="payment_view")
 @Immutable
-public class LoanView extends DebtorView
+public class PaymentView extends DebtorView
 {
-	@Id
 	@Column
 	private long v_loan_id;
 
@@ -58,6 +45,38 @@ public class LoanView extends DebtorView
 	@DateTimeFormat(pattern = "dd.mm.yyyy")
 	@Temporal(TemporalType.DATE)
 	private Date v_credit_order_regDate;
+
+	@Id
+	@Column
+	private long v_payment_id;
+
+	@Column
+	private String v_payment_number;
+
+	@DateTimeFormat(pattern = "dd.mm.yyyy")
+	@Temporal(TemporalType.DATE)
+	private Date v_payment_date;
+
+	@Column
+	private long v_payment_type_id;
+
+	@Column
+	private String v_payment_type_name;
+
+	@Column
+	private double v_payment_principal;
+
+	@Column
+	private double v_payment_interest;
+
+	@Column
+	private double v_payment_penalty;
+
+	@Column
+	private double v_payment_fee;
+
+	@Column
+	private double v_payment_total_amount;
 
 
 	public long getV_loan_id() {
@@ -146,5 +165,85 @@ public class LoanView extends DebtorView
 
 	public void setV_credit_order_regDate(Date v_credit_order_regDate) {
 		this.v_credit_order_regDate = v_credit_order_regDate;
+	}
+
+	public long getV_payment_id() {
+		return v_payment_id;
+	}
+
+	public void setV_payment_id(long v_payment_id) {
+		this.v_payment_id = v_payment_id;
+	}
+
+	public String getV_payment_number() {
+		return v_payment_number;
+	}
+
+	public void setV_payment_number(String v_payment_number) {
+		this.v_payment_number = v_payment_number;
+	}
+
+	public Date getV_payment_date() {
+		return v_payment_date;
+	}
+
+	public void setV_payment_date(Date v_payment_date) {
+		this.v_payment_date = v_payment_date;
+	}
+
+	public long getV_payment_type_id() {
+		return v_payment_type_id;
+	}
+
+	public void setV_payment_type_id(long v_payment_type_id) {
+		this.v_payment_type_id = v_payment_type_id;
+	}
+
+	public String getV_payment_type_name() {
+		return v_payment_type_name;
+	}
+
+	public void setV_payment_type_name(String v_payment_type_name) {
+		this.v_payment_type_name = v_payment_type_name;
+	}
+
+	public double getV_payment_principal() {
+		return v_payment_principal;
+	}
+
+	public void setV_payment_principal(double v_payment_principal) {
+		this.v_payment_principal = v_payment_principal;
+	}
+
+	public double getV_payment_interest() {
+		return v_payment_interest;
+	}
+
+	public void setV_payment_interest(double v_payment_interest) {
+		this.v_payment_interest = v_payment_interest;
+	}
+
+	public double getV_payment_penalty() {
+		return v_payment_penalty;
+	}
+
+	public void setV_payment_penalty(double v_payment_penalty) {
+		this.v_payment_penalty = v_payment_penalty;
+	}
+
+	public double getV_payment_fee() {
+		return v_payment_fee;
+	}
+
+	public void setV_payment_fee(double v_payment_fee) {
+		this.v_payment_fee = v_payment_fee;
+	}
+
+	public double getV_payment_total_amount() {
+		return v_payment_total_amount;
+	}
+
+	public void setV_payment_total_amount(double v_payment_total_amount) {
+		this.v_payment_total_amount = v_payment_total_amount;
 	}
 }

@@ -1,20 +1,22 @@
 package kg.gov.mf.loan.output.report.utils;
 
-import kg.gov.mf.loan.manage.model.loan.Payment;
-import kg.gov.mf.loan.output.report.model.*;
+import kg.gov.mf.loan.output.report.model.LoanReportData;
+import kg.gov.mf.loan.output.report.model.LoanView;
+import kg.gov.mf.loan.output.report.model.ReportTemplate;
 import kg.gov.mf.loan.output.report.service.LoanViewService;
 import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.hssf.util.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.hssf.util.Region;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import java.io.*;
-import java.net.URLConnection;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
-public class ReportGenerator {
+public class ReportGeneratorTemp {
 	
 	/**
      * Report GENERATION TOOL
@@ -41,15 +43,55 @@ public class ReportGenerator {
 
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
+
         System.out.println("Report Generated!!!");
 
-        PaymentReportData SummaryLoan = new PaymentReportData();
+
+        Set<LoanView> loanViews =  new HashSet<LoanView>();
+
+        //loanViews.addAll(loanViewService.findAll());
+
+        LoanReportData SummaryLoan = new LoanReportData();
+
+        //SummaryLoan.setLoanViews(loanViews);
+
+        SummaryLoan = new LoanReportDataManager().getReportDataGrouped(SummaryLoan,reportTemplate);
+
+        int regionCount=0;
+        for(LoanReportData groupA : SummaryLoan.getChilds())
+        {
+            regionCount++;
+            System.out.println(regionCount+". region == "+groupA.getName());
 
 
+            int districtCount=0;
+            for(LoanReportData groupB : groupA.getChilds())
+            {
+                districtCount++;
+                System.out.println(regionCount+"."+districtCount+". district == "+groupB.getName());
+
+                int debtorCount=0;
+                for(LoanReportData debtor : groupB.getChilds())
+                {
+                    debtorCount++;
+                    System.out.println(regionCount+"."+districtCount+"."+debtorCount+". debtor == "+debtor.getName());
+
+                    int loanCount=0;
+                    for(LoanReportData loan : debtor.getChilds())
+                    {
+                        loanCount++;
+                        System.out.println(regionCount+"."+districtCount+"."+debtorCount+"."+loanCount+". loan == "+loan.getName());
+                    }
+
+                }
 
 
+            }
 
-        SummaryLoan = new PaymentReportDataManager().getReportDataGrouped(SummaryLoan,reportTemplate);
+
+        }
+
+
 
         HSSFWorkbook     WorkBook       = new HSSFWorkbook();
 
@@ -60,6 +102,9 @@ public class ReportGenerator {
         HSSFCell         Cell           = null;
         HSSFCell         CellDate       = null;
         HSSFDataFormat   format         = WorkBook.createDataFormat();
+
+
+
 
         Sheet.getPrintSetup().setLandscape(true);
         Sheet.setMargin(HSSFSheet.BottomMargin,0.5);
@@ -768,7 +813,7 @@ public class ReportGenerator {
 
         int Thousands = 1;
 
-        PaymentReportData MainData = SummaryLoan;
+        LoanReportData MainData = SummaryLoan;
 
         ColumnCount=0;
         RowCount++;
@@ -815,7 +860,7 @@ public class ReportGenerator {
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
         Cell.setCellStyle(CellStyleDataSum);
-        Cell.setCellValue((MainData.getPaymentTotalAmount()/Thousands));
+        Cell.setCellValue((MainData.getTotalDisbursment()/Thousands));
         ColumnCount++;
 
         if(iDetail4)
@@ -884,7 +929,7 @@ public class ReportGenerator {
 
         boolean iDetail1 = true;
 
-        PaymentReportData GroupData1[] = MainData.getChilds();
+        LoanReportData GroupData1[] = MainData.getChilds();
 
         for(int x=0;x<GroupData1.length;x++)
         {
@@ -936,7 +981,7 @@ public class ReportGenerator {
 
                 Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
                 Cell.setCellStyle(CellStyleDataGroup1);
-                Cell.setCellValue((GroupData1[x].getPaymentTotalAmount()/Thousands));
+                Cell.setCellValue((GroupData1[x].getTotalDisbursment()/Thousands));
                 ColumnCount++;
 
                 if(iDetail4)
@@ -998,7 +1043,7 @@ public class ReportGenerator {
 
             }//if closed
 
-            PaymentReportData GroupData2[] = GroupData1[x].getChilds();
+            LoanReportData GroupData2[] = GroupData1[x].getChilds();
 
             boolean iDetail2 = true;
 
@@ -1055,7 +1100,7 @@ public class ReportGenerator {
 
                     Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
                     Cell.setCellStyle(CellStyleDataGroup2);
-                    Cell.setCellValue((GroupData2[y].getPaymentTotalAmount()/Thousands));
+                    Cell.setCellValue((GroupData2[y].getTotalDisbursment()/Thousands));
                     ColumnCount++;
 
 
@@ -1123,7 +1168,7 @@ public class ReportGenerator {
                 }//if closed
 
 
-                PaymentReportData PersonData[] = GroupData2[y].getChilds();
+                LoanReportData PersonData[] = GroupData2[y].getChilds();
 
                 boolean iDetail3 = true;
 
@@ -1177,7 +1222,7 @@ public class ReportGenerator {
 
                         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
                         Cell.setCellStyle(CellStyleDataPerson);
-                        Cell.setCellValue((PersonData[p].getPaymentTotalAmount()/Thousands));
+                        Cell.setCellValue((PersonData[p].getTotalDisbursment()/Thousands));
                         ColumnCount++;
 
 
@@ -1245,7 +1290,7 @@ public class ReportGenerator {
                     if(iDetail4)
                     {
 
-                        PaymentReportData CreditData[] = PersonData[p].getChilds();
+                        LoanReportData CreditData[] = PersonData[p].getChilds();
 
                         for(int c=0;c<CreditData.length;c++)
                         {
@@ -1323,7 +1368,7 @@ public class ReportGenerator {
 
                             Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
                             Cell.setCellStyle(CellStyleData);
-                            Cell.setCellValue((CreditData[c].getPaymentTotalAmount()/(Thousands*ExRate)));
+                            Cell.setCellValue((CreditData[c].getTotalDisbursment()/(Thousands*ExRate)));
                             ColumnCount++;
 
                             CellDate = Row.createCell(ColumnCount);
@@ -1388,130 +1433,109 @@ public class ReportGenerator {
                             ColumnCount++;
 
 
-                            if(iDetail4)
+                            if(CreditData[c].getCurrency() != 1)
                             {
+                                ColumnCount=0;
+                                RowCount++;
 
-                                PaymentReportData PaymentData[] = CreditData[c].getChilds();
+                                Row = Sheet.createRow(RowCount);
+                                Row.setRowNum(( short ) RowCount);
 
-                                for(int pp=0;pp<PaymentData.length;pp++)
-                                {
-                                    ColumnCount=0;
-                                    RowCount++;
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+                                Cell.setCellStyle(CellStyleData);
+                                ColumnCount++;
 
-                                    Row = Sheet.createRow(RowCount);
-                                    Row.setRowNum(( short ) RowCount);
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+                                Cell.setCellStyle(CellStyleDataString);
+                                ColumnCount++;
 
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
-                                    Cell.setCellStyle(CellStyleDataString);
-                                    ColumnCount++;
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+                                Cell.setCellStyle(CellStyleDataString);
+                                ColumnCount++;
 
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
-                                    Cell.setCellStyle(CellStyleDataString);
-                                    ColumnCount++;
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                                Cell.setCellStyle(CellStyleDataString);
 
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-                                    Cell.setCellStyle(CellStyleDataString);
-                                    Cell.setCellValue(PaymentData[pp].getPaymentID());
-                                    ColumnCount++;
+                                String Det2="";
 
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-                                    Cell.setCellStyle(CellStyleDataString);
+                                if(Thousands==1) Det2=Det2+" в сомах";
+                                else    if(Thousands==1000) Det2=Det2+" в тыс. сомах";
+                                else    if(Thousands==1000000) Det2=Det2+" в млн. сомах ";
 
-                                    String DetPayment = PaymentData[pp].getName();
+                                else    Det2=Det2+" по курсу "+CreditData[c].getExchangeRate();
 
+                                Cell.setCellValue(Det2);
+                                ColumnCount++;
 
-                                    if(Thousands==1) Det=Det+" в ";
-                                    else    if(Thousands==1000) Det=Det+" в тыс. ";
-                                    else    if(Thousands==1000000) Det=Det+" в млн. ";
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+                                Cell.setCellStyle(CellStyleDataString);
+                                ColumnCount++;
 
-                                    Cell.setCellValue(DetPayment);
-                                    ColumnCount++;
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getLoanAmount()/Thousands));
+                                ColumnCount++;
 
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getTotalDisbursment()/Thousands));
+                                ColumnCount++;
 
-                                    String sPaymentType =PaymentData[pp].getPaymentTypeName();
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+                                Cell.setCellStyle(CellStyleData);
+                                ColumnCount++;
 
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-                                    Cell.setCellStyle(CellStyleDataString);
-                                    Cell.setCellValue(sPaymentType);
-                                    ColumnCount++;
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getTotalPaid()/Thousands));
+                                ColumnCount++;
 
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-                                    Cell.setCellStyle(CellStyleDataString);
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue(((CreditData[c].getRemainingSum())/Thousands));
+                                ColumnCount++;
 
-                                    Cell.setCellValue("");
-                                    ColumnCount++;
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getRemainingPrincipal()/Thousands));
+                                ColumnCount++;
 
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                                    Cell.setCellStyle(CellStyleData);
-                                    Cell.setCellValue((PaymentData[pp].getPaymentTotalAmount()/(Thousands)));
-                                    ColumnCount++;
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getRemainingInterest()/Thousands));
+                                ColumnCount++;
 
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getRemainingPenalty()/Thousands));
+                                ColumnCount++;
 
-                                    CellDate = Row.createCell(ColumnCount);
-                                    CellDate.setCellValue("");
-                                    CellDate.setCellStyle(CellStyleDate);
-                                    ColumnCount++;
-/*
-                            CellDate = Row.createCell(ColumnCount);
-                            CellDate.setCellValue((Date)CreditData[c].getLastDate());
-                            CellDate.setCellStyle(CellStyleDate);
-                            ColumnCount++;
-  */
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue(((CreditData[c].getOverdueAll())/Thousands));
+                                ColumnCount++;
 
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                                    Cell.setCellStyle(CellStyleData);
-                                    Cell.setCellValue((CreditData[c].getTotalPaidInCurrency()/Thousands));
-                                    ColumnCount++;
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getOverduePrincipal()/Thousands));
+                                ColumnCount++;
 
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                                    Cell.setCellStyle(CellStyleData);
-                                    Cell.setCellValue(((CreditData[c].getRemainingSum())/(Thousands*ExRate)));
-                                    ColumnCount++;
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getOverdueInterest()/Thousands));
+                                ColumnCount++;
 
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                                    Cell.setCellStyle(CellStyleData);
-                                    Cell.setCellValue((CreditData[c].getRemainingPrincipal()/(Thousands*ExRate)));
-                                    ColumnCount++;
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue((CreditData[c].getOverduePenalty()/Thousands));
+                                ColumnCount++;
 
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                                    Cell.setCellStyle(CellStyleData);
-                                    Cell.setCellValue((CreditData[c].getRemainingInterest()/(Thousands*ExRate)));
-                                    ColumnCount++;
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                                Cell.setCellStyle(CellStyleData);
+                                Cell.setCellValue("");
+                                ColumnCount++;
 
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                                    Cell.setCellStyle(CellStyleData);
-                                    Cell.setCellValue((CreditData[c].getRemainingPenalty()/(Thousands*ExRate)));
-                                    ColumnCount++;
-
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                                    Cell.setCellStyle(CellStyleData);
-                                    Cell.setCellValue(((CreditData[c].getOverdueAll())/(Thousands*ExRate)));
-                                    ColumnCount++;
-
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                                    Cell.setCellStyle(CellStyleData);
-                                    Cell.setCellValue((CreditData[c].getOverduePrincipal()/(Thousands*ExRate)));
-                                    ColumnCount++;
-
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                                    Cell.setCellStyle(CellStyleData);
-                                    Cell.setCellValue((CreditData[c].getOverdueInterest()/(Thousands*ExRate)));
-                                    ColumnCount++;
-
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                                    Cell.setCellStyle(CellStyleData);
-                                    Cell.setCellValue((CreditData[c].getOverduePenalty()/(Thousands*ExRate)));
-                                    ColumnCount++;
-
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-                                    Cell.setCellStyle(CellStyleDataLeft);
-                                    Cell.setCellValue(CreditData[c].getDetails());
-                                    ColumnCount++;
-
-
-                                }
-                            } //for
-
+                            } //if Credit
                         }
                     } //for
                     // Last Loop
