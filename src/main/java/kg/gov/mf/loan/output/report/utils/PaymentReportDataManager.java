@@ -230,7 +230,10 @@ public class PaymentReportDataManager {
 
                         //childA.setName(lv.getV_region_name());
                         //childB.setName(lv.getV_district_name());
-                        debtor.setName(lv.getV_debtor_name());
+
+                        childA.setName(this.getNameByGroupType(groupAtype,lv));
+                        childB.setName(this.getNameByGroupType(groupBtype,lv));
+                        debtor.setName(this.getNameByGroupType(groupCtype,lv));
 
 
                         loan.setDetailsCount(1);
@@ -311,9 +314,10 @@ public class PaymentReportDataManager {
 
                             payment.setLevel((short)5);
 
-                            //childA.setName(pv.getV_region_name());
-                            childB.setName(pv.getV_district_name());
-                            debtor.setName(pv.getV_debtor_name());
+                            childA.setName(this.getNameByGroupType(groupAtype,lv));
+                            childB.setName(this.getNameByGroupType(groupBtype,lv));
+                            debtor.setName(this.getNameByGroupType(groupCtype,lv));
+
 
                             payment.setPaymentCount(1);
                             loan.setPaymentCount(debtor.getPaymentCount()+1);
@@ -480,5 +484,45 @@ public class PaymentReportDataManager {
         return  idByGroupType;
     }
 
+    public String getNameByGroupType(long groupType, PaymentView paymentView)
+    {
+        String nameByGroupType="";
+
+        switch((short)groupType)
+        {
+            case 1:
+                nameByGroupType = paymentView.getV_region_name();
+                break;
+            case 2:
+                nameByGroupType = paymentView.getV_district_name();
+                break;
+            case 3:
+                nameByGroupType = paymentView.getV_debtor_name();
+                break;
+            case 4:
+                nameByGroupType =paymentView.getV_credit_order_regNumber()
+                                + " от "
+                                + paymentView.getV_credit_order_regDate()
+                                + ", "
+                                + paymentView.getV_loan_reg_number()
+                                + " от "
+                                + paymentView.getV_loan_reg_date();
+                break;
+            case 5:
+                nameByGroupType = " погашение № "+ paymentView.getV_payment_number()+ " " + paymentView.getV_payment_date();
+                break;
+            case 6:
+                nameByGroupType = paymentView.getV_work_sector_name();
+                break;
+
+
+
+
+
+
+        }
+
+        return  nameByGroupType;
+    }
 
 }

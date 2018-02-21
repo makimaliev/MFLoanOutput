@@ -53,6 +53,10 @@ public abstract class DebtorView extends ReportView {
 	@Column
 	private String v_district_name;
 
+	@Column
+	private String v_work_sector_name;
+
+
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
@@ -160,5 +164,13 @@ public abstract class DebtorView extends ReportView {
 
 	public void setV_district_name(String v_district_name) {
 		this.v_district_name = v_district_name;
+	}
+
+	public String getV_work_sector_name() {
+		return v_work_sector_name;
+	}
+
+	public void setV_work_sector_name(String v_work_sector_name) {
+		this.v_work_sector_name = v_work_sector_name;
 	}
 }
