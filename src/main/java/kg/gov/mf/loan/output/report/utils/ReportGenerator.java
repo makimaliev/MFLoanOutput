@@ -5,7 +5,6 @@ import kg.gov.mf.loan.output.report.model.*;
 import kg.gov.mf.loan.output.report.service.LoanViewService;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.*;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -37,7 +36,7 @@ public class ReportGenerator {
     @Autowired
     OrganizationService organizationService;
 */
-    public Workbook generateReportByTemplate(ReportTemplate reportTemplate){
+    public HSSFWorkbook generateReportByTemplate(ReportTemplate reportTemplate){
 
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 

@@ -3,7 +3,7 @@ package kg.gov.mf.loan.output.report.utils;
 import kg.gov.mf.loan.output.report.model.*;
 import kg.gov.mf.loan.output.report.service.LoanViewService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Workbook;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -29,6 +29,7 @@ public class LoanReportDataManager {
         Set<LoanView> loanViews =  new HashSet<LoanView>();
 
         Date onDate = new Date();
+
 
         for (GenerationParameter generationParameter: reportTemplate.getGenerationParameters())
         {

@@ -7,7 +7,6 @@ import kg.gov.mf.loan.output.report.service.LoanViewService;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.hssf.util.Region;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -37,7 +36,7 @@ public class ReportGeneratorPayment {
     @Autowired
     OrganizationService organizationService;
 */
-    public Workbook generateReportByTemplate(ReportTemplate reportTemplate){
+    public HSSFWorkbook generateReportByTemplate(ReportTemplate reportTemplate){
 
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
@@ -490,6 +489,7 @@ public class ReportGeneratorPayment {
 
         Row = Sheet.createRow(RowCount);
         Row.setRowNum(( short ) RowCount);
+
 
         Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);

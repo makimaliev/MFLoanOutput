@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,6 +128,19 @@ public class PaymentViewDaoImpl implements PaymentViewDao {
 				case "payment":
 					criteria.add(Restrictions.in("v_payment_id",ids));
 					break;
+				case "paymentDateFrom":
+					criteria.add(Restrictions.ge("v_payment_date",new Date((ids.get(0)))));
+					System.out.println(new Date((ids.get(0))));
+					break;
+				case "paymentDateTo":
+					criteria.add(Restrictions.lt("v_payment_date",new Date((ids.get(0)))));
+					System.out.println(new Date((ids.get(0))));
+					break;
+				case "work_sector":
+					criteria.add(Restrictions.in("v_debtor_work_sector_id",ids));
+					break;
+
+
 
 
 			}

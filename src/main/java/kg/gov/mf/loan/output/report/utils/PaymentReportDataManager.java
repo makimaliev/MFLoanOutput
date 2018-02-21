@@ -1,11 +1,15 @@
 package kg.gov.mf.loan.output.report.utils;
 
+import kg.gov.mf.loan.manage.model.loan.Payment;
 import kg.gov.mf.loan.output.report.model.*;
 import kg.gov.mf.loan.output.report.service.PaymentViewService;
 import kg.gov.mf.loan.output.report.service.LoanViewService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -26,19 +30,9 @@ public class PaymentReportDataManager {
 
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
-
         Set<PaymentView> paymentViews =  new HashSet<PaymentView>();
 
-        Date onDate = new Date();
-
-        for (GenerationParameter generationParameter: reportTemplate.getGenerationParameters())
-        {
-            if(generationParameter.getGenerationParameterType().getId()==1)
-            {
-                onDate = generationParameter.getDate();
-            }
-
-        }
+        Date onDate = this.getOnDate(reportTemplate);
 
         LinkedHashMap<String,List<Long>> parameterS = new LinkedHashMap<String,List<Long>>();
 
@@ -53,22 +47,49 @@ public class PaymentReportDataManager {
 
                 for (ObjectListValue objectListValue: objectList.getObjectListValues())
                 {
-
                     Ids.add(Long.parseLong(objectListValue.getName()));
                 }
 
-                if(objectList.getObjectTypeId()==1)
+                parameterS.put(getParameterTypeNameById(String.valueOf(objectList.getObjectTypeId())),Ids);
+            }
+
+            if(filterParameter.getFilterParameterType().name()=="CONTENT_COMPARE")
+            {
+                List<Long> Ids = new ArrayList<>();
+
+                String string = filterParameter.getComparedValue();
+                DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
+
+                try
                 {
-                    parameterS.put("region",Ids);
+                    Date date = format.parse(string);
+                    Ids.add(date.getTime());
                 }
-                if(objectList.getObjectTypeId()==2)
+                catch ( Exception ex )
                 {
-                    parameterS.put("district",Ids);
+                    System.out.println(ex);
+                }
+
+                if(Ids.size()>0)
+                {
+                    if(filterParameter.getComparator().toString()=="AFTER")
+                        parameterS.put("paymentDateFrom",Ids);
+                    if(filterParameter.getComparator().toString()=="BEFORE")
+                        parameterS.put("paymentDateTo",Ids);
                 }
             }
 
-
         }
+
+        long groupAtype = getGroupType(reportTemplate,1);
+        long groupBtype = getGroupType(reportTemplate,2);
+        long groupCtype = getGroupType(reportTemplate,3);
+        long groupDtype = getGroupType(reportTemplate,4);
+        long groupEtype = getGroupType(reportTemplate,5);
+
+
+
+        // initial filter by report filter parameters
 
         reportData.getPaymentViews().addAll(paymentViewService.findByParameter(parameterS));
 
@@ -81,24 +102,27 @@ public class PaymentReportDataManager {
 
         for (PaymentView paymentView:reportData.getPaymentViews())
         {
-            groupAIds.add(paymentView.getV_debtor_region_id());
+            groupAIds.add(this.getIdByGroupType(groupAtype,paymentView));
             allPaymentViews.add(paymentView);
         }
 
-        for (Long groupAId: groupAIds)
+        for (Long groupAIdInLoop: groupAIds)
         {
             PaymentReportData childA = reportData.addChild();
-            childA.setName(groupAId.toString());
+            childA.setName(groupAIdInLoop.toString()); // TODO id to name conversion
             childA.setLevel((short)1);
 
             LinkedHashMap<String,List<Long>> parameterA = new LinkedHashMap<String,List<Long>>();
 
-            List<Long> regionIds = new ArrayList<>();
-            regionIds.add(groupAId);
+            List<Long> groupACurrentId = new ArrayList<>();
+            groupACurrentId.add(groupAIdInLoop);
 
 
             parameterA.putAll(parameterS);
-            parameterA.put("region",regionIds);
+
+            parameterA.put(getParameterTypeNameById(String.valueOf(groupAtype)),groupACurrentId);
+
+            //parameterA.put("region",groupACurrentId);
 
             childA.getPaymentViews().addAll(paymentViewService.findByParameter(parameterA));
 
@@ -106,7 +130,7 @@ public class PaymentReportDataManager {
 
             for (PaymentView paymentView:childA.getPaymentViews())
             {
-                groupBIds.add(paymentView.getV_debtor_district_id());
+                groupBIds.add(this.getIdByGroupType(groupBtype,paymentView));
             }
 
             for (Long groupBId: groupBIds)
@@ -117,12 +141,16 @@ public class PaymentReportDataManager {
 
                 LinkedHashMap<String,List<Long>> parameterB = new LinkedHashMap<String,List<Long>>();
 
-                List<Long> districtIds = new ArrayList<>();
-                districtIds.add(groupBId);
+                List<Long> groupBcurrentId = new ArrayList<>();
+                groupBcurrentId.add(groupBId);
 
                 parameterB.putAll(parameterA);
-                parameterB.put("region",regionIds);
-                parameterB.put("district",districtIds);
+
+                parameterB.put(getParameterTypeNameById(String.valueOf(groupAtype)),groupACurrentId);
+                //parameterB.put("region",groupACurrentId);
+
+                parameterB.put(getParameterTypeNameById(String.valueOf(groupBtype)),groupBcurrentId);
+                //parameterB.put("district",groupBcurrentId);
 
 
                 Set<PaymentView> paymentViewsB =  new HashSet<PaymentView>();
@@ -135,7 +163,8 @@ public class PaymentReportDataManager {
 
                 for (PaymentView paymentViewD:childB.getPaymentViews())
                 {
-                    debtorIds.add(paymentViewD.getV_debtor_id());
+                    debtorIds.add(this.getIdByGroupType(groupCtype,paymentViewD));
+                    //debtorIds.add(paymentViewD.getV_debtor_id());
                 }
 
                 for (Long debtorId: debtorIds)
@@ -156,8 +185,12 @@ public class PaymentReportDataManager {
                     debtorDIds.add(debtorId);
 
                     parameterD.putAll(parameterB);
-                    parameterD.put("region",regionIds);
-                    parameterD.put("district",districtIds);
+
+                    parameterD.put(getParameterTypeNameById(String.valueOf(groupAtype)),groupACurrentId);
+                    //parameterD.put("region",groupACurrentId);
+
+                    parameterD.put(getParameterTypeNameById(String.valueOf(groupBtype)),groupBcurrentId);
+                    //parameterD.put("district",groupBcurrentId);
                     parameterD.put("debtor",debtorDIds);
 
 
@@ -172,7 +205,9 @@ public class PaymentReportDataManager {
 
                     for (PaymentView paymentViewL:debtor.getPaymentViews())
                     {
-                        loanIds.add(paymentViewL.getV_loan_id());
+                        loanIds.add(this.getIdByGroupType(groupDtype,paymentViewL));
+
+                        //loanIds.add(paymentViewL.getV_loan_id());
                     }
 
                     for (Long loanId: loanIds)
@@ -193,8 +228,8 @@ public class PaymentReportDataManager {
 
                         loan.setLevel((short)4);
 
-                        childA.setName(lv.getV_region_name());
-                        childB.setName(lv.getV_district_name());
+                        //childA.setName(lv.getV_region_name());
+                        //childB.setName(lv.getV_district_name());
                         debtor.setName(lv.getV_debtor_name());
 
 
@@ -233,8 +268,13 @@ public class PaymentReportDataManager {
                         loanLIds.add(loanId);
 
                         parameterL.putAll(parameterD);
-                        parameterL.put("region",regionIds);
-                        parameterL.put("district",districtIds);
+
+                        parameterL.put(getParameterTypeNameById(String.valueOf(groupAtype)),groupACurrentId);
+                        //parameterL.put("region",groupACurrentId);
+
+                        parameterL.put(getParameterTypeNameById(String.valueOf(groupBtype)),groupBcurrentId);
+                        //parameterL.put("district",groupBcurrentId);
+
                         parameterL.put("debtor",debtorDIds);
                         parameterL.put("loan",loanLIds);
 
@@ -271,7 +311,7 @@ public class PaymentReportDataManager {
 
                             payment.setLevel((short)5);
 
-                            childA.setName(pv.getV_region_name());
+                            //childA.setName(pv.getV_region_name());
                             childB.setName(pv.getV_district_name());
                             debtor.setName(pv.getV_debtor_name());
 
@@ -309,12 +349,17 @@ public class PaymentReportDataManager {
                             List<Long> paymentPIds = new ArrayList<>();
                             paymentPIds.add(paymentId);
 
-                            parameterL.putAll(parameterL);
-                            parameterL.put("region",regionIds);
-                            parameterL.put("district",districtIds);
-                            parameterL.put("debtor",debtorDIds);
-                            parameterL.put("loan",loanLIds);
-                            parameterL.put("payment",paymentPIds);
+                            parameterP.putAll(parameterL);
+
+                            parameterP.put(getParameterTypeNameById(String.valueOf(groupAtype)),groupACurrentId);
+                            //parameterL.put("region",groupACurrentId);
+
+                            parameterP.put(getParameterTypeNameById(String.valueOf(groupBtype)),groupBcurrentId);
+                            //parameterL.put("district",groupBcurrentId);
+
+                            parameterP.put("debtor",debtorDIds);
+                            parameterP.put("loan",loanLIds);
+                            parameterP.put("payment",paymentPIds);
 
 
 
@@ -333,4 +378,107 @@ public class PaymentReportDataManager {
 
         return reportData;
     }
+
+
+    public Date getOnDate(ReportTemplate reportTemplate)
+    {
+
+        Date date = new Date();
+        for (GenerationParameter generationParameter: reportTemplate.getGenerationParameters())
+        {
+            if(generationParameter.getGenerationParameterType().getId()==1)
+            {
+                date = generationParameter.getDate();
+            }
+        }
+
+        return date;
+    }
+
+    public String getParameterTypeNameById(String id)
+    {
+        String parameterTypeName = "";
+
+
+        switch(id)
+        {
+            case "1":
+                return "region";
+            case "2":
+                return "district";
+            case "3":
+                return "debtor";
+            case "4":
+                return "loan";
+            case "5":
+                return "payment";
+            case "6":
+                return "work_sector";
+            case "7":
+                return "supervisor";
+            case "8":
+                return "loan_type";
+            case "9":
+                return "department";
+
+
+        }
+
+
+
+        return parameterTypeName;
+    }
+
+    public long getGroupType(ReportTemplate reportTemplate,long level)
+    {
+        long groupType=0;
+
+        for (GenerationParameter generationParameter:reportTemplate.getGenerationParameters())
+        {
+            if(generationParameter.getGenerationParameterType().getId()==level+3)
+            {
+                groupType = generationParameter.getPostionInList();
+            }
+        }
+
+        return  groupType;
+    }
+
+
+    public long getIdByGroupType(long groupType, PaymentView paymentView)
+    {
+        long idByGroupType=0;
+
+        switch((short)groupType)
+        {
+            case 1:
+                idByGroupType = paymentView.getV_debtor_region_id();
+                break;
+            case 2:
+                idByGroupType = paymentView.getV_debtor_district_id();
+                break;
+            case 3:
+                idByGroupType = paymentView.getV_debtor_id();
+                break;
+            case 4:
+                idByGroupType = paymentView.getV_loan_id();
+                break;
+            case 5:
+                idByGroupType = paymentView.getV_payment_id();
+                break;
+            case 6:
+                idByGroupType = paymentView.getV_debtor_work_sector_id();
+                break;
+
+
+
+
+
+
+        }
+
+        return  idByGroupType;
+    }
+
+
 }

@@ -7,7 +7,6 @@ import kg.gov.mf.loan.output.report.service.LoanViewService;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.hssf.util.Region;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -39,7 +38,7 @@ public class ReportGeneratorTemp {
     @Autowired
     OrganizationService organizationService;
 */
-    public Workbook generateReportByTemplate(ReportTemplate reportTemplate){
+    public HSSFWorkbook generateReportByTemplate(ReportTemplate reportTemplate){
 
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
