@@ -532,10 +532,10 @@ public class ReportGeneratorPayment {
 
 
 
+        RowCount++;
+        ColumnCount=0;
         Row = Sheet.createRow(RowCount);
         Row.setRowNum(( short ) RowCount);
-
-        ColumnCount=0;
 
         Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
 

@@ -8,6 +8,7 @@ import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.hssf.util.Region;
 
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -532,19 +533,19 @@ public class ReportGeneratorLoan {
 
 
 
+        RowCount++;
+        ColumnCount=0;
         Row = Sheet.createRow(RowCount);
         Row.setRowNum(( short ) RowCount);
 
-        ColumnCount=0;
-
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+        Sheet.addMergedRegion(new CellRangeAddress(RowCount,RowCount+1,ColumnCount,ColumnCount));
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
         Cell.setCellValue("Кол. Суб.");
         ColumnCount++;
 
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+        Sheet.addMergedRegion(new CellRangeAddress(RowCount,RowCount+1,ColumnCount,ColumnCount));
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
@@ -553,7 +554,7 @@ public class ReportGeneratorLoan {
 
         if(iDetail4)
         {
-            Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+            Sheet.addMergedRegion(new CellRangeAddress(RowCount,RowCount+1,ColumnCount,ColumnCount));
 
             Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
             Cell.setCellStyle(CellStyleHeader);
@@ -562,7 +563,7 @@ public class ReportGeneratorLoan {
         }
 
 
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+        Sheet.addMergedRegion(new CellRangeAddress(RowCount,RowCount+1,ColumnCount,ColumnCount));
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
@@ -571,7 +572,7 @@ public class ReportGeneratorLoan {
 
         if(iDetail4)
         {
-            Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+            Sheet.addMergedRegion(new CellRangeAddress(RowCount,RowCount+1,ColumnCount,ColumnCount));
 
             Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
             Cell.setCellStyle(CellStyleHeader);
@@ -580,14 +581,14 @@ public class ReportGeneratorLoan {
         }
 
 
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+        Sheet.addMergedRegion(new CellRangeAddress(RowCount,RowCount+1,ColumnCount,ColumnCount));
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
         Cell.setCellValue("Основная сумма по договору");
         ColumnCount++;
 
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+        Sheet.addMergedRegion(new CellRangeAddress(RowCount,RowCount+1,ColumnCount,ColumnCount));
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
@@ -596,7 +597,7 @@ public class ReportGeneratorLoan {
 
         if(iDetail4)
         {
-            Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+            Sheet.addMergedRegion(new CellRangeAddress(RowCount,RowCount+1,ColumnCount,ColumnCount));
 
             Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
             Cell.setCellStyle(CellStyleHeader);
@@ -604,7 +605,7 @@ public class ReportGeneratorLoan {
             ColumnCount++;
         }
 
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+        Sheet.addMergedRegion(new CellRangeAddress(RowCount,RowCount+1,ColumnCount,ColumnCount));
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
@@ -612,7 +613,7 @@ public class ReportGeneratorLoan {
         ColumnCount++;
 
 
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+        Sheet.addMergedRegion(new CellRangeAddress(RowCount,RowCount+1,ColumnCount,ColumnCount));
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
@@ -634,7 +635,7 @@ public class ReportGeneratorLoan {
         Cell.setCellStyle(CellStyleHeader);
         ColumnCount++;
 
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+        Sheet.addMergedRegion(new CellRangeAddress(RowCount,RowCount+1,ColumnCount,ColumnCount));
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
@@ -656,7 +657,7 @@ public class ReportGeneratorLoan {
         Cell.setCellStyle(CellStyleHeader);
         ColumnCount++;
 
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+        Sheet.addMergedRegion(new CellRangeAddress(RowCount,RowCount+1,ColumnCount,ColumnCount));
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
