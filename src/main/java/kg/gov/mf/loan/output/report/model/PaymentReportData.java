@@ -2,6 +2,7 @@ package kg.gov.mf.loan.output.report.model;
 
 import java.sql.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
@@ -15,7 +16,9 @@ public class PaymentReportData extends ReportData
 
 	private String Name                 = "";
 
-	private Set<PaymentView> paymentViews = new HashSet<PaymentView>(0);
+	private LinkedHashSet<PaymentView> paymentViews = new LinkedHashSet<PaymentView>(0);
+
+
 
 
 	//*************************************************************
@@ -132,14 +135,13 @@ public class PaymentReportData extends ReportData
 	}
 
 
-	public Set<PaymentView> getPaymentViews() {
+	public LinkedHashSet<PaymentView> getPaymentViews() {
 		return paymentViews;
 	}
 
-	public void setPaymentViews(Set<PaymentView> paymentViews) {
+	public void setPaymentViews(LinkedHashSet<PaymentView> paymentViews) {
 		this.paymentViews = paymentViews;
 	}
-
 
 	public Date getOnDate() {
 		return onDate;

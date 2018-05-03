@@ -36,6 +36,14 @@ public class PaymentReportDataManager {
 
         LinkedHashMap<String,List<Long>> parameterS = new LinkedHashMap<String,List<Long>>();
 
+        List<Long> groupIds = new ArrayList<>();
+
+        groupIds.add(getGroupType(reportTemplate,1));
+        groupIds.add(getGroupType(reportTemplate,2));
+        groupIds.add(getGroupType(reportTemplate,3));
+        groupIds.add(getGroupType(reportTemplate,4));
+        groupIds.add(getGroupType(reportTemplate,5));
+
         for (FilterParameter filterParameter: reportTemplate.getFilterParameters())
         {
 
@@ -79,6 +87,10 @@ public class PaymentReportDataManager {
                 }
             }
 
+
+
+            parameterS.put("orderBy",groupIds);
+
         }
 
         long groupAtype = getGroupType(reportTemplate,1);
@@ -100,289 +112,240 @@ public class PaymentReportDataManager {
 
         ArrayList<PaymentView> allPaymentViews = new ArrayList<PaymentView>();
 
+        for (PaymentView paymentViewInLoop: reportData.getPaymentViews()
+             )
+        {
+            System.out.println(
+                    paymentViewInLoop.getV_debtor_region_id() +" "+
+                    paymentViewInLoop.getV_debtor_district_id()+" "+
+                    paymentViewInLoop.getV_debtor_id()+" "+
+                    paymentViewInLoop.getV_loan_id()+" "+
+                            paymentViewInLoop.getV_payment_id());
+
+
+//            System.out.println(
+//                    paymentViewInLoop.getV_region_name() +" "+
+//                            paymentViewInLoop.getV_district_name()+" "+
+//                            paymentViewInLoop.getV_debtor_name()+" "+
+//                            paymentViewInLoop.getV_credit_order_regNumber()+ " от "+
+//                            paymentViewInLoop.getV_credit_order_regDate()+ ", "+
+//                            paymentViewInLoop.getV_loan_reg_number()+ " от " +
+//                            paymentViewInLoop.getV_loan_reg_date()+" "+
+//                            paymentViewInLoop.getV_payment_number()+" "+
+//                            paymentViewInLoop.getV_payment_date()+" "+
+//                            paymentViewInLoop.getV_payment_total_amount());
+        }
+
+        return groupifyData(reportData,groupIds);
+    }
+
+    public PaymentReportData groupifyData(PaymentReportData reportData, List<Long> groupIds)
+    {
+
+        long groupAid=0;
+        long groupBid=0;
+        long groupCid=0;
+        long groupDid=0;
+        long groupEid=0;
+        long groupFid=0;
+
+        PaymentReportData childA = null;
+        PaymentReportData childB = null;
+        PaymentReportData childC = null;
+        PaymentReportData childD = null;
+        PaymentReportData childE = null;
+        PaymentReportData childF = null;
+
+
         for (PaymentView paymentView:reportData.getPaymentViews())
         {
-            groupAIds.add(this.getIdByGroupType(groupAtype,paymentView));
-            allPaymentViews.add(paymentView);
-        }
-
-        for (Long groupAIdInLoop: groupAIds)
-        {
-            PaymentReportData childA = reportData.addChild();
-            childA.setName(groupAIdInLoop.toString()); // TODO id to name conversion
-            childA.setLevel((short)1);
-
-            LinkedHashMap<String,List<Long>> parameterA = new LinkedHashMap<String,List<Long>>();
-
-            List<Long> groupACurrentId = new ArrayList<>();
-            groupACurrentId.add(groupAIdInLoop);
-
-
-            parameterA.putAll(parameterS);
-
-            parameterA.put(getParameterTypeNameById(String.valueOf(groupAtype)),groupACurrentId);
-
-            //parameterA.put("region",groupACurrentId);
-
-            childA.getPaymentViews().addAll(paymentViewService.findByParameter(parameterA));
-
-            Set<Long> groupBIds = new HashSet<Long>();
-
-            for (PaymentView paymentView:childA.getPaymentViews())
+            if(this.getIdByGroupType(groupIds.get(0),paymentView)!=groupAid)
             {
-                groupBIds.add(this.getIdByGroupType(groupBtype,paymentView));
+                childA = reportData.addChild();
+                childA.setName(this.getNameByGroupType(1,paymentView));
+                childA.setLevel((short)1);
+
+                groupAid=this.getIdByGroupType(groupIds.get(0),paymentView);
             }
 
-            for (Long groupBId: groupBIds)
+            if(this.getIdByGroupType(groupIds.get(1),paymentView)!=groupBid)
             {
-                PaymentReportData childB = childA.addChild();
-                childB.setName(groupBId.toString());
+                childB = childA.addChild();
+                childB.setName(this.getNameByGroupType(2,paymentView));
                 childB.setLevel((short)2);
 
-                LinkedHashMap<String,List<Long>> parameterB = new LinkedHashMap<String,List<Long>>();
-
-                List<Long> groupBcurrentId = new ArrayList<>();
-                groupBcurrentId.add(groupBId);
-
-                parameterB.putAll(parameterA);
-
-                parameterB.put(getParameterTypeNameById(String.valueOf(groupAtype)),groupACurrentId);
-                //parameterB.put("region",groupACurrentId);
-
-                parameterB.put(getParameterTypeNameById(String.valueOf(groupBtype)),groupBcurrentId);
-                //parameterB.put("district",groupBcurrentId);
-
-
-                Set<PaymentView> paymentViewsB =  new HashSet<PaymentView>();
-
-                paymentViewsB.addAll(paymentViewService.findByParameter(parameterB));
-
-                childB.setPaymentViews(paymentViewsB);
-
-                Set<Long> debtorIds = new HashSet<Long>();
-
-                for (PaymentView paymentViewD:childB.getPaymentViews())
-                {
-                    debtorIds.add(this.getIdByGroupType(groupCtype,paymentViewD));
-                    //debtorIds.add(paymentViewD.getV_debtor_id());
-                }
-
-                for (Long debtorId: debtorIds)
-                {
-                    PaymentReportData debtor = childB.addChild();
-                    debtor.setName(debtorId.toString());
-                    debtor.setLevel((short)3);
-
-                    debtor.setCount(1);
-                    childB.setCount(childB.getCount()+1);
-                    childA.setCount(childA.getCount()+1);
-                    reportData.setCount(reportData.getCount()+1);
-
-
-                    LinkedHashMap<String,List<Long>> parameterD = new LinkedHashMap<String,List<Long>>();
-
-                    List<Long> debtorDIds = new ArrayList<>();
-                    debtorDIds.add(debtorId);
-
-                    parameterD.putAll(parameterB);
-
-                    parameterD.put(getParameterTypeNameById(String.valueOf(groupAtype)),groupACurrentId);
-                    //parameterD.put("region",groupACurrentId);
-
-                    parameterD.put(getParameterTypeNameById(String.valueOf(groupBtype)),groupBcurrentId);
-                    //parameterD.put("district",groupBcurrentId);
-                    parameterD.put("debtor",debtorDIds);
-
-
-
-                    Set<PaymentView> paymentViewsD =  new HashSet<PaymentView>();
-
-                    paymentViewsD.addAll(paymentViewService.findByParameter(parameterD));
-
-                    debtor.setPaymentViews(paymentViewsD);
-
-                    Set<Long> loanIds = new HashSet<Long>();
-
-                    for (PaymentView paymentViewL:debtor.getPaymentViews())
-                    {
-                        loanIds.add(this.getIdByGroupType(groupDtype,paymentViewL));
-
-                        //loanIds.add(paymentViewL.getV_loan_id());
-                    }
-
-                    for (Long loanId: loanIds)
-                    {
-
-                        PaymentView lv = null;
-
-                        for (PaymentView paymentViewL:allPaymentViews)
-                        {
-                            if(paymentViewL.getV_loan_id()==loanId)
-                            {
-                                lv=paymentViewL;
-                            }
-                        }
-
-
-                        PaymentReportData loan = debtor.addChild();
-
-                        loan.setLevel((short)4);
-
-                        //childA.setName(lv.getV_region_name());
-                        //childB.setName(lv.getV_district_name());
-
-                        childA.setName(this.getNameByGroupType(groupAtype,lv));
-                        childB.setName(this.getNameByGroupType(groupBtype,lv));
-                        debtor.setName(this.getNameByGroupType(groupCtype,lv));
-
-
-                        loan.setDetailsCount(1);
-                        debtor.setDetailsCount(debtor.getDetailsCount()+1);
-                        childA.setDetailsCount(childA.getDetailsCount()+1);
-                        childB.setDetailsCount(childB.getDetailsCount()+1);
-                        reportData.setDetailsCount(reportData.getDetailsCount()+1);
-
-                        loan.setID(loanId);
-                        loan.setName(lv.getV_credit_order_regNumber()+lv.getV_loan_reg_number()+" от "+lv.getV_loan_reg_date());
-                        loan.setCurrency((short)lv.getV_loan_currency_id());
-                        loan.setLoanRegNumber(lv.getV_loan_reg_number());
-                        loan.setOrderRegNumber(lv.getV_credit_order_regNumber());
-                        loan.setLoanRegDate(new java.sql.Date(lv.getV_loan_reg_date().getTime()));
-
-                        loan.setLoanType((short)lv.getV_loan_type_id());
-
-                        if(lv.getV_loan_amount()>0)
-                        {
-                            loan.setLoanAmount(lv.getV_loan_amount());
-                            debtor.setLoanAmount(debtor.getLoanAmount()+lv.getV_loan_amount());
-                            childB.setLoanAmount(childB.getLoanAmount()+lv.getV_loan_amount());
-                            childA.setLoanAmount(childA.getLoanAmount()+lv.getV_loan_amount());
-                            reportData.setLoanAmount(reportData.getLoanAmount()+lv.getV_loan_amount());
-                        }
-
-
-
-
-
-
-                        LinkedHashMap<String,List<Long>> parameterL = new LinkedHashMap<String,List<Long>>();
-
-                        List<Long> loanLIds = new ArrayList<>();
-                        loanLIds.add(loanId);
-
-                        parameterL.putAll(parameterD);
-
-                        parameterL.put(getParameterTypeNameById(String.valueOf(groupAtype)),groupACurrentId);
-                        //parameterL.put("region",groupACurrentId);
-
-                        parameterL.put(getParameterTypeNameById(String.valueOf(groupBtype)),groupBcurrentId);
-                        //parameterL.put("district",groupBcurrentId);
-
-                        parameterL.put("debtor",debtorDIds);
-                        parameterL.put("loan",loanLIds);
-
-
-
-                        Set<PaymentView> paymentViewsL =  new HashSet<PaymentView>();
-
-                        paymentViewsL.addAll(paymentViewService.findByParameter(parameterL));
-
-                        loan.setPaymentViews(paymentViewsL);
-
-                        Set<Long> paymentIds = new HashSet<Long>();
-
-                        for (PaymentView paymentViewP:loan.getPaymentViews())
-                        {
-                            paymentIds.add(paymentViewP.getV_payment_id());
-                        }
-
-                        for (Long paymentId: paymentIds)
-                        {
-
-                            PaymentView pv = null;
-
-                            for (PaymentView paymentViewP:allPaymentViews)
-                            {
-                                if(paymentViewP.getV_payment_id()==paymentId)
-                                {
-                                    pv=paymentViewP;
-                                }
-                            }
-
-
-                            PaymentReportData payment = loan.addChild();
-
-                            payment.setLevel((short)5);
-
-                            childA.setName(this.getNameByGroupType(groupAtype,lv));
-                            childB.setName(this.getNameByGroupType(groupBtype,lv));
-                            debtor.setName(this.getNameByGroupType(groupCtype,lv));
-
-
-                            payment.setPaymentCount(1);
-                            loan.setPaymentCount(debtor.getPaymentCount()+1);
-                            debtor.setPaymentCount(debtor.getPaymentCount()+1);
-                            childA.setPaymentCount(childA.getPaymentCount()+1);
-                            childB.setPaymentCount(childB.getPaymentCount()+1);
-                            reportData.setPaymentCount(reportData.getPaymentCount()+1);
-
-                            payment.setPaymentID(paymentId);
-
-                            payment.setName(" погашение №"+pv.getV_payment_number()+" от "+pv.getV_payment_date());
-                            payment.setPaymentDate(new java.sql.Date(pv.getV_payment_date().getTime()));
-                            payment.setPaymentNumber(pv.getV_payment_number());
-                            payment.setPaymentTypeName(pv.getV_payment_type_name());
-
-                            if(pv.getV_payment_total_amount()>0)
-                            {
-                                payment.setPaymentTotalAmount(pv.getV_payment_total_amount());
-                                loan.setPaymentTotalAmount(loan.getPaymentTotalAmount()+pv.getV_payment_total_amount());
-                                debtor.setPaymentTotalAmount(debtor.getPaymentTotalAmount()+pv.getV_payment_total_amount());
-                                childB.setPaymentTotalAmount(childB.getPaymentTotalAmount()+pv.getV_payment_total_amount());
-                                childA.setPaymentTotalAmount(childA.getPaymentTotalAmount()+pv.getV_payment_total_amount());
-                                reportData.setPaymentTotalAmount(reportData.getPaymentTotalAmount()+pv.getV_payment_total_amount());
-                            }
-
-
-
-
-
-
-                            LinkedHashMap<String,List<Long>> parameterP = new LinkedHashMap<String,List<Long>>();
-
-                            List<Long> paymentPIds = new ArrayList<>();
-                            paymentPIds.add(paymentId);
-
-                            parameterP.putAll(parameterL);
-
-                            parameterP.put(getParameterTypeNameById(String.valueOf(groupAtype)),groupACurrentId);
-                            //parameterL.put("region",groupACurrentId);
-
-                            parameterP.put(getParameterTypeNameById(String.valueOf(groupBtype)),groupBcurrentId);
-                            //parameterL.put("district",groupBcurrentId);
-
-                            parameterP.put("debtor",debtorDIds);
-                            parameterP.put("loan",loanLIds);
-                            parameterP.put("payment",paymentPIds);
-
-
-
-                            Set<PaymentView> paymentViewsP =  new HashSet<PaymentView>();
-
-                            paymentViewsP.addAll(paymentViewService.findByParameter(parameterP));
-
-                            payment.setPaymentViews(paymentViewsP);
-
-                        }
-
-                    }
-                }
+                groupBid=this.getIdByGroupType(groupIds.get(1),paymentView);
             }
+
+            if(this.getIdByGroupType(groupIds.get(2),paymentView)!=groupCid)
+            {
+                childC = childB.addChild();
+                childC.setName(this.getNameByGroupType(3,paymentView));
+                childC.setLevel((short)3);
+
+                childC.setCount(1);
+                childB.setCount(childB.getCount()+1);
+                childA.setCount(childA.getCount()+1);
+                reportData.setCount(reportData.getCount()+1);
+
+                groupCid=this.getIdByGroupType(groupIds.get(2),paymentView);
+            }
+
+            if(this.getIdByGroupType(groupIds.get(3),paymentView)!=groupDid)
+            {
+                PaymentView lv = paymentView;
+
+                childD = childC.addChild();
+                childD.setName(this.getNameByGroupType(4,paymentView));
+                childD.setLevel((short)4);
+
+
+                childD.setLevel((short)4);
+
+                childD.setDetailsCount(1);
+                childC.setDetailsCount(childC.getDetailsCount()+1);
+                childA.setDetailsCount(childA.getDetailsCount()+1);
+                childB.setDetailsCount(childB.getDetailsCount()+1);
+                reportData.setDetailsCount(reportData.getDetailsCount()+1);
+
+
+                childD.setID(lv.getV_loan_id());
+                childD.setName(lv.getV_credit_order_regNumber()+lv.getV_loan_reg_number()+" от "+lv.getV_loan_reg_date());
+                childD.setCurrency((short)lv.getV_loan_currency_id());
+                childD.setLoanRegNumber(lv.getV_loan_reg_number());
+                childD.setOrderRegNumber(lv.getV_credit_order_regNumber());
+                childD.setLoanRegDate(new java.sql.Date(lv.getV_loan_reg_date().getTime()));
+
+                childD.setLoanType((short)lv.getV_loan_type_id());
+
+                if(lv.getV_loan_amount()>0)
+                {
+                    childD.setLoanAmount(lv.getV_loan_amount());
+                    childC.setLoanAmount(childC.getLoanAmount()+lv.getV_loan_amount());
+                    childB.setLoanAmount(childB.getLoanAmount()+lv.getV_loan_amount());
+                    childA.setLoanAmount(childA.getLoanAmount()+lv.getV_loan_amount());
+                    reportData.setLoanAmount(reportData.getLoanAmount()+lv.getV_loan_amount());
+                }
+
+                groupDid=this.getIdByGroupType(groupIds.get(3),paymentView);
+            }
+
+            if(this.getIdByGroupType(groupIds.get(4),paymentView)!=groupEid)
+            {
+                PaymentView pv = paymentView;
+
+                childE = childD.addChild();
+                childE.setName(this.getNameByGroupType(5,paymentView));
+                childE.setLevel((short)5);
+
+                childE.setLevel((short)5);
+
+
+                childE.setPaymentCount(1);
+                childD.setPaymentCount(childD.getPaymentCount()+1);
+                childC.setPaymentCount(childC.getPaymentCount()+1);
+                childA.setPaymentCount(childA.getPaymentCount()+1);
+                childB.setPaymentCount(childB.getPaymentCount()+1);
+                reportData.setPaymentCount(reportData.getPaymentCount()+1);
+
+                childE.setPaymentID(pv.getV_payment_id());
+
+                childE.setName(" погашение №"+pv.getV_payment_number()+" от "+pv.getV_payment_date());
+                childE.setPaymentDate(new java.sql.Date(pv.getV_payment_date().getTime()));
+                childE.setPaymentNumber(pv.getV_payment_number());
+                childE.setPaymentTypeName(pv.getV_payment_type_name());
+
+                if(pv.getV_payment_total_amount()>0)
+                {
+                    childE.setPaymentTotalAmount(pv.getV_payment_total_amount());
+                    childD.setPaymentTotalAmount(childD.getPaymentTotalAmount()+pv.getV_payment_total_amount());
+                    childC.setPaymentTotalAmount(childC.getPaymentTotalAmount()+pv.getV_payment_total_amount());
+                    childB.setPaymentTotalAmount(childB.getPaymentTotalAmount()+pv.getV_payment_total_amount());
+                    childA.setPaymentTotalAmount(childA.getPaymentTotalAmount()+pv.getV_payment_total_amount());
+                    reportData.setPaymentTotalAmount(reportData.getPaymentTotalAmount()+pv.getV_payment_total_amount());
+                }
+
+                if(pv.getV_payment_principal()>0)
+                {
+                    childE.setPaymentPrincipal(pv.getV_payment_principal());
+                    childD.setPaymentPrincipal(childD. getPaymentPrincipal()+pv.getV_payment_principal());
+                    childC.setPaymentPrincipal(childC. getPaymentPrincipal()+pv.getV_payment_principal());
+                    childB.setPaymentPrincipal(childB. getPaymentPrincipal()+pv.getV_payment_principal());
+                    childA.setPaymentPrincipal(childA. getPaymentPrincipal()+pv.getV_payment_principal());
+                    reportData.setPaymentPrincipal(reportData. getPaymentPrincipal()+pv.getV_payment_principal());
+                }
+
+                if(pv.getV_payment_interest()>0)
+                {
+                    childE.setPaymentInterest(pv.getV_payment_interest());
+                    childD.setPaymentInterest(childD. getPaymentInterest()+pv.getV_payment_interest());
+                    childC.setPaymentInterest(childC. getPaymentInterest()+pv.getV_payment_interest());
+                    childB.setPaymentInterest(childB. getPaymentInterest()+pv.getV_payment_interest());
+                    childA.setPaymentInterest(childA. getPaymentInterest()+pv.getV_payment_interest());
+                    reportData.setPaymentInterest(reportData. getPaymentInterest()+pv.getV_payment_interest());
+                }
+
+                if(pv.getV_payment_penalty()>0)
+                {
+                    childE.setPaymentInterest(pv.getV_payment_penalty());
+                    childD.setPaymentInterest(childD. getPaymentInterest()+pv.getV_payment_penalty());
+                    childC.setPaymentInterest(childC. getPaymentInterest()+pv.getV_payment_penalty());
+                    childB.setPaymentInterest(childB. getPaymentInterest()+pv.getV_payment_penalty());
+                    childA.setPaymentInterest(childA. getPaymentInterest()+pv.getV_payment_penalty());
+                    reportData.setPaymentInterest(reportData. getPaymentInterest()+pv.getV_payment_penalty());
+                }
+
+
+
+                groupEid=this.getIdByGroupType(groupIds.get(4),paymentView);
+            }
+
+
         }
+
+//        PaymentReportData MainData = reportData;
+//        PaymentReportData GroupData1[] = MainData.getChilds();
+//
+//        for(int x=0;x<GroupData1.length;x++) {
+//
+//
+//            PaymentReportData GroupData2[] = GroupData1[x].getChilds();
+//
+//            boolean iDetail2 = true;
+//
+//            for(int y=0;y<GroupData2.length;y++)
+//            {
+//                PaymentReportData PersonData[] = GroupData2[y].getChilds();
+//
+//                boolean iDetail3 = true;
+//
+//                for(int p=0;p<PersonData.length;p++)
+//                {
+//                    PaymentReportData CreditData[] = PersonData[p].getChilds();
+//
+//                    for(int c=0;c<CreditData.length;c++)
+//                    {
+//                        PaymentReportData PaymentData[] = CreditData[c].getChilds();
+//
+//                        for(int pp=0;pp<PaymentData.length;pp++)
+//                        {
+//                            System.out.println(GroupData1[x].getName()+" "+GroupData2[y].getName()+" "+PersonData[p].getName()+" "+CreditData[c].getName()+PaymentData[pp].getName());
+//                        }
+//
+//                    }
+//
+//
+//                }
+//            }
+//        }
+
+
+
+
+
 
         return reportData;
     }
-
 
     public Date getOnDate(ReportTemplate reportTemplate)
     {
@@ -509,7 +472,7 @@ public class PaymentReportDataManager {
                                 + paymentView.getV_loan_reg_date();
                 break;
             case 5:
-                nameByGroupType = " погашение № "+ paymentView.getV_payment_number()+ " " + paymentView.getV_payment_date();
+                nameByGroupType = " погашение №"+ paymentView.getV_payment_number()+ " от " + paymentView.getV_payment_date();
                 break;
             case 6:
                 nameByGroupType = paymentView.getV_work_sector_name();

@@ -1,9 +1,11 @@
 package kg.gov.mf.loan.output.report.dao;
 
 import kg.gov.mf.loan.output.report.model.PaymentView;
+import kg.gov.mf.loan.output.report.utils.PaymentReportDataManager;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,6 +106,8 @@ public class PaymentViewDaoImpl implements PaymentViewDao {
 
 		Criteria criteria = session.createCriteria(PaymentView.class);
 
+		PaymentReportDataManager paymentReportDataManager =  new PaymentReportDataManager();
+
 
 		for (Map.Entry<String, List<Long>> parameterInLoop : parameters.entrySet())
 		{
@@ -139,6 +143,39 @@ public class PaymentViewDaoImpl implements PaymentViewDao {
 				case "work_sector":
 					criteria.add(Restrictions.in("v_debtor_work_sector_id",ids));
 					break;
+				case "orderBy":
+					for (Long id:ids
+						 )
+					{
+						switch(paymentReportDataManager.getParameterTypeNameById(id.toString()))
+						{
+							case "region":
+								criteria.addOrder(Order.asc("v_debtor_region_id"));
+								break;
+							case "district":
+								criteria.addOrder(Order.asc("v_debtor_district_id"));
+								break;
+							case "debtor":
+								criteria.addOrder(Order.asc("v_debtor_name"));
+								break;
+							case "loan":
+								criteria.addOrder(Order.asc("v_loan_id"));
+								break;
+							case "payment":
+								criteria.addOrder(Order.asc("v_payment_id"));
+								break;
+							case "work_sector":
+								criteria.addOrder(Order.asc("v_debtor_work_sector_id"));
+								break;
+						}
+
+					}
+
+
+					break;
+
+
+
 
 
 
