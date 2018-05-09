@@ -1,22 +1,20 @@
 package kg.gov.mf.loan.output.report.model;
 
 import java.sql.Date;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
-import java.util.Set;
 
 
-public class PaymentReportData extends ReportData
+public class CollateralItemReportData extends ReportData
 {
-	private PaymentReportData Parent                = null;
-	private LinkedList<PaymentReportData> ChildDataList = null;
+	private CollateralItemReportData Parent                = null;
+	private LinkedList<CollateralItemReportData> ChildDataList = null;
 
 	private short  Level             = 0;
 
 	private String Name                 = "";
 
-	private LinkedHashSet<PaymentView> paymentViews = new LinkedHashSet<PaymentView>(0);
+	private LinkedHashSet<CollateralItemView> collateralItemViews = new LinkedHashSet<CollateralItemView>(0);
 
 
 
@@ -68,15 +66,57 @@ public class PaymentReportData extends ReportData
 
 	private double paymentExchangeRate   = 0;
 
-	public PaymentReportData()
+	private long   collateralItemID            = 0;
+	private Date   collateralAgreementDate          = null;
+
+	private String collateralAgreementNumber        = "";
+
+	private Date   collateralArrestRegDate          = null;
+
+	private String collateralArrestRegNumber        = "";
+
+
+	private Date   collateralOfficeRegDate          = null;
+
+	private String collateralOfficeRegNumber        = "";
+
+
+	private Date   collateralNotaryOfficeRegDate          = null;
+
+	private String collateralNotaryOfficeRegNumber        = "";
+
+	private double collateralItemCollateralValue   = 0;
+
+	private double collateralItemDemandRate   = 0;
+
+	private String collateralItemDescription        = "";
+
+	private double collateralItemEstimatedValue   = 0;
+
+	private String collateralItemName        = "";
+
+
+	private double collateralItemQuantity   = 0;
+
+	private double collateralItemRiskRate   = 0;
+
+	private long collateralItemConditionTypeId = 0;
+
+	private long collateralItemTypeId = 0;
+
+	private long collateralItemQuantityTypeId = 0;
+
+
+
+	public CollateralItemReportData()
 	{
-		ChildDataList = new LinkedList<PaymentReportData>();
+		ChildDataList = new LinkedList<CollateralItemReportData>();
 	}
 
 
-	public PaymentReportData addChild()
+	public CollateralItemReportData addChild()
 	{
-		PaymentReportData ChildData = new PaymentReportData();
+		CollateralItemReportData ChildData = new CollateralItemReportData();
 		ChildData.setParent(this);
 		ChildDataList.add(ChildData);
 
@@ -84,27 +124,27 @@ public class PaymentReportData extends ReportData
 	}
 
 
-	public PaymentReportData[] getChilds()
+	public CollateralItemReportData[] getChilds()
 	{
-		return  (PaymentReportData[])ChildDataList.toArray(new PaymentReportData[ChildDataList.size()]);
+		return  (CollateralItemReportData[])ChildDataList.toArray(new CollateralItemReportData[ChildDataList.size()]);
 	}
 
 
-	public LinkedList<PaymentReportData> getChildDataList() {
+	public LinkedList<CollateralItemReportData> getChildDataList() {
 		return ChildDataList;
 	}
 
-	public void setChildDataList(LinkedList<PaymentReportData> childDataList) {
+	public void setChildDataList(LinkedList<CollateralItemReportData> childDataList) {
 		ChildDataList = childDataList;
 	}
 
-	public LinkedList<PaymentReportData> getData()
+	public LinkedList<CollateralItemReportData> getData()
 	{
 		return ChildDataList;
 	}
 
 
-	public void setData(LinkedList<PaymentReportData> data)
+	public void setData(LinkedList<CollateralItemReportData> data)
 	{
 		ChildDataList = data;
 	}
@@ -118,11 +158,11 @@ public class PaymentReportData extends ReportData
 	{
 		Name = name;
 	}
-	public PaymentReportData getParent()
+	public CollateralItemReportData getParent()
 	{
 		return Parent;
 	}
-	public void setParent(PaymentReportData parent)
+	public void setParent(CollateralItemReportData parent)
 	{
 		Parent = parent;
 	}
@@ -136,12 +176,12 @@ public class PaymentReportData extends ReportData
 	}
 
 
-	public LinkedHashSet<PaymentView> getPaymentViews() {
-		return paymentViews;
+	public LinkedHashSet<CollateralItemView> getCollateralItemViews() {
+		return collateralItemViews;
 	}
 
-	public void setPaymentViews(LinkedHashSet<PaymentView> paymentViews) {
-		this.paymentViews = paymentViews;
+	public void setCollateralItemViews(LinkedHashSet<CollateralItemView> collateralItemViews) {
+		this.collateralItemViews = collateralItemViews;
 	}
 
 	public Date getOnDate() {
@@ -424,5 +464,158 @@ public class PaymentReportData extends ReportData
 
 	public void setPaymentExchangeRate(double paymentExchangeRate) {
 		this.paymentExchangeRate = paymentExchangeRate;
+	}
+
+
+	public long getCollateralItemID() {
+		return collateralItemID;
+	}
+
+	public void setCollateralItemID(long collateralItemID) {
+		this.collateralItemID = collateralItemID;
+	}
+
+	public Date getCollateralAgreementDate() {
+		return collateralAgreementDate;
+	}
+
+	public void setCollateralAgreementDate(Date collateralAgreementDate) {
+		this.collateralAgreementDate = collateralAgreementDate;
+	}
+
+	public String getCollateralAgreementNumber() {
+		return collateralAgreementNumber;
+	}
+
+	public void setCollateralAgreementNumber(String collateralAgreementNumber) {
+		this.collateralAgreementNumber = collateralAgreementNumber;
+	}
+
+	public Date getCollateralArrestRegDate() {
+		return collateralArrestRegDate;
+	}
+
+	public void setCollateralArrestRegDate(Date collateralArrestRegDate) {
+		this.collateralArrestRegDate = collateralArrestRegDate;
+	}
+
+	public String getCollateralArrestRegNumber() {
+		return collateralArrestRegNumber;
+	}
+
+	public void setCollateralArrestRegNumber(String collateralArrestRegNumber) {
+		this.collateralArrestRegNumber = collateralArrestRegNumber;
+	}
+
+	public Date getCollateralOfficeRegDate() {
+		return collateralOfficeRegDate;
+	}
+
+	public void setCollateralOfficeRegDate(Date collateralOfficeRegDate) {
+		this.collateralOfficeRegDate = collateralOfficeRegDate;
+	}
+
+	public String getCollateralOfficeRegNumber() {
+		return collateralOfficeRegNumber;
+	}
+
+	public void setCollateralOfficeRegNumber(String collateralOfficeRegNumber) {
+		this.collateralOfficeRegNumber = collateralOfficeRegNumber;
+	}
+
+	public Date getCollateralNotaryOfficeRegDate() {
+		return collateralNotaryOfficeRegDate;
+	}
+
+	public void setCollateralNotaryOfficeRegDate(Date collateralNotaryOfficeRegDate) {
+		this.collateralNotaryOfficeRegDate = collateralNotaryOfficeRegDate;
+	}
+
+	public String getCollateralNotaryOfficeRegNumber() {
+		return collateralNotaryOfficeRegNumber;
+	}
+
+	public void setCollateralNotaryOfficeRegNumber(String collateralNotaryOfficeRegNumber) {
+		this.collateralNotaryOfficeRegNumber = collateralNotaryOfficeRegNumber;
+	}
+
+	public double getCollateralItemCollateralValue() {
+		return collateralItemCollateralValue;
+	}
+
+	public void setCollateralItemCollateralValue(double collateralItemCollateralValue) {
+		this.collateralItemCollateralValue = collateralItemCollateralValue;
+	}
+
+	public double getCollateralItemDemandRate() {
+		return collateralItemDemandRate;
+	}
+
+	public void setCollateralItemDemandRate(double collateralItemDemandRate) {
+		this.collateralItemDemandRate = collateralItemDemandRate;
+	}
+
+	public String getCollateralItemDescription() {
+		return collateralItemDescription;
+	}
+
+	public void setCollateralItemDescription(String collateralItemDescription) {
+		this.collateralItemDescription = collateralItemDescription;
+	}
+
+	public double getCollateralItemEstimatedValue() {
+		return collateralItemEstimatedValue;
+	}
+
+	public void setCollateralItemEstimatedValue(double collateralItemEstimatedValue) {
+		this.collateralItemEstimatedValue = collateralItemEstimatedValue;
+	}
+
+	public String getCollateralItemName() {
+		return collateralItemName;
+	}
+
+	public void setCollateralItemName(String collateralItemName) {
+		this.collateralItemName = collateralItemName;
+	}
+
+	public double getCollateralItemQuantity() {
+		return collateralItemQuantity;
+	}
+
+	public void setCollateralItemQuantity(double collateralItemQuantity) {
+		this.collateralItemQuantity = collateralItemQuantity;
+	}
+
+	public double getCollateralItemRiskRate() {
+		return collateralItemRiskRate;
+	}
+
+	public void setCollateralItemRiskRate(double collateralItemRiskRate) {
+		this.collateralItemRiskRate = collateralItemRiskRate;
+	}
+
+	public long getCollateralItemConditionTypeId() {
+		return collateralItemConditionTypeId;
+	}
+
+	public void setCollateralItemConditionTypeId(long collateralItemConditionTypeId) {
+		this.collateralItemConditionTypeId = collateralItemConditionTypeId;
+	}
+
+	public long getCollateralItemTypeId() {
+		return collateralItemTypeId;
+	}
+
+	public void setCollateralItemTypeId(long collateralItemTypeId) {
+		this.collateralItemTypeId = collateralItemTypeId;
+	}
+
+	public long getCollateralItemQuantityTypeId() {
+		return collateralItemQuantityTypeId;
+	}
+
+	public void setCollateralItemQuantityTypeId(long collateralItemQuantityTypeId) {
+		this.collateralItemQuantityTypeId = collateralItemQuantityTypeId;
 	}
 }

@@ -78,6 +78,12 @@ public class PaymentView extends DebtorView
 	@Column
 	private double v_payment_total_amount;
 
+	@Column
+	private double v_payment_exchange_rate;
+
+	@Column
+	private boolean v_payment_in_loan_currency;
+
 
 	public long getV_loan_id() {
 		return v_loan_id;
@@ -167,6 +173,7 @@ public class PaymentView extends DebtorView
 		this.v_credit_order_regDate = v_credit_order_regDate;
 	}
 
+
 	public long getV_payment_id() {
 		return v_payment_id;
 	}
@@ -245,5 +252,21 @@ public class PaymentView extends DebtorView
 
 	public void setV_payment_total_amount(double v_payment_total_amount) {
 		this.v_payment_total_amount = v_payment_total_amount;
+	}
+
+	public double getV_payment_exchange_rate() {
+		return v_payment_exchange_rate;
+	}
+
+	public void setV_payment_exchange_rate(double v_payment_exchange_rate) {
+		this.v_payment_exchange_rate = v_payment_exchange_rate;
+	}
+
+	public boolean isV_payment_in_loan_currency() {
+		return v_payment_in_loan_currency;
+	}
+
+	public void setV_payment_in_loan_currency(boolean v_payment_in_loan_currency) {
+		this.v_payment_in_loan_currency = v_payment_in_loan_currency;
 	}
 }

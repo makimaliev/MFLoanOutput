@@ -255,6 +255,23 @@ public class PaymentReportDataManager {
                 childE.setPaymentNumber(pv.getV_payment_number());
                 childE.setPaymentTypeName(pv.getV_payment_type_name());
 
+                long loanCurrencyId = pv.getV_loan_currency_id();
+
+                if(pv.getV_loan_currency_id()==1)
+                {
+                    childE.setCurrency((short)1);
+                    childE.setExchangeRate((double)1);
+                }
+                else
+                {
+                    if(pv.isV_payment_in_loan_currency())
+                    {
+                        childE.setCurrency((short)loanCurrencyId);
+                        childE.setExchangeRate(pv.getV_payment_exchange_rate());
+                    }
+                }
+
+
                 if(pv.getV_payment_total_amount()>0)
                 {
                     childE.setPaymentTotalAmount(pv.getV_payment_total_amount());
@@ -287,12 +304,12 @@ public class PaymentReportDataManager {
 
                 if(pv.getV_payment_penalty()>0)
                 {
-                    childE.setPaymentInterest(pv.getV_payment_penalty());
-                    childD.setPaymentInterest(childD. getPaymentInterest()+pv.getV_payment_penalty());
-                    childC.setPaymentInterest(childC. getPaymentInterest()+pv.getV_payment_penalty());
-                    childB.setPaymentInterest(childB. getPaymentInterest()+pv.getV_payment_penalty());
-                    childA.setPaymentInterest(childA. getPaymentInterest()+pv.getV_payment_penalty());
-                    reportData.setPaymentInterest(reportData. getPaymentInterest()+pv.getV_payment_penalty());
+                    childE.setPaymentPenalty(pv.getV_payment_penalty());
+                    childD.setPaymentPenalty(childD. getPaymentInterest()+pv.getV_payment_penalty());
+                    childC.setPaymentPenalty(childC. getPaymentInterest()+pv.getV_payment_penalty());
+                    childB.setPaymentPenalty(childB. getPaymentInterest()+pv.getV_payment_penalty());
+                    childA.setPaymentPenalty(childA. getPaymentInterest()+pv.getV_payment_penalty());
+                    reportData.setPaymentPenalty(reportData. getPaymentInterest()+pv.getV_payment_penalty());
                 }
 
 
@@ -302,46 +319,6 @@ public class PaymentReportDataManager {
 
 
         }
-
-//        PaymentReportData MainData = reportData;
-//        PaymentReportData GroupData1[] = MainData.getChilds();
-//
-//        for(int x=0;x<GroupData1.length;x++) {
-//
-//
-//            PaymentReportData GroupData2[] = GroupData1[x].getChilds();
-//
-//            boolean iDetail2 = true;
-//
-//            for(int y=0;y<GroupData2.length;y++)
-//            {
-//                PaymentReportData PersonData[] = GroupData2[y].getChilds();
-//
-//                boolean iDetail3 = true;
-//
-//                for(int p=0;p<PersonData.length;p++)
-//                {
-//                    PaymentReportData CreditData[] = PersonData[p].getChilds();
-//
-//                    for(int c=0;c<CreditData.length;c++)
-//                    {
-//                        PaymentReportData PaymentData[] = CreditData[c].getChilds();
-//
-//                        for(int pp=0;pp<PaymentData.length;pp++)
-//                        {
-//                            System.out.println(GroupData1[x].getName()+" "+GroupData2[y].getName()+" "+PersonData[p].getName()+" "+CreditData[c].getName()+PaymentData[pp].getName());
-//                        }
-//
-//                    }
-//
-//
-//                }
-//            }
-//        }
-
-
-
-
 
 
         return reportData;

@@ -1,7 +1,7 @@
 package kg.gov.mf.loan.output.report.utils;
 
 import kg.gov.mf.loan.output.report.model.LoanView;
-import kg.gov.mf.loan.output.report.model.PaymentReportData;
+import kg.gov.mf.loan.output.report.model.CollateralItemReportData;
 import kg.gov.mf.loan.output.report.model.ReportTemplate;
 import kg.gov.mf.loan.output.report.service.LoanViewService;
 import org.apache.poi.hssf.usermodel.*;
@@ -13,7 +13,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import java.util.List;
 
 
-public class ReportGeneratorPayment {
+public class ReportGeneratorCollateralItem {
 	
 	/**
      * Report GENERATION TOOL
@@ -42,13 +42,13 @@ public class ReportGeneratorPayment {
 
         System.out.println("Report Generated!!!");
 
-        PaymentReportData SummaryLoan = new PaymentReportData();
+        CollateralItemReportData SummaryLoan = new CollateralItemReportData();
 
 
 
 
 
-        SummaryLoan = new PaymentReportDataManager().getReportDataGrouped(SummaryLoan,reportTemplate);
+        SummaryLoan = new CollateralItemReportDataManager().getReportDataGrouped(SummaryLoan,reportTemplate);
 
         HSSFWorkbook     WorkBook       = new HSSFWorkbook();
 
@@ -456,10 +456,10 @@ public class ReportGeneratorPayment {
             Sheet.setColumnWidth(count,(short)width);count++;
 
         Sheet.setColumnWidth(count,(short)width);count++;
-        Sheet.setColumnWidth(count,(short)width);count++;
+//        Sheet.setColumnWidth(count,(short)width);count++;
 
 
-            Sheet.setColumnWidth(count,(short)(width));count++;
+            Sheet.setColumnWidth(count,(short)(width*2+2000));count++;
 
         Sheet.setColumnWidth(count,(short)width);count++;
         Sheet.setColumnWidth(count,(short)width);count++;
@@ -485,10 +485,10 @@ public class ReportGeneratorPayment {
         Row.setRowNum(( short ) RowCount);
 
 
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+11)));
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleTitleBlue);
-        Cell.setCellValue("Информация по погашениям");
+        Cell.setCellValue("Информация по залогу");
 
         RowCount++;
         ColumnCount=0;
@@ -496,7 +496,7 @@ public class ReportGeneratorPayment {
         Row = Sheet.createRow(RowCount);
         Row.setRowNum(( short ) RowCount);
 
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+11)));
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleTitleBlue);
         Cell.setCellValue("хозсубъектов");
@@ -509,7 +509,7 @@ public class ReportGeneratorPayment {
         //String sCreditTypeString ="";
 
 
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+11)));
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleTitleBlue);
         Cell.setCellValue("по состоянию на "+SummaryLoan.getOnDate()+"_г.");
@@ -519,7 +519,7 @@ public class ReportGeneratorPayment {
         Row = Sheet.createRow(RowCount);
         Row.setRowNum(( short ) RowCount);
 
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+11)));
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
         Cell.setCellStyle(CellStyleTitleBlue);
         Cell.setCellValue("");
@@ -562,18 +562,28 @@ public class ReportGeneratorPayment {
 
 
 
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+1)));
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
-        Cell.setCellValue("Всего погашено");
+        Cell.setCellValue("Договор залога");
         ColumnCount++;
 
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+2)));
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell.setCellStyle(CellStyleHeader);
+        ColumnCount++;
+
+//        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+//        Cell.setCellStyle(CellStyleHeader);
+//        ColumnCount++;
+
+
+
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+4)));
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
-        Cell.setCellValue("в том числе по");
+        Cell.setCellValue("Предмет залога");
         ColumnCount++;
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
@@ -584,36 +594,13 @@ public class ReportGeneratorPayment {
         Cell.setCellStyle(CellStyleHeader);
         ColumnCount++;
 
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
         Cell.setCellStyle(CellStyleHeader);
-        Cell.setCellValue("Номер платежного документа");
         ColumnCount++;
 
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
         Cell.setCellStyle(CellStyleHeader);
-        Cell.setCellValue("Дата платежа");
         ColumnCount++;
-
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(CellStyleHeader);
-        Cell.setCellValue("Курс на дату платежв");
-        ColumnCount++;
-
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(CellStyleHeader);
-        Cell.setCellValue("Вид платежа");
-        ColumnCount++;
-
-
-
 
         RowCount++;
         Row = Sheet.createRow(RowCount);
@@ -644,47 +631,51 @@ public class ReportGeneratorPayment {
         ColumnCount++;
 
 
-
-
-
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("Дата нотар.рег.");
         ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("Номер налож. ареста");
+        ColumnCount++;
+
+//        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+//        Cell.setCellStyle(CellStyleHeader);
+//        Cell.setCellValue("Залогодатель");
+//        ColumnCount++;
+
+
 
 
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
-        Cell.setCellValue("основной сумме");
+        Cell.setCellValue("Наименование");
         ColumnCount++;
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
-        Cell.setCellValue("процентам ");
+        Cell.setCellValue("Кол-во");
         ColumnCount++;
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
-        Cell.setCellValue("штрафам");
+        Cell.setCellValue("Вид залога");
         ColumnCount++;
 
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("Залоговая стоимость");
         ColumnCount++;
 
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("Оценочная стоимость");
         ColumnCount++;
 
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
-        Cell.setCellStyle(CellStyleHeader);
-        ColumnCount++;
 
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
-        Cell.setCellStyle(CellStyleHeader);
-        ColumnCount++;
 
 
 
@@ -694,7 +685,7 @@ public class ReportGeneratorPayment {
 
         int Thousands = 1;
 
-        PaymentReportData MainData = SummaryLoan;
+        CollateralItemReportData MainData = SummaryLoan;
 
         ColumnCount=0;
         RowCount++;
@@ -732,26 +723,20 @@ public class ReportGeneratorPayment {
 //            ColumnCount++;
 
 
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleDataSum);
-        Cell.setCellValue((MainData.getPaymentTotalAmount()/Thousands));
+        Cell.setCellValue("");
         ColumnCount++;
 
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleDataSum);
-        Cell.setCellValue(((MainData.getPaymentPrincipal())/Thousands));
+        Cell.setCellValue("");
         ColumnCount++;
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-        Cell.setCellStyle(CellStyleDataSum);
-        Cell.setCellValue((MainData.getPaymentInterest()/Thousands));
-        ColumnCount++;
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-        Cell.setCellStyle(CellStyleDataSum);
-        Cell.setCellValue((MainData.getPaymentPenalty()/Thousands));
-        ColumnCount++;
+//
+//        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+//        Cell.setCellStyle(CellStyleDataSum);
+//        Cell.setCellValue(0);
+//        ColumnCount++;
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleDataSum);
@@ -773,16 +758,16 @@ public class ReportGeneratorPayment {
         Cell.setCellValue("");
         ColumnCount++;
 
-
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleDataSum);
+        Cell.setCellValue("");
+        ColumnCount++;
 
         // SUMMARY DATA END
 
-
-
-
         boolean iDetail1 = true;
 
-        PaymentReportData GroupData1[] = MainData.getChilds();
+        CollateralItemReportData GroupData1[] = MainData.getChilds();
 
         for(int x=0;x<GroupData1.length;x++)
         {
@@ -826,28 +811,29 @@ public class ReportGeneratorPayment {
 
 
 
-                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+
+
+
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
                 Cell.setCellStyle(CellStyleDataGroup1);
-                Cell.setCellValue((GroupData1[x].getPaymentTotalAmount()/Thousands));
+                Cell.setCellValue("");
                 ColumnCount++;
 
-
-
-                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
                 Cell.setCellStyle(CellStyleDataGroup1);
-                Cell.setCellValue((GroupData1[x].getPaymentPrincipal()/Thousands));
+                Cell.setCellValue("");
                 ColumnCount++;
 
-                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                Cell.setCellStyle(CellStyleDataGroup1);
-                Cell.setCellValue(((GroupData1[x].getPaymentInterest())/Thousands));
-                ColumnCount++;
+//                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+//                Cell.setCellStyle(CellStyleDataGroup1);
+//                Cell.setCellValue("");
+//                ColumnCount++;
 
-                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                Cell.setCellStyle(CellStyleDataGroup1);
-                Cell.setCellValue((GroupData1[x].getPaymentPenalty()/Thousands));
-                ColumnCount++;
 
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                Cell.setCellStyle(CellStyleDataGroup1);
+                Cell.setCellValue("");
+                ColumnCount++;
 
                 Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
                 Cell.setCellStyle(CellStyleDataGroup1);
@@ -871,7 +857,7 @@ public class ReportGeneratorPayment {
 
             }//if closed
 
-            PaymentReportData GroupData2[] = GroupData1[x].getChilds();
+            CollateralItemReportData GroupData2[] = GroupData1[x].getChilds();
 
             boolean iDetail2 = true;
 
@@ -920,25 +906,21 @@ public class ReportGeneratorPayment {
 
 
 
-                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
                     Cell.setCellStyle(CellStyleDataGroup2);
-                    Cell.setCellValue((GroupData2[y].getPaymentTotalAmount()/Thousands));
+                    Cell.setCellValue("");
                     ColumnCount++;
 
-                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
                     Cell.setCellStyle(CellStyleDataGroup2);
-                    Cell.setCellValue((GroupData2[y].getPaymentPrincipal()/Thousands));
+                    Cell.setCellValue("");
                     ColumnCount++;
 
-                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                    Cell.setCellStyle(CellStyleDataGroup2);
-                    Cell.setCellValue((GroupData2[y].getPaymentInterest()/Thousands));
-                    ColumnCount++;
+//                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+//                    Cell.setCellStyle(CellStyleDataGroup2);
+//                    Cell.setCellValue("");
+//                    ColumnCount++;
 
-                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                    Cell.setCellStyle(CellStyleDataGroup2);
-                    Cell.setCellValue((GroupData2[y].getPaymentPenalty()/Thousands));
-                    ColumnCount++;
 
 
                     Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
@@ -956,6 +938,11 @@ public class ReportGeneratorPayment {
                     Cell.setCellValue("");
                     ColumnCount++;
 
+
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                    Cell.setCellStyle(CellStyleDataGroup2);
+                    Cell.setCellValue("");
+                    ColumnCount++;
 
                     Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
                     Cell.setCellStyle(CellStyleDataGroup2);
@@ -966,7 +953,7 @@ public class ReportGeneratorPayment {
                 }//if closed
 
 
-                PaymentReportData PersonData[] = GroupData2[y].getChilds();
+                CollateralItemReportData PersonData[] = GroupData2[y].getChilds();
 
                 boolean iDetail3 = true;
 
@@ -1011,32 +998,19 @@ public class ReportGeneratorPayment {
 
 
 
-                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                        Cell.setCellStyle(CellStyleDataPerson);
-                        Cell.setCellValue((PersonData[p].getPaymentTotalAmount()/Thousands));
-                        ColumnCount++;
-
-                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                        Cell.setCellStyle(CellStyleDataPerson);
-                        Cell.setCellValue((PersonData[p].getPaymentPrincipal()/Thousands));
-                        ColumnCount++;
-
-                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                        Cell.setCellStyle(CellStyleDataPerson);
-                        Cell.setCellValue((PersonData[p].getPaymentInterest()/Thousands));
-                        ColumnCount++;
-
-                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                        Cell.setCellStyle(CellStyleDataPerson);
-                        Cell.setCellValue((PersonData[p].getPaymentPenalty()/Thousands));
-                        ColumnCount++;
-
-
-
                         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
                         Cell.setCellStyle(CellStyleDataPerson);
                         Cell.setCellValue("");
                         ColumnCount++;
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                        Cell.setCellStyle(CellStyleDataPerson);
+                        Cell.setCellValue("");
+                        ColumnCount++;
+
+//                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+//                        Cell.setCellStyle(CellStyleDataPerson);
+//                        Cell.setCellValue("");
+//                        ColumnCount++;
 
 
                         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
@@ -1055,13 +1029,16 @@ public class ReportGeneratorPayment {
                         Cell.setCellValue("");
                         ColumnCount++;
 
-
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                        Cell.setCellStyle(CellStyleDataPerson);
+                        Cell.setCellValue("");
+                        ColumnCount++;
 
                     } // if person
                     if(iDetail4)
                     {
 
-                        PaymentReportData CreditData[] = PersonData[p].getChilds();
+                        CollateralItemReportData CreditData[] = PersonData[p].getChilds();
 
                         for(int c=0;c<CreditData.length;c++)
                         {
@@ -1104,7 +1081,7 @@ public class ReportGeneratorPayment {
                             }
                             else Det=Det+" сомах ";
 
-                            Cell.setCellValue(Det);
+                            Cell.setCellValue(CreditData[c].getName());
                             ColumnCount++;
 
 
@@ -1134,35 +1111,6 @@ public class ReportGeneratorPayment {
 
 
 
-                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                            Cell.setCellStyle(CellStyleData);
-                            Cell.setCellValue((CreditData[c].getPaymentTotalAmount()/(Thousands*ExRate)));
-                            ColumnCount++;
-
-                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                            Cell.setCellStyle(CellStyleData);
-                            Cell.setCellValue((CreditData[c].getPaymentPrincipal()/(Thousands*ExRate)));
-                            ColumnCount++;
-
-                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                            Cell.setCellStyle(CellStyleData);
-                            Cell.setCellValue((CreditData[c].getPaymentInterest()/(Thousands*ExRate)));
-                            ColumnCount++;
-
-                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                            Cell.setCellStyle(CellStyleData);
-                            Cell.setCellValue((CreditData[c].getPaymentPenalty()/(Thousands*ExRate)));
-                            ColumnCount++;
-
-                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-                            Cell.setCellStyle(CellStyleDataLeft);
-                            Cell.setCellValue(CreditData[c].getDetails());
-                            ColumnCount++;
-
-                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-                            Cell.setCellStyle(CellStyleDataLeft);
-                            Cell.setCellValue("");
-                            ColumnCount++;
 
                             Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
                             Cell.setCellStyle(CellStyleDataLeft);
@@ -1175,7 +1123,39 @@ public class ReportGeneratorPayment {
                             Cell.setCellValue("");
                             ColumnCount++;
 
+//
+//                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+//                            Cell.setCellStyle(CellStyleDataLeft);
+//                            Cell.setCellValue("");
+//                            ColumnCount++;
 
+
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                            Cell.setCellStyle(CellStyleDataLeft);
+                            Cell.setCellValue("");
+                            ColumnCount++;
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                            Cell.setCellStyle(CellStyleDataLeft);
+                            Cell.setCellValue("");
+                            ColumnCount++;
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                            Cell.setCellStyle(CellStyleDataLeft);
+                            Cell.setCellValue("");
+                            ColumnCount++;
+
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                            Cell.setCellStyle(CellStyleDataLeft);
+                            Cell.setCellValue("");
+                            ColumnCount++;
+
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                            Cell.setCellStyle(CellStyleDataLeft);
+                            Cell.setCellValue("");
+                            ColumnCount++;
 
 
 
@@ -1183,15 +1163,14 @@ public class ReportGeneratorPayment {
                             if(iDetail4)
                             {
 
-                                PaymentReportData PaymentData[] = CreditData[c].getChilds();
+                                CollateralItemReportData PaymentData[] = CreditData[c].getChilds();
 
-                                for(int pp=0;pp<PaymentData.length;pp++)
-                                {
-                                    ColumnCount=0;
+                                for(int pp=0;pp<PaymentData.length;pp++) {
+                                    ColumnCount = 0;
                                     RowCount++;
 
                                     Row = Sheet.createRow(RowCount);
-                                    Row.setRowNum(( short ) RowCount);
+                                    Row.setRowNum((short) RowCount);
 
                                     Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
                                     Cell.setCellStyle(CellStyleDataString);
@@ -1203,7 +1182,7 @@ public class ReportGeneratorPayment {
 
                                     Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
                                     Cell.setCellStyle(CellStyleDataString);
-                                    Cell.setCellValue(PaymentData[pp].getPaymentID());
+                                    Cell.setCellValue("");
                                     ColumnCount++;
 
                                     Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
@@ -1212,9 +1191,9 @@ public class ReportGeneratorPayment {
                                     String DetPayment = PaymentData[pp].getName();
 
 
-                                    if(Thousands==1) Det=Det+" в ";
-                                    else    if(Thousands==1000) Det=Det+" в тыс. ";
-                                    else    if(Thousands==1000000) Det=Det+" в млн. ";
+                                    if (Thousands == 1) Det = Det + " в ";
+                                    else if (Thousands == 1000) Det = Det + " в тыс. ";
+                                    else if (Thousands == 1000000) Det = Det + " в млн. ";
 
 //                                    Cell.setCellValue(DetPayment);
 
@@ -1222,8 +1201,8 @@ public class ReportGeneratorPayment {
                                     ColumnCount++;
 
 
-//                                    String sPaymentType =PaymentData[pp].getPaymentTypeName();
-//
+                                    String sPaymentType = PaymentData[pp].getPaymentTypeName();
+
 //                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
 //                                    Cell.setCellStyle(CellStyleDataString);
 ////                                    Cell.setCellValue(sPaymentType);
@@ -1231,46 +1210,59 @@ public class ReportGeneratorPayment {
 //                                    ColumnCount++;
 
 
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                                    Cell.setCellStyle(CellStyleData);
-                                    Cell.setCellValue((PaymentData[pp].getPaymentTotalAmount()/(Thousands)));
-                                    ColumnCount++;
+                                    if (PaymentData[pp].getCollateralNotaryOfficeRegDate() != null)
+                                    {
+                                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                                        Cell.setCellStyle(CellStyleDate);
+                                        Cell.setCellValue(PaymentData[pp].getCollateralNotaryOfficeRegDate());
+                                        ColumnCount++;
 
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                                    Cell.setCellStyle(CellStyleData);
-                                    Cell.setCellValue((PaymentData[pp].getPaymentPrincipal()/(Thousands)));
-                                    ColumnCount++;
+                                    }
+                                    else
+                                    {
+                                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                                        Cell.setCellStyle(CellStyleDate);
+                                        Cell.setCellValue("без даты");
+                                        ColumnCount++;
+
+                                    }
 
 
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                                    Cell.setCellStyle(CellStyleData);
-                                    Cell.setCellValue((PaymentData[pp].getPaymentInterest()/(Thousands)));
-                                    ColumnCount++;
-
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-                                    Cell.setCellStyle(CellStyleData);
-                                    Cell.setCellValue((PaymentData[pp].getPaymentPenalty()/(Thousands)));
-                                    ColumnCount++;
-
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-                                    Cell.setCellStyle(CellStyleDataLeft);
-                                    Cell.setCellValue(PaymentData[pp].getPaymentNumber());
-                                    ColumnCount++;
-
-                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-                                    Cell.setCellStyle(CellStyleDate);
-                                    Cell.setCellValue(PaymentData[pp].getPaymentDate());
-                                    ColumnCount++;
 
 
                                     Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
                                     Cell.setCellStyle(CellStyleDataLeft);
-                                    Cell.setCellValue(PaymentData[pp].getExchangeRate());
+                                    Cell.setCellValue(PaymentData[pp].getCollateralArrestRegNumber());
+                                    ColumnCount++;
+
+//                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+//                                    Cell.setCellStyle(CellStyleDataLeft);
+//                                    Cell.setCellValue("");
+//                                    ColumnCount++;
+
+                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                                    Cell.setCellStyle(CellStyleDataLeft);
+                                    Cell.setCellValue(PaymentData[pp].getCollateralItemName());
                                     ColumnCount++;
 
                                     Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
                                     Cell.setCellStyle(CellStyleDataLeft);
-                                    Cell.setCellValue(PaymentData[pp].getPaymentTypeName());
+                                    Cell.setCellValue(PaymentData[pp].getCollateralItemQuantity());
+                                    ColumnCount++;
+
+                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                                    Cell.setCellStyle(CellStyleDataLeft);
+                                    Cell.setCellValue(PaymentData[pp].getCollateralItemTypeId());
+                                    ColumnCount++;
+
+                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                    Cell.setCellStyle(CellStyleData);
+                                    Cell.setCellValue((PaymentData[pp].getCollateralItemCollateralValue()/(Thousands)));
+                                    ColumnCount++;
+
+                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                    Cell.setCellStyle(CellStyleData);
+                                    Cell.setCellValue((PaymentData[pp].getCollateralItemEstimatedValue()/(Thousands)));
                                     ColumnCount++;
 
 
