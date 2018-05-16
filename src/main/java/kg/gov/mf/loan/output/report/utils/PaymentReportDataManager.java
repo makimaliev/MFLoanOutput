@@ -42,7 +42,7 @@ public class PaymentReportDataManager {
         groupIds.add(getGroupType(reportTemplate,2));
         groupIds.add(getGroupType(reportTemplate,3));
         groupIds.add(getGroupType(reportTemplate,4));
-        groupIds.add(getGroupType(reportTemplate,5));
+        groupIds.add((long)5);
 
         for (FilterParameter filterParameter: reportTemplate.getFilterParameters())
         {
