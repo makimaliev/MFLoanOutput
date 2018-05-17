@@ -459,7 +459,7 @@ public class ReportGeneratorCollectionPhase {
 //        Sheet.setColumnWidth(count,(short)width);count++;
 
 
-            Sheet.setColumnWidth(count,(short)(width*2+2000));count++;
+        Sheet.setColumnWidth(count,(short)width);count++;
 
         Sheet.setColumnWidth(count,(short)width);count++;
         Sheet.setColumnWidth(count,(short)width);count++;
@@ -562,11 +562,15 @@ public class ReportGeneratorCollectionPhase {
 
 
 
-        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+1)));
+        Sheet.addMergedRegion(new Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+2)));
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
         Cell.setCellValue("Стадия взыскания");
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell.setCellStyle(CellStyleHeader);
         ColumnCount++;
 
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
@@ -618,6 +622,11 @@ public class ReportGeneratorCollectionPhase {
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(CellStyleHeader);
         Cell.setCellValue("Вид");
+        ColumnCount++;
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleHeader);
+        Cell.setCellValue("Сумма");
         ColumnCount++;
 
 //        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
@@ -687,6 +696,13 @@ public class ReportGeneratorCollectionPhase {
         Cell.setCellStyle(CellStyleDataSum);
         Cell.setCellValue("");
         ColumnCount++;
+
+
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(CellStyleDataSum);
+        Cell.setCellValue("");
+        ColumnCount++;
+
 //
 //        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
 //        Cell.setCellStyle(CellStyleDataSum);
@@ -756,6 +772,13 @@ public class ReportGeneratorCollectionPhase {
                 Cell.setCellValue("");
                 ColumnCount++;
 
+
+                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                Cell.setCellStyle(CellStyleDataGroup1);
+                Cell.setCellValue("");
+                ColumnCount++;
+
+
 //                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
 //                Cell.setCellStyle(CellStyleDataGroup1);
 //                Cell.setCellValue("");
@@ -824,6 +847,13 @@ public class ReportGeneratorCollectionPhase {
                     Cell.setCellValue("");
                     ColumnCount++;
 
+                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                    Cell.setCellStyle(CellStyleDataGroup2);
+                    Cell.setCellValue("");
+                    ColumnCount++;
+
+
+
 //                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
 //                    Cell.setCellStyle(CellStyleDataGroup2);
 //                    Cell.setCellValue("");
@@ -885,6 +915,12 @@ public class ReportGeneratorCollectionPhase {
                         Cell.setCellStyle(CellStyleDataPerson);
                         Cell.setCellValue("");
                         ColumnCount++;
+
+                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                        Cell.setCellStyle(CellStyleDataPerson);
+                        Cell.setCellValue("");
+                        ColumnCount++;
+
                         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
                         Cell.setCellStyle(CellStyleDataPerson);
                         Cell.setCellValue("");
@@ -986,6 +1022,10 @@ public class ReportGeneratorCollectionPhase {
                             Cell.setCellValue("");
                             ColumnCount++;
 
+                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                            Cell.setCellStyle(CellStyleDataLeft);
+                            Cell.setCellValue("");
+                            ColumnCount++;
 //
 //                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
 //                            Cell.setCellStyle(CellStyleDataLeft);
@@ -1069,7 +1109,12 @@ public class ReportGeneratorCollectionPhase {
 
                                     Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
                                     Cell.setCellStyle(CellStyleDataLeft);
-                                    Cell.setCellValue(PaymentData[pp].getCollection_phase_type_id());
+                                    Cell.setCellValue(PaymentData[pp].getCollection_phase_type_name());
+                                    ColumnCount++;
+
+                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
+                                    Cell.setCellStyle(CellStyleDataLeft);
+                                    Cell.setCellValue(PaymentData[pp].getCollection_phase_start_total_amount());
                                     ColumnCount++;
 
 //                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);

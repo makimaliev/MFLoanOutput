@@ -1,5 +1,8 @@
 package kg.gov.mf.loan.output.report.utils;
 
+import kg.gov.mf.loan.manage.model.collateral.ItemType;
+import kg.gov.mf.loan.manage.model.collection.PhaseType;
+import kg.gov.mf.loan.manage.service.collection.PhaseTypeService;
 import kg.gov.mf.loan.output.report.model.*;
 import kg.gov.mf.loan.output.report.service.CollectionPhaseViewService;
 import kg.gov.mf.loan.output.report.service.LoanViewService;
@@ -21,7 +24,13 @@ public class CollectionPhaseReportDataManager {
     LoanViewService loanViewService;
 
     @Autowired
+    PhaseTypeService phaseTypeService;
+
+    @Autowired
     CollectionPhaseViewService collectionPhaseViewService;
+
+
+    Map<Long,PhaseType> phaseTypeMap = new HashMap<Long,PhaseType>();
 
     public CollectionPhaseReportData getReportDataGrouped(CollectionPhaseReportData reportData,ReportTemplate reportTemplate)
     {
@@ -31,6 +40,12 @@ public class CollectionPhaseReportDataManager {
         Set<CollectionPhaseView> collectionPhaseViews =  new HashSet<CollectionPhaseView>();
 
         Date onDate = this.getOnDate(reportTemplate);
+
+        for (PhaseType phaseType:this.phaseTypeService.list()
+                )
+        {
+            phaseTypeMap.put(phaseType.getId(),phaseType);
+        }
 
         LinkedHashMap<String,List<Long>> parameterS = new LinkedHashMap<String,List<Long>>();
 
@@ -232,9 +247,9 @@ public class CollectionPhaseReportDataManager {
                 childE.setCollection_phase_start_date(new java.sql.Date(pv.getV_cph_startDate().getTime()));
                 childE.setCollection_phase_type_id(pv.getV_cph_phaseTypeId());
 
+                childE.setCollection_phase_type_name(phaseTypeMap.get(pv.getV_cph_phaseTypeId()).getName());
 
-
-
+                childE.setCollection_phase_start_total_amount(pv.getV_cph_start_total_amount());
 
 
                 groupEid=this.getIdByGroupType(groupIds.get(4),collectionPhaseView);

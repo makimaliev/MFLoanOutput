@@ -73,6 +73,8 @@ public class CollectionPhaseReportData extends ReportData
 
 	private String collection_phase_name     			= "";
 
+	private String collection_phase_type_name     			= "";
+
 	private Date   collection_phase_start_date          = null;
 	private Date   collection_phase_close_date          = null;
 
@@ -83,6 +85,8 @@ public class CollectionPhaseReportData extends ReportData
 	private long   collection_last_event_id                   = 0;
 
 	private long   collection_last_event_status_id                   = 0;
+
+	private  double collection_phase_start_total_amount = 0;
 
 
 
@@ -488,5 +492,21 @@ public class CollectionPhaseReportData extends ReportData
 
 	public void setCollection_last_event_status_id(long collection_last_event_status_id) {
 		this.collection_last_event_status_id = collection_last_event_status_id;
+	}
+
+	public String getCollection_phase_type_name() {
+		return collection_phase_type_name;
+	}
+
+	public void setCollection_phase_type_name(String collection_phase_type_name) {
+		this.collection_phase_type_name = collection_phase_type_name;
+	}
+
+	public double getCollection_phase_start_total_amount() {
+		return collection_phase_start_total_amount;
+	}
+
+	public void setCollection_phase_start_total_amount(double collection_phase_start_total_amount) {
+		this.collection_phase_start_total_amount = collection_phase_start_total_amount;
 	}
 }

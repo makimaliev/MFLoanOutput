@@ -118,6 +118,9 @@ public class CollectionPhaseView extends DebtorView
 	@Column
 	private long v_cph_phaseTypeId;
 
+	@Column
+	private long v_cph_start_total_amount;
+
 
 	public long getV_cp_id() {
 		return v_cp_id;
@@ -356,6 +359,15 @@ public class CollectionPhaseView extends DebtorView
 //	public void setV_cph_phaseStatusId(long v_cph_phaseStatusId) {
 //		this.v_cph_phaseStatusId = v_cph_phaseStatusId;
 //	}
+
+
+	public long getV_cph_start_total_amount() {
+		return v_cph_start_total_amount;
+	}
+
+	public void setV_cph_start_total_amount(long v_cph_start_total_amount) {
+		this.v_cph_start_total_amount = v_cph_start_total_amount;
+	}
 
 	public long getV_cph_phaseTypeId() {
 		return v_cph_phaseTypeId;
