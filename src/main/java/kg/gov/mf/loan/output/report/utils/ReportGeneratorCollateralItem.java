@@ -1112,15 +1112,29 @@ public class ReportGeneratorCollateralItem {
 
 
 
-                            Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-                            Cell.setCellStyle(CellStyleDataLeft);
-                            Cell.setCellValue("");
-                            ColumnCount++;
+                            if (CreditData[c].getCollateralNotaryOfficeRegDate() != null)
+                            {
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                                Cell.setCellStyle(CellStyleDate);
+                                Cell.setCellValue(CreditData[c].getCollateralNotaryOfficeRegDate());
+                                ColumnCount++;
+
+                            }
+                            else
+                            {
+                                Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                                Cell.setCellStyle(CellStyleDate);
+                                Cell.setCellValue("без даты");
+                                ColumnCount++;
+
+                            }
+
+
 
 
                             Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
                             Cell.setCellStyle(CellStyleDataLeft);
-                            Cell.setCellValue("");
+                            Cell.setCellValue(CreditData[c].getCollateralArrestRegNumber());
                             ColumnCount++;
 
 //
@@ -1210,29 +1224,18 @@ public class ReportGeneratorCollateralItem {
 //                                    ColumnCount++;
 
 
-                                    if (PaymentData[pp].getCollateralNotaryOfficeRegDate() != null)
-                                    {
-                                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-                                        Cell.setCellStyle(CellStyleDate);
-                                        Cell.setCellValue(PaymentData[pp].getCollateralNotaryOfficeRegDate());
-                                        ColumnCount++;
 
-                                    }
-                                    else
-                                    {
-                                        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-                                        Cell.setCellStyle(CellStyleDate);
-                                        Cell.setCellValue("без даты");
-                                        ColumnCount++;
-
-                                    }
+                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+                                    Cell.setCellStyle(CellStyleDataLeft);
+                                    Cell.setCellValue("");
+                                    ColumnCount++;
 
 
 
 
                                     Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
                                     Cell.setCellStyle(CellStyleDataLeft);
-                                    Cell.setCellValue(PaymentData[pp].getCollateralArrestRegNumber());
+                                    Cell.setCellValue("");
                                     ColumnCount++;
 
 //                                    Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
@@ -1252,7 +1255,7 @@ public class ReportGeneratorCollateralItem {
 
                                     Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
                                     Cell.setCellStyle(CellStyleDataLeft);
-                                    Cell.setCellValue(PaymentData[pp].getCollateralItemTypeId());
+                                    Cell.setCellValue(PaymentData[pp].getCollateralItemTypeName());
                                     ColumnCount++;
 
                                     Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);

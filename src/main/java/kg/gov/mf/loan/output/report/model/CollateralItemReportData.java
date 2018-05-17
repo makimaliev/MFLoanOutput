@@ -104,6 +104,8 @@ public class CollateralItemReportData extends ReportData
 
 	private long collateralItemTypeId = 0;
 
+	private String collateralItemTypeName = "";
+
 	private long collateralItemQuantityTypeId = 0;
 
 
@@ -617,5 +619,13 @@ public class CollateralItemReportData extends ReportData
 
 	public void setCollateralItemQuantityTypeId(long collateralItemQuantityTypeId) {
 		this.collateralItemQuantityTypeId = collateralItemQuantityTypeId;
+	}
+
+	public String getCollateralItemTypeName() {
+		return collateralItemTypeName;
+	}
+
+	public void setCollateralItemTypeName(String collateralItemTypeName) {
+		this.collateralItemTypeName = collateralItemTypeName;
 	}
 }

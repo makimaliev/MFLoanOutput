@@ -1,5 +1,7 @@
 package kg.gov.mf.loan.output.report.utils;
 
+import kg.gov.mf.loan.manage.model.collateral.ItemType;
+import kg.gov.mf.loan.manage.service.collateral.ItemTypeService;
 import kg.gov.mf.loan.output.report.model.*;
 import kg.gov.mf.loan.output.report.service.CollateralItemViewService;
 import kg.gov.mf.loan.output.report.service.LoanViewService;
@@ -21,7 +23,12 @@ public class CollateralItemReportDataManager {
     LoanViewService loanViewService;
 
     @Autowired
+    ItemTypeService itemTypeService;
+
+    @Autowired
     CollateralItemViewService collateralItemViewService;
+
+    Map<Long,ItemType> itemTypeMap = new HashMap<Long,ItemType>();
 
     public CollateralItemReportData getReportDataGrouped(CollateralItemReportData reportData,ReportTemplate reportTemplate)
     {
@@ -31,6 +38,13 @@ public class CollateralItemReportDataManager {
         Set<CollateralItemView> collateralItemViews =  new HashSet<CollateralItemView>();
 
         Date onDate = this.getOnDate(reportTemplate);
+
+
+        for (ItemType itemType:this.itemTypeService.list()
+             )
+        {
+            itemTypeMap.put(itemType.getId(),itemType);
+        }
 
         LinkedHashMap<String,List<Long>> parameterS = new LinkedHashMap<String,List<Long>>();
 
@@ -280,6 +294,8 @@ public class CollateralItemReportDataManager {
                 childE.setCollateralItemCollateralValue(pv.getV_ci_collateralValue());
                 childE.setCollateralItemEstimatedValue(pv.getV_ci_estimatedValue());
                 childE.setCollateralItemDescription(pv.getV_ci_description());
+
+                childE.setCollateralItemTypeName(itemTypeMap.get(pv.getV_ci_itemTypeId()).getName());
 
                 groupEid=this.getIdByGroupType(groupIds.get(4),collateralItemView);
             }
