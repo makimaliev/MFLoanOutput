@@ -812,11 +812,9 @@ int x = 0;
 
                             for (Department department: organization.getDepartment())
                             {
-                                if(department.getId() == 1)
-                                {
                                     debtorResponsible = staffService.findAllByDepartment(department).get(0);
                                     debtorAccountant  = staffService.findAllByDepartment(department).get(1);
-                                }
+                                    break;
                             }
 
 
