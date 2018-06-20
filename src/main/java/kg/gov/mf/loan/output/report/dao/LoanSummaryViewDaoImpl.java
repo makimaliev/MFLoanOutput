@@ -145,6 +145,12 @@ public class LoanSummaryViewDaoImpl implements LoanSummaryViewDao {
 					criteria.add(Restrictions.le("v_ls_onDate",new Date((ids.get(0)))));
 					break;
 
+				case "betweenDates":
+					criteria.add(Restrictions.ge("v_ls_onDate",new Date((ids.get(0)))));
+					criteria.add(Restrictions.le("v_ls_onDate",new Date((ids.get(1)))));
+					break;
+
+
 				case "work_sector":
 					criteria.add(Restrictions.in("v_debtor_work_sector_id",ids));
 					break;
