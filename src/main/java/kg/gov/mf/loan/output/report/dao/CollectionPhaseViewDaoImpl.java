@@ -143,6 +143,10 @@ public class CollectionPhaseViewDaoImpl implements CollectionPhaseViewDao {
 				case "work_sector":
 					criteria.add(Restrictions.in("v_debtor_work_sector_id",ids));
 					break;
+
+				case "collection_phase":
+					criteria.add(Restrictions.in("v_cph_id",ids));
+					break;
 				case "orderBy":
 					for (Long id:ids
 						 )

@@ -1015,15 +1015,29 @@ int x = 0;
                         cell.setPadding(FooterColumnPadding);
                         table.addCell (cell);
 
+                        if(curatorStaff.getId()>0)
+                        {
+                            cell = new PdfPCell (new Paragraph (curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getFirstname().substring(0,1)+" "+curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getLastname(),TitleFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            cell.setPadding(FooterColumnPadding);
+                            cell.setColspan(3);
+                            cell.setBorder(FooterColumnBorder);
+                            table.addCell (cell);
+                            table.setKeepTogether(true);
+                        }
+                        else
+                        {
+                            cell = new PdfPCell (new Paragraph ("",TitleFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            cell.setPadding(FooterColumnPadding);
+                            cell.setColspan(3);
+                            cell.setBorder(FooterColumnBorder);
+                            table.addCell (cell);
+                            table.setKeepTogether(true);
 
-                        cell = new PdfPCell (new Paragraph (curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getFirstname().substring(0,1)+" "+curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getLastname(),TitleFont));
-                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                        cell.setPadding(FooterColumnPadding);
-                        cell.setColspan(3);
-                        cell.setBorder(FooterColumnBorder);
-                        table.addCell (cell);
-                        table.setKeepTogether(true);
+                        }
 
 
 
