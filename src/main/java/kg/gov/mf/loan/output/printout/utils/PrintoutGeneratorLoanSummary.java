@@ -37,6 +37,7 @@ import kg.gov.mf.loan.output.report.model.PaymentView;
 import kg.gov.mf.loan.output.report.service.LoanSummaryViewService;
 import kg.gov.mf.loan.output.report.service.PaymentScheduleViewService;
 import kg.gov.mf.loan.output.report.service.PaymentViewService;
+import kg.gov.mf.loan.output.report.utils.ReportTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -144,6 +145,9 @@ public class PrintoutGeneratorLoanSummary {
 
                     double SumSpisano=0;
 
+
+                    ReportTool reportTool = new ReportTool();
+
                     LoanSummary loanSummary = loanSummaryService.getById(objectId);
                     Loan loan = loanSummary.getLoan();
 
@@ -179,7 +183,7 @@ public class PrintoutGeneratorLoanSummary {
 
                     for (LoanSummaryView loanSummaryView:loanSummaryViews)
                     {
-                           loanIds.add(String.valueOf(loanSummaryView.getV_loan_id()));
+                           loanIds.add(reportTool.FormatNumber(loanSummaryView.getV_loan_id()));
                     }
 
 
@@ -247,7 +251,7 @@ public class PrintoutGeneratorLoanSummary {
                         cell.setBorder(TitleColumnBorder);
                         table.addCell (cell);
 
-                        cell = new PdfPCell (new Paragraph (" бюджетными кредитами при Министерстве финансов Кыргызской Республики, по состоянию на "+tRasDate +" г.",TitleFont));
+                        cell = new PdfPCell (new Paragraph (" бюджетными кредитами при Министерстве финансов Кыргызской Республики, по состоянию на "+ reportTool.DateToString(tRasDate) +" г.",TitleFont));
                         cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                         cell.setPadding(TitleColumnPadding);
@@ -418,6 +422,7 @@ int x = 0;
 
 
                             Rate=this.currencyRateService.findByDateAndType(tRasDate,this.currencyService.getById(lsv.getV_loan_currency_id())).getRate();
+
                             Thousands = 1000;
 
 
@@ -520,55 +525,55 @@ int x = 0;
                             cell.setBackgroundColor (ColumnColor);
                             table.addCell (cell);
 
-                            cell = new PdfPCell (new Paragraph (String.valueOf(Cost/(Thousands*Rate)),ColumnFont));
+                            cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(Cost/(Thousands)),ColumnFont));
                             cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                             cell.setVerticalAlignment(Element.ALIGN_CENTER);
                             cell.setBackgroundColor (ColumnColor);
                             table.addCell (cell);
 
-                            cell = new PdfPCell (new Paragraph (String.valueOf(Profit/(Thousands*Rate)),ColumnFont));
+                            cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(Profit/(Thousands)),ColumnFont));
                             cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                             cell.setVerticalAlignment(Element.ALIGN_CENTER);
                             cell.setBackgroundColor (ColumnColor);
                             table.addCell (cell);
 
-                            cell = new PdfPCell (new Paragraph (Srok.toString(),ColumnFont));
+                            cell = new PdfPCell (new Paragraph (reportTool.DateToString(Srok),ColumnFont));
                             cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                             cell.setVerticalAlignment(Element.ALIGN_CENTER);
                             cell.setBackgroundColor (ColumnColor);
                             table.addCell (cell);
 
-                            cell = new PdfPCell (new Paragraph (String.valueOf(Payments/(Thousands)),ColumnFont));
+                            cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(Payments/(Thousands)),ColumnFont));
                             cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                             cell.setVerticalAlignment(Element.ALIGN_CENTER);
                             cell.setBackgroundColor (ColumnColor);
                             table.addCell (cell);
 
-                            cell = new PdfPCell (new Paragraph (String.valueOf(OstAll/(Thousands*Rate)),ColumnFont));
+                            cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(OstAll/(Thousands)),ColumnFont));
                             cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                             cell.setVerticalAlignment(Element.ALIGN_CENTER);
                             cell.setBackgroundColor (ColumnColor);
                             table.addCell (cell);
 
-                            cell = new PdfPCell (new Paragraph (String.valueOf(OstMain/(Thousands*Rate)),ColumnFont));
+                            cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(OstMain/(Thousands)),ColumnFont));
                             cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                             cell.setVerticalAlignment(Element.ALIGN_CENTER);
                             cell.setBackgroundColor (ColumnColor);
                             table.addCell (cell);
 
-                            cell = new PdfPCell (new Paragraph (String.valueOf(OstPercent/(Thousands*Rate)),ColumnFont));
+                            cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(OstPercent/(Thousands)),ColumnFont));
                             cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                             cell.setVerticalAlignment(Element.ALIGN_CENTER);
                             cell.setBackgroundColor (ColumnColor);
                             table.addCell (cell);
 
-                            cell = new PdfPCell (new Paragraph (String.valueOf(OstPenalty/(Thousands*Rate)),ColumnFont));
+                            cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(OstPenalty/(Thousands)),ColumnFont));
                             cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                             cell.setVerticalAlignment(Element.ALIGN_CENTER);
                             cell.setBackgroundColor (ColumnColor);
                             table.addCell (cell);
 
-                            cell = new PdfPCell (new Paragraph (String.valueOf(ProsAll/(Thousands*Rate)),ColumnFont));
+                            cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(ProsAll/(Thousands)),ColumnFont));
                             cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                             cell.setVerticalAlignment(Element.ALIGN_CENTER);
                             cell.setBackgroundColor (ColumnColor);
@@ -588,11 +593,11 @@ int x = 0;
 
                                 if(iCurrency!=17)
                                 {
-                                    Det2="в тыс. сомах по курсу "+String.valueOf(Rate);
+                                    Det2="в тыс. сомах по курсу "+reportTool.FormatNumber(Rate);
                                 }
                                 else
                                 {
-                                    Det2="в тыс. сомах по цене "+String.valueOf(Rate)+" за тонну";
+                                    Det2="в тыс. сомах по цене "+reportTool.FormatNumber(Rate)+" за тонну";
                                 }
 
                                 cell = new PdfPCell (new Paragraph (Det2,HeaderFont));
@@ -608,13 +613,13 @@ int x = 0;
                                 table.addCell (cell);
 
 
-                                cell = new PdfPCell (new Paragraph (String.valueOf(Cost/(Thousands)),ColumnFont));
+                                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(Cost*Rate/(Thousands)),ColumnFont));
                                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                                 cell.setBackgroundColor (ColumnColor2);
                                 table.addCell (cell);
 
-                                cell = new PdfPCell (new Paragraph (String.valueOf(Profit/(Thousands)),ColumnFont));
+                                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(Profit*Rate/(Thousands)),ColumnFont));
                                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                                 cell.setBackgroundColor (ColumnColor2);
@@ -626,37 +631,37 @@ int x = 0;
                                 cell.setBackgroundColor (ColumnColor2);
                                 table.addCell (cell);
 
-                                cell = new PdfPCell (new Paragraph (String.valueOf(PaymentsSom/(Thousands)),ColumnFont));
+                                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(PaymentsSom*Rate/(Thousands)),ColumnFont));
                                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                                 cell.setBackgroundColor (ColumnColor2);
                                 table.addCell (cell);
 
-                                cell = new PdfPCell (new Paragraph (String.valueOf(OstAll/(Thousands)),ColumnFont));
+                                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(OstAll*Rate/(Thousands)),ColumnFont));
                                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                                 cell.setBackgroundColor (ColumnColor2);
                                 table.addCell (cell);
 
-                                cell = new PdfPCell (new Paragraph (String.valueOf(OstMain/(Thousands)),ColumnFont));
+                                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(OstMain*Rate/(Thousands)),ColumnFont));
                                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                                 cell.setBackgroundColor (ColumnColor2);
                                 table.addCell (cell);
 
-                                cell = new PdfPCell (new Paragraph (String.valueOf(OstPercent/(Thousands)),ColumnFont));
+                                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(OstPercent*Rate/(Thousands)),ColumnFont));
                                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                                 cell.setBackgroundColor (ColumnColor2);
                                 table.addCell (cell);
 
-                                cell = new PdfPCell (new Paragraph (String.valueOf(OstPenalty/(Thousands)),ColumnFont));
+                                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(OstPenalty*Rate/(Thousands)),ColumnFont));
                                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                                 cell.setBackgroundColor (ColumnColor2);
                                 table.addCell (cell);
 
-                                cell = new PdfPCell (new Paragraph (String.valueOf(ProsAll/(Thousands)),ColumnFont));
+                                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(ProsAll*Rate/(Thousands)),ColumnFont));
                                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                                 cell.setBackgroundColor (ColumnColor2);
@@ -685,13 +690,13 @@ int x = 0;
                         table.addCell (cell);
 
 
-                        cell = new PdfPCell (new Paragraph (String.valueOf(SumCost/(Thousands)),FooterFont));
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumCost*Rate/(Thousands)),FooterFont));
                         cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_CENTER);
                         cell.setBackgroundColor (FooterColor);
                         table.addCell (cell);
 
-                        cell = new PdfPCell (new Paragraph (String.valueOf(SumProfit/(Thousands)),FooterFont));
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumProfit*Rate/(Thousands)),FooterFont));
                         cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_CENTER);
                         cell.setBackgroundColor (FooterColor);
@@ -703,37 +708,37 @@ int x = 0;
                         cell.setBackgroundColor (FooterColor);
                         table.addCell (cell);
 
-                        cell = new PdfPCell (new Paragraph (String.valueOf(SumPayments/(Thousands)),FooterFont));
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumPayments*Rate/(Thousands)),FooterFont));
                         cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_CENTER);
                         cell.setBackgroundColor (FooterColor);
                         table.addCell (cell);
 
-                        cell = new PdfPCell (new Paragraph (String.valueOf(SumOstAll/(Thousands)),FooterFont));
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumOstAll*Rate/(Thousands)),FooterFont));
                         cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_CENTER);
                         cell.setBackgroundColor (FooterColor);
                         table.addCell (cell);
 
-                        cell = new PdfPCell (new Paragraph (String.valueOf(SumOstMain/(Thousands)),FooterFont));
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumOstMain*Rate/(Thousands)),FooterFont));
                         cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_CENTER);
                         cell.setBackgroundColor (FooterColor);
                         table.addCell (cell);
 
-                        cell = new PdfPCell (new Paragraph (String.valueOf(SumOstPercent/(Thousands)),FooterFont));
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumOstPercent*Rate/(Thousands)),FooterFont));
                         cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_CENTER);
                         cell.setBackgroundColor (FooterColor);
                         table.addCell (cell);
 
-                        cell = new PdfPCell (new Paragraph (String.valueOf(SumOstPenalty/(Thousands)),FooterFont));
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumOstPenalty*Rate/(Thousands)),FooterFont));
                         cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_CENTER);
                         cell.setBackgroundColor (FooterColor);
                         table.addCell (cell);
 
-                        cell = new PdfPCell (new Paragraph (String.valueOf(SumProsAll/(Thousands)),FooterFont));
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumProsAll*Rate/(Thousands)),FooterFont));
                         cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_CENTER);
                         cell.setBackgroundColor (FooterColor);

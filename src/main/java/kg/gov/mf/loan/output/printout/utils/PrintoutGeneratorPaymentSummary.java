@@ -2,9 +2,19 @@ package kg.gov.mf.loan.output.printout.utils;
 
 
 import com.lowagie.text.*;
+import kg.gov.mf.loan.admin.org.model.Department;
+import kg.gov.mf.loan.admin.org.model.Organization;
+import kg.gov.mf.loan.admin.org.model.Staff;
+import kg.gov.mf.loan.admin.org.service.DepartmentService;
+import kg.gov.mf.loan.admin.org.service.OrganizationService;
+import kg.gov.mf.loan.admin.org.service.PersonService;
+import kg.gov.mf.loan.admin.org.service.StaffService;
+import kg.gov.mf.loan.admin.sys.model.User;
+import kg.gov.mf.loan.admin.sys.service.UserService;
 import kg.gov.mf.loan.manage.model.debtor.Debtor;
 import kg.gov.mf.loan.manage.model.loan.Loan;
 import kg.gov.mf.loan.manage.model.process.LoanSummary;
+import kg.gov.mf.loan.manage.service.debtor.DebtorService;
 import kg.gov.mf.loan.manage.service.loan.LoanService;
 import kg.gov.mf.loan.manage.service.process.LoanSummaryService;
 import kg.gov.mf.loan.output.printout.model.PrintoutTemplate;
@@ -15,6 +25,7 @@ import kg.gov.mf.loan.output.report.model.PaymentView;
 import kg.gov.mf.loan.output.report.service.LoanViewService;
 
 import kg.gov.mf.loan.output.report.service.PaymentViewService;
+import kg.gov.mf.loan.output.report.utils.ReportTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -45,6 +56,24 @@ public class PrintoutGeneratorPaymentSummary {
 	@Autowired
     LoanService loanService;
 
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    StaffService staffService;
+
+    @Autowired
+    DebtorService debtorService;
+
+    @Autowired
+    DepartmentService departmentService;
+
+    @Autowired
+    OrganizationService organizationService;
+
+    @Autowired
+    PersonService personService;
+
     public void generatePrintoutByTemplate(PrintoutTemplate printoutTemplate, Date onDate, long objectId, Document document){
 
 
@@ -53,14 +82,32 @@ public class PrintoutGeneratorPaymentSummary {
 
             SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
+            ReportTool reportTool = new ReportTool();
+
+
 
             LoanSummary loanSummary = loanSummaryService.getById(objectId);
+
+
 
             Loan loan = loanSummary.getLoan();
 
 
             Date      tRasDate  = loanSummary.getOnDate();
             long      iCreditID = loan.getId();
+
+            long        iPersonID = loan.getDebtor().getId();
+
+            Debtor debtor =  debtorService.getById(iPersonID);
+
+            User curator = new User();
+
+            Staff curatorStaff = new Staff();
+
+            if(loan.getSupervisorId()>0) curator = userService.findById(loan.getSupervisorId());
+
+            if(curator.getStaff()!=null)
+                curatorStaff = staffService.findById(curator.getStaff().getId());
 
 
             //*********** Document ********************************************************************************
@@ -126,9 +173,11 @@ public class PrintoutGeneratorPaymentSummary {
                 String loanType = "";
 
                 double paymentsSum=0;
-                double paymentsPrincipal=0;
-                double paymentsInterest=0;
-                double paymentsPenalty=0;
+                double paymentsSumInCurrency=0;
+
+                double paymentsPrincipalInCurrency=0;
+                double paymentsInterestInCurrency=0;
+                double paymentsPenaltyInCurrency=0;
 
 
                 for (PaymentView paymentViewInLoop: paymentViews)
@@ -136,7 +185,7 @@ public class PrintoutGeneratorPaymentSummary {
                     debtorName = paymentViewInLoop.getV_debtor_name();
                     loanNumber = paymentViewInLoop.getV_loan_reg_number();
                     loanDate = paymentViewInLoop.getV_loan_reg_date();
-                    loanType = String.valueOf(paymentViewInLoop.getV_loan_type_id());
+                    loanType = reportTool.FormatNumber(paymentViewInLoop.getV_loan_type_id());
                 }
 
 
@@ -212,19 +261,19 @@ public class PrintoutGeneratorPaymentSummary {
                 cell.setBorder(TitleColumnBorder);
                 table.addCell (cell);
 
-                cell = new PdfPCell (new Paragraph ("Вид кредита:",SubTitleFont));
-                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                cell.setPadding(TitleColumnPadding);
-                cell.setBorder(TitleColumnBorder);
-                table.addCell (cell);
-
-                cell = new PdfPCell (new Paragraph (loanType,SubTitleFont));
-                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                cell.setPadding(TitleColumnPadding);
-                cell.setBorder(TitleColumnBorder);
-                table.addCell (cell);
+//                cell = new PdfPCell (new Paragraph ("Вид кредита:",SubTitleFont));
+//                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+//                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+//                cell.setPadding(TitleColumnPadding);
+//                cell.setBorder(TitleColumnBorder);
+//                table.addCell (cell);
+//
+//                cell = new PdfPCell (new Paragraph (loanType,SubTitleFont));
+//                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+//                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+//                cell.setPadding(TitleColumnPadding);
+//                cell.setBorder(TitleColumnBorder);
+//                table.addCell (cell);
 
                 cell = new PdfPCell (new Paragraph (" ",SubTitleFont));
                 cell.setHorizontalAlignment (Element.ALIGN_LEFT);
@@ -304,52 +353,53 @@ public class PrintoutGeneratorPaymentSummary {
                         cell.setBackgroundColor (ColumnColor);
                         table.addCell (cell);
 
-                        cell = new PdfPCell(new Paragraph(pv.getV_payment_date().toString(),ColumnFont));
+                        cell = new PdfPCell(new Paragraph(reportTool.DateToString(pv.getV_payment_date()),ColumnFont));
                         cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                         cell.setBackgroundColor (ColumnColor);
                         table.addCell (cell);
 
-                        cell = new PdfPCell(new Paragraph(String.valueOf(pv.getV_payment_total_amount()),ColumnFont));
+                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_total_amount()),ColumnFont));
                         cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                         cell.setBackgroundColor (ColumnColor);
                         table.addCell (cell);
 
-                        cell = new PdfPCell(new Paragraph(String.valueOf(pv.getV_payment_exchange_rate()),ColumnFont));
+                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_exchange_rate()),ColumnFont));
                         cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                         cell.setBackgroundColor (ColumnColor);
                         table.addCell (cell);
 
-                        cell = new PdfPCell(new Paragraph(String.valueOf(pv.getV_payment_total_amount()),ColumnFont));
+                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_total_amount()/pv.getV_payment_exchange_rate()),ColumnFont));
                         cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                         cell.setBackgroundColor (ColumnColor);
                         table.addCell (cell);
 
-                        cell = new PdfPCell(new Paragraph(String.valueOf(pv.getV_payment_principal()),ColumnFont));
+                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_principal()/pv.getV_payment_exchange_rate()),ColumnFont));
                         cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                         cell.setBackgroundColor (ColumnColor);
                         table.addCell (cell);
 
-                        cell = new PdfPCell(new Paragraph(String.valueOf(pv.getV_payment_interest()),ColumnFont));
+                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_interest()/pv.getV_payment_exchange_rate()),ColumnFont));
                         cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                         cell.setBackgroundColor (ColumnColor);
                         table.addCell (cell);
 
-                        cell = new PdfPCell(new Paragraph(String.valueOf(pv.getV_payment_penalty()),ColumnFont));
+                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_penalty()/pv.getV_payment_exchange_rate()),ColumnFont));
                         cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                         cell.setBackgroundColor (ColumnColor);
                         table.addCell (cell);
 
                         paymentsSum += pv.getV_payment_total_amount();
-                        paymentsPrincipal +=pv.getV_payment_principal();
-                        paymentsInterest +=pv.getV_payment_interest();
-                        paymentsPenalty +=pv.getV_payment_penalty();
+                        paymentsSumInCurrency += pv.getV_payment_total_amount()/pv.getV_payment_exchange_rate();
+                        paymentsPrincipalInCurrency +=pv.getV_payment_principal()/pv.getV_payment_exchange_rate();
+                        paymentsInterestInCurrency +=pv.getV_payment_interest()/pv.getV_payment_exchange_rate();
+                        paymentsPenaltyInCurrency +=pv.getV_payment_penalty()/pv.getV_payment_exchange_rate();
 
 
 
@@ -371,7 +421,7 @@ public class PrintoutGeneratorPaymentSummary {
                 cell.setBackgroundColor (FooterColor);
                 table.addCell (cell);
 
-                cell = new PdfPCell(new Paragraph(String.valueOf(paymentsSum),ColumnFont));
+                cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(paymentsSum),ColumnFont));
                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setBackgroundColor (FooterColor);
@@ -384,25 +434,25 @@ public class PrintoutGeneratorPaymentSummary {
                 table.addCell (cell);
 
 
-                cell = new PdfPCell(new Paragraph(String.valueOf(paymentsSum),ColumnFont));
+                cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(paymentsSumInCurrency),ColumnFont));
                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setBackgroundColor (FooterColor);
                 table.addCell (cell);
 
-                cell = new PdfPCell(new Paragraph(String.valueOf(paymentsPrincipal),ColumnFont));
+                cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(paymentsPrincipalInCurrency),ColumnFont));
                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setBackgroundColor (FooterColor);
                 table.addCell (cell);
 
-                cell = new PdfPCell(new Paragraph(String.valueOf(paymentsInterest),ColumnFont));
+                cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(paymentsInterestInCurrency),ColumnFont));
                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setBackgroundColor (FooterColor);
                 table.addCell (cell);
 
-                cell = new PdfPCell(new Paragraph(String.valueOf(paymentsPenalty),ColumnFont));
+                cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(paymentsPenaltyInCurrency),ColumnFont));
                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setBackgroundColor (FooterColor);
@@ -426,6 +476,23 @@ public class PrintoutGeneratorPaymentSummary {
                         table.setWidths(iColWidth);
                     }
 
+                    Staff debtorResponsible = null;
+                    Staff debtorAccountant  = null;
+
+                    if(debtor.getOwner().getOwnerType().toString()=="ORGANIZATION")
+                    {
+                        Organization organization = organizationService.findById(debtor.getOwner().getEntityId());
+
+                        for (Department department: organization.getDepartment())
+                        {
+                            debtorResponsible = staffService.findAllByDepartment(department).get(0);
+                            debtorAccountant  = staffService.findAllByDepartment(department).get(1);
+                            break;
+                        }
+
+
+                    }
+
                     cell = new PdfPCell (new Paragraph (" ",SubTitleFont));
                     cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                     cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -433,6 +500,8 @@ public class PrintoutGeneratorPaymentSummary {
                     cell.setPadding(FooterColumnPadding);
                     cell.setColspan(2);
                     table.addCell (cell);
+
+
 
                     cell = new PdfPCell (new Paragraph ("ФИО руководителя:",SubTitleFont));
                     cell.setFixedHeight(35);
@@ -442,42 +511,82 @@ public class PrintoutGeneratorPaymentSummary {
                     cell.setPadding(FooterColumnPadding);
                     table.addCell (cell);
 
-                    cell = new PdfPCell (new Paragraph ("responsible",SubTitleFont));
-                    cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                    cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                    cell.setBorder(FooterColumnBorder);
-                    cell.setPadding(FooterColumnPadding);
-                    table.addCell (cell);
 
-                    cell = new PdfPCell (new Paragraph ("Главный бухгалтер:",SubTitleFont));
-                    cell.setFixedHeight(35);
-                    cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                    cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                    cell.setBorder(FooterColumnBorder);
-                    cell.setPadding(FooterColumnPadding);
-                    table.addCell (cell);
+                    if(debtorResponsible!=null)
+                    {
+                        cell = new PdfPCell (new Paragraph (debtorResponsible.getName(),SubTitleFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        cell.setBorder(FooterColumnBorder);
+                        cell.setPadding(FooterColumnPadding);
+                        table.addCell (cell);
+                    }
+                    else
+                    {
+                        cell = new PdfPCell (new Paragraph (debtor.getName(),SubTitleFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        cell.setBorder(FooterColumnBorder);
+                        cell.setPadding(FooterColumnPadding);
+                        table.addCell (cell);
 
-                    cell = new PdfPCell (new Paragraph ("accountant",SubTitleFont));
-                    cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                    cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                    cell.setBorder(FooterColumnBorder);
-                    cell.setPadding(FooterColumnPadding);
-                    table.addCell (cell);
+                    }
 
-                    cell = new PdfPCell (new Paragraph ("Куратор:",SubTitleFont));
-                    cell.setFixedHeight(35);
-                    cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                    cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                    cell.setBorder(FooterColumnBorder);
-                    cell.setPadding(FooterColumnPadding);
-                    table.addCell (cell);
+                    if(debtorAccountant!=null)
+                    {
+                        cell = new PdfPCell (new Paragraph ("Главный бухгалтер:",SubTitleFont));
+                        cell.setFixedHeight(35);
+                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        cell.setBorder(FooterColumnBorder);
+                        cell.setPadding(FooterColumnPadding);
+                        table.addCell (cell);
 
-                    cell = new PdfPCell (new Paragraph ("curator" ,SubTitleFont));
-                    cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                    cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                    cell.setPadding(FooterColumnPadding);
-                    cell.setBorder(FooterColumnBorder);
-                    table.addCell (cell);
+                        cell = new PdfPCell (new Paragraph (debtorAccountant.getName(),SubTitleFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        cell.setBorder(FooterColumnBorder);
+                        cell.setPadding(FooterColumnPadding);
+                        table.addCell (cell);
+
+                    }
+                    else
+                    {
+                        cell = new PdfPCell (new Paragraph ("",SubTitleFont));
+                        cell.setFixedHeight(35);
+                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        cell.setBorder(FooterColumnBorder);
+                        cell.setPadding(FooterColumnPadding);
+                        table.addCell (cell);
+
+                        cell = new PdfPCell (new Paragraph ("",SubTitleFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        cell.setBorder(FooterColumnBorder);
+                        cell.setPadding(FooterColumnPadding);
+                        table.addCell (cell);
+
+
+                    }
+
+                    if(curatorStaff.getId()>0)
+                    {
+                        cell = new PdfPCell (new Paragraph ("Куратор:",SubTitleFont));
+                        cell.setFixedHeight(35);
+                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        cell.setBorder(FooterColumnBorder);
+                        cell.setPadding(FooterColumnPadding);
+                        table.addCell (cell);
+
+                        cell = new PdfPCell (new Paragraph (curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getFirstname().substring(0,1)+" "+curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getLastname(),SubTitleFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        cell.setPadding(FooterColumnPadding);
+                        cell.setBorder(FooterColumnBorder);
+                        table.addCell (cell);
+                    }
 
                     document.add(table);
                 }
