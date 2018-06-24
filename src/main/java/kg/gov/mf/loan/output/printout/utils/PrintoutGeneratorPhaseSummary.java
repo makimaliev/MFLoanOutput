@@ -431,7 +431,7 @@ public class PrintoutGeneratorPhaseSummary {
 
                         loanIds.add(iCreditID);
 
-                        parameterL.put("loan",Ids);
+                        parameterL.put("loan",loanIds);
 
                         LoanView loanView = loanViewService.findByParameter(parameterL).get(0);
 
