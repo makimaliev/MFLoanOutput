@@ -15,7 +15,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import java.util.List;
 
 
-public class ReportGeneratorLoan {
+public class ReportGeneratorLoan extends ReportGenerator {
 	
 	/**
      * Report GENERATION TOOL

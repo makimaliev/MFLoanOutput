@@ -13,7 +13,8 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import java.util.List;
 
 
-public class ReportGeneratorLoanSummary {
+public class ReportGeneratorLoanSummary extends ReportGenerator
+{
 	
 	/**
      * Report GENERATION TOOL
@@ -1494,14 +1495,4 @@ public class ReportGeneratorLoanSummary {
         return WorkBook;
 
     }
-
-
-    public List<LoanView> getLoanViewByTemplate(ReportTemplate reportTemplate)
-    {
-
-        return this.loanViewService.findAll();
-    }
-
-
-
 }

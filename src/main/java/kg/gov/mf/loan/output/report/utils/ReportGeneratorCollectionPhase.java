@@ -13,7 +13,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import java.util.List;
 
 
-public class ReportGeneratorCollectionPhase {
+public class ReportGeneratorCollectionPhase extends ReportGenerator{
 	
 	/**
      * Report GENERATION TOOL
