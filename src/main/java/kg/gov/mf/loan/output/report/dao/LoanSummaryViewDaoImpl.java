@@ -2,6 +2,7 @@ package kg.gov.mf.loan.output.report.dao;
 
 import kg.gov.mf.loan.output.report.model.LoanSummaryView;
 import kg.gov.mf.loan.output.report.utils.PaymentReportDataManager;
+import kg.gov.mf.loan.output.report.utils.ReportTool;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -158,7 +159,7 @@ public class LoanSummaryViewDaoImpl implements LoanSummaryViewDao {
 					for (Long id:ids
 						 )
 					{
-						switch(paymentReportDataManager.getParameterTypeNameById(id.toString()))
+						switch(new ReportTool().getParameterTypeNameById(id.toString()))
 						{
 							case "region":
 								criteria.addOrder(Order.asc("v_debtor_region_id"));

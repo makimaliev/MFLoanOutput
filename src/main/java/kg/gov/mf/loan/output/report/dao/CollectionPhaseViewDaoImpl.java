@@ -2,6 +2,7 @@ package kg.gov.mf.loan.output.report.dao;
 
 import kg.gov.mf.loan.output.report.model.CollectionPhaseView;
 import kg.gov.mf.loan.output.report.utils.CollectionPhaseReportDataManager;
+import kg.gov.mf.loan.output.report.utils.ReportTool;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -152,7 +153,7 @@ public class CollectionPhaseViewDaoImpl implements CollectionPhaseViewDao {
 						 )
 					{
 
-						switch(collectionPhaseReportDataManager.getParameterTypeNameById(id.toString()))
+						switch(new ReportTool().getParameterTypeNameById(id.toString()))
 						{
 							case "region":
 								criteria.addOrder(Order.asc("v_debtor_region_id"));

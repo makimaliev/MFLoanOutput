@@ -2,6 +2,7 @@ package kg.gov.mf.loan.output.report.dao;
 
 import kg.gov.mf.loan.output.report.model.EntityDocumentView;
 import kg.gov.mf.loan.output.report.utils.PaymentReportDataManager;
+import kg.gov.mf.loan.output.report.utils.ReportTool;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -118,71 +119,62 @@ public class EntityDocumentViewDaoImpl implements EntityDocumentViewDao {
 			switch(paramaterType)
 			{
 				case "region":
-					criteria.add(Restrictions.in("v_debtor_region_id",ids));
+					criteria.add(Restrictions.in("v_owner_region_id",ids));
 					break;
 				case "district":
-					criteria.add(Restrictions.in("v_debtor_district_id",ids));
+					criteria.add(Restrictions.in("v_owner_district_id",ids));
 					break;
-				case "debtor":
-					criteria.add(Restrictions.in("v_debtor_id",ids));
+				case "credit_order":
+					criteria.add(Restrictions.in("v_co_id",ids));
 					break;
-				case "loan":
-					criteria.add(Restrictions.in("v_loan_id",ids));
-					break;
-				case "payment":
-					criteria.add(Restrictions.in("v_payment_id",ids));
-					break;
-				case "paymentDateFrom":
-					criteria.add(Restrictions.ge("v_payment_date",new Date((ids.get(0)))));
-					System.out.println(new Date((ids.get(0))));
-					break;
-				case "paymentDateTo":
-					criteria.add(Restrictions.lt("v_payment_date",new Date((ids.get(0)))));
-					System.out.println(new Date((ids.get(0))));
+				case "applied_entity_list":
+					criteria.add(Restrictions.in("v_ael_id",ids));
 					break;
 
-				case "onDate":
-					criteria.add(Restrictions.le("v_ls_onDate",new Date((ids.get(0)))));
+				case "applied_entity":
+					criteria.add(Restrictions.in("v_applied_entity_id",ids));
 					break;
 
-				case "betweenDates":
-					criteria.add(Restrictions.ge("v_ls_onDate",new Date((ids.get(0)))));
-					criteria.add(Restrictions.le("v_ls_onDate",new Date((ids.get(1)))));
+				case "document_package":
+					criteria.add(Restrictions.in("v_document_package_id",ids));
 					break;
 
-
-				case "work_sector":
-					criteria.add(Restrictions.in("v_debtor_work_sector_id",ids));
+				case "entity_document":
+					criteria.add(Restrictions.in("v_entity_document_id",ids));
 					break;
+
 				case "orderBy":
 					for (Long id:ids
 						 )
 					{
-						switch(paymentReportDataManager.getParameterTypeNameById(id.toString()))
+						switch(new ReportTool().getParameterTypeNameById(id.toString()))
 						{
 							case "region":
-								criteria.addOrder(Order.asc("v_debtor_region_id"));
+								criteria.addOrder(Order.asc("v_owner_region_id"));
 								break;
 							case "district":
-								criteria.addOrder(Order.asc("v_debtor_district_id"));
+								criteria.addOrder(Order.asc("v_owner_district_id"));
 								break;
-							case "debtor":
-								criteria.addOrder(Order.asc("v_debtor_name"));
+							case "credit_order":
+								criteria.addOrder(Order.asc("v_co_id"));
 								break;
-							case "loan":
-								criteria.addOrder(Order.asc("v_loan_id"));
+							case "applied_entity_list":
+								criteria.addOrder(Order.asc("v_ael_id"));
 								break;
-							case "payment":
-								criteria.addOrder(Order.asc("v_payment_id"));
+							case "applied_entity":
+								criteria.addOrder(Order.asc("v_applied_entity_id"));
 								break;
-							case "work_sector":
-								criteria.addOrder(Order.asc("v_debtor_work_sector_id"));
+							case "document_package":
+								criteria.addOrder(Order.asc("v_document_package_id"));
 								break;
+
+							case "entity_document":
+								criteria.addOrder(Order.asc("v_entity_document_id"));
+								break;
+
 						}
 
 					}
-
-					criteria.addOrder(Order.asc("v_ls_onDate"));
 
 					break;
 

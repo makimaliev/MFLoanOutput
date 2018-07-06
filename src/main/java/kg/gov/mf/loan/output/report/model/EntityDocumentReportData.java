@@ -1,175 +1,154 @@
 package kg.gov.mf.loan.output.report.model;
 
-import org.hibernate.annotations.Immutable;
-import org.springframework.format.annotation.DateTimeFormat;
+import java.sql.Date;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 
-import javax.persistence.*;
-import java.util.Date;
 
-@Entity
-@Table(name="entity_document_view")
-@Immutable
-public class EntityDocumentView
+public class EntityDocumentReportData extends ReportData
 {
+	private EntityDocumentReportData Parent                = null;
+	private LinkedList<EntityDocumentReportData> ChildDataList = null;
+
+	private short  Level             = 0;
+
+	private String Name                 = "";
+
+	private LinkedHashSet<EntityDocumentView> entityDocumentViews = new LinkedHashSet<EntityDocumentView>(0);
 
 
-	@Id
-	@Column
+
+	private Date   onDate         = null;
+
+
+
+
+
+	//*************************************************************
+
+
 	private long v_entity_document_id;
-
-	@Column
 	private String v_entity_document_name;
-
-
-	@Column
 	private long v_entity_document_approvedBy;
-
-	@DateTimeFormat(pattern = "dd.mm.yyyy")
-	@Temporal(TemporalType.DATE)
 	private Date v_entity_document_approvedDate;
-
-	@Column
 	private String v_entity_document_approvedDescription;
-
-	@Column
 	private long v_entity_document_completedBy;
-
-	@DateTimeFormat(pattern = "dd.mm.yyyy")
-	@Temporal(TemporalType.DATE)
 	private Date v_entity_document_completedDate;
-
-	@Column
 	private String v_entity_document_completedDescription;
-
-
-	@Column
 	private long v_entity_document_entityDocumentStateId;
-
-	@Column
 	private long v_entity_document_documentTypeId;
-
-	@Column
 	private long v_entity_document_documentPackageId;
-
-    @Column
-    private long v_document_package_id;
-
-
-    @Column
 	private String v_document_package_name;
-
-	@DateTimeFormat(pattern = "dd.mm.yyyy")
-	@Temporal(TemporalType.DATE)
 	private Date v_document_package_approvedDate;
-
-	@Column
 	private Double v_document_package_approvedRatio;
-
-	@DateTimeFormat(pattern = "dd.mm.yyyy")
-	@Temporal(TemporalType.DATE)
 	private Date v_document_package_completedDate;
-
-	@Column
 	private Double v_document_package_completedRatio;
-
-	@Column
 	private long v_document_package_documentPackageStateId;
-
-	@Column
 	private long v_document_package_documentPackageTypeId;
-
-	@Column
 	private long v_applied_entity_appliedEntityStateId;
-
-
-	@Column
 	private long v_applied_entity_ownerId;
-
-    @Column
-    private long v_applied_entity_id;
-
-
-    @Column
 	private long v_owner_address_id;
-
-	@Column
 	private long v_owner_region_id;
-
-
-	@Column
 	private long v_owner_district_id;
-
-
-	@Column
 	private long v_owner_aokmotu_id;
-
-
-	@Column
 	private long v_owner_village_id;
-
-	@Column
 	private long v_owner_entityId;
-
-	@Column
 	private String v_owner_ownerType;
-
-	@Column
 	private String v_owner_name;
-
-
-	@Column
 	private long v_ael_id;
-
-	@DateTimeFormat(pattern = "dd.mm.yyyy")
-	@Temporal(TemporalType.DATE)
 	private Date v_ael_listDate;
-
-	@Column
 	private String v_ael_listNumber;
-
-
-	@Column
 	private long v_ael_appliedEntityListStateId;
-
-
-	@Column
 	private long v_ael_appliedEntityListTypeId;
-
-
-	@Column
 	private long v_co_id;
-
-	@DateTimeFormat(pattern = "dd.mm.yyyy")
-	@Temporal(TemporalType.DATE)
 	private Date v_co_regDate;
-
-	@Column
 	private String v_co_regNumber;
-
-	@Column
 	private long v_co_creditOrderStateId;
-
-	@Column
 	private long v_co_creditOrderTypeId;
 
 
-    public long getV_document_package_id() {
-        return v_document_package_id;
-    }
+	public EntityDocumentReportData()
+	{
+		ChildDataList = new LinkedList<EntityDocumentReportData>();
+	}
 
-    public void setV_document_package_id(long v_document_package_id) {
-        this.v_document_package_id = v_document_package_id;
-    }
 
-    public long getV_applied_entity_id() {
-        return v_applied_entity_id;
-    }
+	public EntityDocumentReportData addChild()
+	{
+		EntityDocumentReportData ChildData = new EntityDocumentReportData();
+		ChildData.setParent(this);
+		ChildDataList.add(ChildData);
 
-    public void setV_applied_entity_id(long v_applied_entity_id) {
-        this.v_applied_entity_id = v_applied_entity_id;
-    }
+		return ChildData;
+	}
 
-    public long getV_entity_document_id() {
+
+	public EntityDocumentReportData[] getChilds()
+	{
+		return  (EntityDocumentReportData[])ChildDataList.toArray(new EntityDocumentReportData[ChildDataList.size()]);
+	}
+
+
+	public LinkedList<EntityDocumentReportData> getChildDataList() {
+		return ChildDataList;
+	}
+
+	public void setChildDataList(LinkedList<EntityDocumentReportData> childDataList) {
+		ChildDataList = childDataList;
+	}
+
+	public LinkedList<EntityDocumentReportData> getData()
+	{
+		return ChildDataList;
+	}
+
+	public void setData(LinkedList<EntityDocumentReportData> data)
+	{
+		ChildDataList = data;
+	}
+
+	public Date getOnDate() {
+		return onDate;
+	}
+
+	public void setOnDate(Date onDate) {
+		this.onDate = onDate;
+	}
+
+	public String getName()
+	{
+		return Name;
+	}
+	public void setName(String name)
+	{
+		Name = name;
+	}
+	public EntityDocumentReportData getParent()
+	{
+		return Parent;
+	}
+	public void setParent(EntityDocumentReportData parent)
+	{
+		Parent = parent;
+	}
+
+	public short getLevel() {
+		return Level;
+	}
+
+	public void setLevel(short level) {
+		Level = level;
+	}
+
+	public LinkedHashSet<EntityDocumentView> getEntityDocumentViews() {
+		return entityDocumentViews;
+	}
+
+	public void setEntityDocumentViews(LinkedHashSet<EntityDocumentView> entityDocumentViews) {
+		this.entityDocumentViews = entityDocumentViews;
+	}
+
+	public long getV_entity_document_id() {
 		return v_entity_document_id;
 	}
 

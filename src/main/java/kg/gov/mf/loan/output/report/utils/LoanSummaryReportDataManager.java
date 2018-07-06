@@ -30,17 +30,37 @@ public class LoanSummaryReportDataManager {
 
         Set<LoanSummaryView> loanSummaryViews =  new HashSet<LoanSummaryView>();
 
-        Date onDate = this.getOnDate(reportTemplate);
+        ReportTool reportTool = new ReportTool();
+
+
+        Date onDate = reportTool.getOnDate(reportTemplate);
 
         LinkedHashMap<String,List<Long>> parameterS = new LinkedHashMap<String,List<Long>>();
 
         List<Long> groupIds = new ArrayList<>();
 
-        groupIds.add(getGroupType(reportTemplate,1));
-        groupIds.add(getGroupType(reportTemplate,2));
-        groupIds.add(getGroupType(reportTemplate,3));
-        groupIds.add(getGroupType(reportTemplate,4));
-        groupIds.add((long)12);
+        if(reportTool.getGroupType(reportTemplate,1)>0)
+            groupIds.add(reportTool.getGroupType(reportTemplate,1));
+
+        if(reportTool.getGroupType(reportTemplate,2)>0)
+            groupIds.add(reportTool.getGroupType(reportTemplate,2));
+
+        if(reportTool.getGroupType(reportTemplate,3)>0)
+            groupIds.add(reportTool.getGroupType(reportTemplate,3));
+
+
+        if(reportTool.getGroupType(reportTemplate,4)>0)
+            groupIds.add(reportTool.getGroupType(reportTemplate,4));
+
+
+        if(reportTool.getGroupType(reportTemplate,5)>0)
+            groupIds.add(reportTool.getGroupType(reportTemplate,5));
+
+
+        if(reportTool.getGroupType(reportTemplate,6)>0)
+            groupIds.add(reportTool.getGroupType(reportTemplate,6));
+
+
 
         for (FilterParameter filterParameter: reportTemplate.getFilterParameters())
         {
@@ -56,7 +76,7 @@ public class LoanSummaryReportDataManager {
                     Ids.add(Long.parseLong(objectListValue.getName()));
                 }
 
-                parameterS.put(getParameterTypeNameById(String.valueOf(objectList.getObjectTypeId())),Ids);
+                parameterS.put(reportTool.getParameterTypeNameById(String.valueOf(objectList.getObjectTypeId())),Ids);
             }
 
             if(filterParameter.getFilterParameterType().name()=="CONTENT_COMPARE")
@@ -108,11 +128,11 @@ public class LoanSummaryReportDataManager {
 
         }
 
-        long groupAtype = getGroupType(reportTemplate,1);
-        long groupBtype = getGroupType(reportTemplate,2);
-        long groupCtype = getGroupType(reportTemplate,3);
-        long groupDtype = getGroupType(reportTemplate,4);
-        long groupEtype = getGroupType(reportTemplate,12);
+        long groupAtype = reportTool.getGroupType(reportTemplate,1);
+        long groupBtype = reportTool.getGroupType(reportTemplate,2);
+        long groupCtype = reportTool.getGroupType(reportTemplate,3);
+        long groupDtype = reportTool.getGroupType(reportTemplate,4);
+        long groupEtype = 9;
 
 
 
@@ -127,35 +147,17 @@ public class LoanSummaryReportDataManager {
 
         ArrayList<LoanSummaryView> allLoanSummaryViews = new ArrayList<LoanSummaryView>();
 
-        for (LoanSummaryView loanSummaryViewInLoop: reportData.getLoanSummaryViews()
-             )
-        {
-            System.out.println(
-                    loanSummaryViewInLoop.getV_debtor_region_id() +" "+
-                    loanSummaryViewInLoop.getV_debtor_district_id()+" "+
-                    loanSummaryViewInLoop.getV_debtor_id()+" "+
-                    loanSummaryViewInLoop.getV_loan_id()+" "+
-                            loanSummaryViewInLoop.getV_ls_id());
-
-
-//            System.out.println(
-//                    loanSummaryViewInLoop.getV_region_name() +" "+
-//                            loanSummaryViewInLoop.getV_district_name()+" "+
-//                            loanSummaryViewInLoop.getV_debtor_name()+" "+
-//                            loanSummaryViewInLoop.getV_credit_order_regNumber()+ " от "+
-//                            loanSummaryViewInLoop.getV_credit_order_regDate()+ ", "+
-//                            loanSummaryViewInLoop.getV_loan_reg_number()+ " от " +
-//                            loanSummaryViewInLoop.getV_loan_reg_date()+" "+
-//                            loanSummaryViewInLoop.getV_payment_number()+" "+
-//                            loanSummaryViewInLoop.getV_payment_date()+" "+
-//                            loanSummaryViewInLoop.getV_payment_total_amount());
-        }
-
-        return groupifyData(reportData,groupIds);
+        return groupifyData(reportData,groupIds,reportTemplate);
     }
 
-    public LoanSummaryReportData groupifyData(LoanSummaryReportData reportData, List<Long> groupIds)
+    public LoanSummaryReportData groupifyData(LoanSummaryReportData reportData, List<Long> groupIds,ReportTemplate reportTemplate)
     {
+
+        ReportTool reportTool = new ReportTool();
+
+        reportTool.initReference();
+
+
 
         long groupAid=0;
         long groupBid=0;
@@ -163,6 +165,36 @@ public class LoanSummaryReportDataManager {
         long groupDid=0;
         long groupEid=0;
         long groupFid=0;
+
+        long currentgroupAid=-1;
+        long currentgroupBid=-1;
+        long currentgroupCid=-1;
+        long currentgroupDid=-1;
+        long currentgroupEid=-1;
+        long currentgroupFid=-1;
+
+
+        if(reportTool.getGroupType(reportTemplate,1)>0)
+            groupAid = reportTool.getGroupType(reportTemplate,1);
+
+
+        if(reportTool.getGroupType(reportTemplate,2)>0)
+            groupBid = reportTool.getGroupType(reportTemplate,2);
+
+        if(reportTool.getGroupType(reportTemplate,3)>0)
+            groupCid = reportTool.getGroupType(reportTemplate,3);
+
+
+        if(reportTool.getGroupType(reportTemplate,4)>0)
+            groupDid = reportTool.getGroupType(reportTemplate,4);
+
+
+        if(reportTool.getGroupType(reportTemplate,5)>0)
+            groupEid = reportTool.getGroupType(reportTemplate,5);
+
+
+        if(reportTool.getGroupType(reportTemplate,6)>0)
+            groupFid = reportTool.getGroupType(reportTemplate,6);
 
         LoanSummaryReportData childA = null;
         LoanSummaryReportData childB = null;
@@ -187,31 +219,30 @@ public class LoanSummaryReportDataManager {
         double lastInteresOverdue = 0;
         double lastPenaltyOverdue = 0;
 
-
         for (LoanSummaryView loanSummaryView:reportData.getLoanSummaryViews())
         {
-            if(this.getIdByGroupType(groupIds.get(0),loanSummaryView)!=groupAid)
+            if(reportTool.getIdByGroupType(groupAid,loanSummaryView)!=currentgroupAid)
             {
                 childA = reportData.addChild();
-                childA.setName(this.getNameByGroupType(1,loanSummaryView));
+                childA.setName(reportTool.getNameByGroupType(groupAid,loanSummaryView));
                 childA.setLevel((short)1);
 
-                groupAid=this.getIdByGroupType(groupIds.get(0),loanSummaryView);
+                currentgroupAid=reportTool.getIdByGroupType(groupAid,loanSummaryView);
             }
 
-            if(this.getIdByGroupType(groupIds.get(1),loanSummaryView)!=groupBid)
+            if(reportTool.getIdByGroupType(groupBid,loanSummaryView)!=currentgroupBid)
             {
                 childB = childA.addChild();
-                childB.setName(this.getNameByGroupType(2,loanSummaryView));
+                childB.setName(reportTool.getNameByGroupType(groupBid,loanSummaryView));
                 childB.setLevel((short)2);
 
-                groupBid=this.getIdByGroupType(groupIds.get(1),loanSummaryView);
+                currentgroupBid=reportTool.getIdByGroupType(groupBid,loanSummaryView);
             }
 
-            if(this.getIdByGroupType(groupIds.get(2),loanSummaryView)!=groupCid)
+            if(reportTool.getIdByGroupType(groupCid,loanSummaryView)!=currentgroupCid)
             {
                 childC = childB.addChild();
-                childC.setName(this.getNameByGroupType(3,loanSummaryView));
+                childC.setName(reportTool.getNameByGroupType(groupCid,loanSummaryView));
                 childC.setLevel((short)3);
 
                 childC.setCount(1);
@@ -219,15 +250,15 @@ public class LoanSummaryReportDataManager {
                 childA.setCount(childA.getCount()+1);
                 reportData.setCount(reportData.getCount()+1);
 
-                groupCid=this.getIdByGroupType(groupIds.get(2),loanSummaryView);
+                currentgroupCid=reportTool.getIdByGroupType(groupCid,loanSummaryView);
             }
 
-            if(this.getIdByGroupType(groupIds.get(3),loanSummaryView)!=groupDid)
+            if(reportTool.getIdByGroupType(groupDid,loanSummaryView)!=currentgroupDid)
             {
                 LoanSummaryView lv = loanSummaryView;
 
                 childD = childC.addChild();
-                childD.setName(this.getNameByGroupType(4,loanSummaryView));
+                childD.setName(reportTool.getNameByGroupType(groupDid,loanSummaryView));
                 childD.setLevel((short)4);
 
 
@@ -249,16 +280,7 @@ public class LoanSummaryReportDataManager {
 
                 childD.setLoanType((short)lv.getV_loan_type_id());
 
-//                if(lv.getV_loan_amount()>0)
-//                {
-//                    childD.setLoanAmount(lv.getV_loan_amount());
-//                    childC.setLoanAmount(childC.getLoanAmount()+lv.getV_loan_amount());
-//                    childB.setLoanAmount(childB.getLoanAmount()+lv.getV_loan_amount());
-//                    childA.setLoanAmount(childA.getLoanAmount()+lv.getV_loan_amount());
-//                    reportData.setLoanAmount(reportData.getLoanAmount()+lv.getV_loan_amount());
-//                }
-
-                groupDid=this.getIdByGroupType(groupIds.get(3),loanSummaryView);
+                currentgroupDid=reportTool.getIdByGroupType(groupDid,loanSummaryView);
 
                 lastLoanAmount = 0;
 
@@ -275,7 +297,7 @@ public class LoanSummaryReportDataManager {
                 lastPenaltyOverdue = 0;
             }
 
-            if(this.getIdByGroupType(groupIds.get(4),loanSummaryView)!=groupEid)
+            if(reportTool.getIdByGroupType(groupEid,loanSummaryView)!=currentgroupEid)
             {
                 LoanSummaryView pv = loanSummaryView;
 
@@ -322,7 +344,7 @@ public class LoanSummaryReportDataManager {
                 if(pv.getV_ls_totalDisbursed()>=0)
                 {
 
-                    reportData.setTotalDisbursment(reportData.getTotalDisbursment()-childE.getTotalDisbursment()+pv.getV_ls_totalDisbursed());
+                    reportData.setTotalDisbursment(reportData.getTotalDisbursment()-lastDisbursement+pv.getV_ls_totalDisbursed());
 
                     childA.setTotalDisbursment(childA.getTotalDisbursment()-lastDisbursement+pv.getV_ls_totalDisbursed());
 
@@ -549,7 +571,7 @@ public class LoanSummaryReportDataManager {
 
 
 
-                groupEid=this.getIdByGroupType(groupIds.get(4),loanSummaryView);
+                currentgroupEid=reportTool.getIdByGroupType(groupEid,loanSummaryView);
             }
 
 
@@ -559,156 +581,7 @@ public class LoanSummaryReportDataManager {
         return reportData;
     }
 
-    public Date getOnDate(ReportTemplate reportTemplate)
-    {
-
-        Date date = new Date();
-        for (GenerationParameter generationParameter: reportTemplate.getGenerationParameters())
-        {
-            if(generationParameter.getGenerationParameterType().getId()==1)
-            {
-                date = generationParameter.getDate();
-            }
-        }
-
-        return date;
-    }
 
 
-    public String getParameterTypeNameById(String id)
-    {
-        String parameterTypeName = "";
-
-
-        switch(id)
-        {
-            case "1":
-                return "region";
-            case "2":
-                return "district";
-            case "3":
-                return "debtor";
-            case "4":
-                return "loan";
-            case "5":
-                return "payment";
-            case "6":
-                return "work_sector";
-            case "7":
-                return "supervisor";
-            case "8":
-                return "loan_type";
-            case "9":
-                return "department";
-
-            case "10":
-                return "collateral_agreement";
-
-            case "11":
-                return "collateral_item";
-
-            case "12":
-                return "loan_summary";
-
-
-
-        }
-
-
-
-        return parameterTypeName;
-    }
-
-    public long getGroupType(ReportTemplate reportTemplate,long level)
-    {
-        long groupType=0;
-
-        for (GenerationParameter generationParameter:reportTemplate.getGenerationParameters())
-        {
-            if(generationParameter.getGenerationParameterType().getId()==level+3)
-            {
-                groupType = generationParameter.getPostionInList();
-            }
-        }
-
-        return  groupType;
-    }
-
-
-    public long getIdByGroupType(long groupType, LoanSummaryView loanSummaryView)
-    {
-        long idByGroupType=0;
-
-        switch((short)groupType)
-        {
-            case 1:
-                idByGroupType = loanSummaryView.getV_debtor_region_id();
-                break;
-            case 2:
-                idByGroupType = loanSummaryView.getV_debtor_district_id();
-                break;
-            case 3:
-                idByGroupType = loanSummaryView.getV_debtor_id();
-                break;
-            case 4:
-                idByGroupType = loanSummaryView.getV_loan_id();
-                break;
-            case 12:
-                idByGroupType = loanSummaryView.getV_ls_id();
-                break;
-            case 6:
-                idByGroupType = loanSummaryView.getV_debtor_work_sector_id();
-                break;
-
-
-
-
-
-
-        }
-
-        return  idByGroupType;
-    }
-
-    public String getNameByGroupType(long groupType, LoanSummaryView loanSummaryView)
-    {
-        String nameByGroupType="";
-
-        switch((short)groupType)
-        {
-            case 1:
-                nameByGroupType = loanSummaryView.getV_region_name();
-                break;
-            case 2:
-                nameByGroupType = loanSummaryView.getV_district_name();
-                break;
-            case 3:
-                nameByGroupType = loanSummaryView.getV_debtor_name();
-                break;
-            case 4:
-                nameByGroupType =loanSummaryView.getV_credit_order_regNumber()
-                                + " от "
-                                + loanSummaryView.getV_credit_order_regDate()
-                                + ", "
-                                + loanSummaryView.getV_loan_reg_number()
-                                + " от "
-                                + loanSummaryView.getV_loan_reg_date();
-                break;
-            case 12:
-                nameByGroupType = " расчет";
-                break;
-            case 6:
-                nameByGroupType = loanSummaryView.getV_work_sector_name();
-                break;
-
-
-
-
-
-
-        }
-
-        return  nameByGroupType;
-    }
 
 }

@@ -32,17 +32,35 @@ public class PaymentReportDataManager {
 
         Set<PaymentView> paymentViews =  new HashSet<PaymentView>();
 
+        ReportTool reportTool = new ReportTool();
+
         Date onDate = this.getOnDate(reportTemplate);
 
         LinkedHashMap<String,List<Long>> parameterS = new LinkedHashMap<String,List<Long>>();
 
         List<Long> groupIds = new ArrayList<>();
 
-        groupIds.add(getGroupType(reportTemplate,1));
-        groupIds.add(getGroupType(reportTemplate,2));
-        groupIds.add(getGroupType(reportTemplate,3));
-        groupIds.add(getGroupType(reportTemplate,4));
-        groupIds.add((long)5);
+        if(reportTool.getGroupType(reportTemplate,1)>0)
+            groupIds.add(reportTool.getGroupType(reportTemplate,1));
+
+        if(reportTool.getGroupType(reportTemplate,2)>0)
+            groupIds.add(reportTool.getGroupType(reportTemplate,2));
+
+        if(reportTool.getGroupType(reportTemplate,3)>0)
+            groupIds.add(reportTool.getGroupType(reportTemplate,3));
+
+
+        if(reportTool.getGroupType(reportTemplate,4)>0)
+            groupIds.add(reportTool.getGroupType(reportTemplate,4));
+
+
+        if(reportTool.getGroupType(reportTemplate,5)>0)
+            groupIds.add(reportTool.getGroupType(reportTemplate,5));
+
+
+        if(reportTool.getGroupType(reportTemplate,6)>0)
+            groupIds.add(reportTool.getGroupType(reportTemplate,6));
+
 
         for (FilterParameter filterParameter: reportTemplate.getFilterParameters())
         {
@@ -58,7 +76,7 @@ public class PaymentReportDataManager {
                     Ids.add(Long.parseLong(objectListValue.getName()));
                 }
 
-                parameterS.put(getParameterTypeNameById(String.valueOf(objectList.getObjectTypeId())),Ids);
+                parameterS.put(reportTool.getParameterTypeNameById(String.valueOf(objectList.getObjectTypeId())),Ids);
             }
 
             if(filterParameter.getFilterParameterType().name()=="CONTENT_COMPARE")
@@ -93,13 +111,6 @@ public class PaymentReportDataManager {
 
         }
 
-        long groupAtype = getGroupType(reportTemplate,1);
-        long groupBtype = getGroupType(reportTemplate,2);
-        long groupCtype = getGroupType(reportTemplate,3);
-        long groupDtype = getGroupType(reportTemplate,4);
-        long groupEtype = getGroupType(reportTemplate,5);
-
-
 
         // initial filter by report filter parameters
 
@@ -122,32 +133,32 @@ public class PaymentReportDataManager {
                     paymentViewInLoop.getV_loan_id()+" "+
                             paymentViewInLoop.getV_payment_id());
 
-
-//            System.out.println(
-//                    paymentViewInLoop.getV_region_name() +" "+
-//                            paymentViewInLoop.getV_district_name()+" "+
-//                            paymentViewInLoop.getV_debtor_name()+" "+
-//                            paymentViewInLoop.getV_credit_order_regNumber()+ " от "+
-//                            paymentViewInLoop.getV_credit_order_regDate()+ ", "+
-//                            paymentViewInLoop.getV_loan_reg_number()+ " от " +
-//                            paymentViewInLoop.getV_loan_reg_date()+" "+
-//                            paymentViewInLoop.getV_payment_number()+" "+
-//                            paymentViewInLoop.getV_payment_date()+" "+
-//                            paymentViewInLoop.getV_payment_total_amount());
         }
 
-        return groupifyData(reportData,groupIds);
+        return groupifyData(reportData,groupIds,reportTemplate);
     }
 
-    public PaymentReportData groupifyData(PaymentReportData reportData, List<Long> groupIds)
+    public PaymentReportData groupifyData(PaymentReportData reportData, List<Long> groupIds,ReportTemplate reportTemplate)
     {
 
-        long groupAid=0;
-        long groupBid=0;
-        long groupCid=0;
-        long groupDid=0;
-        long groupEid=0;
-        long groupFid=0;
+        ReportTool reportTool = new ReportTool();
+
+        reportTool.initReference();
+
+
+        long groupAid=-1;
+        long groupBid=-1;
+        long groupCid=-1;
+        long groupDid=-1;
+        long groupEid=-1;
+        long groupFid=-1;
+
+        long currentgroupAid=-1;
+        long currentgroupBid=-1;
+        long currentgroupCid=-1;
+        long currentgroupDid=-1;
+        long currentgroupEid=-1;
+        long currentgroupFid=-1;
 
         PaymentReportData childA = null;
         PaymentReportData childB = null;
@@ -157,30 +168,56 @@ public class PaymentReportDataManager {
         PaymentReportData childF = null;
 
 
+        if(reportTool.getGroupType(reportTemplate,1)>0)
+            groupAid = reportTool.getGroupType(reportTemplate,1);
+
+
+        if(reportTool.getGroupType(reportTemplate,2)>0)
+            groupBid = reportTool.getGroupType(reportTemplate,2);
+
+        if(reportTool.getGroupType(reportTemplate,3)>0)
+            groupCid = reportTool.getGroupType(reportTemplate,3);
+
+
+        if(reportTool.getGroupType(reportTemplate,4)>0)
+            groupDid = reportTool.getGroupType(reportTemplate,4);
+
+
+        if(reportTool.getGroupType(reportTemplate,5)>0)
+            groupEid = reportTool.getGroupType(reportTemplate,5);
+
+
+        if(reportTool.getGroupType(reportTemplate,6)>0)
+            groupFid = reportTool.getGroupType(reportTemplate,6);
+
+
+
         for (PaymentView paymentView:reportData.getPaymentViews())
         {
-            if(this.getIdByGroupType(groupIds.get(0),paymentView)!=groupAid)
+            if(reportTool.getIdByGroupType(groupAid,paymentView)!=currentgroupAid)
             {
                 childA = reportData.addChild();
-                childA.setName(this.getNameByGroupType(1,paymentView));
+                childA.setName(reportTool.getNameByGroupType(groupAid,paymentView));
                 childA.setLevel((short)1);
 
-                groupAid=this.getIdByGroupType(groupIds.get(0),paymentView);
+                currentgroupAid=reportTool.getIdByGroupType(groupAid,paymentView);
             }
 
-            if(this.getIdByGroupType(groupIds.get(1),paymentView)!=groupBid)
+
+
+            if(reportTool.getIdByGroupType(groupBid,paymentView)!=currentgroupBid)
             {
                 childB = childA.addChild();
-                childB.setName(this.getNameByGroupType(2,paymentView));
+                childB.setName(reportTool.getNameByGroupType(groupBid,paymentView));
                 childB.setLevel((short)2);
 
-                groupBid=this.getIdByGroupType(groupIds.get(1),paymentView);
+                currentgroupBid=reportTool.getIdByGroupType(groupBid,paymentView);
             }
 
-            if(this.getIdByGroupType(groupIds.get(2),paymentView)!=groupCid)
+            if(reportTool.getIdByGroupType(groupCid,paymentView)!=currentgroupCid)
             {
                 childC = childB.addChild();
-                childC.setName(this.getNameByGroupType(3,paymentView));
+                childC.setName(reportTool.getNameByGroupType(groupCid,paymentView));
                 childC.setLevel((short)3);
 
                 childC.setCount(1);
@@ -188,15 +225,15 @@ public class PaymentReportDataManager {
                 childA.setCount(childA.getCount()+1);
                 reportData.setCount(reportData.getCount()+1);
 
-                groupCid=this.getIdByGroupType(groupIds.get(2),paymentView);
+                currentgroupCid=reportTool.getIdByGroupType(groupCid,paymentView);
             }
 
-            if(this.getIdByGroupType(groupIds.get(3),paymentView)!=groupDid)
+            if(reportTool.getIdByGroupType(groupDid,paymentView)!=currentgroupDid)
             {
                 PaymentView lv = paymentView;
 
                 childD = childC.addChild();
-                childD.setName(this.getNameByGroupType(4,paymentView));
+                childD.setName(reportTool.getNameByGroupType(groupDid,paymentView));
                 childD.setLevel((short)4);
 
 
@@ -227,15 +264,15 @@ public class PaymentReportDataManager {
                     reportData.setLoanAmount(reportData.getLoanAmount()+lv.getV_loan_amount());
                 }
 
-                groupDid=this.getIdByGroupType(groupIds.get(3),paymentView);
+                currentgroupDid=reportTool.getIdByGroupType(groupDid,paymentView);
             }
 
-            if(this.getIdByGroupType(groupIds.get(4),paymentView)!=groupEid)
+            if(reportTool.getIdByGroupType(groupEid,paymentView)!=currentgroupEid)
             {
                 PaymentView pv = paymentView;
 
                 childE = childD.addChild();
-                childE.setName(this.getNameByGroupType(5,paymentView));
+                childE.setName(reportTool.getNameByGroupType(groupEid,paymentView));
                 childE.setLevel((short)5);
 
                 childE.setLevel((short)5);
@@ -314,7 +351,7 @@ public class PaymentReportDataManager {
 
 
 
-                groupEid=this.getIdByGroupType(groupIds.get(4),paymentView);
+                currentgroupEid=reportTool.getIdByGroupType(groupEid,paymentView);
             }
 
 
@@ -339,130 +376,7 @@ public class PaymentReportDataManager {
         return date;
     }
 
-    public String getParameterTypeNameById(String id)
-    {
-        String parameterTypeName = "";
 
 
-        switch(id)
-        {
-            case "1":
-                return "region";
-            case "2":
-                return "district";
-            case "3":
-                return "debtor";
-            case "4":
-                return "loan";
-            case "5":
-                return "payment";
-            case "6":
-                return "work_sector";
-            case "7":
-                return "supervisor";
-            case "8":
-                return "loan_type";
-            case "9":
-                return "department";
-
-
-        }
-
-
-
-        return parameterTypeName;
-    }
-
-    public long getGroupType(ReportTemplate reportTemplate,long level)
-    {
-        long groupType=0;
-
-        for (GenerationParameter generationParameter:reportTemplate.getGenerationParameters())
-        {
-            if(generationParameter.getGenerationParameterType().getId()==level+3)
-            {
-                groupType = generationParameter.getPostionInList();
-            }
-        }
-
-        return  groupType;
-    }
-
-
-    public long getIdByGroupType(long groupType, PaymentView paymentView)
-    {
-        long idByGroupType=0;
-
-        switch((short)groupType)
-        {
-            case 1:
-                idByGroupType = paymentView.getV_debtor_region_id();
-                break;
-            case 2:
-                idByGroupType = paymentView.getV_debtor_district_id();
-                break;
-            case 3:
-                idByGroupType = paymentView.getV_debtor_id();
-                break;
-            case 4:
-                idByGroupType = paymentView.getV_loan_id();
-                break;
-            case 5:
-                idByGroupType = paymentView.getV_payment_id();
-                break;
-            case 6:
-                idByGroupType = paymentView.getV_debtor_work_sector_id();
-                break;
-
-
-
-
-
-
-        }
-
-        return  idByGroupType;
-    }
-
-    public String getNameByGroupType(long groupType, PaymentView paymentView)
-    {
-        String nameByGroupType="";
-
-        switch((short)groupType)
-        {
-            case 1:
-                nameByGroupType = paymentView.getV_region_name();
-                break;
-            case 2:
-                nameByGroupType = paymentView.getV_district_name();
-                break;
-            case 3:
-                nameByGroupType = paymentView.getV_debtor_name();
-                break;
-            case 4:
-                nameByGroupType =paymentView.getV_credit_order_regNumber()
-                                + " от "
-                                + paymentView.getV_credit_order_regDate()
-                                + ", "
-                                + paymentView.getV_loan_reg_number()
-                                + " от "
-                                + paymentView.getV_loan_reg_date();
-                break;
-            case 5:
-                nameByGroupType = " погашение №"+ paymentView.getV_payment_number()+ " от " + paymentView.getV_payment_date();
-                break;
-            case 6:
-                nameByGroupType = paymentView.getV_work_sector_name();
-                break;
-
-
-
-
-
-
-        }
-
-        return  nameByGroupType;
-    }
 
 }
