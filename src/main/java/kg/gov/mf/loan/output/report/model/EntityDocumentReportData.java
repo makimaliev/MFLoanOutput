@@ -20,6 +20,9 @@ public class EntityDocumentReportData extends ReportData
 
 	private Date   onDate         = null;
 
+	private int    entityCount          = 0;
+	private int    entityDocumentCount  = 0;
+
 
 
 
@@ -105,6 +108,23 @@ public class EntityDocumentReportData extends ReportData
 	public void setData(LinkedList<EntityDocumentReportData> data)
 	{
 		ChildDataList = data;
+	}
+
+
+	public int getEntityCount() {
+		return entityCount;
+	}
+
+	public void setEntityCount(int entityCount) {
+		this.entityCount = entityCount;
+	}
+
+	public int getEntityDocumentCount() {
+		return entityDocumentCount;
+	}
+
+	public void setEntityDocumentCount(int entityDocumentCount) {
+		this.entityDocumentCount = entityDocumentCount;
 	}
 
 	public Date getOnDate() {

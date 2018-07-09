@@ -26,6 +26,7 @@ public class EntityDocumentReportDataManager {
 
         Date onDate = reportTool.getOnDate(reportTemplate);
 
+        reportData.setOnDate(new java.sql.Date(onDate.getTime()));
 
         List<Long> groupIds = new ArrayList<>();
 
@@ -189,6 +190,11 @@ public class EntityDocumentReportDataManager {
                 childC = childB.addChild();
                 childC.setName(reportTool.getNameByGroupType(groupCid,entityDocumentView));
                 childC.setLevel((short)3);
+
+                childC.setEntityCount(1);
+                childB.setEntityCount(childB.getEntityCount()+1);
+                childA.setEntityCount(childA.getEntityCount()+1);
+                reportData.setEntityCount(reportData.getEntityCount()+1);
 
                 currentgroupCid=reportTool.getIdByGroupType(groupCid,entityDocumentView);
             }
