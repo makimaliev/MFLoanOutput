@@ -60,6 +60,13 @@ public class ReportTemplate {
 	Set<ContentParameter> contentParameters = new HashSet<ContentParameter>();
 
 
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+			name="report_template_output_parameter",
+			joinColumns = { @JoinColumn(name = "report_template_id") },
+			inverseJoinColumns = { @JoinColumn(name = "output_parameter_id") })
+	Set<OutputParameter> outputParameters = new HashSet<OutputParameter>();
+
 
 	public long getId() {
 		return id;
@@ -108,6 +115,14 @@ public class ReportTemplate {
 
 	public void setContentParameters(Set<ContentParameter> contentParameters) {
 		this.contentParameters = contentParameters;
+	}
+
+	public Set<OutputParameter> getOutputParameters() {
+		return outputParameters;
+	}
+
+	public void setOutputParameters(Set<OutputParameter> outputParameters) {
+		this.outputParameters = outputParameters;
 	}
 
 	@Override

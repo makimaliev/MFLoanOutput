@@ -8,6 +8,7 @@ import kg.gov.mf.loan.manage.model.debtor.WorkSector;
 import kg.gov.mf.loan.manage.model.entitydocument.EntityDocument;
 import kg.gov.mf.loan.manage.model.loan.LoanType;
 import kg.gov.mf.loan.output.report.model.*;
+import kg.gov.mf.loan.output.report.service.OutputParameterService;
 import kg.gov.mf.loan.output.report.service.ReferenceViewService;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -16,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -27,6 +31,9 @@ public class ReportTool
 
     @Autowired
     ReferenceViewService referenceViewService;
+
+    @Autowired
+    OutputParameterService outputParameterService;
 
 
     ArrayList<ReferenceView> referenceViews = new ArrayList<ReferenceView>();
@@ -135,6 +142,9 @@ public class ReportTool
     HSSFCellStyle    Group6Date      = null;
     HSSFCellStyle    Group6Int       = null;
     HSSFCellStyle    Group6Double    = null;
+
+
+    boolean isLandscape = true;
 
 
 
@@ -861,61 +871,185 @@ public class ReportTool
 
     public void setupSheetSettings(HSSFSheet Sheet, ReportTemplate reportTemplate)
     {
-        Sheet.getPrintSetup().setLandscape(true);
-        Sheet.setMargin(HSSFSheet.BottomMargin,0.5);
-        Sheet.setMargin(HSSFSheet.TopMargin,0.5);
-        Sheet.setMargin(HSSFSheet.LeftMargin,0);
-        Sheet.setMargin(HSSFSheet.RightMargin,0);
+
+        try
+        {
+            Sheet.getPrintSetup().setLandscape(true);
+            Sheet.setMargin(HSSFSheet.BottomMargin,0.5);
+            Sheet.setMargin(HSSFSheet.TopMargin,0.5);
+            Sheet.setMargin(HSSFSheet.LeftMargin,0);
+            Sheet.setMargin(HSSFSheet.RightMargin,0);
+
+            Sheet.setAutobreaks(true);
+            HSSFPrintSetup ps = Sheet.getPrintSetup();
+            ps.setFitWidth((short)1);
+            ps.setFitHeight((short)0);
+            ps.setHeaderMargin(0);
+            ps.setFooterMargin(0);
+
+            HSSFFooter footer = Sheet.getFooter();
+            HSSFHeader header = Sheet.getHeader();
+
+            footer.setRight( "Страница " + HSSFFooter.page() + " из " + HSSFFooter.numPages() );
+
+            for (OutputParameter outputParameter: reportTemplate.getOutputParameters())
+            {
+                switch (outputParameter.getOutputParameterType().toString())
+                {
+                    case "PAGE_ORIENTATION":
+                        Sheet.getPrintSetup().setLandscape((outputParameter.getValue()==1)? true:false);
+                        break;
+
+                    case "SHEET_BOTTOM_MARGIN":
+                        Sheet.setMargin(HSSFSheet.BottomMargin,outputParameter.getValue());
+                        break;
+                    case "SHEET_TOP_MARGIN":
+                        Sheet.setMargin(HSSFSheet.TopMargin,outputParameter.getValue());
+                        break;
+                    case "SHEET_RIGHT_MARGIN":
+                        Sheet.setMargin(HSSFSheet.RightMargin,outputParameter.getValue());
+                        break;
+                    case "SHEET_LEFT_MARGIN":
+                        Sheet.setMargin(HSSFSheet.LeftMargin,outputParameter.getValue());
+                        break;
+                    case "SHEET_AUTOBREAKS":
+                        Sheet.setAutobreaks((outputParameter.getValue()==1) ? true: false);
+                        break;
+                    case "SHEET_FIT_WIDTH":
+                        ps.setFitWidth((short)outputParameter.getValue());
+                        break;
+                    case "SHEET_FIT_HEIGHT":
+                        ps.setFitHeight((short)outputParameter.getValue());
+                        break;
+                    case "SHEET_FOOTER_MARGIN":
+                        ps.setFooterMargin((short)outputParameter.getValue());
+                        break;
+                    case "SHEET_HEADER_MARGIN":
+                        ps.setHeaderMargin((short)outputParameter.getValue());
+                        break;
+
+                    case "SHEET_FOOTER_TEXT":
+
+                        String footer_text = outputParameter.getText();
+
+                        if(footer_text.contains("page()")) footer_text.replace("page()",HSSFFooter.page());
+                        if(footer_text.contains("numPages()")) footer_text.replace("numPages()",HSSFFooter.numPages());
+
+                        if(outputParameter.getPosition()==2)
+                        {
+                            footer.setCenter(footer_text);
+                        }
+                        else
+                        if(outputParameter.getPosition()==1)
+                        {
+                            footer.setLeft(footer_text);
+                        }
+                        else
+                        {
+                            footer.setRight(footer_text);
+                        }
 
 
-        Sheet.setAutobreaks(true);
-        HSSFPrintSetup ps = Sheet.getPrintSetup();
-        ps.setFitWidth((short)1);
-        ps.setFitHeight((short)0);
-        ps.setHeaderMargin(0);
-        ps.setFooterMargin(0);
 
-        HSSFFooter footer = Sheet.getFooter();
-        HSSFHeader header = Sheet.getHeader();
+                        break;
 
-        footer.setRight( "Страница " + HSSFFooter.page() + " из " + HSSFFooter.numPages() );
+                    case "SHEET_HEADER_TEXT":
 
-        short width = 3300;
-        short count=0;
+                        String header_text = outputParameter.getText();
 
+                        if(header_text.contains("page()")) header_text.replace("page()",HSSFFooter.page());
+                        if(header_text.contains("numPages()")) header_text.replace("numPages()",HSSFFooter.numPages());
 
-        Sheet.setColumnWidth(count,(short)(width));count++;
-        Sheet.setColumnWidth(count,(short)(width*2+3000));count++;
-        Sheet.setColumnWidth(count,(short)width);count++;
-
-
-        Sheet.setColumnWidth(count,(short)(width/3));count++;
-        Sheet.setColumnWidth(count,(short)(width/2-200));count++;
-
-
-        Sheet.setColumnWidth(count,(short)width);count++;
-        Sheet.setColumnWidth(count,(short)width);count++;
+                        if(outputParameter.getPosition()==2)
+                        {
+                            header.setCenter(header_text);
+                        }
+                        else
+                        if(outputParameter.getPosition()==1)
+                        {
+                            header.setLeft(header_text);
+                        }
+                        else
+                        {
+                            header.setRight(header_text);
+                        }
 
 
-        Sheet.setColumnWidth(count,(short)(width));count++;
+                        break;
 
-        Sheet.setColumnWidth(count,(short)width);count++;
-        Sheet.setColumnWidth(count,(short)width);count++;
-        Sheet.setColumnWidth(count,(short)width);count++;
-        Sheet.setColumnWidth(count,(short)width);count++;
-        Sheet.setColumnWidth(count,(short)width);count++;
-        Sheet.setColumnWidth(count,(short)width);count++;
-        Sheet.setColumnWidth(count,(short)width);count++;
-        Sheet.setColumnWidth(count,(short)width);count++;
-        Sheet.setColumnWidth(count,(short)width);count++;
-        Sheet.setColumnWidth(count,(short)(width*2+1000));count++;
+                    case "DEFAULT_COLUMN_WIDTH":
+                        Sheet.setDefaultColumnWidth((int)outputParameter.getValue());
+                        break;
 
-        Sheet.setColumnWidth(count,(short)width);count++;
-        Sheet.setColumnWidth(count,(short)width);count++;
-        Sheet.setColumnWidth(count,(short)width);count++;
-        Sheet.setColumnWidth(count,(short)width);count++;
-        Sheet.setColumnWidth(count,(short)width);count++;
-        Sheet.setColumnWidth(count,(short)width);count++;
+                    case "COLUMN_WIDTH":
+                        Sheet.setColumnWidth((int)outputParameter.getPosition()-1,(int)outputParameter.getValue()*256);
+                        break;
+
+                    case "FONT_HEIGHT":
+                        getFontByLevel(outputParameter.getPosition()).setFontHeightInPoints((short)outputParameter.getValue());
+                        break;
+
+                    case "FONT_BOLD":
+                        getFontByLevel(outputParameter.getPosition()).setBoldweight((outputParameter.getValue()==1)? (short)700:(short)400);
+                        break;
+
+                    case "FONT_COLOR":
+                        getFontByLevel(outputParameter.getPosition()).setColor((short)outputParameter.getValue());
+                        break;
+
+                    case "CELL_FONT":
+                        getCellStyleByLevel(outputParameter.getPosition(),outputParameter.getText()).setFont(getFontByLevel((long)outputParameter.getValue()));
+                        break;
+
+                    case "CELL_ALIGNMENT":
+                        getCellStyleByLevel(outputParameter.getPosition(),outputParameter.getText()).setAlignment((short)outputParameter.getValue());
+                        break;
+
+                    case "CELL_BORDER":
+                        getCellStyleByLevel(outputParameter.getPosition(),outputParameter.getText()).setBorderBottom((short)outputParameter.getValue());
+                        getCellStyleByLevel(outputParameter.getPosition(),outputParameter.getText()).setBorderTop((short)outputParameter.getValue());
+                        getCellStyleByLevel(outputParameter.getPosition(),outputParameter.getText()).setBorderLeft((short)outputParameter.getValue());
+                        getCellStyleByLevel(outputParameter.getPosition(),outputParameter.getText()).setBorderRight((short)outputParameter.getValue());
+                        break;
+
+                    case "CELL_VERTICAL_ALIGNMENT":
+                        getCellStyleByLevel(outputParameter.getPosition(),outputParameter.getText()).setVerticalAlignment((short)outputParameter.getValue());
+                        break;
+
+                    case "CELL_WRAP_TEXT":
+                        getCellStyleByLevel(outputParameter.getPosition(),outputParameter.getText()).setWrapText((outputParameter.getValue() == 1) ? true : false);
+                        break;
+
+                    case "CELL_DATA_FORMAT":
+
+                        String cellStyleType = "string";
+
+                        if(outputParameter.getValue() ==2) cellStyleType = "date";
+                        else if(outputParameter.getValue() ==3) cellStyleType = "int";
+                        else if(outputParameter.getValue() ==4) cellStyleType = "double";
+                        else cellStyleType = "string";
+
+                        getCellStyleByLevel(outputParameter.getPosition(),cellStyleType).setDataFormat(format.getFormat(outputParameter.getText()));
+                        break;
+
+                    case "CELL_FOREGROUND_COLOR":
+                        getCellStyleByLevel(outputParameter.getPosition(),outputParameter.getText()).setFillForegroundColor((short)outputParameter.getValue());
+                        break;
+
+                    case "CELL_PATTERN":
+                        getCellStyleByLevel(outputParameter.getPosition(),outputParameter.getText()).setFillPattern((short)outputParameter.getValue());
+                        break;
+
+                }
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+            System.out.println(ex);
+        }
+
     }
 
     public HSSFColor getColorByLevel(long level, ReportTemplate reportTemplate)
@@ -1029,6 +1163,53 @@ public class ReportTool
         }
 
     }
+
+    public HSSFFont getFontByLevel(long level)
+    {
+        switch (String.valueOf(level))
+        {
+
+            // TITLE
+            case "10" :
+                return FontTitle;
+
+            // HEADER
+            case "11" :
+                return FontHeader;
+
+            // SUMMARY
+            case "12" :
+                return FontSum;
+
+            // FOOTER
+            case "13" :
+                return FontFooter;
+
+            case "1" :
+                return FontGroup1;
+
+            case "2" :
+                return FontGroup2;
+
+            case "3" :
+                return FontGroup3;
+
+            case "4" :
+                return FontGroup4;
+
+            case "5" :
+                return FontGroup5;
+
+            case "6" :
+                return FontGroup6;
+
+            default:
+                return FontGroup6;
+
+        }
+
+    }
+
 
     public HSSFCellStyle getCellStyleByLevel(long level, String DataType, ReportTemplate reportTemplate, HSSFWorkbook WorkBook)
     {
@@ -1445,7 +1626,96 @@ public class ReportTool
 
     }
 
+    public HSSFCellStyle getCellStyleByLevel(long level, String DataType)
+    {
 
+        long DataTypeToLong = 0;
+
+        if(DataType.equals("string"))
+        {
+            DataTypeToLong = 100;
+        }
+        if(DataType.equals("date"))
+        {
+            DataTypeToLong = 200;
+        }
+        if(DataType.equals("int"))
+        {
+            DataTypeToLong = 300;
+        }
+        if(DataType.equals("double"))
+        {
+            DataTypeToLong = 400;
+        }
+
+        level+=DataTypeToLong;
+
+
+        switch (String.valueOf(level))
+        {
+
+            // TITLE
+            case "110" : return TitleString;
+            case "210" : return TitleDate;
+            case "310" : return TitleInt;
+            case "410" : return TitleDouble;
+
+
+            // HEADER
+            case "111" : return HeaderString;
+            case "211" : return HeaderDate;
+            case "321" : return HeaderInt;
+            case "411" : return HeaderDouble;
+
+
+            // SUMMARY
+            case "112" : return SumString;
+            case "212" : return SumDate;
+            case "312" : return SumInt;
+            case "412" : return SumDouble;
+
+            // FOOTER
+            case "113" : return FooterString;
+
+            case "101" : return Group1String;
+            case "201" : return Group1Date;
+            case "301" : return Group1Int;
+            case "401" : return Group1Double;
+
+            case "102" : return Group2String;
+            case "202" : return Group2Date;
+            case "302" : return Group2Int;
+            case "402" : return Group2Double;
+
+            case "103" : return Group3String;
+            case "203" : return Group3Date;
+            case "303" : return Group3Int;
+            case "403" : return Group3Double;
+
+
+            case "104" : return Group4String;
+            case "204" : return Group4Date;
+            case "304" : return Group4Int;
+            case "404" : return Group4Double;
+
+
+            case "105" : return Group5String;
+            case "205" : return Group5Date;
+            case "305" : return Group5Int;
+            case "405" : return Group5Double;
+
+
+            case "106" : return Group6String;
+            case "206" : return Group6Date;
+            case "306" : return Group6Int;
+            case "406" : return Group6Double;
+
+            default:
+                return Group6String;
+
+        }
+
+    }
 
     public void drawTitle(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
     {
@@ -1456,8 +1726,31 @@ public class ReportTool
 
 
 
-        System.out.println(reportData.getClass().getSimpleName());
-        System.out.println(reportDataTemp.getClass().getSimpleName());
+
+
+
+        System.out.println(reportData.getClass());
+
+
+        try
+        {
+
+            String objectToBeValidated = (reportDataTemp.getClass().getMethod("getOnDate").invoke(reportDataTemp)).toString();
+            System.out.println(objectToBeValidated);
+
+
+
+        }
+        catch
+                (	IllegalAccessException |
+                IllegalArgumentException |
+                InvocationTargetException |
+                NoSuchMethodException | SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+
 
 
 
@@ -1486,7 +1779,7 @@ public class ReportTool
         Sheet.addMergedRegion(new org.apache.poi.hssf.util.Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
         Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
         Cell.setCellStyle(TitleString);
-        Cell.setCellValue("по состоянию на "+reportDataTemp.getOnDate()+"_г.");
+        Cell.setCellValue("по состоянию на "+reportDataTemp.getOnDate()+"г.");
 
         RowCount++;
         ColumnCount=0;
@@ -1499,7 +1792,49 @@ public class ReportTool
         Cell.setCellValue("");
     }
 
+    public void drawTitle(ReportTemplate reportTemplate, HSSFSheet Sheet, EntityDocumentReportData reportData )
+    {
+        Row = Sheet.createRow(RowCount);
+        Row.setRowNum(( short ) RowCount);
 
+
+        Sheet.addMergedRegion(new org.apache.poi.hssf.util.Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(TitleString);
+        Cell.setCellValue("Информация по задолженности");
+
+        RowCount++;
+        ColumnCount=0;
+
+        Row = Sheet.createRow(RowCount);
+        Row.setRowNum(( short ) RowCount);
+
+        Sheet.addMergedRegion(new org.apache.poi.hssf.util.Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(TitleString);
+        Cell.setCellValue("хозсубъектов");
+
+        RowCount++;
+        ColumnCount=0;
+        Row = Sheet.createRow(RowCount);
+        Row.setRowNum(( short ) RowCount);
+
+
+        Sheet.addMergedRegion(new org.apache.poi.hssf.util.Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
+        Cell.setCellStyle(TitleString);
+        Cell.setCellValue("по состоянию на "+reportData.getOnDate()+"г.");
+
+        RowCount++;
+        ColumnCount=0;
+        Row = Sheet.createRow(RowCount);
+        Row.setRowNum(( short ) RowCount);
+
+        Sheet.addMergedRegion(new org.apache.poi.hssf.util.Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
+        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
+        Cell.setCellStyle(TitleString);
+        Cell.setCellValue("");
+    }
     public void drawHeader(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
     {
         RowCount++;

@@ -32,62 +32,17 @@ public class ReportGeneratorEntityDocument extends ReportGenerator
         ReportTool reportTool = new ReportTool();
         reportTool.initReference();
 
-
-
         EntityDocument = new EntityDocumentReportDataManager().getReportDataGrouped(EntityDocument,reportTemplate);
 
         HSSFWorkbook     WorkBook       = new HSSFWorkbook();
 
         HSSFSheet        Sheet          = WorkBook.createSheet();
 
-
-
-        HSSFCell         CellDate       = null;
-        HSSFDataFormat   format         = WorkBook.createDataFormat();
-
+        reportTool.initReportSetup(reportTemplate,WorkBook);
         reportTool.setupSheetSettings(Sheet, reportTemplate);
 
-        short Group1Color = (short)reportTool.getColorByLevel((long)1,reportTemplate).getIndex();
-        short Group2Color = (short)reportTool.getColorByLevel((long)2,reportTemplate).getIndex();
-        short PersonColor = (short)reportTool.getColorByLevel((long)3,reportTemplate).getIndex();
-        short CreditColor = (short)reportTool.getColorByLevel((long)4,reportTemplate).getIndex();
-
-        short Group3Color = (short)reportTool.getColorByLevel((long)3,reportTemplate).getIndex();
-        short Group4Color = (short)reportTool.getColorByLevel((long)4,reportTemplate).getIndex();
-        short Group5Color = (short)reportTool.getColorByLevel((long)5,reportTemplate).getIndex();
-        short Group6Color = (short)reportTool.getColorByLevel((long)6,reportTemplate).getIndex();
-
-        short Group1Border = reportTool.getBorderTypeByLevel((long)1,reportTemplate);
-        short Group2Border = reportTool.getBorderTypeByLevel((long)2,reportTemplate);
-        short PersonBorder = reportTool.getBorderTypeByLevel((long)3,reportTemplate);
-
-        short Group3Border = reportTool.getBorderTypeByLevel((long)3,reportTemplate);
-        short Group4Border = reportTool.getBorderTypeByLevel((long)4,reportTemplate);
-        short Group5Border = reportTool.getBorderTypeByLevel((long)5,reportTemplate);
-        short Group6Border = reportTool.getBorderTypeByLevel((long)6,reportTemplate);
-
-        HSSFFont         FontTitle      = reportTool.getFontByLevel(10, reportTemplate, WorkBook);
-        HSSFFont         FontHeader     = reportTool.getFontByLevel(11, reportTemplate, WorkBook);
-        HSSFFont         FontSum        = reportTool.getFontByLevel(12, reportTemplate, WorkBook);
-        HSSFFont         FontFooter     = reportTool.getFontByLevel(13, reportTemplate, WorkBook);
-
-        HSSFFont         FontGroup1     = reportTool.getFontByLevel(1, reportTemplate, WorkBook);
-        HSSFFont         FontGroup2     = reportTool.getFontByLevel(2, reportTemplate, WorkBook);
-        HSSFFont         FontGroup3     = reportTool.getFontByLevel(3, reportTemplate, WorkBook);
-        HSSFFont         FontGroup4     = reportTool.getFontByLevel(4, reportTemplate, WorkBook);
-        HSSFFont         FontGroup5     = reportTool.getFontByLevel(5, reportTemplate, WorkBook);
-        HSSFFont         FontGroup6     = reportTool.getFontByLevel(6, reportTemplate, WorkBook);
-
-        HSSFFont         FontPerson     = reportTool.getFontByLevel(3, reportTemplate, WorkBook);
-        HSSFFont         FontData       = reportTool.getFontByLevel(4, reportTemplate, WorkBook);
-
-
-        reportTool.initReportSetup(reportTemplate,WorkBook);
-
         reportTool.drawTitle(reportTemplate,Sheet, EntityDocument);
-
         reportTool.drawHeader(reportTemplate,Sheet,EntityDocument);
-
 
         EntityDocumentReportData MainData = EntityDocument;
 
