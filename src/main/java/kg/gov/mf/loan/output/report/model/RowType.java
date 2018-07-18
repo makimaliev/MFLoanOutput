@@ -1,0 +1,14 @@
+package kg.gov.mf.loan.output.report.model;
+
+public enum RowType {
+	PAGE_TITLE,
+	TABLE_HEADER,
+	TABLE_SUM,
+	TABLE_FOOTER,
+	TABLE_GROUP1,
+	TABLE_GROUP2,
+	TABLE_GROUP3,
+	TABLE_GROUP4,
+	TABLE_GROUP5,
+	TABLE_GROUP6
+}

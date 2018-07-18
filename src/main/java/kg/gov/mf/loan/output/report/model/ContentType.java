@@ -1,6 +1,7 @@
 package kg.gov.mf.loan.output.report.model;
 
 public enum ContentType {
+	CONSTANT,
 	LOAN,
 	DEBTOR,
 	LOAN_SUMMARY,
@@ -13,9 +14,5 @@ public enum ContentType {
 	COLLATERAL_ARREST_FREE,
 	COLLECTION_PHASE,
 	ENTITY_DOCUMENT,
-	DOCUMENT,
-
-
-
-
+	DOCUMENT
 }

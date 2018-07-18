@@ -16,10 +16,17 @@ public class ContentParameter {
  
     @Column(name="name", nullable=false)
     private String name;
-    
+
+
 
 	@Enumerated(EnumType.STRING)
 	private ContentType contentType;
+
+	@Enumerated(EnumType.STRING)
+	private RowType rowType;
+
+	@Enumerated(EnumType.STRING)
+	private CellType cellType;
 
     @Column(name="field_name")
     private String fieldName;
@@ -33,6 +40,10 @@ public class ContentParameter {
     @Column(name="constant_value")
     private double constantValue;
 
+	@Column(name="constant_int")
+	private int constantInt;
+
+
     @Column(name="constant_text")
     private String constantText;
     
@@ -40,7 +51,22 @@ public class ContentParameter {
     @Temporal(TemporalType.DATE)
     private Date constantDate;
 
-    
+	@Column(name="position")
+	private int position;
+
+	@Column(name="col_from")
+	private int col_from;
+
+	@Column(name="row_from")
+	private int row_from;
+
+	@Column(name="col_to")
+	private int col_to;
+
+	@Column(name="row_to")
+	private int row_to;
+
+
 
 
 	public long getId() {
@@ -65,6 +91,14 @@ public class ContentParameter {
 
 	public void setContentType(ContentType contentType) {
 		this.contentType = contentType;
+	}
+
+	public CellType getCellType() {
+		return cellType;
+	}
+
+	public void setCellType(CellType cellType) {
+		this.cellType = cellType;
 	}
 
 	public String getFieldName() {
@@ -113,6 +147,62 @@ public class ContentParameter {
 
 	public void setConstantDate(Date constantDate) {
 		this.constantDate = constantDate;
+	}
+
+	public RowType getRowType() {
+		return rowType;
+	}
+
+	public void setRowType(RowType rowType) {
+		this.rowType = rowType;
+	}
+
+	public int getConstantInt() {
+		return constantInt;
+	}
+
+	public void setConstantInt(int constantInt) {
+		this.constantInt = constantInt;
+	}
+
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
+	}
+
+	public int getCol_from() {
+		return col_from;
+	}
+
+	public void setCol_from(int col_from) {
+		this.col_from = col_from;
+	}
+
+	public int getRow_from() {
+		return row_from;
+	}
+
+	public void setRow_from(int row_from) {
+		this.row_from = row_from;
+	}
+
+	public int getCol_to() {
+		return col_to;
+	}
+
+	public void setCol_to(int col_to) {
+		this.col_to = col_to;
+	}
+
+	public int getRow_to() {
+		return row_to;
+	}
+
+	public void setRow_to(int row_to) {
+		this.row_to = row_to;
 	}
 
 	@Override

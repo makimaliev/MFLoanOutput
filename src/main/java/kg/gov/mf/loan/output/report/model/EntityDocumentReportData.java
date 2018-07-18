@@ -22,7 +22,11 @@ public class EntityDocumentReportData extends ReportData
 
 	private int    entityCount          = 0;
 	private int    entityDocumentCount  = 0;
+	private int    entityDocumentCompletedCount  = 0;
+	private int    entityDocumentNotCompletedCount  = 0;
 
+	private int    entityDocumentApprovedCount  = 0;
+	private int    entityDocumentNotApprovedCount  = 0;
 
 
 
@@ -470,5 +474,38 @@ public class EntityDocumentReportData extends ReportData
 
 	public void setV_co_creditOrderTypeId(long v_co_creditOrderTypeId) {
 		this.v_co_creditOrderTypeId = v_co_creditOrderTypeId;
+	}
+
+
+	public int getEntityDocumentCompletedCount() {
+		return entityDocumentCompletedCount;
+	}
+
+	public void setEntityDocumentCompletedCount(int entityDocumentCompletedCount) {
+		this.entityDocumentCompletedCount = entityDocumentCompletedCount;
+	}
+
+	public int getEntityDocumentNotCompletedCount() {
+		return entityDocumentNotCompletedCount;
+	}
+
+	public void setEntityDocumentNotCompletedCount(int entityDocumentNotCompletedCount) {
+		this.entityDocumentNotCompletedCount = entityDocumentNotCompletedCount;
+	}
+
+	public int getEntityDocumentApprovedCount() {
+		return entityDocumentApprovedCount;
+	}
+
+	public void setEntityDocumentApprovedCount(int entityDocumentApprovedCount) {
+		this.entityDocumentApprovedCount = entityDocumentApprovedCount;
+	}
+
+	public int getEntityDocumentNotApprovedCount() {
+		return entityDocumentNotApprovedCount;
+	}
+
+	public void setEntityDocumentNotApprovedCount(int entityDocumentNotApprovedCount) {
+		this.entityDocumentNotApprovedCount = entityDocumentNotApprovedCount;
 	}
 }

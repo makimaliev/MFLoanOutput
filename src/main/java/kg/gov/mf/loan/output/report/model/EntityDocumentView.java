@@ -153,7 +153,19 @@ public class EntityDocumentView
 	private long v_co_creditOrderTypeId;
 
 
-    public long getV_document_package_id() {
+	@Column
+	private long v_entity_document_completed_count;
+
+	@Column
+	private long v_entity_document_not_completed_count;
+
+	@Column
+	private long v_entity_document_approved_count;
+
+	@Column
+	private long v_entity_document_not_approved_count;
+
+	public long getV_document_package_id() {
         return v_document_package_id;
     }
 
@@ -471,5 +483,37 @@ public class EntityDocumentView
 
 	public void setV_co_creditOrderTypeId(long v_co_creditOrderTypeId) {
 		this.v_co_creditOrderTypeId = v_co_creditOrderTypeId;
+	}
+
+	public long getV_entity_document_completed_count() {
+		return v_entity_document_completed_count;
+	}
+
+	public void setV_entity_document_completed_count(long v_entity_document_completed_count) {
+		this.v_entity_document_completed_count = v_entity_document_completed_count;
+	}
+
+	public long getV_entity_document_not_completed_count() {
+		return v_entity_document_not_completed_count;
+	}
+
+	public void setV_entity_document_not_completed_count(long v_entity_document_not_completed_count) {
+		this.v_entity_document_not_completed_count = v_entity_document_not_completed_count;
+	}
+
+	public long getV_entity_document_approved_count() {
+		return v_entity_document_approved_count;
+	}
+
+	public void setV_entity_document_approved_count(long v_entity_document_approved_count) {
+		this.v_entity_document_approved_count = v_entity_document_approved_count;
+	}
+
+	public long getV_entity_document_not_approved_count() {
+		return v_entity_document_not_approved_count;
+	}
+
+	public void setV_entity_document_not_approved_count(long v_entity_document_not_approved_count) {
+		this.v_entity_document_not_approved_count = v_entity_document_not_approved_count;
 	}
 }

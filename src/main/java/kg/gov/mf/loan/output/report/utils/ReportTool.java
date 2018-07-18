@@ -1,18 +1,12 @@
 package kg.gov.mf.loan.output.report.utils;
 
-import kg.gov.mf.loan.admin.org.model.District;
-import kg.gov.mf.loan.admin.org.model.Region;
-import kg.gov.mf.loan.admin.org.service.DistrictService;
-import kg.gov.mf.loan.admin.org.service.RegionService;
-import kg.gov.mf.loan.manage.model.debtor.WorkSector;
-import kg.gov.mf.loan.manage.model.entitydocument.EntityDocument;
-import kg.gov.mf.loan.manage.model.loan.LoanType;
 import kg.gov.mf.loan.output.report.model.*;
 import kg.gov.mf.loan.output.report.service.OutputParameterService;
 import kg.gov.mf.loan.output.report.service.ReferenceViewService;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -42,6 +36,11 @@ public class ReportTool
 
     int RowCount = 0;
     short ColumnCount=0;
+
+    int lastRowCount = 0;
+
+    Map<Integer,ContentParameter> contentMap = new TreeMap<Integer,ContentParameter>();
+    Map<Integer,Float> rowHeightMap = new HashMap<Integer,Float>();
 
     HSSFRow          Row            = null;
     HSSFCell         Cell           = null;
@@ -890,8 +889,6 @@ public class ReportTool
             HSSFFooter footer = Sheet.getFooter();
             HSSFHeader header = Sheet.getHeader();
 
-            footer.setRight( "Страница " + HSSFFooter.page() + " из " + HSSFFooter.numPages() );
-
             for (OutputParameter outputParameter: reportTemplate.getOutputParameters())
             {
                 switch (outputParameter.getOutputParameterType().toString())
@@ -1038,6 +1035,10 @@ public class ReportTool
 
                     case "CELL_PATTERN":
                         getCellStyleByLevel(outputParameter.getPosition(),outputParameter.getText()).setFillPattern((short)outputParameter.getValue());
+                        break;
+
+                    case "ROW_HEIGHT":
+                        rowHeightMap.put((int)outputParameter.getPosition()-1,(float)outputParameter.getValue());
                         break;
 
                 }
@@ -1717,182 +1718,217 @@ public class ReportTool
 
     }
 
-    public void drawTitle(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public void createRow(HSSFSheet Sheet, ContentParameter contentParameter)
     {
-        Row = Sheet.createRow(RowCount);
-        Row.setRowNum(( short ) RowCount);
-
-        EntityDocumentReportData reportDataTemp = (EntityDocumentReportData)reportData;
-
-
-
-
-
-
-        System.out.println(reportData.getClass());
-
-
         try
         {
+            int row_from = (contentParameter.getRow_from()>0) ? contentParameter.getRow_from()-1 : RowCount;
+            int row_to   = (contentParameter.getRow_to()>0) ? contentParameter.getRow_to()-1 : RowCount;
 
-            String objectToBeValidated = (reportDataTemp.getClass().getMethod("getOnDate").invoke(reportDataTemp)).toString();
-            System.out.println(objectToBeValidated);
+            for( int rowCount=row_from; rowCount <= row_to; rowCount++ )
+            {
+                Row = Sheet.createRow(rowCount);
+                Row.setRowNum(( short ) rowCount);
 
+                if(rowHeightMap.get(rowCount)!=null)
+                {
+                    Row.setHeightInPoints(rowHeightMap.get(rowCount).floatValue());
+                }
+
+            }
 
 
         }
-        catch
-                (	IllegalAccessException |
-                IllegalArgumentException |
-                InvocationTargetException |
-                NoSuchMethodException | SecurityException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        catch (Exception ex)
+        {
+            System.out.println(ex);
         }
 
 
-
-
-
-        Sheet.addMergedRegion(new org.apache.poi.hssf.util.Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(TitleString);
-        Cell.setCellValue("Информация по задолженности");
-
-        RowCount++;
-        ColumnCount=0;
-
-        Row = Sheet.createRow(RowCount);
-        Row.setRowNum(( short ) RowCount);
-
-        Sheet.addMergedRegion(new org.apache.poi.hssf.util.Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(TitleString);
-        Cell.setCellValue("хозсубъектов");
-
-        RowCount++;
-        ColumnCount=0;
-        Row = Sheet.createRow(RowCount);
-        Row.setRowNum(( short ) RowCount);
-
-
-        Sheet.addMergedRegion(new org.apache.poi.hssf.util.Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(TitleString);
-        Cell.setCellValue("по состоянию на "+reportDataTemp.getOnDate()+"г.");
-
-        RowCount++;
-        ColumnCount=0;
-        Row = Sheet.createRow(RowCount);
-        Row.setRowNum(( short ) RowCount);
-
-        Sheet.addMergedRegion(new org.apache.poi.hssf.util.Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
-        Cell.setCellStyle(TitleString);
-        Cell.setCellValue("");
     }
+
+    public void drawCell(ReportTemplate reportTemplate, HSSFSheet Sheet, ContentParameter contentParameter , EntityDocumentReportData reportData)
+    {
+        try
+        {
+            int row_from = (contentParameter.getRow_from()>0) ? contentParameter.getRow_from()-1 : RowCount;
+            int row_to   = (contentParameter.getRow_to()>0) ? contentParameter.getRow_to()-1 : RowCount;
+            int col_from = (contentParameter.getCol_from()>0) ? contentParameter.getCol_from()-1 : ColumnCount;
+            int col_to   = (contentParameter.getCol_to()>0) ? contentParameter.getCol_to()-1 : ColumnCount;
+
+            if(row_to > lastRowCount) lastRowCount = row_to;
+
+            if(!(row_from == row_to && col_from == col_to))
+            {
+                Sheet.addMergedRegion(new CellRangeAddress(row_from,row_to,col_from,col_to));
+            }
+
+            if(contentParameter.getRowType().name()=="PAGE_TITLE" || contentParameter.getRowType().name()=="TABLE_HEADER")
+            {
+                Cell = Sheet.getRow(row_from).createCell((int)col_from, HSSFCell.CELL_TYPE_STRING);
+
+                if(contentParameter.getRowType().name()=="PAGE_TITLE")
+                        Cell.setCellStyle(TitleString);
+                else    Cell.setCellStyle(HeaderString);
+
+                Cell.setCellValue(contentParameter.getConstantText());
+            }
+            else
+            {
+
+                long level=1;
+
+                if(contentParameter.getPosition()>0)
+                {
+                    Cell = Row.createCell(contentParameter.getPosition()-1);
+                }
+                else
+                {
+                    Cell = Row.createCell(ColumnCount);
+                }
+
+
+                Object object = null;
+
+                if(contentParameter.getContentType().name()!="CONSTANT")
+                {
+                    String sMethodName = "get"+contentParameter.getFieldName().substring(0, 1).toUpperCase()+contentParameter.getFieldName().substring(1, contentParameter.getFieldName().length());
+
+                    object = reportData.getClass().getMethod(sMethodName,null).invoke(reportData);
+                }
+
+                switch (contentParameter.getRowType().toString())
+                {
+                    case "TABLE_SUM": level = 12;break;
+                    case "TABLE_GROUP1": level = 1;break;
+                    case "TABLE_GROUP2": level = 2;break;
+                    case "TABLE_GROUP3": level = 3;break;
+                    case "TABLE_GROUP4": level = 4;break;
+                    case "TABLE_GROUP5": level = 5;break;
+                    case "TABLE_GROUP6": level = 6;break;
+                }
+
+                switch (contentParameter.getCellType().toString())
+                {
+                    case "TEXT" :
+                        Cell.setCellStyle(getCellStyleByLevel(level,"string"));
+                        if(object==null) object = contentParameter.getConstantText();
+                        Cell.setCellValue(String.valueOf(object));
+                        break;
+                    case "DATE" :
+                        Cell.setCellStyle(getCellStyleByLevel(level,"date"));
+                        if(object==null) object = contentParameter.getConstantDate();
+                        Cell.setCellValue(Date.parse(object.toString()));
+                        break;
+                    case "INTEGER" :
+                        Cell.setCellStyle(getCellStyleByLevel(level,"int"));
+                        if(object==null) object = contentParameter.getConstantInt();
+                        Cell.setCellValue(Integer.valueOf(object.toString()));
+                        break;
+                    case "DOUBLE" :
+                        Cell.setCellStyle(getCellStyleByLevel(level,"double"));
+                        if(object==null) object = contentParameter.getConstantValue();
+                        Cell.setCellValue(Double.valueOf(object.toString()));
+                        break;
+                    default :
+                        Cell.setCellStyle(getCellStyleByLevel(level,"string"));
+                        if(object==null) object = contentParameter.getConstantText();
+                        Cell.setCellValue(String.valueOf(object));
+                        break;
+                }
+
+                ColumnCount++;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.out.println(ex);
+        }
+
+
+    }
+
+
+
+
+
 
     public void drawTitle(ReportTemplate reportTemplate, HSSFSheet Sheet, EntityDocumentReportData reportData )
     {
-        Row = Sheet.createRow(RowCount);
-        Row.setRowNum(( short ) RowCount);
 
+        RowCount = 0;
+        ColumnCount = 0;
 
-        Sheet.addMergedRegion(new org.apache.poi.hssf.util.Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(TitleString);
-        Cell.setCellValue("Информация по задолженности");
+        try
+        {
+            for (ContentParameter contentParameter: reportTemplate.getContentParameters())
+            {
+                if(contentParameter.getRowType().name()=="PAGE_TITLE")
+                {
+                    createRow(Sheet,contentParameter);
+                    drawCell(reportTemplate,Sheet,contentParameter,reportData);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.out.println(ex);
+        }
 
-        RowCount++;
-        ColumnCount=0;
-
-        Row = Sheet.createRow(RowCount);
-        Row.setRowNum(( short ) RowCount);
-
-        Sheet.addMergedRegion(new org.apache.poi.hssf.util.Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(TitleString);
-        Cell.setCellValue("хозсубъектов");
-
-        RowCount++;
-        ColumnCount=0;
-        Row = Sheet.createRow(RowCount);
-        Row.setRowNum(( short ) RowCount);
-
-
-        Sheet.addMergedRegion(new org.apache.poi.hssf.util.Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(TitleString);
-        Cell.setCellValue("по состоянию на "+reportData.getOnDate()+"г.");
-
-        RowCount++;
-        ColumnCount=0;
-        Row = Sheet.createRow(RowCount);
-        Row.setRowNum(( short ) RowCount);
-
-        Sheet.addMergedRegion(new org.apache.poi.hssf.util.Region(RowCount,ColumnCount,RowCount,(short)(ColumnCount+14)));
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
-        Cell.setCellStyle(TitleString);
-        Cell.setCellValue("");
+        RowCount = lastRowCount;
+        ColumnCount = 0;
     }
-    public void drawHeader(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
+
+    public void drawHeader(ReportTemplate reportTemplate, HSSFSheet Sheet, EntityDocumentReportData reportData )
     {
-        RowCount++;
-        ColumnCount=0;
-        Row = Sheet.createRow(RowCount);
-        Row.setRowNum(( short ) RowCount);
+        RowCount = lastRowCount;
+        ColumnCount = 0;
 
-        Sheet.addMergedRegion(new org.apache.poi.hssf.util.Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+        try
+        {
+            for (ContentParameter contentParameter: reportTemplate.getContentParameters())
+            {
+                if(contentParameter.getRowType().name()=="TABLE_HEADER")
+                {
+                    if(contentParameter.getPosition()==1) createRow(Sheet,contentParameter);
 
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(HeaderString);
-        Cell.setCellValue("Кол-во Получателей");
-        ColumnCount++;
+                    drawCell(reportTemplate,Sheet,contentParameter,reportData);
+                }
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+            System.out.println(ex);
+        }
 
 
-        Sheet.addMergedRegion(new org.apache.poi.hssf.util.Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
+        RowCount = lastRowCount;
+        ColumnCount = 0;
 
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(HeaderString);
-        Cell.setCellValue("Наименование");
-        ColumnCount++;
-
-
-
-
-        Sheet.addMergedRegion(new org.apache.poi.hssf.util.Region(RowCount,ColumnCount,RowCount+1,ColumnCount));
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(HeaderString);
-        Cell.setCellValue("Статус");
-        ColumnCount++;
-
-        RowCount++;
-        Row = Sheet.createRow(RowCount);
-        Row.setRowNum(( short ) RowCount);
-        Row.setHeightInPoints(60);
-
-        //******************* Summary ************************************************************************
-        //*******************************************************************************************
-        ColumnCount=0;
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
-        Cell.setCellStyle(HeaderString);
-        ColumnCount++;
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
-        Cell.setCellStyle(HeaderString);
-        ColumnCount++;
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_BLANK);
-        Cell.setCellStyle(HeaderString);
-        ColumnCount++;
 
     }
 
-    public void drawSumRow(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
+    public void drawSumRow(ReportTemplate reportTemplate, HSSFSheet Sheet, EntityDocumentReportData reportData )
     {
-        EntityDocumentReportData MainData = (EntityDocumentReportData)reportData;
 
         ColumnCount=0;
         RowCount++;
@@ -1901,25 +1937,22 @@ public class ReportTool
         Row.setRowNum(( short ) RowCount);
         Row.setHeightInPoints(20);
 
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-        Cell.setCellStyle(SumInt);
-        Cell.setCellValue(MainData.getEntityCount());
-        ColumnCount++;
+        try
+        {
+            for (ContentParameter contentParameter: reportTemplate.getContentParameters())
+            {
+                if(contentParameter.getRowType().name()=="TABLE_SUM")
+                {
+                    drawCell(reportTemplate,Sheet,contentParameter,reportData);
+                }
+            }
 
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(SumString);
-        Cell.setCellValue("ИТОГО");
-        ColumnCount++;
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(SumString);
-        Cell.setCellValue("-");
-        ColumnCount++;
-
-
+        }
+        catch (Exception ex)
+        {
+            System.out.println(ex);
+        }
     }
-
-
 
     public void drawGroup1Row(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
     {
@@ -2008,8 +2041,6 @@ public class ReportTool
 
     }
 
-
-
     public void drawGroup4Row(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
     {
         EntityDocumentReportData group4Data = (EntityDocumentReportData)reportData;
@@ -2067,7 +2098,6 @@ public class ReportTool
 
 
     }
-
 
     public void drawGroup6Row(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
     {
