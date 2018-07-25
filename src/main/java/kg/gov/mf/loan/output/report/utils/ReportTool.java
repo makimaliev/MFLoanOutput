@@ -54,6 +54,10 @@ public class ReportTool
     Map<Long,String> departmentMap  = new HashMap<Long,String>();
     Map<Long,String> creditOrderMap = new HashMap<Long,String>();
 
+    Map<Long,String> appliedEntityStatusMap = new HashMap<Long,String>();
+    Map<Long,String> entityDocumentStatusMap = new HashMap<Long,String>();
+    Map<Long,String> documentPackageStatusMap = new HashMap<Long,String>();
+
 
     HSSFFont         FontTitle      = null;
     HSSFFont         FontHeader     = null;
@@ -166,6 +170,9 @@ public class ReportTool
                 case "supervisor": supervisorMap.put(referenceView.getId(),referenceView.getName()); break;
                 case "department": departmentMap.put(referenceView.getId(),referenceView.getName()); break;
                 case "credit_order": creditOrderMap.put(referenceView.getId(),referenceView.getName()); break;
+                case "applied_entity_status": appliedEntityStatusMap.put(referenceView.getId(),referenceView.getName()); break;
+                case "entity_document_status": entityDocumentStatusMap.put(referenceView.getId(),referenceView.getName()); break;
+                case "document_package_status": documentPackageStatusMap.put(referenceView.getId(),referenceView.getName()); break;
             }
 
         }
@@ -468,10 +475,10 @@ public class ReportTool
                 nameByGroupType = " Список получателей № "+entityDocumentView.getV_ael_listNumber()+" от "+entityDocumentView.getV_ael_listDate();
                 break;
             case 15:
-                nameByGroupType = " Пакет документации == "+entityDocumentView.getV_document_package_name();
+                nameByGroupType = entityDocumentView.getV_document_package_name();
                 break;
             case 16:
-                nameByGroupType = " Документ == "+entityDocumentView.getV_entity_document_name();
+                nameByGroupType = entityDocumentView.getV_entity_document_name();
                 break;
 
         }
@@ -866,6 +873,48 @@ public class ReportTool
 
         return  nameByGroupType;
     }
+
+
+    public String getNameByGroupType(long groupType, long id)
+    {
+
+        String nameByGroupType="";
+
+        switch((short)groupType)
+        {
+            case 1:
+                nameByGroupType = regionMap.get(id);
+                break;
+            case 2:
+                nameByGroupType = districtMap.get(id);
+                break;
+            case 12:
+                nameByGroupType = creditOrderMap.get(id);
+                break;
+            case 21:
+                nameByGroupType = appliedEntityStatusMap.get(id);
+                break;
+            case 22:
+                nameByGroupType = entityDocumentStatusMap.get(id);
+                break;
+            case 23:
+                nameByGroupType = documentPackageStatusMap.get(id);
+                break;
+
+            case 5:
+                nameByGroupType = supervisorMap.get(id);
+                break;
+
+
+
+
+
+        }
+
+        return  nameByGroupType;
+    }
+
+
 
 
     public void setupSheetSettings(HSSFSheet Sheet, ReportTemplate reportTemplate)
@@ -1721,6 +1770,12 @@ public class ReportTool
 
 
 
+    public String formatText(String originText, ReportTemplate reportTemplate)
+    {
+        if(originText.contains("(=onDate=)")) originText.replaceAll("(=onDate=)",getOnDate(reportTemplate).toString());
+
+        return originText;
+    }
 
 
 
@@ -1729,8 +1784,50 @@ public class ReportTool
 
 
 
+    public LinkedHashMap<String,List<Long>> getParametersByTemplate(ReportTemplate reportTemplate,List<Long> groupIds)
+    {
+        LinkedHashMap<String,List<Long>> parameterS = new LinkedHashMap<String,List<Long>>();
+
+        for (FilterParameter filterParameter: reportTemplate.getFilterParameters())
+        {
+
+            if(filterParameter.getFilterParameterType().name()=="OBJECT_LIST")
+            {
+                ObjectList objectList = filterParameter.getObjectList();
+
+                List<Long> Ids = new ArrayList<>();
+
+                for (ObjectListValue objectListValue: objectList.getObjectListValues())
+                {
+                    Ids.add(Long.parseLong(objectListValue.getName()));
+                }
+
+                parameterS.put(this.getParameterTypeNameById(String.valueOf(objectList.getObjectTypeId())),Ids);
+            }
+
+            if(this.getOnDate(reportTemplate)!=null)
+            {
+                List<Long> Ids = new ArrayList<>();
+
+                try
+                {
+                    Ids.add(this.getOnDate(reportTemplate).getTime());
+                }
+                catch ( Exception ex )
+                {
+                    System.out.println(ex);
+                }
+
+                parameterS.put("onDate",Ids);
+            }
+
+            parameterS.put("orderBy",groupIds);
 
 
+        }
+
+        return parameterS;
+    }
 
 
 
@@ -1764,7 +1861,7 @@ public class ReportTool
 
     }
 
-    public void drawCell(ReportTemplate reportTemplate, HSSFSheet Sheet, ContentParameter contentParameter , EntityDocumentReportData reportData)
+    public void drawCell(ReportTemplate reportTemplate, HSSFSheet Sheet, ContentParameter contentParameter , ReportData reportData)
     {
         try
         {
@@ -1788,7 +1885,7 @@ public class ReportTool
                         Cell.setCellStyle(TitleString);
                 else    Cell.setCellStyle(HeaderString);
 
-                Cell.setCellValue(contentParameter.getConstantText());
+                Cell.setCellValue(contentParameter.getConstantText().contains("(=") ? formatText(contentParameter.getConstantText(),reportTemplate) : contentParameter.getConstantText());
             }
             else
             {
@@ -1811,7 +1908,10 @@ public class ReportTool
                 {
                     String sMethodName = "get"+contentParameter.getFieldName().substring(0, 1).toUpperCase()+contentParameter.getFieldName().substring(1, contentParameter.getFieldName().length());
 
+                    reportData.getClass().cast(reportData);
                     object = reportData.getClass().getMethod(sMethodName,null).invoke(reportData);
+
+
                 }
 
                 switch (contentParameter.getRowType().toString())
@@ -1831,6 +1931,12 @@ public class ReportTool
                         Cell.setCellStyle(getCellStyleByLevel(level,"string"));
                         if(object==null) object = contentParameter.getConstantText();
                         Cell.setCellValue(String.valueOf(object));
+
+                        if(object.toString().matches("[0-9]+")&&contentParameter.getConstantInt()>0)
+                        {
+                            Cell.setCellValue(getNameByGroupType((long)contentParameter.getConstantInt(), Long.parseLong(object.toString())));
+                        }
+
                         break;
                     case "DATE" :
                         Cell.setCellStyle(getCellStyleByLevel(level,"date"));
@@ -1870,7 +1976,7 @@ public class ReportTool
 
 
 
-    public void drawTitle(ReportTemplate reportTemplate, HSSFSheet Sheet, EntityDocumentReportData reportData )
+    public void drawTitle(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
     {
 
         RowCount = 0;
@@ -1896,7 +2002,7 @@ public class ReportTool
         ColumnCount = 0;
     }
 
-    public void drawHeader(ReportTemplate reportTemplate, HSSFSheet Sheet, EntityDocumentReportData reportData )
+    public void drawHeader(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
     {
         RowCount = lastRowCount;
         ColumnCount = 0;
@@ -1927,7 +2033,7 @@ public class ReportTool
 
     }
 
-    public void drawSumRow(ReportTemplate reportTemplate, HSSFSheet Sheet, EntityDocumentReportData reportData )
+    public void drawSumRow(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
     {
 
         ColumnCount=0;
@@ -1954,9 +2060,8 @@ public class ReportTool
         }
     }
 
-    public void drawGroup1Row(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
+    public void drawGroupRow(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData, long level )
     {
-        EntityDocumentReportData group1Data = (EntityDocumentReportData)reportData;
 
         ColumnCount=0;
         RowCount++;
@@ -1964,167 +2069,21 @@ public class ReportTool
         Row = Sheet.createRow(RowCount);
         Row.setRowNum(( short ) RowCount);
 
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-        Cell.setCellStyle(Group1Int);
-        Cell.setCellValue(group1Data.getEntityCount());
-        ColumnCount++;
+        try
+        {
+            for (ContentParameter contentParameter: reportTemplate.getContentParameters())
+            {
+                if(contentParameter.getRowType().name().contains("TABLE_GROUP"+String.valueOf(level)))
+                {
+                    drawCell(reportTemplate,Sheet,contentParameter,reportData);
+                }
+            }
 
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(Group1String);
-        Cell.setCellValue(group1Data.getName());
-        ColumnCount++;
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(Group1String);
-        Cell.setCellValue("");
-        ColumnCount++;
-
-
-
-    }
-
-    public void drawGroup2Row(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
-    {
-        EntityDocumentReportData group2Data = (EntityDocumentReportData)reportData;
-
-        ColumnCount=0;
-        RowCount++;
-
-        Row = Sheet.createRow(RowCount);
-        Row.setRowNum(( short ) RowCount);
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-        Cell.setCellStyle(Group2Int);
-        Cell.setCellValue(group2Data.getEntityCount());
-        ColumnCount++;
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(Group2String);
-        Cell.setCellValue(group2Data.getName());
-        ColumnCount++;
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(Group2String);
-        Cell.setCellValue("");
-        ColumnCount++;
-
-
-
-    }
-
-    public void drawGroup3Row(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
-    {
-        EntityDocumentReportData group3Data = (EntityDocumentReportData)reportData;
-
-        ColumnCount=0;
-        RowCount++;
-
-        Row = Sheet.createRow(RowCount);
-        Row.setRowNum(( short ) RowCount);
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-        Cell.setCellStyle(Group3Int);
-        Cell.setCellValue(group3Data.getEntityCount());
-        ColumnCount++;
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(Group3String);
-        Cell.setCellValue(group3Data.getName());
-        ColumnCount++;
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(Group3String);
-        Cell.setCellValue("");
-        ColumnCount++;
-
-
-
-    }
-
-    public void drawGroup4Row(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
-    {
-        EntityDocumentReportData group4Data = (EntityDocumentReportData)reportData;
-
-        ColumnCount=0;
-        RowCount++;
-
-        Row = Sheet.createRow(RowCount);
-        Row.setRowNum(( short ) RowCount);
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-        Cell.setCellStyle(Group4Int);
-        Cell.setCellValue("");
-        ColumnCount++;
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(Group4String);
-        Cell.setCellValue(group4Data.getName());
-        ColumnCount++;
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(Group4String);
-        Cell.setCellValue("");
-        ColumnCount++;
-
-
-
-    }
-
-    public void drawGroup5Row(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
-    {
-        EntityDocumentReportData group5Data = (EntityDocumentReportData)reportData;
-
-        ColumnCount=0;
-        RowCount++;
-
-        Row = Sheet.createRow(RowCount);
-        Row.setRowNum(( short ) RowCount);
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-        Cell.setCellStyle(Group5Int);
-        Cell.setCellValue("");
-        ColumnCount++;
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(Group5String);
-        Cell.setCellValue(group5Data.getName());
-        ColumnCount++;
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(Group5String);
-        Cell.setCellValue("");
-        ColumnCount++;
-
-
-
-    }
-
-    public void drawGroup6Row(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
-    {
-        EntityDocumentReportData group6Data = (EntityDocumentReportData)reportData;
-
-        ColumnCount=0;
-        RowCount++;
-
-        Row = Sheet.createRow(RowCount);
-        Row.setRowNum(( short ) RowCount);
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_NUMERIC);
-        Cell.setCellStyle(Group6Int);
-        Cell.setCellValue("");
-        ColumnCount++;
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(Group6String);
-        Cell.setCellValue(group6Data.getName());
-        ColumnCount++;
-
-        Cell = Row.createCell(ColumnCount, HSSFCell.CELL_TYPE_STRING);
-        Cell.setCellStyle(Group6String);
-        Cell.setCellValue("");
-        ColumnCount++;
-
-
+        }
+        catch (Exception ex)
+        {
+            System.out.println(ex);
+        }
 
     }
 

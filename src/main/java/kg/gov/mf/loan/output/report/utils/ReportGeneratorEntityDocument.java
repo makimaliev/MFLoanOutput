@@ -3,6 +3,7 @@ package kg.gov.mf.loan.output.report.utils;
 import kg.gov.mf.loan.manage.model.entitydocument.EntityDocument;
 import kg.gov.mf.loan.output.report.model.EntityDocumentReportData;
 import kg.gov.mf.loan.output.report.model.LoanSummaryReportData;
+import kg.gov.mf.loan.output.report.model.ReportData;
 import kg.gov.mf.loan.output.report.model.ReportTemplate;
 import kg.gov.mf.loan.output.report.service.EntityDocumentViewService;
 import kg.gov.mf.loan.output.report.service.LoanViewService;
@@ -11,6 +12,10 @@ import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.hssf.util.Region;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class ReportGeneratorEntityDocument extends ReportGenerator
@@ -25,7 +30,8 @@ public class ReportGeneratorEntityDocument extends ReportGenerator
 
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
-        System.out.println("Report Generated!!!");
+
+
 
         EntityDocumentReportData EntityDocument = new EntityDocumentReportData();
 
@@ -34,9 +40,14 @@ public class ReportGeneratorEntityDocument extends ReportGenerator
 
         EntityDocument = new EntityDocumentReportDataManager().getReportDataGrouped(EntityDocument,reportTemplate);
 
+
+
+
         HSSFWorkbook     WorkBook       = new HSSFWorkbook();
 
         HSSFSheet        Sheet          = WorkBook.createSheet();
+
+
 
         reportTool.initReportSetup(reportTemplate,WorkBook);
         reportTool.setupSheetSettings(Sheet, reportTemplate);
@@ -44,39 +55,43 @@ public class ReportGeneratorEntityDocument extends ReportGenerator
         reportTool.drawTitle(reportTemplate,Sheet, EntityDocument);
         reportTool.drawHeader(reportTemplate,Sheet,EntityDocument);
 
+
+
         EntityDocumentReportData MainData = EntityDocument;
 
-        reportTool.drawSumRow(reportTemplate,Sheet,MainData);
+        ReportData reportData = MainData;
 
-        EntityDocumentReportData GroupData1[] = MainData.getChilds();
+        reportTool.drawSumRow(reportTemplate,Sheet,reportData);
+
+        ReportData GroupData1[] = MainData.getChilds();
 
         for(int x=0;x<GroupData1.length;x++)
         {
-            reportTool.drawGroup1Row(reportTemplate,Sheet, GroupData1[x]);
+            reportTool.drawGroupRow(reportTemplate,Sheet, GroupData1[x],1);
 
-            EntityDocumentReportData GroupData2[] = GroupData1[x].getChilds();
+            ReportData GroupData2[] = GroupData1[x].getChilds();
 
             for(int y=0;y<GroupData2.length;y++)
             {
-                reportTool.drawGroup2Row(reportTemplate,Sheet, GroupData2[y]);
+                reportTool.drawGroupRow(reportTemplate,Sheet, GroupData2[y],2);
 
-                EntityDocumentReportData GroupData3[] = GroupData2[y].getChilds();
+                ReportData GroupData3[] = GroupData2[y].getChilds();
 
                 for(int z=0;z<GroupData3.length;z++)
                 {
-                    reportTool.drawGroup3Row(reportTemplate,Sheet, GroupData3[z]);
+                    reportTool.drawGroupRow(reportTemplate,Sheet, GroupData3[z],3);
 
-                    EntityDocumentReportData GroupData4[] = GroupData3[z].getChilds();
+                    ReportData GroupData4[] = GroupData3[z].getChilds();
 
                     for(int a=0;a<GroupData4.length;a++)
                     {
-                        reportTool.drawGroup4Row(reportTemplate,Sheet, GroupData4[a]);
+                        reportTool.drawGroupRow(reportTemplate,Sheet, GroupData4[a],4);
 
-                        EntityDocumentReportData GroupData5[] = GroupData4[a].getChilds();
+                        ReportData GroupData5[] = GroupData4[a].getChilds();
 
                         for(int b=0;b<GroupData5.length;b++)
                         {
-                            reportTool.drawGroup5Row(reportTemplate,Sheet, GroupData5[b]);
+                            reportTool.drawGroupRow(reportTemplate,Sheet, GroupData5[b],5);
 
                         }
 
@@ -89,7 +104,7 @@ public class ReportGeneratorEntityDocument extends ReportGenerator
 
         }
 
-
+        reportTool.drawSumRow(reportTemplate,Sheet,reportData);
 
         return WorkBook;
 
