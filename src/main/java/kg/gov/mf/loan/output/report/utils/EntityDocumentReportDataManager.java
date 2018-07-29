@@ -26,17 +26,13 @@ public class EntityDocumentReportDataManager {
 
         ReportTool reportTool = new ReportTool();
 
-        Date onDate = reportTool.getOnDate(reportTemplate);
-
-        reportData.setOnDate(new java.sql.Date(onDate.getTime()));
-
         List<Long> groupIds = new ArrayList<>();
 
-        for(long level=1; level<=6;level++)
-        {
-            if(reportTool.getGroupType(reportTemplate,level)>0)
-                groupIds.add(reportTool.getGroupType(reportTemplate,level));
-        }
+//        groupIds.add(reportTemplate.getGroup1Type().getId());
+//        groupIds.add(reportTemplate.getGroup2Type().getId());
+//        groupIds.add(reportTemplate.getGroup3Type().getId());
+//        groupIds.add(reportTemplate.getGroup4Type().getId());
+//        groupIds.add(reportTemplate.getGroup5Type().getId());
 
         LinkedHashMap<String,List<Long>> parameterS = new LinkedHashMap<String,List<Long>>();
 

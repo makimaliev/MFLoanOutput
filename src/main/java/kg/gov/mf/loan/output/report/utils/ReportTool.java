@@ -1,12 +1,16 @@
 package kg.gov.mf.loan.output.report.utils;
 
 import kg.gov.mf.loan.output.report.model.*;
+import kg.gov.mf.loan.output.report.service.GroupTypeService;
 import kg.gov.mf.loan.output.report.service.OutputParameterService;
 import kg.gov.mf.loan.output.report.service.ReferenceViewService;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -27,10 +31,19 @@ public class ReportTool
     ReferenceViewService referenceViewService;
 
     @Autowired
-    OutputParameterService outputParameterService;
+    GroupTypeService groupTypeService;
 
 
-    ArrayList<ReferenceView> referenceViews = new ArrayList<ReferenceView>();
+
+    Map<String,Map<Long,String>> referenceMap      = new HashMap<>();
+
+    Map<String, HSSFFont> fontMap = new HashMap<>();
+
+    Map<String, HSSFColor> colorMap = new HashMap<>();
+
+    Map<String, HSSFCellStyle> cellStyleMap = new HashMap<>();
+
+    Map<String, GroupType> groupTypeMap = new HashMap<>();
 
     HSSFDataFormat   format         = null;
 
@@ -39,24 +52,11 @@ public class ReportTool
 
     int lastRowCount = 0;
 
-    Map<Integer,ContentParameter> contentMap = new TreeMap<Integer,ContentParameter>();
     Map<Integer,Float> rowHeightMap = new HashMap<Integer,Float>();
 
     HSSFRow          Row            = null;
     HSSFCell         Cell           = null;
 
-
-    Map<Long,String> regionMap      = new HashMap<Long,String>();
-    Map<Long,String> districtMap    = new HashMap<Long,String>();
-    Map<Long,String> workSectorMap  = new HashMap<Long,String>();
-    Map<Long,String> loanTypeMap    = new HashMap<Long,String>();
-    Map<Long,String> supervisorMap  = new HashMap<Long,String>();
-    Map<Long,String> departmentMap  = new HashMap<Long,String>();
-    Map<Long,String> creditOrderMap = new HashMap<Long,String>();
-
-    Map<Long,String> appliedEntityStatusMap = new HashMap<Long,String>();
-    Map<Long,String> entityDocumentStatusMap = new HashMap<Long,String>();
-    Map<Long,String> documentPackageStatusMap = new HashMap<Long,String>();
 
 
     HSSFFont         FontTitle      = null;
@@ -147,7 +147,6 @@ public class ReportTool
     HSSFCellStyle    Group6Double    = null;
 
 
-    boolean isLandscape = true;
 
 
 
@@ -157,23 +156,21 @@ public class ReportTool
 
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
-        referenceViews.addAll(this.referenceViewService.findAll());
-
-        for (ReferenceView referenceView:referenceViews)
+        for (ReferenceView referenceView:this.referenceViewService.findAll())
         {
-            switch (referenceView.getList_type())
+            if(referenceMap.get(referenceView.getList_type())==null)
             {
-                case "region": regionMap.put(referenceView.getId(),referenceView.getName()); break;
-                case "district": districtMap.put(referenceView.getId(),referenceView.getName()); break;
-                case "work_sector": workSectorMap.put(referenceView.getId(),referenceView.getName()); break;
-                case "loan_type": loanTypeMap.put(referenceView.getId(),referenceView.getName()); break;
-                case "supervisor": supervisorMap.put(referenceView.getId(),referenceView.getName()); break;
-                case "department": departmentMap.put(referenceView.getId(),referenceView.getName()); break;
-                case "credit_order": creditOrderMap.put(referenceView.getId(),referenceView.getName()); break;
-                case "applied_entity_status": appliedEntityStatusMap.put(referenceView.getId(),referenceView.getName()); break;
-                case "entity_document_status": entityDocumentStatusMap.put(referenceView.getId(),referenceView.getName()); break;
-                case "document_package_status": documentPackageStatusMap.put(referenceView.getId(),referenceView.getName()); break;
+                Map<Long,String> newMap      = new HashMap<>();
+
+                newMap.put(referenceView.getId(),referenceView.getName());
+
+                referenceMap.put(referenceView.getList_type(), newMap);
             }
+            else
+            {
+                referenceMap.get(referenceView.getList_type()).put(referenceView.getId(),referenceView.getName());
+            }
+
 
         }
     }
@@ -382,6 +379,9 @@ public class ReportTool
         }
 
 
+
+
+
     public Date getOnDate(ReportTemplate reportTemplate)
     {
 
@@ -395,6 +395,29 @@ public class ReportTool
         }
 
         return date;
+    }
+
+    public String getParameterTypeNameById2(String id)
+    {
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+
+        String parameterTypeName = "";
+
+        if(groupTypeMap.isEmpty())
+        {
+            for (GroupType groupType: this.groupTypeService.findAll())
+            {
+                groupTypeMap.put(String.valueOf(groupType.getId()),groupType);
+
+            }
+        }
+
+        if(!groupTypeMap.isEmpty())
+        {
+            return groupTypeMap.get(id).getField_name();
+        }
+
+        return parameterTypeName;
     }
 
     public long getGroupType(ReportTemplate reportTemplate,long level)
@@ -460,13 +483,13 @@ public class ReportTool
         switch((short)groupType)
         {
             case 1:
-                nameByGroupType = regionMap.get(entityDocumentView.getV_owner_region_id());
+                nameByGroupType = referenceMap.get("region").get(entityDocumentView.getV_owner_region_id()) ;
                 break;
             case 2:
-                nameByGroupType = districtMap.get(entityDocumentView.getV_owner_district_id());
+                nameByGroupType = referenceMap.get("district").get(entityDocumentView.getV_owner_district_id()) ;
                 break;
             case 12:
-                nameByGroupType = creditOrderMap.get(entityDocumentView.getV_co_id());
+                nameByGroupType = referenceMap.get("credit_order").get(entityDocumentView.getV_co_id()) ;
                 break;
             case 13:
                 nameByGroupType = entityDocumentView.getV_owner_name();
@@ -883,26 +906,27 @@ public class ReportTool
         switch((short)groupType)
         {
             case 1:
-                nameByGroupType = regionMap.get(id);
+                nameByGroupType = referenceMap.get("region").get(id) ;
+
                 break;
             case 2:
-                nameByGroupType = districtMap.get(id);
+                nameByGroupType = referenceMap.get("district").get(id);
                 break;
             case 12:
-                nameByGroupType = creditOrderMap.get(id);
+                nameByGroupType = referenceMap.get("credit_order").get(id);
                 break;
             case 21:
-                nameByGroupType = appliedEntityStatusMap.get(id);
+                nameByGroupType = referenceMap.get("applied_entity_status").get(id);
                 break;
             case 22:
-                nameByGroupType = entityDocumentStatusMap.get(id);
+                nameByGroupType = referenceMap.get("entity_document_status").get(id);
                 break;
             case 23:
-                nameByGroupType = documentPackageStatusMap.get(id);
+                nameByGroupType = referenceMap.get("document_package_status").get(id);
                 break;
 
             case 5:
-                nameByGroupType = supervisorMap.get(id);
+                nameByGroupType = referenceMap.get("supervisor").get(id);
                 break;
 
 
@@ -1829,6 +1853,33 @@ public class ReportTool
         return parameterS;
     }
 
+    public void applyParameters(LinkedHashMap<String,List<Long>> parameters, Criteria criteria)
+    {
+        for (Map.Entry<String, List<Long>> parameterInLoop : parameters.entrySet())
+        {
+            String parameterType = parameterInLoop.getKey();
+
+            List<Long> ids = parameterInLoop.getValue();
+
+            if(parameterType.contains("in"))
+            {
+                String propertyName = parameterType.replace("in","");
+                criteria.add(Restrictions.in(propertyName,ids));
+            }
+
+            if(parameterType.contains("orderBy"))
+            {
+
+                for (Long id:ids)
+                {
+                    criteria.addOrder(Order.asc(this.getParameterTypeNameById(id.toString())));
+                }
+            }
+        }
+
+    }
+
+
 
 
 
@@ -1970,10 +2021,6 @@ public class ReportTool
 
 
     }
-
-
-
-
 
 
     public void drawTitle(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
