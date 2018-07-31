@@ -21,35 +21,27 @@ public class EntityDocumentReportDataManager {
 
     public EntityDocumentReportData getReportDataGrouped(EntityDocumentReportData reportData,ReportTemplate reportTemplate)
     {
-
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
         ReportTool reportTool = new ReportTool();
 
-        List<Long> groupIds = new ArrayList<>();
+        LinkedHashMap<String,List<String>> parameterS = new LinkedHashMap<>();
 
-//        groupIds.add(reportTemplate.getGroup1Type().getId());
-//        groupIds.add(reportTemplate.getGroup2Type().getId());
-//        groupIds.add(reportTemplate.getGroup3Type().getId());
-//        groupIds.add(reportTemplate.getGroup4Type().getId());
-//        groupIds.add(reportTemplate.getGroup5Type().getId());
-
-        LinkedHashMap<String,List<Long>> parameterS = new LinkedHashMap<String,List<Long>>();
-
-        parameterS.putAll(reportTool.getParametersByTemplate(reportTemplate,groupIds));
+        parameterS.putAll(reportTool.getParametersByTemplate(reportTemplate));
 
         reportData.getEntityDocumentViews().addAll(entityDocumentViewService.findByParameter(parameterS));
 
-        return groupifyData(reportData,groupIds, reportTemplate );
+        for (EntityDocumentView entityDocumentView: reportData.getEntityDocumentViews())
+        {
+            System.out.println(entityDocumentView.getV_owner_name());
+        }
 
+        return groupifyData(reportData, reportTemplate, reportTool );
     }
 
 
-    public EntityDocumentReportData groupifyData(EntityDocumentReportData reportData, List<Long> groupIds, ReportTemplate reportTemplate)
+    public EntityDocumentReportData groupifyData(EntityDocumentReportData reportData, ReportTemplate reportTemplate, ReportTool reportTool)
     {
-
-        ReportTool reportTool = new ReportTool();
-
         reportTool.initReference();
 
         long groupAid=-1;
@@ -67,27 +59,18 @@ public class EntityDocumentReportDataManager {
         long currentgroupFid=-1;
 
 
-        if(reportTool.getGroupType(reportTemplate,1)>0)
-            groupAid = reportTool.getGroupType(reportTemplate,1);
-
-
-        if(reportTool.getGroupType(reportTemplate,2)>0)
-            groupBid = reportTool.getGroupType(reportTemplate,2);
-
-        if(reportTool.getGroupType(reportTemplate,3)>0)
-            groupCid = reportTool.getGroupType(reportTemplate,3);
-
-
-        if(reportTool.getGroupType(reportTemplate,4)>0)
-            groupDid = reportTool.getGroupType(reportTemplate,4);
-
-
-        if(reportTool.getGroupType(reportTemplate,5)>0)
-            groupEid = reportTool.getGroupType(reportTemplate,5);
-
-
-        if(reportTool.getGroupType(reportTemplate,6)>0)
-            groupFid = reportTool.getGroupType(reportTemplate,6);
+        if(reportTemplate.getGroupType1()!=null)
+            groupAid = reportTemplate.getGroupType1().getId();
+        if(reportTemplate.getGroupType2()!=null)
+            groupBid = reportTemplate.getGroupType2().getId();
+        if(reportTemplate.getGroupType3()!=null)
+            groupCid = reportTemplate.getGroupType3().getId();
+        if(reportTemplate.getGroupType4()!=null)
+            groupDid = reportTemplate.getGroupType4().getId();
+        if(reportTemplate.getGroupType5()!=null)
+            groupEid = reportTemplate.getGroupType5().getId();
+        if(reportTemplate.getGroupType6()!=null)
+            groupFid = reportTemplate.getGroupType6().getId();
 
         EntityDocumentReportData childA = null;
         EntityDocumentReportData childB = null;
@@ -99,28 +82,28 @@ public class EntityDocumentReportDataManager {
 
         for (EntityDocumentView entityDocumentView:reportData.getEntityDocumentViews())
         {
-            if(reportTool.getIdByGroupType(groupAid,entityDocumentView)!=currentgroupAid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType1(),entityDocumentView)!=currentgroupAid)
             {
                 childA = reportData.addChild();
-                childA.setName(reportTool.getNameByGroupType(groupAid,entityDocumentView));
+                childA.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType1(),entityDocumentView));
                 childA.setLevel((short)1);
 
-                currentgroupAid=reportTool.getIdByGroupType(groupAid,entityDocumentView);
+                currentgroupAid=reportTool.getIdByGroupType(reportTemplate.getGroupType1(),entityDocumentView);
             }
 
-            if(reportTool.getIdByGroupType(groupBid,entityDocumentView)!=currentgroupBid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType2(),entityDocumentView)!=currentgroupBid)
             {
                 childB = childA.addChild();
-                childB.setName(reportTool.getNameByGroupType(groupBid,entityDocumentView));
+                childB.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType2(),entityDocumentView));
                 childB.setLevel((short)2);
 
-                currentgroupBid=reportTool.getIdByGroupType(groupBid,entityDocumentView);
+                currentgroupBid=reportTool.getIdByGroupType(reportTemplate.getGroupType2(),entityDocumentView);
             }
 
-            if(reportTool.getIdByGroupType(groupCid,entityDocumentView)!=currentgroupCid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType3(),entityDocumentView)!=currentgroupCid)
             {
                 childC = childB.addChild();
-                childC.setName(reportTool.getNameByGroupType(groupCid,entityDocumentView));
+                childC.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType3(),entityDocumentView));
                 childC.setLevel((short)3);
 
                 childC.setV_applied_entity_appliedEntityStateId(entityDocumentView.getV_applied_entity_appliedEntityStateId());
@@ -130,24 +113,24 @@ public class EntityDocumentReportDataManager {
                 childA.setEntityCount(childA.getEntityCount()+1);
                 reportData.setEntityCount(reportData.getEntityCount()+1);
 
-                currentgroupCid=reportTool.getIdByGroupType(groupCid,entityDocumentView);
+                currentgroupCid=reportTool.getIdByGroupType(reportTemplate.getGroupType3(),entityDocumentView);
             }
 
-            if(reportTool.getIdByGroupType(groupDid,entityDocumentView)!=currentgroupDid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType4(),entityDocumentView)!=currentgroupDid)
             {
                 childD = childC.addChild();
-                childD.setName(reportTool.getNameByGroupType(groupDid,entityDocumentView));
+                childD.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType4(),entityDocumentView));
                 childD.setLevel((short)4);
 
                 childD.setV_document_package_documentPackageStateId(entityDocumentView.getV_document_package_documentPackageStateId());
 
-                currentgroupDid=reportTool.getIdByGroupType(groupDid,entityDocumentView);
+                currentgroupDid=reportTool.getIdByGroupType(reportTemplate.getGroupType4(),entityDocumentView);
             }
 
-            if(reportTool.getIdByGroupType(groupEid,entityDocumentView)!=currentgroupEid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType5(),entityDocumentView)!=currentgroupEid)
             {
                 childE = childD.addChild();
-                childE.setName(reportTool.getNameByGroupType(groupEid,entityDocumentView));
+                childE.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType5(),entityDocumentView));
                 childE.setLevel((short)5);
 
                 childE.setEntityDocumentCount(1);
@@ -200,18 +183,8 @@ public class EntityDocumentReportDataManager {
                     childE.setV_entity_document_approvedDate(new java.sql.Date(entityDocumentView.getV_entity_document_approvedDate().getTime()));
                 childE.setV_entity_document_approvedDescription(entityDocumentView.getV_entity_document_approvedDescription());
 
-                currentgroupEid=reportTool.getIdByGroupType(groupEid,entityDocumentView);
+                currentgroupEid=reportTool.getIdByGroupType(reportTemplate.getGroupType5(),entityDocumentView);
             }
-
-            if(reportTool.getIdByGroupType(groupFid,entityDocumentView)!=currentgroupFid)
-            {
-                childF = childE.addChild();
-                childF.setName(reportTool.getNameByGroupType(groupFid,entityDocumentView));
-                childF.setLevel((short)6);
-
-                currentgroupFid=reportTool.getIdByGroupType(groupFid,entityDocumentView);
-            }
-
 
         }
 

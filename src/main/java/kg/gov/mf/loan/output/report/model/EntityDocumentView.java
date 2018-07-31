@@ -9,7 +9,7 @@ import java.util.Date;
 @Entity
 @Table(name="entity_document_view")
 @Immutable
-public class EntityDocumentView
+public class EntityDocumentView extends  ReportView
 {
 
 

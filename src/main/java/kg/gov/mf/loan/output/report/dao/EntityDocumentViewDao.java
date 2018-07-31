@@ -19,7 +19,7 @@ public interface EntityDocumentViewDao {
 
 	public List<EntityDocumentView> findAll();
 
-	public List<EntityDocumentView> findByParameter(LinkedHashMap<String, List<Long>> parameters);
+	public List<EntityDocumentView> findByParameter(LinkedHashMap<String, List<String>> parameters);
 
 
 

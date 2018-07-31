@@ -149,7 +149,7 @@ public class ReportTool
 
 
 
-
+    // =========== _INIT ACTIONS =================================
 
     public void initReference()
     {
@@ -291,11 +291,7 @@ public class ReportTool
         Group6Double    = getCellStyleByLevel(6,"double",reportTemplate,WorkBook);
     }
 
-
-
-
-
-
+    // =========== _FORMAT ACTIONS =====================================
 
     public String FormatNumber(double number)
         {
@@ -321,66 +317,14 @@ public class ReportTool
         }
 
 
-        public String getParameterTypeNameById(String id)
-        {
-            String parameterTypeName = "";
 
 
-            switch(id)
-            {
-                case "1":
-                    return "region";
-                case "2":
-                    return "district";
-                case "3":
-                    return "work_sector";
-                case "4":
-                    return "loan_type";
-                case "5":
-                    return "supervisor";
-                case "6":
-                    return "department";
-                case "7":
-                    return "debtor";
-                case "8":
-                    return "loan";
-                case "9":
-                    return "loan_summary";
-                case "10":
-                    return "payment";
-                case "11":
-                    return "schedule";
-                case "12":
-                    return "credit_order";
-                case "13":
-                    return "applied_entity";
-                case "14":
-                    return "applied_entity_list";
-                case "15":
-                    return "document_package";
-                case "16":
-                    return "entity_document";
-                case "17":
-                    return "collateral_agreement";
-                case "18":
-                    return "collateral_item";
+    public String formatText(String originText, ReportTemplate reportTemplate)
+    {
+        if(originText.contains("(=onDate=)")) return originText.replaceAll("(=onDate=)",getOnDate(reportTemplate).toString());
 
-
-
-
-
-
-
-            }
-
-
-
-            return parameterTypeName;
-        }
-
-
-
-
+        return originText;
+    }
 
     public Date getOnDate(ReportTemplate reportTemplate)
     {
@@ -397,546 +341,13 @@ public class ReportTool
         return date;
     }
 
-    public String getParameterTypeNameById2(String id)
-    {
-        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
-        String parameterTypeName = "";
 
-        if(groupTypeMap.isEmpty())
-        {
-            for (GroupType groupType: this.groupTypeService.findAll())
-            {
-                groupTypeMap.put(String.valueOf(groupType.getId()),groupType);
 
-            }
-        }
 
-        if(!groupTypeMap.isEmpty())
-        {
-            return groupTypeMap.get(id).getField_name();
-        }
 
-        return parameterTypeName;
-    }
 
-    public long getGroupType(ReportTemplate reportTemplate,long level)
-    {
-        long groupType=0;
 
-        for (GenerationParameter generationParameter:reportTemplate.getGenerationParameters())
-        {
-            if(generationParameter.getGenerationParameterType().getId()==level+3)
-            {
-                groupType = generationParameter.getPostionInList();
-                return groupType;
-            }
-        }
-
-        return  groupType;
-    }
-
-    public long getIdByGroupType(long groupType, EntityDocumentView entityDocumentView)
-    {
-        long idByGroupType=0;
-
-        switch((short)groupType)
-        {
-            case 1:
-                idByGroupType = entityDocumentView.getV_owner_region_id();
-                break;
-            case 2:
-                idByGroupType = entityDocumentView.getV_owner_district_id();
-                break;
-            case 12:
-                idByGroupType = entityDocumentView.getV_co_id();
-                break;
-            case 13:
-                idByGroupType = entityDocumentView.getV_applied_entity_id();
-                break;
-            case 14:
-                idByGroupType = entityDocumentView.getV_ael_id();
-                break;
-            case 15:
-                idByGroupType = entityDocumentView.getV_document_package_id();
-                break;
-            case 16:
-                idByGroupType = entityDocumentView.getV_entity_document_id();
-                break;
-
-
-
-
-
-
-        }
-
-        return  idByGroupType;
-    }
-
-
-    public String getNameByGroupType(long groupType, EntityDocumentView entityDocumentView)
-    {
-
-        String nameByGroupType="";
-
-        switch((short)groupType)
-        {
-            case 1:
-                nameByGroupType = referenceMap.get("region").get(entityDocumentView.getV_owner_region_id()) ;
-                break;
-            case 2:
-                nameByGroupType = referenceMap.get("district").get(entityDocumentView.getV_owner_district_id()) ;
-                break;
-            case 12:
-                nameByGroupType = referenceMap.get("credit_order").get(entityDocumentView.getV_co_id()) ;
-                break;
-            case 13:
-                nameByGroupType = entityDocumentView.getV_owner_name();
-                break;
-            case 14:
-                nameByGroupType = " Список получателей № "+entityDocumentView.getV_ael_listNumber()+" от "+entityDocumentView.getV_ael_listDate();
-                break;
-            case 15:
-                nameByGroupType = entityDocumentView.getV_document_package_name();
-                break;
-            case 16:
-                nameByGroupType = entityDocumentView.getV_entity_document_name();
-                break;
-
-        }
-
-        return  nameByGroupType;
-    }
-
-
-    public long getIdByGroupType(long groupType, LoanSummaryView loanSummaryView)
-    {
-        long idByGroupType=0;
-
-        switch((short)groupType)
-        {
-            case 1:
-                idByGroupType = loanSummaryView.getV_debtor_region_id();
-                break;
-            case 2:
-                idByGroupType = loanSummaryView.getV_debtor_district_id();
-                break;
-            case 7:
-                idByGroupType = loanSummaryView.getV_debtor_id();
-                break;
-            case 8:
-                idByGroupType = loanSummaryView.getV_loan_id();
-                break;
-            case 9:
-                idByGroupType = loanSummaryView.getV_ls_id();
-                break;
-            case 3:
-                idByGroupType = loanSummaryView.getV_debtor_work_sector_id();
-                break;
-
-
-
-
-
-
-        }
-
-        return  idByGroupType;
-    }
-
-    public String getNameByGroupType(long groupType, LoanSummaryView loanSummaryView)
-    {
-        String nameByGroupType="";
-
-        switch((short)groupType)
-        {
-            case 1:
-                nameByGroupType = loanSummaryView.getV_region_name();
-                break;
-            case 2:
-                nameByGroupType = loanSummaryView.getV_district_name();
-                break;
-            case 7:
-                nameByGroupType = loanSummaryView.getV_debtor_name();
-                break;
-            case 8:
-                nameByGroupType =loanSummaryView.getV_credit_order_regNumber()
-                        + " от "
-                        + loanSummaryView.getV_credit_order_regDate()
-                        + ", "
-                        + loanSummaryView.getV_loan_reg_number()
-                        + " от "
-                        + loanSummaryView.getV_loan_reg_date();
-                break;
-            case 9:
-                nameByGroupType = " расчет";
-                break;
-            case 3:
-                nameByGroupType = loanSummaryView.getV_work_sector_name();
-                break;
-
-
-
-
-
-
-        }
-
-        return  nameByGroupType;
-    }
-
-
-
-
-
-
-    public long getIdByGroupType(long groupType, PaymentView paymentView)
-    {
-        long idByGroupType=0;
-
-        switch((short)groupType)
-        {
-            case 1:
-                idByGroupType = paymentView.getV_debtor_region_id();
-                break;
-            case 2:
-                idByGroupType = paymentView.getV_debtor_district_id();
-                break;
-            case 7:
-                idByGroupType = paymentView.getV_debtor_id();
-                break;
-            case 8:
-                idByGroupType = paymentView.getV_loan_id();
-                break;
-            case 10:
-                idByGroupType = paymentView.getV_payment_id();
-                break;
-            case 3:
-                idByGroupType = paymentView.getV_debtor_work_sector_id();
-                break;
-
-
-
-
-
-
-        }
-
-        return  idByGroupType;
-    }
-
-    public String getNameByGroupType(long groupType, PaymentView paymentView)
-    {
-        String nameByGroupType="";
-
-        switch((short)groupType)
-        {
-            case 1:
-                nameByGroupType = paymentView.getV_region_name();
-                break;
-            case 2:
-                nameByGroupType = paymentView.getV_district_name();
-                break;
-            case 7:
-                nameByGroupType = paymentView.getV_debtor_name();
-                break;
-            case 8:
-                nameByGroupType =paymentView.getV_credit_order_regNumber()
-                        + " от "
-                        + paymentView.getV_credit_order_regDate()
-                        + ", "
-                        + paymentView.getV_loan_reg_number()
-                        + " от "
-                        + paymentView.getV_loan_reg_date();
-                break;
-            case 10:
-                nameByGroupType = " погашение №"+ paymentView.getV_payment_number()+ " от " + paymentView.getV_payment_date();
-                break;
-            case 3:
-                nameByGroupType = paymentView.getV_work_sector_name();
-                break;
-
-
-
-
-
-
-        }
-
-        return  nameByGroupType;
-    }
-
-
-
-    public long getIdByGroupType(long groupType, PaymentScheduleView paymentScheduleView)
-    {
-        long idByGroupType=0;
-
-        switch((short)groupType)
-        {
-            case 1:
-                idByGroupType = paymentScheduleView.getV_debtor_region_id();
-                break;
-            case 2:
-                idByGroupType = paymentScheduleView.getV_debtor_district_id();
-                break;
-            case 7:
-                idByGroupType = paymentScheduleView.getV_debtor_id();
-                break;
-            case 8:
-                idByGroupType = paymentScheduleView.getV_loan_id();
-                break;
-            case 11:
-                idByGroupType = paymentScheduleView.getV_ps_id();
-                break;
-            case 3:
-                idByGroupType = paymentScheduleView.getV_debtor_work_sector_id();
-                break;
-
-
-
-
-
-
-        }
-
-        return  idByGroupType;
-    }
-
-    public String getNameByGroupType(long groupType, PaymentScheduleView paymentScheduleView)
-    {
-        String nameByGroupType="";
-
-        switch((short)groupType)
-        {
-            case 1:
-                nameByGroupType = paymentScheduleView.getV_region_name();
-                break;
-            case 2:
-                nameByGroupType = paymentScheduleView.getV_district_name();
-                break;
-            case 7:
-                nameByGroupType = paymentScheduleView.getV_debtor_name();
-                break;
-            case 8:
-                nameByGroupType =paymentScheduleView.getV_credit_order_regNumber()
-                        + " от "
-                        + paymentScheduleView.getV_credit_order_regDate()
-                        + ", "
-                        + paymentScheduleView.getV_loan_reg_number()
-                        + " от "
-                        + paymentScheduleView.getV_loan_reg_date();
-                break;
-            case 9:
-                nameByGroupType = " расчет";
-                break;
-            case 3:
-                nameByGroupType = paymentScheduleView.getV_work_sector_name();
-                break;
-            case 11:
-                nameByGroupType = " графики";
-                break;
-
-
-
-
-
-
-        }
-
-        return  nameByGroupType;
-    }
-
-
-
-
-    public long getIdByGroupType(long groupType, CollateralItemView collateralItemView)
-    {
-        long idByGroupType=0;
-
-        switch((short)groupType)
-        {
-            case 1:
-                idByGroupType = collateralItemView.getV_debtor_region_id();
-                break;
-            case 2:
-                idByGroupType = collateralItemView.getV_debtor_district_id();
-                break;
-            case 7:
-                idByGroupType = collateralItemView.getV_debtor_id();
-                break;
-            case 3:
-                idByGroupType = collateralItemView.getV_debtor_work_sector_id();
-                break;
-
-            case 17:
-                idByGroupType = collateralItemView.getV_ca_id();
-                break;
-
-            case 18:
-                idByGroupType = collateralItemView.getV_ci_id();
-                break;
-
-
-
-
-
-
-        }
-
-        return  idByGroupType;
-    }
-
-    public String getNameByGroupType(long groupType, CollateralItemView collateralItemView)
-    {
-        String nameByGroupType="";
-
-        switch((short)groupType)
-        {
-            case 1:
-                nameByGroupType = collateralItemView.getV_region_name();
-                break;
-            case 2:
-                nameByGroupType = collateralItemView.getV_district_name();
-                break;
-            case 7:
-                nameByGroupType = collateralItemView.getV_debtor_name();
-                break;
-
-            case 3:
-                nameByGroupType = collateralItemView.getV_work_sector_name();
-                break;
-
-            case 17:
-                nameByGroupType = collateralItemView.getV_ca_arrestRegNumber()+" ot "+collateralItemView.getV_ca_agreementDate();
-                break;
-
-            case 18:
-                nameByGroupType = collateralItemView.getV_ci_name();
-                break;
-
-
-
-
-
-
-        }
-
-        return  nameByGroupType;
-    }
-
-
-
-
-    public long getIdByGroupType(long groupType, CollectionPhaseView collectionPhaseView)
-    {
-        long idByGroupType=0;
-
-        switch((short)groupType)
-        {
-            case 1:
-                idByGroupType = collectionPhaseView.getV_debtor_region_id();
-                break;
-            case 2:
-                idByGroupType = collectionPhaseView.getV_debtor_district_id();
-                break;
-            case 7:
-                idByGroupType = collectionPhaseView.getV_debtor_id();
-                break;
-            case 3:
-                idByGroupType = collectionPhaseView.getV_debtor_work_sector_id();
-                break;
-
-            case 19:
-                idByGroupType = collectionPhaseView.getV_cp_id();
-                break;
-
-            case 20:
-                idByGroupType = collectionPhaseView.getV_cph_id();
-                break;
-
-
-
-
-
-        }
-
-        return  idByGroupType;
-    }
-
-    public String getNameByGroupType(long groupType, CollectionPhaseView collectionPhaseView)
-    {
-        String nameByGroupType="";
-
-        switch((short)groupType)
-        {
-            case 1:
-                nameByGroupType = collectionPhaseView.getV_region_name();
-                break;
-            case 2:
-                nameByGroupType = collectionPhaseView.getV_district_name();
-                break;
-            case 7:
-                nameByGroupType = collectionPhaseView.getV_debtor_name();
-                break;
-            case 3:
-                nameByGroupType = collectionPhaseView.getV_work_sector_name();
-                break;
-
-            case 19:
-                nameByGroupType = "Процедура взыскания";
-                break;
-
-            case 20:
-                nameByGroupType = "Стадия взыскания";
-                break;
-
-        }
-
-        return  nameByGroupType;
-    }
-
-
-    public String getNameByGroupType(long groupType, long id)
-    {
-
-        String nameByGroupType="";
-
-        switch((short)groupType)
-        {
-            case 1:
-                nameByGroupType = referenceMap.get("region").get(id) ;
-
-                break;
-            case 2:
-                nameByGroupType = referenceMap.get("district").get(id);
-                break;
-            case 12:
-                nameByGroupType = referenceMap.get("credit_order").get(id);
-                break;
-            case 21:
-                nameByGroupType = referenceMap.get("applied_entity_status").get(id);
-                break;
-            case 22:
-                nameByGroupType = referenceMap.get("entity_document_status").get(id);
-                break;
-            case 23:
-                nameByGroupType = referenceMap.get("document_package_status").get(id);
-                break;
-
-            case 5:
-                nameByGroupType = referenceMap.get("supervisor").get(id);
-                break;
-
-
-
-
-
-        }
-
-        return  nameByGroupType;
-    }
 
 
 
@@ -1700,6 +1111,15 @@ public class ReportTool
 
     }
 
+
+
+
+
+
+
+    // ============ _CELL STYLE ACTIONS =====================================
+
+
     public HSSFCellStyle getCellStyleByLevel(long level, String DataType)
     {
 
@@ -1794,19 +1214,103 @@ public class ReportTool
 
 
 
-    public String formatText(String originText, ReportTemplate reportTemplate)
-    {
-        if(originText.contains("(=onDate=)")) originText.replaceAll("(=onDate=)",getOnDate(reportTemplate).toString());
+    // ============ _FILTER ACTIONS =========================================
 
-        return originText;
+
+
+    public LinkedHashMap<String,List<String>> getParametersByTemplate(ReportTemplate reportTemplate)
+    {
+        LinkedHashMap<String,List<String>> parameterS = new LinkedHashMap<>();
+
+        for (FilterParameter filterParameter: reportTemplate.getFilterParameters())
+        {
+            if(filterParameter.getFilterParameterType().name()=="OBJECT_LIST")
+            {
+                ObjectList objectList = filterParameter.getObjectList();
+
+                List<String> Ids = new ArrayList<>();
+
+                for (ObjectListValue objectListValue: objectList.getObjectListValues())
+                {
+                    Ids.add(objectListValue.getName());
+                }
+
+                parameterS.put("r=in"+objectList.getGroupType().getField_name(),Ids);
+            }
+
+
+
+
+        }
+
+        if(reportTemplate.getOnDate()!=null)
+        {
+            List<String> Ids = new ArrayList<>();
+
+            try
+            {
+                Ids.add(String.valueOf(reportTemplate.getOnDate().getTime()));
+            }
+            catch ( Exception ex )
+            {
+                System.out.println(ex);
+            }
+
+            parameterS.put("onDate",Ids);
+        }
+
+        List<String> groupFieldNames = new ArrayList<>();
+
+        groupFieldNames.add(reportTemplate.getGroupType1().getField_name());
+        groupFieldNames.add(reportTemplate.getGroupType2().getField_name());
+        groupFieldNames.add(reportTemplate.getGroupType3().getField_name());
+        groupFieldNames.add(reportTemplate.getGroupType4().getField_name());
+        groupFieldNames.add(reportTemplate.getGroupType5().getField_name());
+
+        parameterS.put("orderBy",groupFieldNames);
+
+        return parameterS;
+    }
+
+    public void applyParameters(LinkedHashMap<String,List<String>> parameters, Criteria criteria)
+    {
+        for (Map.Entry<String, List<String>> parameterInLoop : parameters.entrySet())
+        {
+            String parameterType = parameterInLoop.getKey();
+
+            List<String> ids = parameterInLoop.getValue();
+
+
+
+            if(parameterType.contains("r=in"))
+            {
+                String propertyName = parameterType.replace("r=in","");
+
+                List<Long> longIds = new ArrayList<>();
+
+                for (String id:ids)
+                {
+                    longIds.add(Long.parseLong(id));
+
+                }
+                criteria.add(Restrictions.in(propertyName,longIds));
+            }
+
+            if(parameterType.contains("orderBy"))
+            {
+
+                for (String fieldName:ids)
+                {
+                    criteria.addOrder(Order.asc(fieldName));
+                }
+            }
+        }
+
     }
 
 
 
-
-
-
-
+    // --------
 
     public LinkedHashMap<String,List<Long>> getParametersByTemplate(ReportTemplate reportTemplate,List<Long> groupIds)
     {
@@ -1829,59 +1333,35 @@ public class ReportTool
                 parameterS.put(this.getParameterTypeNameById(String.valueOf(objectList.getObjectTypeId())),Ids);
             }
 
-            if(this.getOnDate(reportTemplate)!=null)
-            {
-                List<Long> Ids = new ArrayList<>();
 
-                try
-                {
-                    Ids.add(this.getOnDate(reportTemplate).getTime());
-                }
-                catch ( Exception ex )
-                {
-                    System.out.println(ex);
-                }
-
-                parameterS.put("onDate",Ids);
-            }
-
-            parameterS.put("orderBy",groupIds);
 
 
         }
+
+        if(this.getOnDate(reportTemplate)!=null)
+        {
+            List<Long> Ids = new ArrayList<>();
+
+            try
+            {
+                Ids.add(this.getOnDate(reportTemplate).getTime());
+            }
+            catch ( Exception ex )
+            {
+                System.out.println(ex);
+            }
+
+            parameterS.put("onDate",Ids);
+        }
+
+        parameterS.put("orderBy",groupIds);
 
         return parameterS;
     }
 
-    public void applyParameters(LinkedHashMap<String,List<Long>> parameters, Criteria criteria)
-    {
-        for (Map.Entry<String, List<Long>> parameterInLoop : parameters.entrySet())
-        {
-            String parameterType = parameterInLoop.getKey();
-
-            List<Long> ids = parameterInLoop.getValue();
-
-            if(parameterType.contains("in"))
-            {
-                String propertyName = parameterType.replace("in","");
-                criteria.add(Restrictions.in(propertyName,ids));
-            }
-
-            if(parameterType.contains("orderBy"))
-            {
-
-                for (Long id:ids)
-                {
-                    criteria.addOrder(Order.asc(this.getParameterTypeNameById(id.toString())));
-                }
-            }
-        }
-
-    }
 
 
-
-
+    // =========== _DRAW ACTIONS =============================================
 
     public void createRow(HSSFSheet Sheet, ContentParameter contentParameter)
     {
@@ -2022,7 +1502,6 @@ public class ReportTool
 
     }
 
-
     public void drawTitle(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
     {
 
@@ -2132,6 +1611,687 @@ public class ReportTool
             System.out.println(ex);
         }
 
+    }
+
+
+
+    // ============ _GROUP TYPE ACTIONS =======================================
+
+    public long getIdByGroupType(GroupType groupType, ReportView reportView)
+    {
+        long idByGroupType=0;
+
+        Object object = null;
+
+        try
+        {
+            String sMethodName = "get"+groupType.getField_name().substring(0, 1).toUpperCase()+groupType.getField_name().substring(1, groupType.getField_name().length());
+
+            reportView.getClass().cast(reportView);
+            object = reportView.getClass().getMethod(sMethodName,null).invoke(reportView);
+            idByGroupType = Long.parseLong(object.toString());
+
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+        return  idByGroupType;
+    }
+
+    public String getNameByGroupType(GroupType groupType, ReportView reportView)
+    {
+        String row_name = groupType.getRow_name();
+
+        int loopCount = 0;
+
+        if(row_name.contains("(="))
+        {
+            do {
+                loopCount++;
+                row_name = generateNameOfRow(row_name,groupType,reportView);
+                if(loopCount>10) break;
+            }
+            while(row_name.contains("(="));
+        }
+
+
+        return  row_name;
+    }
+
+    public String generateNameOfRow(String row_name, GroupType groupType, ReportView reportView)
+    {
+        Object object = null;
+
+
+        int firstPositionOfSpecialChar = row_name.lastIndexOf("(=");
+        int lastPositionOfSpecialChar = row_name.lastIndexOf("=)");
+
+        if(firstPositionOfSpecialChar>=0)
+        {
+            String variableString = row_name.substring(firstPositionOfSpecialChar+2,lastPositionOfSpecialChar);
+
+            System.out.println(variableString);
+
+            if(variableString.contains("Map"))
+            {
+                String mapName = variableString.substring(0,variableString.lastIndexOf("Map"));
+
+                return row_name.replace("(="+variableString+"=)",referenceMap.get(mapName).get(this.getIdByGroupType(groupType,reportView)));
+            }
+            else
+            {
+                try
+                {
+                    String sMethodName = "get"+variableString.substring(0, 1).toUpperCase()+variableString.substring(1, variableString.length());
+
+                    reportView.getClass().cast(reportView);
+                    object = reportView.getClass().getMethod(sMethodName,null).invoke(reportView);
+
+                    return row_name.replace("(="+variableString+"=)",object.toString());
+
+                }
+                catch (Exception ex)
+                {
+
+                }
+            }
+
+        }
+
+        return row_name;
+    }
+
+
+
+    // ========= TEMP =========================================
+
+
+    public long getGroupType(ReportTemplate reportTemplate,long level)
+    {
+        long groupType=0;
+
+        for (GenerationParameter generationParameter:reportTemplate.getGenerationParameters())
+        {
+            if(generationParameter.getGenerationParameterType().getId()==level+3)
+            {
+                groupType = generationParameter.getPostionInList();
+                return groupType;
+            }
+        }
+
+        return  groupType;
+    }
+
+    public String getParameterTypeNameById(String id)
+    {
+        String parameterTypeName = "";
+
+
+        switch(id)
+        {
+            case "1":
+                return "region";
+            case "2":
+                return "district";
+            case "3":
+                return "work_sector";
+            case "4":
+                return "loan_type";
+            case "5":
+                return "supervisor";
+            case "6":
+                return "department";
+            case "7":
+                return "debtor";
+            case "8":
+                return "loan";
+            case "9":
+                return "loan_summary";
+            case "10":
+                return "payment";
+            case "11":
+                return "schedule";
+            case "12":
+                return "credit_order";
+            case "13":
+                return "applied_entity";
+            case "14":
+                return "applied_entity_list";
+            case "15":
+                return "document_package";
+            case "16":
+                return "entity_document";
+            case "17":
+                return "collateral_agreement";
+            case "18":
+                return "collateral_item";
+
+
+
+
+
+
+
+        }
+
+
+
+        return parameterTypeName;
+    }
+
+
+
+    public long getIdByGroupType(long groupType, LoanSummaryView loanSummaryView)
+    {
+        long idByGroupType=0;
+
+        switch((short)groupType)
+        {
+            case 1:
+                idByGroupType = loanSummaryView.getV_debtor_region_id();
+                break;
+            case 2:
+                idByGroupType = loanSummaryView.getV_debtor_district_id();
+                break;
+            case 7:
+                idByGroupType = loanSummaryView.getV_debtor_id();
+                break;
+            case 8:
+                idByGroupType = loanSummaryView.getV_loan_id();
+                break;
+            case 9:
+                idByGroupType = loanSummaryView.getV_ls_id();
+                break;
+            case 3:
+                idByGroupType = loanSummaryView.getV_debtor_work_sector_id();
+                break;
+
+
+
+
+
+
+        }
+
+        return  idByGroupType;
+    }
+
+    public long getIdByGroupType(long groupType, PaymentView paymentView)
+    {
+        long idByGroupType=0;
+
+        switch((short)groupType)
+        {
+            case 1:
+                idByGroupType = paymentView.getV_debtor_region_id();
+                break;
+            case 2:
+                idByGroupType = paymentView.getV_debtor_district_id();
+                break;
+            case 7:
+                idByGroupType = paymentView.getV_debtor_id();
+                break;
+            case 8:
+                idByGroupType = paymentView.getV_loan_id();
+                break;
+            case 10:
+                idByGroupType = paymentView.getV_payment_id();
+                break;
+            case 3:
+                idByGroupType = paymentView.getV_debtor_work_sector_id();
+                break;
+
+
+
+
+
+
+        }
+
+        return  idByGroupType;
+    }
+
+    public long getIdByGroupType(long groupType, PaymentScheduleView paymentScheduleView)
+    {
+        long idByGroupType=0;
+
+        switch((short)groupType)
+        {
+            case 1:
+                idByGroupType = paymentScheduleView.getV_debtor_region_id();
+                break;
+            case 2:
+                idByGroupType = paymentScheduleView.getV_debtor_district_id();
+                break;
+            case 7:
+                idByGroupType = paymentScheduleView.getV_debtor_id();
+                break;
+            case 8:
+                idByGroupType = paymentScheduleView.getV_loan_id();
+                break;
+            case 11:
+                idByGroupType = paymentScheduleView.getV_ps_id();
+                break;
+            case 3:
+                idByGroupType = paymentScheduleView.getV_debtor_work_sector_id();
+                break;
+
+
+
+
+
+
+        }
+
+        return  idByGroupType;
+    }
+
+    public long getIdByGroupType(long groupType, CollateralItemView collateralItemView)
+    {
+        long idByGroupType=0;
+
+        switch((short)groupType)
+        {
+            case 1:
+                idByGroupType = collateralItemView.getV_debtor_region_id();
+                break;
+            case 2:
+                idByGroupType = collateralItemView.getV_debtor_district_id();
+                break;
+            case 7:
+                idByGroupType = collateralItemView.getV_debtor_id();
+                break;
+            case 3:
+                idByGroupType = collateralItemView.getV_debtor_work_sector_id();
+                break;
+
+            case 17:
+                idByGroupType = collateralItemView.getV_ca_id();
+                break;
+
+            case 18:
+                idByGroupType = collateralItemView.getV_ci_id();
+                break;
+
+
+
+
+
+
+        }
+
+        return  idByGroupType;
+    }
+
+    public long getIdByGroupType(long groupType, CollectionPhaseView collectionPhaseView)
+    {
+        long idByGroupType=0;
+
+        switch((short)groupType)
+        {
+            case 1:
+                idByGroupType = collectionPhaseView.getV_debtor_region_id();
+                break;
+            case 2:
+                idByGroupType = collectionPhaseView.getV_debtor_district_id();
+                break;
+            case 7:
+                idByGroupType = collectionPhaseView.getV_debtor_id();
+                break;
+            case 3:
+                idByGroupType = collectionPhaseView.getV_debtor_work_sector_id();
+                break;
+
+            case 19:
+                idByGroupType = collectionPhaseView.getV_cp_id();
+                break;
+
+            case 20:
+                idByGroupType = collectionPhaseView.getV_cph_id();
+                break;
+
+
+
+
+
+        }
+
+        return  idByGroupType;
+    }
+
+    public long getIdByGroupType(long groupType, EntityDocumentView entityDocumentView)
+    {
+        long idByGroupType=0;
+
+        switch((short)groupType)
+        {
+            case 1:
+                idByGroupType = entityDocumentView.getV_owner_region_id();
+                break;
+            case 2:
+                idByGroupType = entityDocumentView.getV_owner_district_id();
+                break;
+            case 12:
+                idByGroupType = entityDocumentView.getV_co_id();
+                break;
+            case 13:
+                idByGroupType = entityDocumentView.getV_applied_entity_id();
+                break;
+            case 14:
+                idByGroupType = entityDocumentView.getV_ael_id();
+                break;
+            case 15:
+                idByGroupType = entityDocumentView.getV_document_package_id();
+                break;
+            case 16:
+                idByGroupType = entityDocumentView.getV_entity_document_id();
+                break;
+
+
+
+
+
+
+        }
+
+        return  idByGroupType;
+    }
+
+    public String getNameByGroupType(long groupType, LoanSummaryView loanSummaryView)
+    {
+        String nameByGroupType="";
+
+        switch((short)groupType)
+        {
+            case 1:
+                nameByGroupType = loanSummaryView.getV_region_name();
+                break;
+            case 2:
+                nameByGroupType = loanSummaryView.getV_district_name();
+                break;
+            case 7:
+                nameByGroupType = loanSummaryView.getV_debtor_name();
+                break;
+            case 8:
+                nameByGroupType =loanSummaryView.getV_credit_order_regNumber()
+                        + " от "
+                        + loanSummaryView.getV_credit_order_regDate()
+                        + ", "
+                        + loanSummaryView.getV_loan_reg_number()
+                        + " от "
+                        + loanSummaryView.getV_loan_reg_date();
+                break;
+            case 9:
+                nameByGroupType = " расчет";
+                break;
+            case 3:
+                nameByGroupType = loanSummaryView.getV_work_sector_name();
+                break;
+
+
+
+
+
+
+        }
+
+        return  nameByGroupType;
+    }
+
+    public String getNameByGroupType(long groupType, PaymentView paymentView)
+    {
+        String nameByGroupType="";
+
+        switch((short)groupType)
+        {
+            case 1:
+                nameByGroupType = paymentView.getV_region_name();
+                break;
+            case 2:
+                nameByGroupType = paymentView.getV_district_name();
+                break;
+            case 7:
+                nameByGroupType = paymentView.getV_debtor_name();
+                break;
+            case 8:
+                nameByGroupType =paymentView.getV_credit_order_regNumber()
+                        + " от "
+                        + paymentView.getV_credit_order_regDate()
+                        + ", "
+                        + paymentView.getV_loan_reg_number()
+                        + " от "
+                        + paymentView.getV_loan_reg_date();
+                break;
+            case 10:
+                nameByGroupType = " погашение №"+ paymentView.getV_payment_number()+ " от " + paymentView.getV_payment_date();
+                break;
+            case 3:
+                nameByGroupType = paymentView.getV_work_sector_name();
+                break;
+
+
+
+
+
+
+        }
+
+        return  nameByGroupType;
+    }
+
+    public String getNameByGroupType(long groupType, PaymentScheduleView paymentScheduleView)
+    {
+        String nameByGroupType="";
+
+        switch((short)groupType)
+        {
+            case 1:
+                nameByGroupType = paymentScheduleView.getV_region_name();
+                break;
+            case 2:
+                nameByGroupType = paymentScheduleView.getV_district_name();
+                break;
+            case 7:
+                nameByGroupType = paymentScheduleView.getV_debtor_name();
+                break;
+            case 8:
+                nameByGroupType =paymentScheduleView.getV_credit_order_regNumber()
+                        + " от "
+                        + paymentScheduleView.getV_credit_order_regDate()
+                        + ", "
+                        + paymentScheduleView.getV_loan_reg_number()
+                        + " от "
+                        + paymentScheduleView.getV_loan_reg_date();
+                break;
+            case 9:
+                nameByGroupType = " расчет";
+                break;
+            case 3:
+                nameByGroupType = paymentScheduleView.getV_work_sector_name();
+                break;
+            case 11:
+                nameByGroupType = " графики";
+                break;
+
+
+
+
+
+
+        }
+
+        return  nameByGroupType;
+    }
+
+    public String getNameByGroupType(long groupType, CollateralItemView collateralItemView)
+    {
+        String nameByGroupType="";
+
+        switch((short)groupType)
+        {
+            case 1:
+                nameByGroupType = collateralItemView.getV_region_name();
+                break;
+            case 2:
+                nameByGroupType = collateralItemView.getV_district_name();
+                break;
+            case 7:
+                nameByGroupType = collateralItemView.getV_debtor_name();
+                break;
+
+            case 3:
+                nameByGroupType = collateralItemView.getV_work_sector_name();
+                break;
+
+            case 17:
+                nameByGroupType = collateralItemView.getV_ca_arrestRegNumber()+" ot "+collateralItemView.getV_ca_agreementDate();
+                break;
+
+            case 18:
+                nameByGroupType = collateralItemView.getV_ci_name();
+                break;
+
+
+
+
+
+
+        }
+
+        return  nameByGroupType;
+    }
+
+    public String getNameByGroupType(long groupType, CollectionPhaseView collectionPhaseView)
+    {
+        String nameByGroupType="";
+
+        switch((short)groupType)
+        {
+            case 1:
+                nameByGroupType = collectionPhaseView.getV_region_name();
+                break;
+            case 2:
+                nameByGroupType = collectionPhaseView.getV_district_name();
+                break;
+            case 7:
+                nameByGroupType = collectionPhaseView.getV_debtor_name();
+                break;
+            case 3:
+                nameByGroupType = collectionPhaseView.getV_work_sector_name();
+                break;
+
+            case 19:
+                nameByGroupType = "Процедура взыскания";
+                break;
+
+            case 20:
+                nameByGroupType = "Стадия взыскания";
+                break;
+
+        }
+
+        return  nameByGroupType;
+    }
+
+    public String getNameByGroupType(long groupType, long id)
+    {
+
+        String nameByGroupType="";
+
+        switch((short)groupType)
+        {
+            case 1:
+                nameByGroupType = referenceMap.get("region").get(id) ;
+
+                break;
+            case 2:
+                nameByGroupType = referenceMap.get("district").get(id);
+                break;
+            case 12:
+                nameByGroupType = referenceMap.get("credit_order").get(id);
+                break;
+            case 21:
+                nameByGroupType = referenceMap.get("applied_entity_status").get(id);
+                break;
+            case 22:
+                nameByGroupType = referenceMap.get("entity_document_status").get(id);
+                break;
+            case 23:
+                nameByGroupType = referenceMap.get("document_package_status").get(id);
+                break;
+
+            case 5:
+                nameByGroupType = referenceMap.get("supervisor").get(id);
+                break;
+
+
+
+
+
+        }
+
+        return  nameByGroupType;
+    }
+
+    public String getNameByGroupType(long groupType, EntityDocumentView entityDocumentView)
+    {
+
+        String nameByGroupType="";
+
+        switch((short)groupType)
+        {
+            case 1:
+                nameByGroupType = referenceMap.get("region").get(entityDocumentView.getV_owner_region_id()) ;
+                break;
+            case 2:
+                nameByGroupType = referenceMap.get("district").get(entityDocumentView.getV_owner_district_id()) ;
+                break;
+            case 12:
+                nameByGroupType = referenceMap.get("credit_order").get(entityDocumentView.getV_co_id()) ;
+                break;
+            case 13:
+                nameByGroupType = entityDocumentView.getV_owner_name();
+                break;
+            case 14:
+                nameByGroupType = " Список получателей № "+entityDocumentView.getV_ael_listNumber()+" от "+entityDocumentView.getV_ael_listDate();
+                break;
+            case 15:
+                nameByGroupType = entityDocumentView.getV_document_package_name();
+                break;
+            case 16:
+                nameByGroupType = entityDocumentView.getV_entity_document_name();
+                break;
+
+        }
+
+        return  nameByGroupType;
+    }
+
+
+
+    public String getGroupTypeFieldNameById(String id)
+    {
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+
+        String fieldName = "";
+
+        if(groupTypeMap.isEmpty())
+        {
+            for (GroupType groupType: this.groupTypeService.findAll())
+            {
+                groupTypeMap.put(String.valueOf(groupType.getId()),groupType);
+
+            }
+        }
+
+        if(!groupTypeMap.isEmpty())
+        {
+            return groupTypeMap.get(id).getField_name();
+        }
+
+        return fieldName;
     }
 
 }

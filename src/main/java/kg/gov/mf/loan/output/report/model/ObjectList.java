@@ -24,8 +24,10 @@ public class ObjectList {
     
 	@OneToMany(mappedBy = "objectList", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
     private Set<ObjectListValue> objectListValues = new HashSet<ObjectListValue>();
-	
 
+	@ManyToOne(targetEntity=GroupType.class, fetch = FetchType.EAGER)
+	@JoinColumn(name="group_type_id")
+	GroupType groupType;
 	
 	
 	
@@ -59,6 +61,14 @@ public class ObjectList {
 
 	public void setObjectListValues(Set<ObjectListValue> objectListValues) {
 		this.objectListValues = objectListValues;
+	}
+
+	public GroupType getGroupType() {
+		return groupType;
+	}
+
+	public void setGroupType(GroupType groupType) {
+		this.groupType = groupType;
 	}
 
 	@Override

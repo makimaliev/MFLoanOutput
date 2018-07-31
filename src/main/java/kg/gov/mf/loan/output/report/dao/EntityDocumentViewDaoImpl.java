@@ -101,7 +101,7 @@ public class EntityDocumentViewDaoImpl implements EntityDocumentViewDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<EntityDocumentView> findByParameter(LinkedHashMap<String,List<Long>> parameters) {
+	public List<EntityDocumentView> findByParameter(LinkedHashMap<String,List<String>> parameters) {
 
 		Session session = this.sessionFactory.getCurrentSession();
 
