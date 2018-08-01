@@ -52,6 +52,8 @@ public class ReportTool
 
     int lastRowCount = 0;
 
+    int maxColumnCount = 0;
+
     Map<Integer,Float> rowHeightMap = new HashMap<Integer,Float>();
 
     HSSFRow          Row            = null;
@@ -291,67 +293,6 @@ public class ReportTool
         Group6Double    = getCellStyleByLevel(6,"double",reportTemplate,WorkBook);
     }
 
-    // =========== _FORMAT ACTIONS =====================================
-
-    public String FormatNumber(double number)
-        {
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
-            symbols.setDecimalSeparator(',');
-            symbols.setGroupingSeparator(' ');
-
-            String pattern = ",##0.00";
-            DecimalFormat decimalFormat = new DecimalFormat(pattern, symbols);
-
-            return decimalFormat.format(number);
-        }
-
-        public String DateToString(Date date)
-        {
-
-            SimpleDateFormat DateFormatShort = new SimpleDateFormat("dd.MM.yyyy");
-
-            if(date == null)
-                return "";
-            else
-                return DateFormatShort.format(date);
-        }
-
-
-
-
-    public String formatText(String originText, ReportTemplate reportTemplate)
-    {
-        if(originText.contains("(=onDate=)")) return originText.replaceAll("(=onDate=)",getOnDate(reportTemplate).toString());
-
-        return originText;
-    }
-
-    public Date getOnDate(ReportTemplate reportTemplate)
-    {
-
-        Date date = new Date();
-        for (GenerationParameter generationParameter: reportTemplate.getGenerationParameters())
-        {
-            if(generationParameter.getGenerationParameterType().getId()==1)
-            {
-                date = generationParameter.getDate();
-            }
-        }
-
-        return date;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
     public void setupSheetSettings(HSSFSheet Sheet, ReportTemplate reportTemplate)
     {
 
@@ -537,164 +478,172 @@ public class ReportTool
 
     }
 
-    public HSSFColor getColorByLevel(long level, ReportTemplate reportTemplate)
-    {
-        switch (String.valueOf(level))
-        {
-            case "1" : return new HSSFColor.PALE_BLUE();
-            case "2" : return new HSSFColor.YELLOW();
-            case "3" : return new HSSFColor.WHITE();
-            case "4" : return new HSSFColor.WHITE();
-            case "5" : return new HSSFColor.WHITE();
-            case "6" : return new HSSFColor.WHITE();
-            default:return new HSSFColor.WHITE();
 
+
+
+
+
+
+
+    // =========== _FORMAT ACTIONS =====================================
+
+    public String FormatNumber(double number)
+        {
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.getDefault());
+            symbols.setDecimalSeparator(',');
+            symbols.setGroupingSeparator(' ');
+
+            String pattern = ",##0.00";
+            DecimalFormat decimalFormat = new DecimalFormat(pattern, symbols);
+
+            return decimalFormat.format(number);
         }
 
-    }
-
-    public short getBorderTypeByLevel(long level, ReportTemplate reportTemplate)
-    {
-        switch (String.valueOf(level))
-        {
-            case "1" : return HSSFCellStyle.BORDER_THIN;
-            case "2" : return HSSFCellStyle.BORDER_THIN;
-            case "3" : return HSSFCellStyle.BORDER_THIN;
-            case "4" : return HSSFCellStyle.BORDER_THIN;
-            case "5" : return HSSFCellStyle.BORDER_THIN;
-            case "6" : return HSSFCellStyle.BORDER_THIN;
-            default  : return HSSFCellStyle.BORDER_THIN;
-        }
-
-    }
-
-    public HSSFFont getFontByLevel(long level, ReportTemplate reportTemplate, HSSFWorkbook WorkBook)
-    {
-        switch (String.valueOf(level))
+        public String DateToString(Date date)
         {
 
-            // TITLE
-            case "10" :
-                HSSFFont         Font10     = WorkBook.createFont();
-                Font10.setFontHeightInPoints((short)12);
-                Font10.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-                Font10.setColor(HSSFColor.BLUE.index);
-                return Font10;
+            SimpleDateFormat DateFormatShort = new SimpleDateFormat("dd.MM.yyyy");
 
-            // HEADER
-            case "11" :
-                HSSFFont         Font11     = WorkBook.createFont();
-                Font11.setFontHeightInPoints((short)8);
-                Font11.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-                return Font11;
-
-            // SUMMARY
-            case "12" :
-                HSSFFont         Font12     = WorkBook.createFont();
-                Font12.setFontHeightInPoints((short)9);
-                Font12.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-                Font12.setColor(HSSFColor.RED.index);
-                return Font12;
-
-            // FOOTER
-            case "13" :
-                HSSFFont         Font13     = WorkBook.createFont();
-                Font13.setFontHeightInPoints((short)12);
-                Font13.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-                return Font13;
-
-            case "1" :
-                HSSFFont         FontGroup1     = WorkBook.createFont();
-                FontGroup1.setFontHeightInPoints((short)8);
-                FontGroup1.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-                return FontGroup1;
-
-            case "2" :
-                HSSFFont         FontGroup2     = WorkBook.createFont();
-                FontGroup2.setFontHeightInPoints((short)8);
-                FontGroup2.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-                return FontGroup2;
-
-            case "3" :
-                HSSFFont         FontGroup3     = WorkBook.createFont();
-                FontGroup3.setFontHeightInPoints((short)8);
-                FontGroup3.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-                return FontGroup3;
-
-            case "4" :
-                HSSFFont         FontGroup4     = WorkBook.createFont();
-                FontGroup4.setFontHeightInPoints((short)8);
-                FontGroup4.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-                return FontGroup4;
-
-            case "5" :
-                HSSFFont         FontGroup5     = WorkBook.createFont();
-                FontGroup5.setFontHeightInPoints((short)8);
-                FontGroup5.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-                return FontGroup5;
-
-            case "6" :
-                HSSFFont         FontGroup6     = WorkBook.createFont();
-                FontGroup6.setFontHeightInPoints((short)8);
-                FontGroup6.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-                return FontGroup6;
-
-            default:
-                HSSFFont         FontGroup     = WorkBook.createFont();
-                FontGroup.setFontHeightInPoints((short)8);
-                FontGroup.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
-                return FontGroup;
-
+            if(date == null)
+                return "";
+            else
+                return DateFormatShort.format(date);
         }
 
+    public String formatText(String originText, ReportTemplate reportTemplate)
+    {
+        if(originText.contains("(=onDate=)")) return originText.replaceAll("(=onDate=)",getOnDate(reportTemplate).toString());
+
+        return originText;
     }
 
-    public HSSFFont getFontByLevel(long level)
+    public Date getOnDate(ReportTemplate reportTemplate)
     {
+
+        Date date = new Date();
+        for (GenerationParameter generationParameter: reportTemplate.getGenerationParameters())
+        {
+            if(generationParameter.getGenerationParameterType().getId()==1)
+            {
+                date = generationParameter.getDate();
+            }
+        }
+
+        return date;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // ============ _CELL STYLE ACTIONS =====================================
+
+
+    public HSSFCellStyle getCellStyleByLevel(long level, String DataType)
+    {
+
+        long DataTypeToLong = 0;
+
+        if(DataType.equals("string"))
+        {
+            DataTypeToLong = 100;
+        }
+        if(DataType.equals("date"))
+        {
+            DataTypeToLong = 200;
+        }
+        if(DataType.equals("int"))
+        {
+            DataTypeToLong = 300;
+        }
+        if(DataType.equals("double"))
+        {
+            DataTypeToLong = 400;
+        }
+
+        level+=DataTypeToLong;
+
+
         switch (String.valueOf(level))
         {
 
             // TITLE
-            case "10" :
-                return FontTitle;
+            case "110" : return TitleString;
+            case "210" : return TitleDate;
+            case "310" : return TitleInt;
+            case "410" : return TitleDouble;
+
 
             // HEADER
-            case "11" :
-                return FontHeader;
+            case "111" : return HeaderString;
+            case "211" : return HeaderDate;
+            case "321" : return HeaderInt;
+            case "411" : return HeaderDouble;
+
 
             // SUMMARY
-            case "12" :
-                return FontSum;
+            case "112" : return SumString;
+            case "212" : return SumDate;
+            case "312" : return SumInt;
+            case "412" : return SumDouble;
 
             // FOOTER
-            case "13" :
-                return FontFooter;
+            case "113" : return FooterString;
 
-            case "1" :
-                return FontGroup1;
+            case "101" : return Group1String;
+            case "201" : return Group1Date;
+            case "301" : return Group1Int;
+            case "401" : return Group1Double;
 
-            case "2" :
-                return FontGroup2;
+            case "102" : return Group2String;
+            case "202" : return Group2Date;
+            case "302" : return Group2Int;
+            case "402" : return Group2Double;
 
-            case "3" :
-                return FontGroup3;
+            case "103" : return Group3String;
+            case "203" : return Group3Date;
+            case "303" : return Group3Int;
+            case "403" : return Group3Double;
 
-            case "4" :
-                return FontGroup4;
 
-            case "5" :
-                return FontGroup5;
+            case "104" : return Group4String;
+            case "204" : return Group4Date;
+            case "304" : return Group4Int;
+            case "404" : return Group4Double;
 
-            case "6" :
-                return FontGroup6;
+
+            case "105" : return Group5String;
+            case "205" : return Group5Date;
+            case "305" : return Group5Int;
+            case "405" : return Group5Double;
+
+
+            case "106" : return Group6String;
+            case "206" : return Group6Date;
+            case "306" : return Group6Int;
+            case "406" : return Group6Double;
 
             default:
-                return FontGroup6;
+                return Group6String;
 
         }
 
     }
-
 
     public HSSFCellStyle getCellStyleByLevel(long level, String DataType, ReportTemplate reportTemplate, HSSFWorkbook WorkBook)
     {
@@ -1111,106 +1060,159 @@ public class ReportTool
 
     }
 
-
-
-
-
-
-
-    // ============ _CELL STYLE ACTIONS =====================================
-
-
-    public HSSFCellStyle getCellStyleByLevel(long level, String DataType)
+    public HSSFColor getColorByLevel(long level, ReportTemplate reportTemplate)
     {
-
-        long DataTypeToLong = 0;
-
-        if(DataType.equals("string"))
-        {
-            DataTypeToLong = 100;
-        }
-        if(DataType.equals("date"))
-        {
-            DataTypeToLong = 200;
-        }
-        if(DataType.equals("int"))
-        {
-            DataTypeToLong = 300;
-        }
-        if(DataType.equals("double"))
-        {
-            DataTypeToLong = 400;
-        }
-
-        level+=DataTypeToLong;
-
-
         switch (String.valueOf(level))
         {
-
-            // TITLE
-            case "110" : return TitleString;
-            case "210" : return TitleDate;
-            case "310" : return TitleInt;
-            case "410" : return TitleDouble;
-
-
-            // HEADER
-            case "111" : return HeaderString;
-            case "211" : return HeaderDate;
-            case "321" : return HeaderInt;
-            case "411" : return HeaderDouble;
-
-
-            // SUMMARY
-            case "112" : return SumString;
-            case "212" : return SumDate;
-            case "312" : return SumInt;
-            case "412" : return SumDouble;
-
-            // FOOTER
-            case "113" : return FooterString;
-
-            case "101" : return Group1String;
-            case "201" : return Group1Date;
-            case "301" : return Group1Int;
-            case "401" : return Group1Double;
-
-            case "102" : return Group2String;
-            case "202" : return Group2Date;
-            case "302" : return Group2Int;
-            case "402" : return Group2Double;
-
-            case "103" : return Group3String;
-            case "203" : return Group3Date;
-            case "303" : return Group3Int;
-            case "403" : return Group3Double;
-
-
-            case "104" : return Group4String;
-            case "204" : return Group4Date;
-            case "304" : return Group4Int;
-            case "404" : return Group4Double;
-
-
-            case "105" : return Group5String;
-            case "205" : return Group5Date;
-            case "305" : return Group5Int;
-            case "405" : return Group5Double;
-
-
-            case "106" : return Group6String;
-            case "206" : return Group6Date;
-            case "306" : return Group6Int;
-            case "406" : return Group6Double;
-
-            default:
-                return Group6String;
+            case "1" : return new HSSFColor.PALE_BLUE();
+            case "2" : return new HSSFColor.YELLOW();
+            case "3" : return new HSSFColor.WHITE();
+            case "4" : return new HSSFColor.WHITE();
+            case "5" : return new HSSFColor.WHITE();
+            case "6" : return new HSSFColor.WHITE();
+            default:return new HSSFColor.WHITE();
 
         }
 
     }
 
+    public short getBorderTypeByLevel(long level, ReportTemplate reportTemplate)
+    {
+        switch (String.valueOf(level))
+        {
+            case "1" : return HSSFCellStyle.BORDER_THIN;
+            case "2" : return HSSFCellStyle.BORDER_THIN;
+            case "3" : return HSSFCellStyle.BORDER_THIN;
+            case "4" : return HSSFCellStyle.BORDER_THIN;
+            case "5" : return HSSFCellStyle.BORDER_THIN;
+            case "6" : return HSSFCellStyle.BORDER_THIN;
+            default  : return HSSFCellStyle.BORDER_THIN;
+        }
+
+    }
+
+    public HSSFFont getFontByLevel(long level, ReportTemplate reportTemplate, HSSFWorkbook WorkBook)
+    {
+        switch (String.valueOf(level))
+        {
+
+            // TITLE
+            case "10" :
+                HSSFFont         Font10     = WorkBook.createFont();
+                Font10.setFontHeightInPoints((short)12);
+                Font10.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+                Font10.setColor(HSSFColor.BLUE.index);
+                return Font10;
+
+            // HEADER
+            case "11" :
+                HSSFFont         Font11     = WorkBook.createFont();
+                Font11.setFontHeightInPoints((short)8);
+                Font11.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+                return Font11;
+
+            // SUMMARY
+            case "12" :
+                HSSFFont         Font12     = WorkBook.createFont();
+                Font12.setFontHeightInPoints((short)9);
+                Font12.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+                Font12.setColor(HSSFColor.RED.index);
+                return Font12;
+
+            // FOOTER
+            case "13" :
+                HSSFFont         Font13     = WorkBook.createFont();
+                Font13.setFontHeightInPoints((short)12);
+                Font13.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+                return Font13;
+
+            case "1" :
+                HSSFFont         FontGroup1     = WorkBook.createFont();
+                FontGroup1.setFontHeightInPoints((short)8);
+                FontGroup1.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+                return FontGroup1;
+
+            case "2" :
+                HSSFFont         FontGroup2     = WorkBook.createFont();
+                FontGroup2.setFontHeightInPoints((short)8);
+                FontGroup2.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+                return FontGroup2;
+
+            case "3" :
+                HSSFFont         FontGroup3     = WorkBook.createFont();
+                FontGroup3.setFontHeightInPoints((short)8);
+                FontGroup3.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+                return FontGroup3;
+
+            case "4" :
+                HSSFFont         FontGroup4     = WorkBook.createFont();
+                FontGroup4.setFontHeightInPoints((short)8);
+                return FontGroup4;
+
+            case "5" :
+                HSSFFont         FontGroup5     = WorkBook.createFont();
+                FontGroup5.setFontHeightInPoints((short)7);
+                return FontGroup5;
+
+            case "6" :
+                HSSFFont         FontGroup6     = WorkBook.createFont();
+                FontGroup6.setFontHeightInPoints((short)7);
+                return FontGroup6;
+
+            default:
+                HSSFFont         FontGroup     = WorkBook.createFont();
+                FontGroup.setFontHeightInPoints((short)8);
+                return FontGroup;
+
+        }
+
+    }
+
+    public HSSFFont getFontByLevel(long level)
+    {
+        switch (String.valueOf(level))
+        {
+
+            // TITLE
+            case "10" :
+                return FontTitle;
+
+            // HEADER
+            case "11" :
+                return FontHeader;
+
+            // SUMMARY
+            case "12" :
+                return FontSum;
+
+            // FOOTER
+            case "13" :
+                return FontFooter;
+
+            case "1" :
+                return FontGroup1;
+
+            case "2" :
+                return FontGroup2;
+
+            case "3" :
+                return FontGroup3;
+
+            case "4" :
+                return FontGroup4;
+
+            case "5" :
+                return FontGroup5;
+
+            case "6" :
+                return FontGroup6;
+
+            default:
+                return FontGroup6;
+
+        }
+
+    }
 
 
 
@@ -1310,58 +1312,9 @@ public class ReportTool
 
 
 
-    // --------
-
-    public LinkedHashMap<String,List<Long>> getParametersByTemplate(ReportTemplate reportTemplate,List<Long> groupIds)
-    {
-        LinkedHashMap<String,List<Long>> parameterS = new LinkedHashMap<String,List<Long>>();
-
-        for (FilterParameter filterParameter: reportTemplate.getFilterParameters())
-        {
-
-            if(filterParameter.getFilterParameterType().name()=="OBJECT_LIST")
-            {
-                ObjectList objectList = filterParameter.getObjectList();
-
-                List<Long> Ids = new ArrayList<>();
-
-                for (ObjectListValue objectListValue: objectList.getObjectListValues())
-                {
-                    Ids.add(Long.parseLong(objectListValue.getName()));
-                }
-
-                parameterS.put(this.getParameterTypeNameById(String.valueOf(objectList.getObjectTypeId())),Ids);
-            }
-
-
-
-
-        }
-
-        if(this.getOnDate(reportTemplate)!=null)
-        {
-            List<Long> Ids = new ArrayList<>();
-
-            try
-            {
-                Ids.add(this.getOnDate(reportTemplate).getTime());
-            }
-            catch ( Exception ex )
-            {
-                System.out.println(ex);
-            }
-
-            parameterS.put("onDate",Ids);
-        }
-
-        parameterS.put("orderBy",groupIds);
-
-        return parameterS;
-    }
-
-
 
     // =========== _DRAW ACTIONS =============================================
+
 
     public void createRow(HSSFSheet Sheet, ContentParameter contentParameter)
     {
@@ -1417,6 +1370,8 @@ public class ReportTool
                 else    Cell.setCellStyle(HeaderString);
 
                 Cell.setCellValue(contentParameter.getConstantText().contains("(=") ? formatText(contentParameter.getConstantText(),reportTemplate) : contentParameter.getConstantText());
+
+                ColumnCount++;
             }
             else
             {
@@ -1492,7 +1447,11 @@ public class ReportTool
                 }
 
                 ColumnCount++;
+
+
             }
+
+            if(ColumnCount-1>maxColumnCount) maxColumnCount=ColumnCount-1;
         }
         catch (Exception ex)
         {
@@ -1584,6 +1543,8 @@ public class ReportTool
         {
             System.out.println(ex);
         }
+
+        drawBlankCellsInRow(Sheet,RowCount,Cell.getCellStyle());
     }
 
     public void drawGroupRow(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData, long level )
@@ -1611,7 +1572,43 @@ public class ReportTool
             System.out.println(ex);
         }
 
+        drawBlankCellsInRow(Sheet,RowCount,Cell.getCellStyle());
+
     }
+
+    public void drawBlankCellsInRow(HSSFSheet Sheet, int rowNumber, HSSFCellStyle cellStyle)
+    {
+        try
+        {
+            for(int colNumber=0; colNumber < maxColumnCount; colNumber++)
+            {
+                HSSFRow activeRow = Sheet.getRow(rowNumber);
+
+                if(activeRow!=null)
+                {
+                    HSSFCell activeCell = activeRow.getCell(colNumber);
+
+                    if(activeCell==null)
+                    {
+                        Cell = activeRow.createCell(colNumber);
+                        Cell.setCellStyle(cellStyle);
+                    }
+                }
+
+
+
+            }
+
+
+
+        }
+        catch (Exception ex)
+        {
+            System.out.println(ex);
+        }
+
+    }
+
 
 
 
