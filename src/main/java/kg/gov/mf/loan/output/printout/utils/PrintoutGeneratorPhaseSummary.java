@@ -254,12 +254,12 @@ public class PrintoutGeneratorPhaseSummary {
                     document.add(table);
 
 // part1
-                    LinkedHashMap<String,List<Long>> parameterS = new LinkedHashMap<String,List<Long>>();
+                    LinkedHashMap<String,List<String>> parameterS = new LinkedHashMap<String,List<String>>();
 
-                    List<Long> Ids = new ArrayList<>();
+                    List<String> Ids = new ArrayList<>();
 
 
-                    Ids.add(objectId);
+                    Ids.add(String.valueOf(objectId));
 
                     parameterS.put("collection_phase",Ids);
 

@@ -20,11 +20,42 @@ public class Report {
     @Column(name="name", nullable=false)
     private String name;
     
-    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
+    @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval=true)
     private Set<ReportTemplate> reportTemplates = new HashSet<ReportTemplate>();
 
 	@Enumerated(EnumType.STRING)
 	private ReportType reportType;
+
+
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+			name="report_group_type",
+			joinColumns = { @JoinColumn(name = "report_id") },
+			inverseJoinColumns = { @JoinColumn(name = "group_type_id") })
+	Set<GroupType> groupTypes = new HashSet<>();
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+			name="report_content_parameter",
+			joinColumns = { @JoinColumn(name = "report_id") },
+			inverseJoinColumns = { @JoinColumn(name = "content_parameter_id") })
+	Set<ContentParameter> contentParameters = new HashSet<>();
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+			name="report_filter_parameter",
+			joinColumns = { @JoinColumn(name = "report_id") },
+			inverseJoinColumns = { @JoinColumn(name = "filter_parameter_id") })
+	Set<FilterParameter> filterParameters = new HashSet<>();
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+			name="report_output_parameter",
+			joinColumns = { @JoinColumn(name = "report_id") },
+			inverseJoinColumns = { @JoinColumn(name = "output_parameter_id") })
+	Set<OutputParameter> outputParameters = new HashSet<OutputParameter>();
+
 
 	public long getId() {
 		return id;
@@ -56,6 +87,48 @@ public class Report {
 
 	public void setReportType(ReportType reportType) {
 		this.reportType = reportType;
+	}
+
+
+	public Set<ReportTemplate> getReportTemplates() {
+		return reportTemplates;
+	}
+
+	public void setReportTemplates(Set<ReportTemplate> reportTemplates) {
+		this.reportTemplates = reportTemplates;
+	}
+
+	public Set<GroupType> getGroupTypes() {
+		return groupTypes;
+	}
+
+	public void setGroupTypes(Set<GroupType> groupTypes) {
+		this.groupTypes = groupTypes;
+	}
+
+	public Set<ContentParameter> getContentParameters() {
+		return contentParameters;
+	}
+
+	public void setContentParameters(Set<ContentParameter> contentParameters) {
+		this.contentParameters = contentParameters;
+	}
+
+	public Set<FilterParameter> getFilterParameters() {
+		return filterParameters;
+	}
+
+	public void setFilterParameters(Set<FilterParameter> filterParameters) {
+		this.filterParameters = filterParameters;
+	}
+
+
+	public Set<OutputParameter> getOutputParameters() {
+		return outputParameters;
+	}
+
+	public void setOutputParameters(Set<OutputParameter> outputParameters) {
+		this.outputParameters = outputParameters;
 	}
 
 	@Override

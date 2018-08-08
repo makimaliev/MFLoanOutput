@@ -1,8 +1,10 @@
 package kg.gov.mf.loan.output.report.dao;
 
 import kg.gov.mf.loan.output.report.model.ContentParameter;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,7 +88,11 @@ public class ContentParameterDaoImpl implements ContentParameterDao {
     @Override
     public List<ContentParameter> findAll() {
         Session session = this.sessionFactory.getCurrentSession();
-        List<ContentParameter> contentParametersList = session.createQuery("from ContentParameter").list();
+
+		Criteria criteria = session.createCriteria(ContentParameter.class);
+
+        List<ContentParameter> contentParametersList = criteria.addOrder(Order.asc("name")).list();
+
         return contentParametersList;
     }
  

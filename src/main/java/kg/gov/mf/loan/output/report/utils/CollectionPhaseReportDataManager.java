@@ -49,95 +49,24 @@ public class CollectionPhaseReportDataManager {
             phaseTypeMap.put(phaseType.getId(),phaseType);
         }
 
-        LinkedHashMap<String,List<Long>> parameterS = new LinkedHashMap<String,List<Long>>();
-
-        List<Long> groupIds = new ArrayList<>();
-
-        if(reportTool.getGroupType(reportTemplate,1)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,1));
-
-        if(reportTool.getGroupType(reportTemplate,2)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,2));
-
-        if(reportTool.getGroupType(reportTemplate,3)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,3));
 
 
-        if(reportTool.getGroupType(reportTemplate,4)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,4));
+        LinkedHashMap<String,List<String>> parameterS = new LinkedHashMap<>();
 
-
-        if(reportTool.getGroupType(reportTemplate,5)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,5));
-
-
-        if(reportTool.getGroupType(reportTemplate,6)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,6));
-
-        for (FilterParameter filterParameter: reportTemplate.getFilterParameters())
-        {
-
-            if(filterParameter.getFilterParameterType().name()=="OBJECT_LIST")
-            {
-                ObjectList objectList = filterParameter.getObjectList();
-
-                List<Long> Ids = new ArrayList<>();
-
-                for (ObjectListValue objectListValue: objectList.getObjectListValues())
-                {
-                    Ids.add(Long.parseLong(objectListValue.getName()));
-                }
-
-                parameterS.put(reportTool.getParameterTypeNameById(String.valueOf(objectList.getObjectTypeId())),Ids);
-            }
-
-            if(filterParameter.getFilterParameterType().name()=="CONTENT_COMPARE")
-            {
-                List<Long> Ids = new ArrayList<>();
-
-                String string = filterParameter.getComparedValue();
-                DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
-
-                try
-                {
-                    Date date = format.parse(string);
-                    Ids.add(date.getTime());
-                }
-                catch ( Exception ex )
-                {
-                    System.out.println(ex);
-                }
-
-                if(Ids.size()>0)
-                {
-                    if(filterParameter.getComparator().toString()=="AFTER")
-                        parameterS.put("paymentDateFrom",Ids);
-                    if(filterParameter.getComparator().toString()=="BEFORE")
-                        parameterS.put("paymentDateTo",Ids);
-                }
-            }
-
-
-
-            parameterS.put("orderBy",groupIds);
-
-        }
-
-
-        // initial filter by report filter parameters
+        parameterS.putAll(reportTool.getParametersByTemplate(reportTemplate));
 
         reportData.getCollectionPhaseViews().addAll(collectionPhaseViewService.findByParameter(parameterS));
 
+        for (CollectionPhaseView collectionPhaseView: reportData.getCollectionPhaseViews())
+        {
+            System.out.println(collectionPhaseView.getV_debtor_name());
+        }
 
-        reportData.setOnDate(new java.sql.Date(onDate.getTime()));
-
-        return groupifyData(reportData,groupIds,reportTemplate);
+        return groupifyData(reportData,reportTemplate, reportTool);
     }
 
-    public CollectionPhaseReportData groupifyData(CollectionPhaseReportData reportData, List<Long> groupIds, ReportTemplate reportTemplate)
+    public CollectionPhaseReportData groupifyData(CollectionPhaseReportData reportData,ReportTemplate reportTemplate, ReportTool reportTool)
     {
-
-        ReportTool reportTool = new ReportTool();
 
         reportTool.initReference();
 
@@ -190,29 +119,32 @@ public class CollectionPhaseReportDataManager {
         for (CollectionPhaseView collectionPhaseView:reportData.getCollectionPhaseViews())
         {
 
-
-            if(reportTool.getIdByGroupType(groupAid,collectionPhaseView)!=currentgroupAid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType1(),collectionPhaseView)!=currentgroupAid)
             {
                 childA = reportData.addChild();
-                childA.setName(reportTool.getNameByGroupType(groupAid,collectionPhaseView));
+                childA.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType1(),collectionPhaseView));
                 childA.setLevel((short)1);
 
-                currentgroupAid=reportTool.getIdByGroupType(groupAid,collectionPhaseView);
+                currentgroupAid=reportTool.getIdByGroupType(reportTemplate.getGroupType1(),collectionPhaseView);
             }
 
-            if(reportTool.getIdByGroupType(groupBid,collectionPhaseView)!=currentgroupBid)
+
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType2(),collectionPhaseView)!=currentgroupBid)
             {
                 childB = childA.addChild();
-                childB.setName(reportTool.getNameByGroupType(groupBid,collectionPhaseView));
+                childB.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType2(),collectionPhaseView));
                 childB.setLevel((short)2);
 
-                currentgroupBid=reportTool.getIdByGroupType(groupBid,collectionPhaseView);
+                currentgroupBid=reportTool.getIdByGroupType(reportTemplate.getGroupType2(),collectionPhaseView);
             }
 
-            if(reportTool.getIdByGroupType(groupCid,collectionPhaseView)!=currentgroupCid)
+
+
+
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType3(),collectionPhaseView)!=currentgroupCid)
             {
                 childC = childB.addChild();
-                childC.setName(reportTool.getNameByGroupType(groupCid,collectionPhaseView));
+                childC.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType3(),collectionPhaseView));
                 childC.setLevel((short)3);
 
                 childC.setCount(1);
@@ -220,17 +152,16 @@ public class CollectionPhaseReportDataManager {
                 childA.setCount(childA.getCount()+1);
                 reportData.setCount(reportData.getCount()+1);
 
-                currentgroupCid=reportTool.getIdByGroupType(groupCid,collectionPhaseView);
+                currentgroupCid=reportTool.getIdByGroupType(reportTemplate.getGroupType3(),collectionPhaseView);
             }
 
-            if(reportTool.getIdByGroupType(groupDid,collectionPhaseView)!=currentgroupDid)
+
+
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType4(),collectionPhaseView)!=currentgroupDid)
             {
-                CollectionPhaseView lv = collectionPhaseView;
-
                 childD = childC.addChild();
-                childD.setName(reportTool.getNameByGroupType(groupDid,collectionPhaseView));
+                childD.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType4(),collectionPhaseView));
                 childD.setLevel((short)4);
-
 
                 childD.setLevel((short)4);
 
@@ -244,36 +175,31 @@ public class CollectionPhaseReportDataManager {
 
 
 
-                if(lv.getV_cp_startDate()!=null)
-                childD.setCollection_phase_start_date(new java.sql.Date(lv.getV_cp_startDate().getTime()));
+                if(collectionPhaseView.getV_cp_startDate()!=null)
+                    childD.setCollection_phase_start_date(new java.sql.Date(collectionPhaseView.getV_cp_startDate().getTime()));
 
-
-
-
-
-                currentgroupDid=reportTool.getIdByGroupType(groupDid,collectionPhaseView);
+                currentgroupDid=reportTool.getIdByGroupType(reportTemplate.getGroupType4(),collectionPhaseView);
             }
 
-            if(reportTool.getIdByGroupType(groupEid,collectionPhaseView)!=currentgroupEid)
-            {
-                CollectionPhaseView pv = collectionPhaseView;
 
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType5(),collectionPhaseView)!=currentgroupEid)
+            {
                 childE = childD.addChild();
-                childE.setName(reportTool.getNameByGroupType(groupEid,collectionPhaseView));
+                childE.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType5(),collectionPhaseView));
                 childE.setLevel((short)5);
 
-                if(pv.getV_cph_startDate()!=null)
-                childE.setCollection_phase_start_date(new java.sql.Date(pv.getV_cph_startDate().getTime()));
-                childE.setCollection_phase_type_id(pv.getV_cph_phaseTypeId());
+                if(collectionPhaseView.getV_cph_startDate()!=null)
+                    childE.setCollection_phase_start_date(new java.sql.Date(collectionPhaseView.getV_cph_startDate().getTime()));
+                childE.setCollection_phase_type_id(collectionPhaseView.getV_cph_phaseTypeId());
 
-                childE.setCollection_phase_type_name(phaseTypeMap.get(pv.getV_cph_phaseTypeId()).getName());
+                childE.setCollection_phase_type_name(phaseTypeMap.get(collectionPhaseView.getV_cph_phaseTypeId()).getName());
 
-                childE.setCollection_phase_start_total_amount(pv.getV_cph_start_total_amount());
+                childE.setCollection_phase_start_total_amount(collectionPhaseView.getV_cph_start_total_amount());
 
+                childE.setCollection_phase_close_total_amount(collectionPhaseView.getV_cph_close_total_amount());
 
-                currentgroupEid=reportTool.getIdByGroupType(groupEid,collectionPhaseView);
+                currentgroupEid=reportTool.getIdByGroupType(reportTemplate.getGroupType5(),collectionPhaseView);
             }
-
 
         }
 

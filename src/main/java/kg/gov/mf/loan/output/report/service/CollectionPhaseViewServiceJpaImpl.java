@@ -57,7 +57,7 @@ public class CollectionPhaseViewServiceJpaImpl implements CollectionPhaseViewSer
 
 	@Override
 	@Transactional
-	public List<CollectionPhaseView> findByParameter(LinkedHashMap<String,List<Long>> parameters) {
+	public List<CollectionPhaseView> findByParameter(LinkedHashMap<String,List<String>> parameters) {
 		return this.collectionPhaseViewDao.findByParameter(parameters);
 	}
 

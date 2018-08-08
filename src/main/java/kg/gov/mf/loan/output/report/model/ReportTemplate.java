@@ -21,38 +21,38 @@ public class ReportTemplate {
     @Column(name="name", nullable=false)
     private String name;
     
-    @ManyToOne(targetEntity=Report.class, fetch = FetchType.EAGER)
+    @ManyToOne(targetEntity=Report.class, fetch = FetchType.LAZY)
     @JoinColumn(name="report_id")
     Report report;
 
-	@ManyToOne(targetEntity=GroupType.class, fetch = FetchType.EAGER)
+	@ManyToOne(targetEntity=GroupType.class, fetch = FetchType.LAZY)
 	@JoinColumn(name="group_type1_id")
 	GroupType groupType1;
 
-	@ManyToOne(targetEntity=GroupType.class, fetch = FetchType.EAGER)
+	@ManyToOne(targetEntity=GroupType.class, fetch = FetchType.LAZY)
 	@JoinColumn(name="group_type2_id")
 	GroupType groupType2;
 
 
-	@ManyToOne(targetEntity=GroupType.class, fetch = FetchType.EAGER)
+	@ManyToOne(targetEntity=GroupType.class, fetch = FetchType.LAZY)
 	@JoinColumn(name="group_type3_id")
 	GroupType groupType3;
 
 
 
-	@ManyToOne(targetEntity=GroupType.class, fetch = FetchType.EAGER)
+	@ManyToOne(targetEntity=GroupType.class, fetch = FetchType.LAZY)
 	@JoinColumn(name="group_type4_id")
 	GroupType groupType4;
 
 
 
-	@ManyToOne(targetEntity=GroupType.class, fetch = FetchType.EAGER)
+	@ManyToOne(targetEntity=GroupType.class, fetch = FetchType.LAZY)
 	@JoinColumn(name="group_type5_id")
 	GroupType groupType5;
 
 
 
-	@ManyToOne(targetEntity=GroupType.class, fetch = FetchType.EAGER)
+	@ManyToOne(targetEntity=GroupType.class, fetch = FetchType.LAZY)
 	@JoinColumn(name="group_type6_id")
 	GroupType groupType6;
 
@@ -60,7 +60,7 @@ public class ReportTemplate {
 	@Temporal(TemporalType.DATE)
 	private Date onDate;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
 			name="report_template_generation_parameter",
 			joinColumns = { @JoinColumn(name = "report_template_id") },
@@ -68,7 +68,7 @@ public class ReportTemplate {
 	Set<GenerationParameter> generationParameters = new HashSet<GenerationParameter>();
 
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
 			name="report_template_filter_parameter",
 			joinColumns = { @JoinColumn(name = "report_template_id") },
@@ -76,7 +76,7 @@ public class ReportTemplate {
 	Set<FilterParameter> filterParameters = new HashSet<FilterParameter>();
 
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
 			name="report_template_content_parameter",
 			joinColumns = { @JoinColumn(name = "report_template_id") },
@@ -84,7 +84,7 @@ public class ReportTemplate {
 	Set<ContentParameter> contentParameters = new HashSet<ContentParameter>();
 
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
 			name="report_template_output_parameter",
 			joinColumns = { @JoinColumn(name = "report_template_id") },

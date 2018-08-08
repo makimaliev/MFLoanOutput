@@ -30,81 +30,22 @@ public class ReportGeneratorEntityDocument extends ReportGenerator
 
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
-
-
-
         EntityDocumentReportData EntityDocument = new EntityDocumentReportData();
 
         ReportTool reportTool = new ReportTool();
         reportTool.initReference();
 
+
+
         EntityDocument = new EntityDocumentReportDataManager().getReportDataGrouped(EntityDocument,reportTemplate);
 
-
-
+        ReportData reportData = EntityDocument;
 
         HSSFWorkbook     WorkBook       = new HSSFWorkbook();
 
         HSSFSheet        Sheet          = WorkBook.createSheet();
 
-
-
-        reportTool.initReportSetup(reportTemplate,WorkBook);
-        reportTool.setupSheetSettings(Sheet, reportTemplate);
-
-        reportTool.drawTitle(reportTemplate,Sheet, EntityDocument);
-        reportTool.drawHeader(reportTemplate,Sheet,EntityDocument);
-
-
-
-        EntityDocumentReportData MainData = EntityDocument;
-
-        ReportData reportData = MainData;
-
-        reportTool.drawSumRow(reportTemplate,Sheet,reportData);
-
-        ReportData GroupData1[] = MainData.getChilds();
-
-        for(int x=0;x<GroupData1.length;x++)
-        {
-            reportTool.drawGroupRow(reportTemplate,Sheet, GroupData1[x],1);
-
-            ReportData GroupData2[] = GroupData1[x].getChilds();
-
-            for(int y=0;y<GroupData2.length;y++)
-            {
-                reportTool.drawGroupRow(reportTemplate,Sheet, GroupData2[y],2);
-
-                ReportData GroupData3[] = GroupData2[y].getChilds();
-
-                for(int z=0;z<GroupData3.length;z++)
-                {
-                    reportTool.drawGroupRow(reportTemplate,Sheet, GroupData3[z],3);
-
-                    ReportData GroupData4[] = GroupData3[z].getChilds();
-
-                    for(int a=0;a<GroupData4.length;a++)
-                    {
-                        reportTool.drawGroupRow(reportTemplate,Sheet, GroupData4[a],4);
-
-                        ReportData GroupData5[] = GroupData4[a].getChilds();
-
-                        for(int b=0;b<GroupData5.length;b++)
-                        {
-                            reportTool.drawGroupRow(reportTemplate,Sheet, GroupData5[b],5);
-
-                        }
-
-
-                    }
-
-                }
-
-            }
-
-        }
-
-        reportTool.drawSumRow(reportTemplate,Sheet,reportData);
+        reportTool.drawSheet(reportTemplate, Sheet, reportData, WorkBook, reportTool);
 
         return WorkBook;
 

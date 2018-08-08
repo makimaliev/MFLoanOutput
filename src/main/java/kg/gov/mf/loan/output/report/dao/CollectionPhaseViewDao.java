@@ -19,7 +19,7 @@ public interface CollectionPhaseViewDao {
 
 	public List<CollectionPhaseView> findAll();
 
-	public List<CollectionPhaseView> findByParameter(LinkedHashMap<String, List<Long>> parameters);
+	public List<CollectionPhaseView> findByParameter(LinkedHashMap<String, List<String>> parameters);
 
 
 

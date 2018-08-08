@@ -512,7 +512,7 @@ public class ReportTool
 
     public String formatText(String originText, ReportTemplate reportTemplate)
     {
-        if(originText.contains("(=onDate=)")) return originText.replaceAll("(=onDate=)",getOnDate(reportTemplate).toString());
+        if(originText.contains("(=onDate=)")) return originText.replace("(=onDate=)",DateToString(getOnDate(reportTemplate)));
 
         return originText;
     }
@@ -527,6 +527,11 @@ public class ReportTool
             {
                 date = generationParameter.getDate();
             }
+        }
+
+        if(reportTemplate.getOnDate()!=null)
+        {
+            date = reportTemplate.getOnDate();
         }
 
         return date;
@@ -1325,12 +1330,15 @@ public class ReportTool
 
             for( int rowCount=row_from; rowCount <= row_to; rowCount++ )
             {
-                Row = Sheet.createRow(rowCount);
-                Row.setRowNum(( short ) rowCount);
-
-                if(rowHeightMap.get(rowCount)!=null)
+                if(Sheet.getRow(rowCount)==null)
                 {
-                    Row.setHeightInPoints(rowHeightMap.get(rowCount).floatValue());
+                    Row = Sheet.createRow(rowCount);
+                    Row.setRowNum(( short ) rowCount);
+
+                    if(rowHeightMap.get(rowCount)!=null)
+                    {
+                        Row.setHeightInPoints(rowHeightMap.get(rowCount).floatValue());
+                    }
                 }
 
             }
@@ -1354,7 +1362,10 @@ public class ReportTool
             int col_from = (contentParameter.getCol_from()>0) ? contentParameter.getCol_from()-1 : ColumnCount;
             int col_to   = (contentParameter.getCol_to()>0) ? contentParameter.getCol_to()-1 : ColumnCount;
 
-            if(row_to > lastRowCount) lastRowCount = row_to;
+            if(col_to>=maxColumnCount) maxColumnCount=col_to;
+
+            if(contentParameter.getRowType().name()=="TABLE_HEADER")
+                if(row_to > lastRowCount) lastRowCount = row_to;
 
             if(!(row_from == row_to && col_from == col_to))
             {
@@ -1420,14 +1431,14 @@ public class ReportTool
 
                         if(object.toString().matches("[0-9]+")&&contentParameter.getConstantInt()>0)
                         {
-                            Cell.setCellValue(getNameByGroupType((long)contentParameter.getConstantInt(), Long.parseLong(object.toString())));
+                            Cell.setCellValue(getNameByMapName(contentParameter.getConstantText(), Long.parseLong(object.toString())));
                         }
 
                         break;
                     case "DATE" :
                         Cell.setCellStyle(getCellStyleByLevel(level,"date"));
                         if(object==null) object = contentParameter.getConstantDate();
-                        Cell.setCellValue(Date.parse(object.toString()));
+                        Cell.setCellValue(this.DateToString((Date)object));
                         break;
                     case "INTEGER" :
                         Cell.setCellStyle(getCellStyleByLevel(level,"int"));
@@ -1451,7 +1462,7 @@ public class ReportTool
 
             }
 
-            if(ColumnCount-1>maxColumnCount) maxColumnCount=ColumnCount-1;
+
         }
         catch (Exception ex)
         {
@@ -1498,7 +1509,7 @@ public class ReportTool
             {
                 if(contentParameter.getRowType().name()=="TABLE_HEADER")
                 {
-                    if(contentParameter.getPosition()==1) createRow(Sheet,contentParameter);
+                    createRow(Sheet,contentParameter);
 
                     drawCell(reportTemplate,Sheet,contentParameter,reportData);
                 }
@@ -1544,7 +1555,8 @@ public class ReportTool
             System.out.println(ex);
         }
 
-        drawBlankCellsInRow(Sheet,RowCount,Cell.getCellStyle());
+        if(Cell!=null)
+            drawBlankCellsInRow(Sheet,RowCount,Cell.getCellStyle());
     }
 
     public void drawGroupRow(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData, long level )
@@ -1572,6 +1584,7 @@ public class ReportTool
             System.out.println(ex);
         }
 
+        if(Cell!=null)
         drawBlankCellsInRow(Sheet,RowCount,Cell.getCellStyle());
 
     }
@@ -1580,7 +1593,7 @@ public class ReportTool
     {
         try
         {
-            for(int colNumber=0; colNumber < maxColumnCount; colNumber++)
+            for(int colNumber=0; colNumber <= maxColumnCount; colNumber++)
             {
                 HSSFRow activeRow = Sheet.getRow(rowNumber);
 
@@ -1608,6 +1621,62 @@ public class ReportTool
         }
 
     }
+
+    public void drawSheet(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData, HSSFWorkbook WorkBook, ReportTool reportTool)
+    {
+
+        reportTool.initReportSetup(reportTemplate,WorkBook);
+        reportTool.setupSheetSettings(Sheet, reportTemplate);
+
+        reportTool.drawTitle(reportTemplate,Sheet, reportData);
+        reportTool.drawHeader(reportTemplate,Sheet,reportData);
+
+        reportTool.drawSumRow(reportTemplate,Sheet,reportData);
+
+        ReportData GroupData1[] = reportData.getChilds();
+
+        for(int x=0;x<GroupData1.length;x++)
+        {
+            reportTool.drawGroupRow(reportTemplate,Sheet, GroupData1[x],1);
+
+            ReportData GroupData2[] = GroupData1[x].getChilds();
+
+            for(int y=0;y<GroupData2.length;y++)
+            {
+                reportTool.drawGroupRow(reportTemplate,Sheet, GroupData2[y],2);
+
+                ReportData GroupData3[] = GroupData2[y].getChilds();
+
+                for(int z=0;z<GroupData3.length;z++)
+                {
+                    reportTool.drawGroupRow(reportTemplate,Sheet, GroupData3[z],3);
+
+                    ReportData GroupData4[] = GroupData3[z].getChilds();
+
+                    for(int a=0;a<GroupData4.length;a++)
+                    {
+                        reportTool.drawGroupRow(reportTemplate,Sheet, GroupData4[a],4);
+
+                        ReportData GroupData5[] = GroupData4[a].getChilds();
+
+                        for(int b=0;b<GroupData5.length;b++)
+                        {
+                            reportTool.drawGroupRow(reportTemplate,Sheet, GroupData5[b],5);
+
+                        }
+
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        reportTool.drawSumRow(reportTemplate,Sheet,reportData);
+    }
+
 
 
 
@@ -1657,6 +1726,17 @@ public class ReportTool
         return  row_name;
     }
 
+    public String getNameByMapName(String mapName, long id)
+    {
+
+        String nameByGroupType="";
+
+
+        nameByGroupType = referenceMap.get(mapName).get(id);
+
+        return  nameByGroupType;
+    }
+
     public String generateNameOfRow(String row_name, GroupType groupType, ReportView reportView)
     {
         Object object = null;
@@ -1668,8 +1748,6 @@ public class ReportTool
         if(firstPositionOfSpecialChar>=0)
         {
             String variableString = row_name.substring(firstPositionOfSpecialChar+2,lastPositionOfSpecialChar);
-
-            System.out.println(variableString);
 
             if(variableString.contains("Map"))
             {
@@ -1700,6 +1778,30 @@ public class ReportTool
         return row_name;
     }
 
+    public String getMapNameOfGroupType(GroupType groupType)
+    {
+        String row_name = groupType.getRow_name();
+
+        int firstPositionOfSpecialChar = row_name.lastIndexOf("(=");
+        int lastPositionOfSpecialChar = row_name.lastIndexOf("=)");
+
+        if(firstPositionOfSpecialChar>=0)
+        {
+            String variableString = row_name.substring(firstPositionOfSpecialChar+2,lastPositionOfSpecialChar);
+
+            if(variableString.contains("Map"))
+            {
+                return variableString.substring(0,variableString.lastIndexOf("Map"));
+            }
+            else
+            {
+                return "";
+            }
+
+        }
+
+        return "";
+    }
 
 
     // ========= TEMP =========================================
@@ -2231,6 +2333,8 @@ public class ReportTool
 
         return  nameByGroupType;
     }
+
+
 
     public String getNameByGroupType(long groupType, EntityDocumentView entityDocumentView)
     {

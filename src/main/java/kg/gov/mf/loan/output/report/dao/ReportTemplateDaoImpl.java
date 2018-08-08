@@ -3,6 +3,7 @@ package kg.gov.mf.loan.output.report.dao;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -76,7 +77,19 @@ public class ReportTemplateDaoImpl implements ReportTemplateDao {
 		
 		Session session = this.sessionFactory.getCurrentSession();
 		ReportTemplate reportTemplate = (ReportTemplate) session.load(ReportTemplate.class, new Long (id));
-		
+
+		Hibernate.initialize(reportTemplate.getFilterParameters());
+		Hibernate.initialize(reportTemplate.getGenerationParameters());
+		Hibernate.initialize(reportTemplate.getContentParameters());
+		Hibernate.initialize(reportTemplate.getOutputParameters());
+		Hibernate.initialize(reportTemplate.getGroupType1());
+		Hibernate.initialize(reportTemplate.getGroupType2());
+		Hibernate.initialize(reportTemplate.getGroupType3());
+		Hibernate.initialize(reportTemplate.getGroupType4());
+		Hibernate.initialize(reportTemplate.getGroupType5());
+		Hibernate.initialize(reportTemplate.getGroupType6());
+		Hibernate.initialize(reportTemplate.getReport());
+
 		logger.info("ReportTemplate get by id == "+reportTemplate);
 
 		return reportTemplate ;

@@ -58,20 +58,6 @@ public class EntityDocumentReportDataManager {
         long currentgroupEid=-1;
         long currentgroupFid=-1;
 
-
-        if(reportTemplate.getGroupType1()!=null)
-            groupAid = reportTemplate.getGroupType1().getId();
-        if(reportTemplate.getGroupType2()!=null)
-            groupBid = reportTemplate.getGroupType2().getId();
-        if(reportTemplate.getGroupType3()!=null)
-            groupCid = reportTemplate.getGroupType3().getId();
-        if(reportTemplate.getGroupType4()!=null)
-            groupDid = reportTemplate.getGroupType4().getId();
-        if(reportTemplate.getGroupType5()!=null)
-            groupEid = reportTemplate.getGroupType5().getId();
-        if(reportTemplate.getGroupType6()!=null)
-            groupFid = reportTemplate.getGroupType6().getId();
-
         EntityDocumentReportData childA = null;
         EntityDocumentReportData childB = null;
         EntityDocumentReportData childC = null;
