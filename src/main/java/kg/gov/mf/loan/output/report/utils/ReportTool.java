@@ -18,10 +18,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
+import java.text.*;
 import java.util.*;
 
 public class ReportTool
@@ -509,6 +506,28 @@ public class ReportTool
             else
                 return DateFormatShort.format(date);
         }
+
+    public Date StringToDate(String dateString)
+    {
+
+        SimpleDateFormat DateFormatShort = new SimpleDateFormat("dd.MM.yyyy");
+
+        if(dateString == null || dateString =="")
+            return null;
+        else
+        {
+            try
+            {
+                Date date = DateFormatShort.parse(dateString);
+                return date;
+            }
+            catch (java.text.ParseException e)
+            {
+                return null;
+            }
+        }
+
+    }
 
     public String formatText(String originText, ReportTemplate reportTemplate)
     {
@@ -1245,6 +1264,87 @@ public class ReportTool
                 parameterS.put("r=in"+objectList.getGroupType().getField_name(),Ids);
             }
 
+            if(filterParameter.getFilterParameterType().name()=="CONTENT_COMPARE")
+            {
+                List<String> Ids = new ArrayList<>();
+
+                String comparedValue = filterParameter.getComparedValue();
+
+                Ids.add(comparedValue);
+
+                String fieldName = filterParameter.getFieldName();
+
+                String comparatorShort = "";
+
+                switch (filterParameter.getComparator().name())
+                {
+                    case "EQUALS" :
+                        comparatorShort = "r=eq";
+                        break;
+
+                    case "NOT_EQUALS" :
+                        comparatorShort = "r=ne";
+                        break;
+
+                    case "GREATER_THEN" :
+                        comparatorShort = "r=gt";
+                        break;
+
+                    case "GREATER_THEN_OR_EQUALS" :
+                        comparatorShort = "r=ge";
+                        break;
+
+                    case "LESS_THEN" :
+                        comparatorShort = "r=lt";
+                        break;
+
+                    case "LESS_THEN_OR_EQUALS" :
+                        comparatorShort = "r=le";
+                        break;
+
+                    case "CONTAINS" :
+                        comparatorShort = "r=yc";
+                        break;
+
+                    case "DOES_NOT_CONTAIN" :
+                        comparatorShort = "r=nc";
+                        break;
+
+                    case "BEGINS" :
+                        comparatorShort = "r=bs";
+                        break;
+
+                    case "FINISHES" :
+                        comparatorShort = "r=fs";
+                        break;
+
+                    case "AFTER_DATE" :
+                        comparatorShort = "r=ad";
+                        break;
+
+                    case "AFTER_OR_ON_DATE" :
+                        comparatorShort = "r=ao";
+                        break;
+
+                    case "BEFORE_DATE" :
+                        comparatorShort = "r=bd";
+                        break;
+
+                    case "BEFORE_OR_ON_DATE" :
+                        comparatorShort = "r=bo";
+                        break;
+
+                    case "ON_DATE" :
+                        comparatorShort = "r=od";
+                        break;
+                }
+
+                parameterS.put(comparatorShort+fieldName,Ids);
+
+            }
+
+
+
 
 
 
@@ -1287,21 +1387,90 @@ public class ReportTool
 
             List<String> ids = parameterInLoop.getValue();
 
+            String criteriaType = parameterType.substring(0,4);
 
+            String propertyName = parameterType.substring(4,parameterType.length());
 
-            if(parameterType.contains("r=in"))
+            switch (criteriaType)
             {
-                String propertyName = parameterType.replace("r=in","");
+                case "r=in" :
 
-                List<Long> longIds = new ArrayList<>();
+                    List<Long> longIds = new ArrayList<>();
 
-                for (String id:ids)
-                {
-                    longIds.add(Long.parseLong(id));
+                    for (String id:ids)
+                    {
+                        longIds.add(Long.parseLong(id));
+                    }
 
-                }
-                criteria.add(Restrictions.in(propertyName,longIds));
+                    criteria.add(Restrictions.in(propertyName,longIds));
+
+                    break;
+
+
+
+                case "r=eq" :
+                    criteria.add(Restrictions.eq(propertyName,ids.get(0)));
+                    break;
+
+                case "r=ne" :
+                    criteria.add(Restrictions.ne(propertyName,ids.get(0)));
+                    break;
+
+                case "r=gt" :
+                    criteria.add(Restrictions.gt(propertyName,ids.get(0)));
+                    break;
+
+                case "r=ge" :
+                    criteria.add(Restrictions.ge(propertyName,ids.get(0)));
+                    break;
+
+                case "r=lt" :
+                    criteria.add(Restrictions.lt(propertyName,ids.get(0)));
+                    break;
+
+                case "r=le" :
+                    criteria.add(Restrictions.le(propertyName,ids.get(0)));
+                    break;
+
+                case "r=yc" :
+                    criteria.add(Restrictions.like(propertyName,"%"+ids.get(0)+"%"));
+                    break;
+
+                case "r=nc" :
+                    criteria.add(Restrictions.not(Restrictions.like(propertyName,"%"+ids.get(0)+"%")));
+                    break;
+
+                case "r=bs" :
+                    criteria.add(Restrictions.like(propertyName,"%"+ids.get(0)))
+                    ;
+                    break;
+
+                case "r=fs" :
+                    criteria.add(Restrictions.like(propertyName,ids.get(0)+"%"));
+                    break;
+
+                case "r=ad" :
+                    criteria.add(Restrictions.gt(propertyName, this.StringToDate(ids.get(0))));
+                    break;
+
+                case "r=ao" :
+                    criteria.add(Restrictions.ge(propertyName, this.StringToDate(ids.get(0))));
+
+                    break;
+
+                case "r=bd" :
+                    criteria.add(Restrictions.lt(propertyName, this.StringToDate(ids.get(0))));
+                    break;
+
+                case "r=bo" :
+                    criteria.add(Restrictions.le(propertyName, this.StringToDate(ids.get(0))));
+                    break;
+
+                case "r=od" :
+                    criteria.add(Restrictions.eq(propertyName, this.StringToDate(ids.get(0))));
+                    break;
             }
+
 
             if(parameterType.contains("orderBy"))
             {

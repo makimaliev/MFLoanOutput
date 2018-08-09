@@ -2,6 +2,7 @@ package kg.gov.mf.loan.output.report.service;
 
 import kg.gov.mf.loan.output.report.dao.ObjectListDao;
 import kg.gov.mf.loan.output.report.dao.GenerationParameterDao;
+import kg.gov.mf.loan.output.report.model.GroupType;
 import kg.gov.mf.loan.output.report.model.ObjectList;
 import kg.gov.mf.loan.output.report.model.GenerationParameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +54,11 @@ public class ObjectListServiceJpaImpl implements ObjectListService {
 	@Transactional
 	public List<ObjectList> findAll() {
 		return this.objectListDao.findAll();
+	}
+
+	@Override
+	@Transactional
+	public List<ObjectList> findAllByGroupType(GroupType groupType) {
+		return this.objectListDao.findAllByGroupType(groupType);
 	}
 }

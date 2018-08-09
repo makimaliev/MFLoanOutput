@@ -190,13 +190,55 @@ public class CollectionPhaseReportDataManager {
 
                 if(collectionPhaseView.getV_cph_startDate()!=null)
                     childE.setCollection_phase_start_date(new java.sql.Date(collectionPhaseView.getV_cph_startDate().getTime()));
+
+                if(collectionPhaseView.getV_cph_closeDate()!=null)
+                    childE.setCollection_phase_close_date(new java.sql.Date(collectionPhaseView.getV_cph_closeDate().getTime()));
+
+                reportData.setPhaseCount(reportData.getPhaseCount()+1);
+                childA.setPhaseCount(childA.getPhaseCount()+1);
+                childB.setPhaseCount(childB.getPhaseCount()+1);
+                childC.setPhaseCount(childC.getPhaseCount()+1);
+                childD.setPhaseCount(childD.getPhaseCount()+1);
+
+                if(collectionPhaseView.getV_cph_phaseStatusId()>1)
+                {
+                    reportData.setResultCount(reportData.getResultCount()+1);
+                    childA.setResultCount(childA.getResultCount()+1);
+                    childB.setResultCount(childB.getResultCount()+1);
+                    childC.setResultCount(childC.getResultCount()+1);
+                    childD.setResultCount(childD.getResultCount()+1);
+                }
+
+
+
+
+
                 childE.setCollection_phase_type_id(collectionPhaseView.getV_cph_phaseTypeId());
+
+                childE.setCollection_phase_status_id(collectionPhaseView.getV_cph_phaseStatusId());
 
                 childE.setCollection_phase_type_name(phaseTypeMap.get(collectionPhaseView.getV_cph_phaseTypeId()).getName());
 
+
+                reportData.setCollection_phase_start_total_amount(reportData.getCollection_phase_start_total_amount()+collectionPhaseView.getV_cph_start_total_amount());
+                childA.setCollection_phase_start_total_amount(childA.getCollection_phase_start_total_amount()+collectionPhaseView.getV_cph_start_total_amount());
+                childB.setCollection_phase_start_total_amount(childB.getCollection_phase_start_total_amount()+collectionPhaseView.getV_cph_start_total_amount());
+                childC.setCollection_phase_start_total_amount(childC.getCollection_phase_start_total_amount()+collectionPhaseView.getV_cph_start_total_amount());
+                childD.setCollection_phase_start_total_amount(childD.getCollection_phase_start_total_amount()+collectionPhaseView.getV_cph_start_total_amount());
                 childE.setCollection_phase_start_total_amount(collectionPhaseView.getV_cph_start_total_amount());
 
-                childE.setCollection_phase_close_total_amount(collectionPhaseView.getV_cph_close_total_amount());
+                if(collectionPhaseView.getV_cph_close_total_amount()>0)
+                {
+                    reportData.setCollection_phase_close_total_amount(reportData.getCollection_phase_close_total_amount()+collectionPhaseView.getV_cph_close_total_amount());
+                    childA.setCollection_phase_close_total_amount(childA.getCollection_phase_close_total_amount()+collectionPhaseView.getV_cph_close_total_amount());
+                    childB.setCollection_phase_close_total_amount(childB.getCollection_phase_close_total_amount()+collectionPhaseView.getV_cph_close_total_amount());
+                    childC.setCollection_phase_close_total_amount(childC.getCollection_phase_close_total_amount()+collectionPhaseView.getV_cph_close_total_amount());
+                    childD.setCollection_phase_close_total_amount(childD.getCollection_phase_close_total_amount()+collectionPhaseView.getV_cph_close_total_amount());
+                    childE.setCollection_phase_close_total_amount(collectionPhaseView.getV_cph_close_total_amount());
+                }
+
+
+                childE.setCollection_procedure_status_id(collectionPhaseView.getV_cp_procedureStatusId());
 
                 currentgroupEid=reportTool.getIdByGroupType(reportTemplate.getGroupType5(),collectionPhaseView);
             }

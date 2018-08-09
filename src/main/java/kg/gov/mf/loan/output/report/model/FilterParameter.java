@@ -21,9 +21,12 @@ public class FilterParameter {
 	@JoinColumn(name="object_list_id")
 	ObjectList objectList;
 
-	@ManyToOne(targetEntity=ContentParameter.class, fetch = FetchType.EAGER)
-	@JoinColumn(name="content_parameter_id")
-	ContentParameter contentParameter;
+//	@ManyToOne(targetEntity=ContentParameter.class, fetch = FetchType.EAGER)
+//	@JoinColumn(name="content_parameter_id")
+//	ContentParameter contentParameter;
+
+	@Column(name="field_name")
+	private String fieldName;
 
 	@Enumerated(EnumType.STRING)
 	private Comparator comparator;
@@ -60,13 +63,13 @@ public class FilterParameter {
 		this.objectList = objectList;
 	}
 
-	public ContentParameter getContentParameter() {
-		return contentParameter;
-	}
-
-	public void setContentParameter(ContentParameter contentParameter) {
-		this.contentParameter = contentParameter;
-	}
+//	public ContentParameter getContentParameter() {
+//		return contentParameter;
+//	}
+//
+//	public void setContentParameter(ContentParameter contentParameter) {
+//		this.contentParameter = contentParameter;
+//	}
 
 	public Comparator getComparator() {
 		return comparator;
@@ -90,6 +93,14 @@ public class FilterParameter {
 
 	public void setFilterParameterType(FilterParameterType filterParameterType) {
 		this.filterParameterType = filterParameterType;
+	}
+
+	public String getFieldName() {
+		return fieldName;
+	}
+
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
 	}
 
 	@Override

@@ -1,8 +1,11 @@
 package kg.gov.mf.loan.output.report.dao;
 
+import kg.gov.mf.loan.output.report.model.GroupType;
 import kg.gov.mf.loan.output.report.model.ObjectList;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +92,25 @@ public class ObjectListDaoImpl implements ObjectListDao {
         List<ObjectList> objectListsList = session.createQuery("from ObjectList").list();
         return objectListsList;
     }
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ObjectList> findAllByGroupType(GroupType groupType) {
+		Session session = this.sessionFactory.getCurrentSession();
+
+//
+//		List<ObjectList> objectListsList = session.createQuery("from ObjectList").list();
+//		return objectListsList;
+
+
+		Criteria criteria = session.createCriteria(ObjectList.class);
+
+		criteria.add(Restrictions.eq("groupType",groupType));
+
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+
+		return criteria.list();
+	}
  
 
 }

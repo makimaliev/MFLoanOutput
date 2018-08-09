@@ -1,5 +1,6 @@
 package kg.gov.mf.loan.output.report.dao;
 
+import kg.gov.mf.loan.output.report.model.GroupType;
 import kg.gov.mf.loan.output.report.model.ObjectList;
 import org.springframework.stereotype.Repository;
 
@@ -17,5 +18,9 @@ public interface ObjectListDao {
 	public ObjectList findById(long id);
 	
 	public List<ObjectList> findAll();
+
+	public List<ObjectList> findAllByGroupType(GroupType groupType);
+
+
 
 }

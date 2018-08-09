@@ -112,8 +112,8 @@ public class CollectionPhaseView extends DebtorView
 	@Column
 	private long v_cph_collectionProcedureId;
 
-//	@Column
-//	private Long v_cph_phaseStatusId;
+	@Column
+	private Long v_cph_phaseStatusId;
 
 	@Column
 	private long v_cph_phaseTypeId;
@@ -355,13 +355,13 @@ public class CollectionPhaseView extends DebtorView
 		this.v_cph_collectionProcedureId = v_cph_collectionProcedureId;
 	}
 
-//	public long getV_cph_phaseStatusId() {
-//		return v_cph_phaseStatusId;
-//	}
-//
-//	public void setV_cph_phaseStatusId(long v_cph_phaseStatusId) {
-//		this.v_cph_phaseStatusId = v_cph_phaseStatusId;
-//	}
+	public long getV_cph_phaseStatusId() {
+		return v_cph_phaseStatusId;
+	}
+
+	public void setV_cph_phaseStatusId(long v_cph_phaseStatusId) {
+		this.v_cph_phaseStatusId = v_cph_phaseStatusId;
+	}
 
 
 	public long getV_cph_start_total_amount() {

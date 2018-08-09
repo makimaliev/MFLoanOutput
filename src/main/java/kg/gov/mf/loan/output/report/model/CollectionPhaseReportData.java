@@ -45,6 +45,10 @@ public class CollectionPhaseReportData extends ReportData
 	private double OverdueInterest      = 0;
 	private double OverduePenalty      	= 0;
 
+
+    private int    phaseCount         = 0;
+    private int    resultCount         = 0;
+
 	private short  loanType    			= 0;
 
 	private double totalPaidInCurrency    = 0;
@@ -517,4 +521,20 @@ public class CollectionPhaseReportData extends ReportData
 	public void setCollection_phase_close_total_amount(double collection_phase_close_total_amount) {
 		this.collection_phase_close_total_amount = collection_phase_close_total_amount;
 	}
+
+    public int getPhaseCount() {
+        return phaseCount;
+    }
+
+    public void setPhaseCount(int phaseCount) {
+        this.phaseCount = phaseCount;
+    }
+
+    public int getResultCount() {
+        return resultCount;
+    }
+
+    public void setResultCount(int resultCount) {
+        this.resultCount = resultCount;
+    }
 }
