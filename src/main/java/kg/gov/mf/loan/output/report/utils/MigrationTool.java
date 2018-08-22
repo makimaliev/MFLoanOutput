@@ -21,8 +21,6 @@ import kg.gov.mf.loan.manage.service.order.CreditOrderStateService;
 import kg.gov.mf.loan.manage.service.order.CreditOrderTypeService;
 import kg.gov.mf.loan.manage.service.orderterm.*;
 
-import kg.gov.mf.loan.output.report.model.ExternalObjectLink;
-import kg.gov.mf.loan.output.report.service.ExternalObjectLinkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
 import org.springframework.security.provisioning.UserDetailsManager;
@@ -220,10 +218,6 @@ public class MigrationTool
 
     @Autowired
     DebtTransferService debtTransferService;
-
-    @Autowired
-    ExternalObjectLinkService externalObjectLinkService;
-
 
     Set<String> errorList = new HashSet<String>();
 
