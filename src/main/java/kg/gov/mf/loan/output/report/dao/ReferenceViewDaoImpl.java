@@ -107,6 +107,7 @@ public class ReferenceViewDaoImpl implements ReferenceViewDao {
 		Criteria criteria = session.createCriteria(ReferenceView.class);
 
 		criteria.add(Restrictions.eq("list_type",list_type));
+		criteria.addOrder(Order.asc("id"));
 
 		return criteria.list();
 	}
