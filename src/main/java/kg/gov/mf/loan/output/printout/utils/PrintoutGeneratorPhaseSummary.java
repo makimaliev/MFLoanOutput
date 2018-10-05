@@ -274,13 +274,13 @@ public class PrintoutGeneratorPhaseSummary {
 
                     sCurator       =  "Curator";
 
-                    iDistrict      =  (short)collectionPhaseView.getV_debtor_region_id();
+                    iDistrict      =  collectionPhaseView.getV_debtor_region_id().shortValue();
 
-                    iRegion        =  (short)collectionPhaseView.getV_debtor_district_id();
+                    iRegion        =  collectionPhaseView.getV_debtor_district_id().shortValue();
 
-                    String RegionName = collectionPhaseView.getV_region_name();
+                    String RegionName = collectionPhaseView.getV_debtor_name();
 
-                    String DistrictName = collectionPhaseView.getV_district_name();
+                    String DistrictName = collectionPhaseView.getV_debtor_name();
 
                     Address address = new Address();
                     sRasDate = collectionPhaseView.getV_cph_startDate().toString();
@@ -424,18 +424,18 @@ public class PrintoutGeneratorPhaseSummary {
                         iRequsiteID    = 1;
                         iResDepartment =  1;
 
-                        LinkedHashMap<String,List<Long>> parameterL = new LinkedHashMap<String,List<Long>>();
+                        LinkedHashMap<String,List<String>> parameterL = new LinkedHashMap<String,List<String>>();
 
-                        List<Long> loanIds = new ArrayList<>();
+                        List<String> loanIds = new ArrayList<>();
 
 
-                        loanIds.add(iCreditID);
+                        loanIds.add(String.valueOf(iCreditID));
 
                         parameterL.put("loan",loanIds);
 
                         LoanView loanView = loanViewService.findByParameter(parameterL).get(0);
 
-                        iCreditType = (short)loanView.getV_loan_type_id();
+                        iCreditType = loanView.getV_loan_type_id().shortValue();
 
                         if(loanView.getV_debtor_work_sector_id()==1)
                         {
@@ -458,7 +458,7 @@ public class PrintoutGeneratorPhaseSummary {
 
                         sCreditDate=loanView.getV_loan_reg_date().toString();
 
-                        sOrderNumber=loanView.getV_credit_order_regNumber();
+                        sOrderNumber=loanView.getV_credit_order_reg_number();
 
                         iDebtAll = phaseDetails.getStartTotalAmount();
 

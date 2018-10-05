@@ -101,7 +101,7 @@ public class PrintoutGeneratorLoanSummary {
                     long      iPersonID   = 0;
                     long      iCreditID   = 0;
                     String    CreditID[]  = null;
-                    short     iCreditType = 0;
+                    Short     iCreditType = 0;
 
                     double    Rate=1;
                     int       Thousands = 1000;
@@ -159,18 +159,18 @@ public class PrintoutGeneratorLoanSummary {
                     List<LoanSummaryView> loanSummaryViews = new ArrayList<>();
 
 
-                    LinkedHashMap<String,List<Long>> parameterS = new LinkedHashMap<String,List<Long>>();
+                    LinkedHashMap<String,List<String>> parameterS = new LinkedHashMap<String,List<String>>();
 
-                    List<Long> Ids = new ArrayList<>();
+                    List<String> Ids = new ArrayList<>();
 
-                    Ids.add(iPersonID);
+                    Ids.add(String.valueOf(iPersonID));
 
-                    List<Long> dates = new ArrayList<>();
+                    List<String> dates = new ArrayList<>();
 
 //                    long    iOneDay        = 1 * 24 * 60 * 60 * 1000;
 
-                    dates.add(loanSummary.getOnDate().getTime());
-                    dates.add(loanSummary.getOnDate().getTime());
+                    dates.add(String.valueOf(loanSummary.getOnDate().getTime()));
+                    dates.add(String.valueOf(loanSummary.getOnDate().getTime()));
 
 
 
@@ -244,7 +244,7 @@ public class PrintoutGeneratorLoanSummary {
                         cell.setBorder(TitleColumnBorder);
                         table.addCell (cell);
 
-                        cell = new PdfPCell (new Paragraph (lv.getV_debtor_name() +", "+ lv.getV_district_name().replace("ий","ого района")+", "+lv.getV_region_name().replace("ая","ой области ") +" перед Государственным агентством по управлению ",TitleFont));
+                        cell = new PdfPCell (new Paragraph (lv.getV_debtor_name() +", "+ lv.getV_debtor_name().replace("ий","ого района")+", "+lv.getV_debtor_name().replace("ая","ой области ") +" перед Государственным агентством по управлению ",TitleFont));
                         cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                         cell.setPadding(TitleColumnPadding);
@@ -396,7 +396,7 @@ int x = 0;
                             x++;
 
 
-                            iCreditType = (short)lsv.getV_loan_type_id();
+                            iCreditType = lsv.getV_loan_type_id().shortValue();
 
                             String sCreditLine ="";
 
@@ -417,7 +417,7 @@ int x = 0;
                             sCreditNumber=lsv.getV_loan_reg_number();
                             sCreditDate=lsv.getV_loan_reg_date().toString();
                             sOrderNumber=lsv.getV_loan_reg_number();
-                            short iCurrency=(short)lsv.getV_loan_currency_id();
+                            Short iCurrency= Short.valueOf(lsv.getV_loan_currency_id().toString());
 
 
 
@@ -443,19 +443,19 @@ int x = 0;
 
 
                             Cost            = lsv.getV_loan_amount();
-                            Profit          = lsv.getV_ls_totalDisbursed();
-                            Payments        = lsv.getV_ls_totalPaid();
-                            PaymentsSom     = lsv.getV_ls_totalPaid();
+                            Profit          = lsv.getV_ls_total_disbursed();
+                            Payments        = lsv.getV_ls_total_paid();
+                            PaymentsSom     = lsv.getV_ls_total_paid();
 
-                            OstMain         = lsv.getV_ls_outstadingPrincipal();
-                            OstPercent      = lsv.getV_ls_outstadingInterest();
-                            OstPenalty      = lsv.getV_ls_outstadingPenalty();
+                            OstMain         = lsv.getV_ls_outstading_principal();
+                            OstPercent      = lsv.getV_ls_outstading_interest();
+                            OstPenalty      = lsv.getV_ls_outstading_penalty();
                             OstAll          = OstMain+OstPercent+OstPenalty;
 
 
-                            ProsMain        = lsv.getV_ls_overduePrincipal();
-                            ProsPercent     = lsv.getV_ls_overdueInterest();
-                            ProsPenalty     = lsv.getV_ls_overduePenalty();
+                            ProsMain        = lsv.getV_ls_overdue_principal();
+                            ProsPercent     = lsv.getV_ls_overdue_interest();
+                            ProsPenalty     = lsv.getV_ls_overdue_penalty();
 
                             ProsAll         = ProsMain+ProsPercent+ProsPenalty;
 

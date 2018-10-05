@@ -12,7 +12,7 @@ import java.util.Date;
 public class LoanSummaryView extends DebtorView
 {
 	@Column
-	private long v_loan_id;
+	private Long v_loan_id;
 
 	@Column
 	private Double v_loan_amount;
@@ -25,101 +25,102 @@ public class LoanSummaryView extends DebtorView
 	private Date v_loan_reg_date;
 
 	@Column
-	private long v_loan_supervisor_id;
+	private Long v_loan_supervisor_id;
 
 	@Column
-	private long v_loan_currency_id;
+	private Long v_loan_currency_id;
 
 	@Column
-	private long v_loan_state_id;
+	private Long v_loan_state_id;
 
 	@Column
-	private long v_loan_type_id;
+	private Long v_loan_type_id;
 
 	@Column
-	private long v_credit_order_type_id;
+	private Long v_credit_order_type_id;
 
 	@Column
-	private String v_credit_order_regNumber;
+	private String v_credit_order_reg_number;
 
 	@DateTimeFormat(pattern = "dd.mm.yyyy")
 	@Temporal(TemporalType.DATE)
-	private Date v_credit_order_regDate;
+	private Date v_credit_order_reg_date;
 
 	@Id
 	@Column
-	private long v_ls_id;
+	private Long v_ls_id;
 
 	@Column
-	private  double v_ls_loanAmount;
+	private  double v_ls_loan_amount;
 
 	@DateTimeFormat(pattern = "dd.mm.yyyy")
 	@Temporal(TemporalType.DATE)
-	private Date v_ls_onDate;
+	private Date v_ls_on_date;
 
 	@Column
-	private  double v_ls_outstadingFee;
+	private  double v_ls_outstading_fee;
 
 	@Column
-	private  double v_ls_outstadingInterest;
-
-
-
-	@Column
-	private  double v_ls_outstadingPenalty;
+	private  double v_ls_outstading_interest;
 
 
 
 	@Column
-	private  double v_ls_outstadingPrincipal;
+	private  double v_ls_outstading_penalty;
 
-
-	@Column
-	private  double v_ls_overdueFee;
 
 
 	@Column
-	private  double v_ls_overdueInterest;
+	private  double v_ls_outstading_principal;
 
 
 	@Column
-	private  double v_ls_overduePenalty;
+	private  double v_ls_overdue_fee;
 
 
 	@Column
-	private  double v_ls_overduePrincipal;
+	private  double v_ls_overdue_interest;
 
 
 	@Column
-	private  double v_ls_paidFee;
-
-	@Column
-	private  double v_ls_paidInterest;
+	private  double v_ls_overdue_penalty;
 
 
 	@Column
-	private  double v_ls_paidPenalty;
+	private  double v_ls_overdue_principal;
+
 
 	@Column
-	private  double v_ls_paidPrincipal;
+	private  double v_ls_paid_fee;
 
 	@Column
-	private  double v_ls_totalDisbursed;
+	private  double v_ls_paid_interest;
+
 
 	@Column
-	private  double v_ls_totalOutstanding;
+	private  double v_ls_paid_penalty;
 
 	@Column
-	private  double v_ls_totalOverdue;
+	private  double v_ls_paid_principal;
 
 	@Column
-	private  double v_ls_totalPaid;
+	private  double v_ls_total_disbursed;
 
-	public long getV_loan_id() {
+	@Column
+	private  double v_ls_total_outstanding;
+
+	@Column
+	private  double v_ls_total_overdue;
+
+	@Column
+	private  double v_ls_total_paid;
+
+
+	public Long getV_loan_id() {
 		return v_loan_id;
 	}
 
-	public void setV_loan_id(long v_loan_id) {
+	public void setV_loan_id(Long v_loan_id) {
 		this.v_loan_id = v_loan_id;
 	}
 
@@ -147,211 +148,211 @@ public class LoanSummaryView extends DebtorView
 		this.v_loan_reg_date = v_loan_reg_date;
 	}
 
-	public long getV_loan_supervisor_id() {
+	public Long getV_loan_supervisor_id() {
 		return v_loan_supervisor_id;
 	}
 
-	public void setV_loan_supervisor_id(long v_loan_supervisor_id) {
+	public void setV_loan_supervisor_id(Long v_loan_supervisor_id) {
 		this.v_loan_supervisor_id = v_loan_supervisor_id;
 	}
 
-	public long getV_loan_currency_id() {
+	public Long getV_loan_currency_id() {
 		return v_loan_currency_id;
 	}
 
-	public void setV_loan_currency_id(long v_loan_currency_id) {
+	public void setV_loan_currency_id(Long v_loan_currency_id) {
 		this.v_loan_currency_id = v_loan_currency_id;
 	}
 
-	public long getV_loan_state_id() {
+	public Long getV_loan_state_id() {
 		return v_loan_state_id;
 	}
 
-	public void setV_loan_state_id(long v_loan_state_id) {
+	public void setV_loan_state_id(Long v_loan_state_id) {
 		this.v_loan_state_id = v_loan_state_id;
 	}
 
-	public long getV_loan_type_id() {
+	public Long getV_loan_type_id() {
 		return v_loan_type_id;
 	}
 
-	public void setV_loan_type_id(long v_loan_type_id) {
+	public void setV_loan_type_id(Long v_loan_type_id) {
 		this.v_loan_type_id = v_loan_type_id;
 	}
 
-	public long getV_credit_order_type_id() {
+	public Long getV_credit_order_type_id() {
 		return v_credit_order_type_id;
 	}
 
-	public void setV_credit_order_type_id(long v_credit_order_type_id) {
+	public void setV_credit_order_type_id(Long v_credit_order_type_id) {
 		this.v_credit_order_type_id = v_credit_order_type_id;
 	}
 
-	public String getV_credit_order_regNumber() {
-		return v_credit_order_regNumber;
+	public String getV_credit_order_reg_number() {
+		return v_credit_order_reg_number;
 	}
 
-	public void setV_credit_order_regNumber(String v_credit_order_regNumber) {
-		this.v_credit_order_regNumber = v_credit_order_regNumber;
+	public void setV_credit_order_reg_number(String v_credit_order_reg_number) {
+		this.v_credit_order_reg_number = v_credit_order_reg_number;
 	}
 
-	public Date getV_credit_order_regDate() {
-		return v_credit_order_regDate;
+	public Date getV_credit_order_reg_date() {
+		return v_credit_order_reg_date;
 	}
 
-	public void setV_credit_order_regDate(Date v_credit_order_regDate) {
-		this.v_credit_order_regDate = v_credit_order_regDate;
+	public void setV_credit_order_reg_date(Date v_credit_order_reg_date) {
+		this.v_credit_order_reg_date = v_credit_order_reg_date;
 	}
 
-	public long getV_ls_id() {
+	public Long getV_ls_id() {
 		return v_ls_id;
 	}
 
-	public void setV_ls_id(long v_ls_id) {
+	public void setV_ls_id(Long v_ls_id) {
 		this.v_ls_id = v_ls_id;
 	}
 
-	public double getV_ls_loanAmount() {
-		return v_ls_loanAmount;
+	public double getV_ls_loan_amount() {
+		return v_ls_loan_amount;
 	}
 
-	public void setV_ls_loanAmount(double v_ls_loanAmount) {
-		this.v_ls_loanAmount = v_ls_loanAmount;
+	public void setV_ls_loan_amount(double v_ls_loan_amount) {
+		this.v_ls_loan_amount = v_ls_loan_amount;
 	}
 
-	public double getV_ls_outstadingFee() {
-		return v_ls_outstadingFee;
+	public Date getV_ls_on_date() {
+		return v_ls_on_date;
 	}
 
-	public void setV_ls_outstadingFee(double v_ls_outstadingFee) {
-		this.v_ls_outstadingFee = v_ls_outstadingFee;
+	public void setV_ls_on_date(Date v_ls_on_date) {
+		this.v_ls_on_date = v_ls_on_date;
 	}
 
-	public double getV_ls_outstadingInterest() {
-		return v_ls_outstadingInterest;
+	public double getV_ls_outstading_fee() {
+		return v_ls_outstading_fee;
 	}
 
-	public void setV_ls_outstadingInterest(double v_ls_outstadingInterest) {
-		this.v_ls_outstadingInterest = v_ls_outstadingInterest;
+	public void setV_ls_outstading_fee(double v_ls_outstading_fee) {
+		this.v_ls_outstading_fee = v_ls_outstading_fee;
 	}
 
-	public double getV_ls_outstadingPenalty() {
-		return v_ls_outstadingPenalty;
+	public double getV_ls_outstading_interest() {
+		return v_ls_outstading_interest;
 	}
 
-	public void setV_ls_outstadingPenalty(double v_ls_outstadingPenalty) {
-		this.v_ls_outstadingPenalty = v_ls_outstadingPenalty;
+	public void setV_ls_outstading_interest(double v_ls_outstading_interest) {
+		this.v_ls_outstading_interest = v_ls_outstading_interest;
 	}
 
-	public double getV_ls_outstadingPrincipal() {
-		return v_ls_outstadingPrincipal;
+	public double getV_ls_outstading_penalty() {
+		return v_ls_outstading_penalty;
 	}
 
-	public void setV_ls_outstadingPrincipal(double v_ls_outstadingPrincipal) {
-		this.v_ls_outstadingPrincipal = v_ls_outstadingPrincipal;
+	public void setV_ls_outstading_penalty(double v_ls_outstading_penalty) {
+		this.v_ls_outstading_penalty = v_ls_outstading_penalty;
 	}
 
-	public double getV_ls_overdueFee() {
-		return v_ls_overdueFee;
+	public double getV_ls_outstading_principal() {
+		return v_ls_outstading_principal;
 	}
 
-	public void setV_ls_overdueFee(double v_ls_overdueFee) {
-		this.v_ls_overdueFee = v_ls_overdueFee;
+	public void setV_ls_outstading_principal(double v_ls_outstading_principal) {
+		this.v_ls_outstading_principal = v_ls_outstading_principal;
 	}
 
-	public double getV_ls_overdueInterest() {
-		return v_ls_overdueInterest;
+	public double getV_ls_overdue_fee() {
+		return v_ls_overdue_fee;
 	}
 
-	public void setV_ls_overdueInterest(double v_ls_overdueInterest) {
-		this.v_ls_overdueInterest = v_ls_overdueInterest;
+	public void setV_ls_overdue_fee(double v_ls_overdue_fee) {
+		this.v_ls_overdue_fee = v_ls_overdue_fee;
 	}
 
-	public double getV_ls_overduePenalty() {
-		return v_ls_overduePenalty;
+	public double getV_ls_overdue_interest() {
+		return v_ls_overdue_interest;
 	}
 
-	public void setV_ls_overduePenalty(double v_ls_overduePenalty) {
-		this.v_ls_overduePenalty = v_ls_overduePenalty;
+	public void setV_ls_overdue_interest(double v_ls_overdue_interest) {
+		this.v_ls_overdue_interest = v_ls_overdue_interest;
 	}
 
-	public double getV_ls_overduePrincipal() {
-		return v_ls_overduePrincipal;
+	public double getV_ls_overdue_penalty() {
+		return v_ls_overdue_penalty;
 	}
 
-	public void setV_ls_overduePrincipal(double v_ls_overduePrincipal) {
-		this.v_ls_overduePrincipal = v_ls_overduePrincipal;
+	public void setV_ls_overdue_penalty(double v_ls_overdue_penalty) {
+		this.v_ls_overdue_penalty = v_ls_overdue_penalty;
 	}
 
-	public double getV_ls_paidFee() {
-		return v_ls_paidFee;
+	public double getV_ls_overdue_principal() {
+		return v_ls_overdue_principal;
 	}
 
-	public void setV_ls_paidFee(double v_ls_paidFee) {
-		this.v_ls_paidFee = v_ls_paidFee;
+	public void setV_ls_overdue_principal(double v_ls_overdue_principal) {
+		this.v_ls_overdue_principal = v_ls_overdue_principal;
 	}
 
-	public double getV_ls_paidInterest() {
-		return v_ls_paidInterest;
+	public double getV_ls_paid_fee() {
+		return v_ls_paid_fee;
 	}
 
-	public void setV_ls_paidInterest(double v_ls_paidInterest) {
-		this.v_ls_paidInterest = v_ls_paidInterest;
+	public void setV_ls_paid_fee(double v_ls_paid_fee) {
+		this.v_ls_paid_fee = v_ls_paid_fee;
 	}
 
-	public double getV_ls_paidPenalty() {
-		return v_ls_paidPenalty;
+	public double getV_ls_paid_interest() {
+		return v_ls_paid_interest;
 	}
 
-	public void setV_ls_paidPenalty(double v_ls_paidPenalty) {
-		this.v_ls_paidPenalty = v_ls_paidPenalty;
+	public void setV_ls_paid_interest(double v_ls_paid_interest) {
+		this.v_ls_paid_interest = v_ls_paid_interest;
 	}
 
-	public double getV_ls_paidPrincipal() {
-		return v_ls_paidPrincipal;
+	public double getV_ls_paid_penalty() {
+		return v_ls_paid_penalty;
 	}
 
-	public void setV_ls_paidPrincipal(double v_ls_paidPrincipal) {
-		this.v_ls_paidPrincipal = v_ls_paidPrincipal;
+	public void setV_ls_paid_penalty(double v_ls_paid_penalty) {
+		this.v_ls_paid_penalty = v_ls_paid_penalty;
 	}
 
-	public double getV_ls_totalDisbursed() {
-		return v_ls_totalDisbursed;
+	public double getV_ls_paid_principal() {
+		return v_ls_paid_principal;
 	}
 
-	public void setV_ls_totalDisbursed(double v_ls_totalDisbursed) {
-		this.v_ls_totalDisbursed = v_ls_totalDisbursed;
+	public void setV_ls_paid_principal(double v_ls_paid_principal) {
+		this.v_ls_paid_principal = v_ls_paid_principal;
 	}
 
-	public double getV_ls_totalOutstanding() {
-		return v_ls_totalOutstanding;
+	public double getV_ls_total_disbursed() {
+		return v_ls_total_disbursed;
 	}
 
-	public void setV_ls_totalOutstanding(double v_ls_totalOutstanding) {
-		this.v_ls_totalOutstanding = v_ls_totalOutstanding;
+	public void setV_ls_total_disbursed(double v_ls_total_disbursed) {
+		this.v_ls_total_disbursed = v_ls_total_disbursed;
 	}
 
-	public double getV_ls_totalOverdue() {
-		return v_ls_totalOverdue;
+	public double getV_ls_total_outstanding() {
+		return v_ls_total_outstanding;
 	}
 
-	public void setV_ls_totalOverdue(double v_ls_totalOverdue) {
-		this.v_ls_totalOverdue = v_ls_totalOverdue;
+	public void setV_ls_total_outstanding(double v_ls_total_outstanding) {
+		this.v_ls_total_outstanding = v_ls_total_outstanding;
 	}
 
-	public double getV_ls_totalPaid() {
-		return v_ls_totalPaid;
+	public double getV_ls_total_overdue() {
+		return v_ls_total_overdue;
 	}
 
-	public void setV_ls_totalPaid(double v_ls_totalPaid) {
-		this.v_ls_totalPaid = v_ls_totalPaid;
+	public void setV_ls_total_overdue(double v_ls_total_overdue) {
+		this.v_ls_total_overdue = v_ls_total_overdue;
 	}
 
-	public Date getV_ls_onDate() {
-		return v_ls_onDate;
+	public double getV_ls_total_paid() {
+		return v_ls_total_paid;
 	}
 
-	public void setV_ls_onDate(Date v_ls_onDate) {
-		this.v_ls_onDate = v_ls_onDate;
+	public void setV_ls_total_paid(double v_ls_total_paid) {
+		this.v_ls_total_paid = v_ls_total_paid;
 	}
 }

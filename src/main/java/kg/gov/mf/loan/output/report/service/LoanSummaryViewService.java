@@ -18,6 +18,6 @@ public interface LoanSummaryViewService {
 
 	public List<LoanSummaryView> findAll();
 
-	public List<LoanSummaryView> findByParameter(LinkedHashMap<String, List<Long>> parameters);
+	public List<LoanSummaryView> findByParameter(LinkedHashMap<String, List<String>> parameters);
 
 }

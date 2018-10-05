@@ -57,7 +57,7 @@ public class CollateralItemViewServiceJpaImpl implements CollateralItemViewServi
 
 	@Override
 	@Transactional
-	public List<CollateralItemView> findByParameter(LinkedHashMap<String,List<Long>> parameters) {
+	public List<CollateralItemView> findByParameter(LinkedHashMap<String,List<String>> parameters) {
 		return this.collateralItemViewDao.findByParameter(parameters);
 	}
 

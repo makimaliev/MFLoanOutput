@@ -57,7 +57,7 @@ public class PaymentViewServiceJpaImpl implements PaymentViewService {
 
 	@Override
 	@Transactional
-	public List<PaymentView> findByParameter(LinkedHashMap<String,List<Long>> parameters) {
+	public List<PaymentView> findByParameter(LinkedHashMap<String,List<String>> parameters) {
 		return this.paymentViewDao.findByParameter(parameters);
 	}
 

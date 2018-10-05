@@ -18,6 +18,6 @@ public interface PaymentViewService {
 
 	public List<PaymentView> findAll();
 
-	public List<PaymentView> findByParameter(LinkedHashMap<String, List<Long>> parameters);
+	public List<PaymentView> findByParameter(LinkedHashMap<String, List<String>> parameters);
 
 }

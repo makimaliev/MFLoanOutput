@@ -20,7 +20,7 @@ public interface LoanViewDao {
 	
 	public List<LoanView> findAll();
 
-	public List<LoanView> findByParameter(LinkedHashMap<String,List<Long>> parameters);
+	public List<LoanView> findByParameter(LinkedHashMap<String,List<String>> parameters);
 
 
     List<LoanView> findByParameters(LinkedHashMap<String,List<String>> parameter, Integer perPage, Integer offset);
