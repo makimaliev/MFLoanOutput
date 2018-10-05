@@ -12,7 +12,7 @@ import java.util.Date;
 public class CollateralItemView extends DebtorView
 {
 	@Column
-	private long v_ca_id;
+	private Long v_ca_id;
 
 	@DateTimeFormat(pattern = "dd.mm.yyyy")
 	@Temporal(TemporalType.DATE)
@@ -49,7 +49,7 @@ public class CollateralItemView extends DebtorView
 
 	@Id
 	@Column
-	private long v_ci_id;
+	private Long v_ci_id;
 
 
 
@@ -77,22 +77,22 @@ public class CollateralItemView extends DebtorView
 
 
 	@Column
-	private long v_ci_collateralAgreementId;
+	private Long v_ci_collateralAgreementId;
 
 
 
 	@Column
-	private long v_ci_itemTypeId;
+	private Long v_ci_itemTypeId;
 
 	@Column
-	private long v_ci_quantityTypeId;
+	private Long v_ci_quantityTypeId;
 
 
-	public long getV_ca_id() {
+	public Long getV_ca_id() {
 		return v_ca_id;
 	}
 
-	public void setV_ca_id(long v_ca_id) {
+	public void setV_ca_id(Long v_ca_id) {
 		this.v_ca_id = v_ca_id;
 	}
 
@@ -160,11 +160,11 @@ public class CollateralItemView extends DebtorView
 		this.v_ca_notaryOfficeRegNumber = v_ca_notaryOfficeRegNumber;
 	}
 
-	public long getV_ci_id() {
+	public Long getV_ci_id() {
 		return v_ci_id;
 	}
 
-	public void setV_ci_id(long v_ci_id) {
+	public void setV_ci_id(Long v_ci_id) {
 		this.v_ci_id = v_ci_id;
 	}
 
@@ -224,27 +224,27 @@ public class CollateralItemView extends DebtorView
 		this.v_ci_risk_rate = v_ci_risk_rate;
 	}
 
-	public long getV_ci_collateralAgreementId() {
+	public Long getV_ci_collateralAgreementId() {
 		return v_ci_collateralAgreementId;
 	}
 
-	public void setV_ci_collateralAgreementId(long v_ci_collateralAgreementId) {
+	public void setV_ci_collateralAgreementId(Long v_ci_collateralAgreementId) {
 		this.v_ci_collateralAgreementId = v_ci_collateralAgreementId;
 	}
 
-	public long getV_ci_itemTypeId() {
+	public Long getV_ci_itemTypeId() {
 		return v_ci_itemTypeId;
 	}
 
-	public void setV_ci_itemTypeId(long v_ci_itemTypeId) {
+	public void setV_ci_itemTypeId(Long v_ci_itemTypeId) {
 		this.v_ci_itemTypeId = v_ci_itemTypeId;
 	}
 
-	public long getV_ci_quantityTypeId() {
+	public Long getV_ci_quantityTypeId() {
 		return v_ci_quantityTypeId;
 	}
 
-	public void setV_ci_quantityTypeId(long v_ci_quantityTypeId) {
+	public void setV_ci_quantityTypeId(Long v_ci_quantityTypeId) {
 		this.v_ci_quantityTypeId = v_ci_quantityTypeId;
 	}
 }

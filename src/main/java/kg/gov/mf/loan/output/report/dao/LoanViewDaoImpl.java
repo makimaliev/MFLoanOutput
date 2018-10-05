@@ -1,6 +1,7 @@
 package kg.gov.mf.loan.output.report.dao;
 
 import kg.gov.mf.loan.output.report.model.LoanView;
+import kg.gov.mf.loan.output.report.utils.ReportTool;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -98,43 +99,19 @@ public class LoanViewDaoImpl implements LoanViewDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<LoanView> findByParameter(LinkedHashMap<String,List<Long>> parameters) {
+	public List<LoanView> findByParameter(LinkedHashMap<String,List<String>> parameters) {
 
 		Session session = this.sessionFactory.getCurrentSession();
 
+		ReportTool reportTool = new ReportTool();
+
 		Criteria criteria = session.createCriteria(LoanView.class);
 
-
-		for (Map.Entry<String, List<Long>> parameterInLoop : parameters.entrySet())
-		{
-			String paramaterType = parameterInLoop.getKey();
-
-			List<Long> ids = parameterInLoop.getValue();
-
-			switch(paramaterType)
-			{
-				case "region":
-					criteria.add(Restrictions.in("v_debtor_region_id",ids));
-					break;
-				case "district":
-					criteria.add(Restrictions.in("v_debtor_district_id",ids));
-					break;
-				case "debtor":
-					criteria.add(Restrictions.in("v_debtor_id",ids));
-					break;
-				case "loan":
-					criteria.add(Restrictions.in("v_loan_id",ids));
-					break;
-
-			}
-
-
-		}
-
-		//List<LoanView> loanViewsList = session.createQuery("from LoanView").list();
+		reportTool.applyParameters(parameters,criteria);
 
 		return criteria.list();
 	}
+
 
 
 

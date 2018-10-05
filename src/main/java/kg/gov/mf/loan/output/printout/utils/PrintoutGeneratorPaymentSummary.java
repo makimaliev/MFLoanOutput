@@ -150,12 +150,12 @@ public class PrintoutGeneratorPaymentSummary {
 
             Set<PaymentView> paymentViews =  new HashSet<PaymentView>();
 
-            LinkedHashMap<String,List<Long>> parameterS = new LinkedHashMap<String,List<Long>>();
+            LinkedHashMap<String,List<String>> parameterS = new LinkedHashMap<String,List<String>>();
 
 
-            List<Long> Ids = new ArrayList<>();
+            List<String> Ids = new ArrayList<>();
 
-            Ids.add(iCreditID);
+            Ids.add(String.valueOf(iCreditID));
 
 
             parameterS.put("loan",Ids);

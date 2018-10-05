@@ -57,7 +57,7 @@ public class LoanSummaryViewServiceJpaImpl implements LoanSummaryViewService {
 
 	@Override
 	@Transactional
-	public List<LoanSummaryView> findByParameter(LinkedHashMap<String,List<Long>> parameters) {
+	public List<LoanSummaryView> findByParameter(LinkedHashMap<String,List<String>> parameters) {
 		return this.loanSummaryViewDao.findByParameter(parameters);
 	}
 

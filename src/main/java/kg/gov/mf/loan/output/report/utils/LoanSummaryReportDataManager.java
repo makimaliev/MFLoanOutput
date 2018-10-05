@@ -1,8 +1,10 @@
 package kg.gov.mf.loan.output.report.utils;
 
+import kg.gov.mf.loan.manage.model.process.LoanSummary;
 import kg.gov.mf.loan.output.report.model.*;
 import kg.gov.mf.loan.output.report.service.LoanViewService;
 import kg.gov.mf.loan.output.report.service.LoanSummaryViewService;
+import kg.gov.mf.loan.output.report.service.ReferenceViewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -23,137 +25,36 @@ public class LoanSummaryReportDataManager {
     @Autowired
     LoanSummaryViewService loanSummaryViewService;
 
+    @Autowired
+    ReferenceViewService referenceViewService;
+
     public LoanSummaryReportData getReportDataGrouped(LoanSummaryReportData reportData,ReportTemplate reportTemplate)
     {
 
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
-        Set<LoanSummaryView> loanSummaryViews =  new HashSet<LoanSummaryView>();
+
+
 
         ReportTool reportTool = new ReportTool();
 
+        LinkedHashMap<String,List<String>> parameterS = new LinkedHashMap<>();
 
-        Date onDate = reportTool.getOnDate(reportTemplate);
-
-        LinkedHashMap<String,List<Long>> parameterS = new LinkedHashMap<String,List<Long>>();
-
-        List<Long> groupIds = new ArrayList<>();
-
-        if(reportTool.getGroupType(reportTemplate,1)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,1));
-
-        if(reportTool.getGroupType(reportTemplate,2)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,2));
-
-        if(reportTool.getGroupType(reportTemplate,3)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,3));
-
-
-        if(reportTool.getGroupType(reportTemplate,4)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,4));
-
-
-        if(reportTool.getGroupType(reportTemplate,5)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,5));
-
-
-        if(reportTool.getGroupType(reportTemplate,6)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,6));
-
-
-
-        for (FilterParameter filterParameter: reportTemplate.getFilterParameters())
-        {
-
-            if(filterParameter.getFilterParameterType().name()=="OBJECT_LIST")
-            {
-                ObjectList objectList = filterParameter.getObjectList();
-
-                List<Long> Ids = new ArrayList<>();
-
-                for (ObjectListValue objectListValue: objectList.getObjectListValues())
-                {
-                    Ids.add(Long.parseLong(objectListValue.getName()));
-                }
-
-                parameterS.put(reportTool.getParameterTypeNameById(String.valueOf(objectList.getObjectTypeId())),Ids);
-            }
-
-            if(filterParameter.getFilterParameterType().name()=="CONTENT_COMPARE")
-            {
-                List<Long> Ids = new ArrayList<>();
-
-                String string = filterParameter.getComparedValue();
-                DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
-
-                try
-                {
-                    Date date = format.parse(string);
-                    Ids.add(date.getTime());
-                }
-                catch ( Exception ex )
-                {
-                    System.out.println(ex);
-                }
-
-                if(Ids.size()>0)
-                {
-                    if(filterParameter.getComparator().toString()=="AFTER")
-                        parameterS.put("paymentDateFrom",Ids);
-                    if(filterParameter.getComparator().toString()=="BEFORE")
-                        parameterS.put("paymentDateTo",Ids);
-                }
-            }
-
-            if(onDate!=null)
-            {
-                List<Long> Ids = new ArrayList<>();
-
-                try
-                {
-
-                    Ids.add(onDate.getTime());
-                }
-                catch ( Exception ex )
-                {
-                    System.out.println(ex);
-                }
-
-                parameterS.put("onDate",Ids);
-            }
-
-
-
-            parameterS.put("orderBy",groupIds);
-
-        }
-
-        long groupAtype = reportTool.getGroupType(reportTemplate,1);
-        long groupBtype = reportTool.getGroupType(reportTemplate,2);
-        long groupCtype = reportTool.getGroupType(reportTemplate,3);
-        long groupDtype = reportTool.getGroupType(reportTemplate,4);
-        long groupEtype = 9;
-
-
-
-        // initial filter by report filter parameters
+        parameterS.putAll(reportTool.getParametersByTemplate(reportTemplate));
 
         reportData.getLoanSummaryViews().addAll(loanSummaryViewService.findByParameter(parameterS));
 
+        for (LoanSummaryView loanSummaryView: reportData.getLoanSummaryViews())
+        {
+            System.out.println(loanSummaryView.getV_debtor_name());
+        }
 
-        reportData.setOnDate(new java.sql.Date(onDate.getTime()));
+        return groupifyData(reportData, reportTemplate, reportTool );
 
-        Set<Long> groupAIds = new HashSet<Long>();
-
-        ArrayList<LoanSummaryView> allLoanSummaryViews = new ArrayList<LoanSummaryView>();
-
-        return groupifyData(reportData,groupIds,reportTemplate);
     }
 
-    public LoanSummaryReportData groupifyData(LoanSummaryReportData reportData, List<Long> groupIds,ReportTemplate reportTemplate)
+    public LoanSummaryReportData groupifyData(LoanSummaryReportData reportData,ReportTemplate reportTemplate, ReportTool reportTool)
     {
-
-        ReportTool reportTool = new ReportTool();
 
         reportTool.initReference();
 
@@ -172,29 +73,6 @@ public class LoanSummaryReportDataManager {
         long currentgroupDid=-1;
         long currentgroupEid=-1;
         long currentgroupFid=-1;
-
-
-        if(reportTool.getGroupType(reportTemplate,1)>0)
-            groupAid = reportTool.getGroupType(reportTemplate,1);
-
-
-        if(reportTool.getGroupType(reportTemplate,2)>0)
-            groupBid = reportTool.getGroupType(reportTemplate,2);
-
-        if(reportTool.getGroupType(reportTemplate,3)>0)
-            groupCid = reportTool.getGroupType(reportTemplate,3);
-
-
-        if(reportTool.getGroupType(reportTemplate,4)>0)
-            groupDid = reportTool.getGroupType(reportTemplate,4);
-
-
-        if(reportTool.getGroupType(reportTemplate,5)>0)
-            groupEid = reportTool.getGroupType(reportTemplate,5);
-
-
-        if(reportTool.getGroupType(reportTemplate,6)>0)
-            groupFid = reportTool.getGroupType(reportTemplate,6);
 
         LoanSummaryReportData childA = null;
         LoanSummaryReportData childB = null;
@@ -221,28 +99,28 @@ public class LoanSummaryReportDataManager {
 
         for (LoanSummaryView loanSummaryView:reportData.getLoanSummaryViews())
         {
-            if(reportTool.getIdByGroupType(groupAid,loanSummaryView)!=currentgroupAid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType1(),loanSummaryView)!=currentgroupAid)
             {
                 childA = reportData.addChild();
-                childA.setName(reportTool.getNameByGroupType(groupAid,loanSummaryView));
+                childA.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType1(),loanSummaryView));
                 childA.setLevel((short)1);
 
-                currentgroupAid=reportTool.getIdByGroupType(groupAid,loanSummaryView);
+                currentgroupAid=reportTool.getIdByGroupType(reportTemplate.getGroupType1(),loanSummaryView);
             }
 
-            if(reportTool.getIdByGroupType(groupBid,loanSummaryView)!=currentgroupBid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType2(),loanSummaryView)!=currentgroupBid)
             {
                 childB = childA.addChild();
-                childB.setName(reportTool.getNameByGroupType(groupBid,loanSummaryView));
+                childB.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType2(),loanSummaryView));
                 childB.setLevel((short)2);
 
-                currentgroupBid=reportTool.getIdByGroupType(groupBid,loanSummaryView);
+                currentgroupBid=reportTool.getIdByGroupType(reportTemplate.getGroupType2(),loanSummaryView);
             }
 
-            if(reportTool.getIdByGroupType(groupCid,loanSummaryView)!=currentgroupCid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType3(),loanSummaryView)!=currentgroupCid)
             {
                 childC = childB.addChild();
-                childC.setName(reportTool.getNameByGroupType(groupCid,loanSummaryView));
+                childC.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType3(),loanSummaryView));
                 childC.setLevel((short)3);
 
                 childC.setCount(1);
@@ -250,18 +128,15 @@ public class LoanSummaryReportDataManager {
                 childA.setCount(childA.getCount()+1);
                 reportData.setCount(reportData.getCount()+1);
 
-                currentgroupCid=reportTool.getIdByGroupType(groupCid,loanSummaryView);
+                currentgroupCid=reportTool.getIdByGroupType(reportTemplate.getGroupType3(),loanSummaryView);
             }
 
-            if(reportTool.getIdByGroupType(groupDid,loanSummaryView)!=currentgroupDid)
+
+
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType4(),loanSummaryView)!=currentgroupDid)
             {
-                LoanSummaryView lv = loanSummaryView;
-
                 childD = childC.addChild();
-                childD.setName(reportTool.getNameByGroupType(groupDid,loanSummaryView));
-                childD.setLevel((short)4);
-
-
+                childD.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType4(),loanSummaryView));
                 childD.setLevel((short)4);
 
                 childD.setDetailsCount(1);
@@ -270,17 +145,14 @@ public class LoanSummaryReportDataManager {
                 childB.setDetailsCount(childB.getDetailsCount()+1);
                 reportData.setDetailsCount(reportData.getDetailsCount()+1);
 
+                childD.setID(loanSummaryView.getV_loan_id());
+                childD.setName(loanSummaryView.getV_credit_order_reg_number()+loanSummaryView.getV_loan_reg_number()+" от "+loanSummaryView.getV_loan_reg_date());
+                childD.setCurrency(loanSummaryView.getV_loan_currency_id().shortValue());
+                childD.setLoanRegNumber(loanSummaryView.getV_loan_reg_number());
+                childD.setOrderRegNumber(loanSummaryView.getV_credit_order_reg_number());
+                childD.setLoanRegDate(new java.sql.Date(loanSummaryView.getV_loan_reg_date().getTime()));
 
-                childD.setID(lv.getV_loan_id());
-                childD.setName(lv.getV_credit_order_regNumber()+lv.getV_loan_reg_number()+" от "+lv.getV_loan_reg_date());
-                childD.setCurrency((short)lv.getV_loan_currency_id());
-                childD.setLoanRegNumber(lv.getV_loan_reg_number());
-                childD.setOrderRegNumber(lv.getV_credit_order_regNumber());
-                childD.setLoanRegDate(new java.sql.Date(lv.getV_loan_reg_date().getTime()));
-
-                childD.setLoanType((short)lv.getV_loan_type_id());
-
-                currentgroupDid=reportTool.getIdByGroupType(groupDid,loanSummaryView);
+                childD.setLoanType(loanSummaryView.getV_loan_type_id().shortValue());
 
                 lastLoanAmount = 0;
 
@@ -295,14 +167,20 @@ public class LoanSummaryReportDataManager {
                 lastPrincipleOverdue = 0;
                 lastInteresOverdue = 0;
                 lastPenaltyOverdue = 0;
+
+                currentgroupDid=reportTool.getIdByGroupType(reportTemplate.getGroupType4(),loanSummaryView);
             }
 
-            if(reportTool.getIdByGroupType(groupEid,loanSummaryView)!=currentgroupEid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType5(),loanSummaryView)!=currentgroupEid)
             {
+                childE = childD.addChild();
+                childE.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType5(),loanSummaryView));
+                childE.setLevel((short)5);
+
                 LoanSummaryView pv = loanSummaryView;
 
                 childE = childD.addChild();
-                childE.setName(" расчет на "+pv.getV_ls_onDate()+" : ");
+                childE.setName(" расчет на "+pv.getV_ls_on_date()+" : ");
                 childE.setLevel((short)5);
 
                 childE.setLevel((short)5);
@@ -316,7 +194,7 @@ public class LoanSummaryReportDataManager {
                 reportData.setPaymentCount(reportData.getPaymentCount()+1);
 
 
-                childE.setOnDate(new java.sql.Date(pv.getV_ls_onDate().getTime()));
+                childE.setOnDate(new java.sql.Date(pv.getV_ls_on_date().getTime()));
 
                 if(pv.getV_loan_amount()>=0)
                 {
@@ -341,238 +219,237 @@ public class LoanSummaryReportDataManager {
                 }
 
 
-                if(pv.getV_ls_totalDisbursed()>=0)
+                if(pv.getV_ls_total_disbursed()>=0)
                 {
 
-                    reportData.setTotalDisbursment(reportData.getTotalDisbursment()-lastDisbursement+pv.getV_ls_totalDisbursed());
+                    reportData.setTotalDisbursment(reportData.getTotalDisbursment()-lastDisbursement+pv.getV_ls_total_disbursed());
 
-                    childA.setTotalDisbursment(childA.getTotalDisbursment()-lastDisbursement+pv.getV_ls_totalDisbursed());
-
-
-                    childB.setTotalDisbursment(childB.getTotalDisbursment()-lastDisbursement+pv.getV_ls_totalDisbursed());
+                    childA.setTotalDisbursment(childA.getTotalDisbursment()-lastDisbursement+pv.getV_ls_total_disbursed());
 
 
-                    childC.setTotalDisbursment(childC.getTotalDisbursment()-lastDisbursement+pv.getV_ls_totalDisbursed());
+                    childB.setTotalDisbursment(childB.getTotalDisbursment()-lastDisbursement+pv.getV_ls_total_disbursed());
 
-                    childD.setTotalDisbursment(childD.getTotalDisbursment()-lastDisbursement+pv.getV_ls_totalDisbursed());
 
-                    childE.setTotalDisbursment(pv.getV_ls_totalDisbursed());
+                    childC.setTotalDisbursment(childC.getTotalDisbursment()-lastDisbursement+pv.getV_ls_total_disbursed());
 
-                    lastDisbursement = pv.getV_ls_totalDisbursed();
+                    childD.setTotalDisbursment(childD.getTotalDisbursment()-lastDisbursement+pv.getV_ls_total_disbursed());
+
+                    childE.setTotalDisbursment(pv.getV_ls_total_disbursed());
+
+                    lastDisbursement = pv.getV_ls_total_disbursed();
 
 
                 }
 
-                if(pv.getV_ls_totalPaid()>=0)
+                if(pv.getV_ls_total_paid()>=0)
                 {
 
-                    reportData.setTotalPaid(reportData.getTotalPaid()-lastTotalPaid+pv.getV_ls_totalPaid());
+                    reportData.setTotalPaid(reportData.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid());
 
-                    childA.setTotalPaid(childA.getTotalPaid()-lastTotalPaid+pv.getV_ls_totalPaid());
-
-
-                    childB.setTotalPaid(childB.getTotalPaid()-lastTotalPaid+pv.getV_ls_totalPaid());
+                    childA.setTotalPaid(childA.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid());
 
 
-                    childC.setTotalPaid(childC.getTotalPaid()-lastTotalPaid+pv.getV_ls_totalPaid());
+                    childB.setTotalPaid(childB.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid());
 
-                    childD.setTotalPaid(childD.getTotalPaid()-lastTotalPaid+pv.getV_ls_totalPaid());
 
-                    childE.setTotalPaid(pv.getV_ls_totalPaid());
+                    childC.setTotalPaid(childC.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid());
 
-                    lastTotalPaid = pv.getV_ls_totalPaid();
+                    childD.setTotalPaid(childD.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid());
+
+                    childE.setTotalPaid(pv.getV_ls_total_paid());
+
+                    lastTotalPaid = pv.getV_ls_total_paid();
 
 
                 }
 
-                if(pv.getV_ls_totalOutstanding()>=0)
+                if(pv.getV_ls_total_outstanding()>=0)
                 {
 
-                    reportData.setRemainingSum(reportData.getRemainingSum()-lastTotalOustanding+pv.getV_ls_totalOutstanding());
+                    reportData.setRemainingSum(reportData.getRemainingSum()-lastTotalOustanding+pv.getV_ls_total_outstanding());
 
-                    childA.setRemainingSum(childA.getRemainingSum()-lastTotalOustanding+pv.getV_ls_totalOutstanding());
-
-
-                    childB.setRemainingSum(childB.getRemainingSum()-lastTotalOustanding+pv.getV_ls_totalOutstanding());
+                    childA.setRemainingSum(childA.getRemainingSum()-lastTotalOustanding+pv.getV_ls_total_outstanding());
 
 
-                    childC.setRemainingSum(childC.getRemainingSum()-lastTotalOustanding+pv.getV_ls_totalOutstanding());
-
-                    childD.setRemainingSum(childD.getRemainingSum()-lastTotalOustanding+pv.getV_ls_totalOutstanding());
-
-                    childE.setRemainingSum(pv.getV_ls_totalOutstanding());
-
-                    lastTotalOustanding = pv.getV_ls_totalOutstanding();
+                    childB.setRemainingSum(childB.getRemainingSum()-lastTotalOustanding+pv.getV_ls_total_outstanding());
 
 
-                }
+                    childC.setRemainingSum(childC.getRemainingSum()-lastTotalOustanding+pv.getV_ls_total_outstanding());
 
+                    childD.setRemainingSum(childD.getRemainingSum()-lastTotalOustanding+pv.getV_ls_total_outstanding());
 
-                if(pv.getV_ls_outstadingPrincipal()>=0)
-                {
+                    childE.setRemainingSum(pv.getV_ls_total_outstanding());
 
-                    reportData.setRemainingPrincipal(reportData.getRemainingPrincipal()-lastPrincipleOutstanding+pv.getV_ls_outstadingPrincipal());
-
-                    childA.setRemainingPrincipal(childA.getRemainingPrincipal()-lastPrincipleOutstanding+pv.getV_ls_outstadingPrincipal());
-
-
-                    childB.setRemainingPrincipal(childB.getRemainingPrincipal()-lastPrincipleOutstanding+pv.getV_ls_outstadingPrincipal());
-
-
-                    childC.setRemainingPrincipal(childC.getRemainingPrincipal()-lastPrincipleOutstanding+pv.getV_ls_outstadingPrincipal());
-
-                    childD.setRemainingPrincipal(childD.getRemainingPrincipal()-lastPrincipleOutstanding+pv.getV_ls_outstadingPrincipal());
-
-                    childE.setRemainingPrincipal(pv.getV_ls_outstadingPrincipal());
-
-                    lastPrincipleOutstanding = pv.getV_ls_outstadingPrincipal();
+                    lastTotalOustanding = pv.getV_ls_total_outstanding();
 
 
                 }
 
 
-                if(pv.getV_ls_outstadingInterest()>=0)
+                if(pv.getV_ls_outstading_principal()>=0)
                 {
 
-                    reportData.setRemainingInterest(reportData.getRemainingInterest()-lastInteresOutstanding+pv.getV_ls_outstadingInterest());
+                    reportData.setRemainingPrincipal(reportData.getRemainingPrincipal()-lastPrincipleOutstanding+pv.getV_ls_outstading_principal());
 
-                    childA.setRemainingInterest(childA.getRemainingInterest()-lastInteresOutstanding+pv.getV_ls_outstadingInterest());
-
-
-                    childB.setRemainingInterest(childB.getRemainingInterest()-lastInteresOutstanding+pv.getV_ls_outstadingInterest());
+                    childA.setRemainingPrincipal(childA.getRemainingPrincipal()-lastPrincipleOutstanding+pv.getV_ls_outstading_principal());
 
 
-                    childC.setRemainingInterest(childC.getRemainingInterest()-lastInteresOutstanding+pv.getV_ls_outstadingInterest());
-
-                    childD.setRemainingInterest(childD.getRemainingInterest()-lastInteresOutstanding+pv.getV_ls_outstadingInterest());
-
-                    childE.setRemainingInterest(pv.getV_ls_outstadingInterest());
-
-                    lastInteresOutstanding = pv.getV_ls_outstadingInterest();
+                    childB.setRemainingPrincipal(childB.getRemainingPrincipal()-lastPrincipleOutstanding+pv.getV_ls_outstading_principal());
 
 
-                }
+                    childC.setRemainingPrincipal(childC.getRemainingPrincipal()-lastPrincipleOutstanding+pv.getV_ls_outstading_principal());
 
-                if(pv.getV_ls_outstadingPenalty()>=0)
-                {
+                    childD.setRemainingPrincipal(childD.getRemainingPrincipal()-lastPrincipleOutstanding+pv.getV_ls_outstading_principal());
 
-                    reportData.setRemainingPenalty(reportData.getRemainingPenalty()-lastPenaltyOutstanding+pv.getV_ls_outstadingPenalty());
+                    childE.setRemainingPrincipal(pv.getV_ls_outstading_principal());
 
-                    childA.setRemainingPenalty(childA.getRemainingPenalty()-lastPenaltyOutstanding+pv.getV_ls_outstadingPenalty());
-
-
-                    childB.setRemainingPenalty(childB.getRemainingPenalty()-lastPenaltyOutstanding+pv.getV_ls_outstadingPenalty());
-
-
-                    childC.setRemainingPenalty(childC.getRemainingPenalty()-lastPenaltyOutstanding+pv.getV_ls_outstadingPenalty());
-
-                    childD.setRemainingPenalty(childD.getRemainingPenalty()-lastPenaltyOutstanding+pv.getV_ls_outstadingPenalty());
-
-                    childE.setRemainingPenalty(pv.getV_ls_outstadingPenalty());
-
-                    lastPenaltyOutstanding = pv.getV_ls_outstadingPenalty();
+                    lastPrincipleOutstanding = pv.getV_ls_outstading_principal();
 
 
                 }
 
 
-
-                if(pv.getV_ls_totalOverdue()>=0)
+                if(pv.getV_ls_outstading_interest()>=0)
                 {
 
-                    reportData.setOverdueAll(reportData.getOverdueAll()-lastTotalOverdue+pv.getV_ls_totalOverdue());
+                    reportData.setRemainingInterest(reportData.getRemainingInterest()-lastInteresOutstanding+pv.getV_ls_outstading_interest());
 
-                    childA.setOverdueAll(childA.getOverdueAll()-lastTotalOverdue+pv.getV_ls_totalOverdue());
-
-
-                    childB.setOverdueAll(childB.getOverdueAll()-lastTotalOverdue+pv.getV_ls_totalOverdue());
+                    childA.setRemainingInterest(childA.getRemainingInterest()-lastInteresOutstanding+pv.getV_ls_outstading_interest());
 
 
-                    childC.setOverdueAll(childC.getOverdueAll()-lastTotalOverdue+pv.getV_ls_totalOverdue());
+                    childB.setRemainingInterest(childB.getRemainingInterest()-lastInteresOutstanding+pv.getV_ls_outstading_interest());
 
-                    childD.setOverdueAll(childD.getOverdueAll()-lastTotalOverdue+pv.getV_ls_totalOverdue());
 
-                    childE.setOverdueAll(pv.getV_ls_totalOverdue());
+                    childC.setRemainingInterest(childC.getRemainingInterest()-lastInteresOutstanding+pv.getV_ls_outstading_interest());
 
-                    lastTotalOverdue = pv.getV_ls_totalOverdue();
+                    childD.setRemainingInterest(childD.getRemainingInterest()-lastInteresOutstanding+pv.getV_ls_outstading_interest());
+
+                    childE.setRemainingInterest(pv.getV_ls_outstading_interest());
+
+                    lastInteresOutstanding = pv.getV_ls_outstading_interest();
 
 
                 }
 
-
-                if(pv.getV_ls_overduePrincipal()>=0)
+                if(pv.getV_ls_outstading_penalty()>=0)
                 {
 
-                    reportData.setOverduePrincipal(reportData.getOverduePrincipal()-lastPrincipleOverdue+pv.getV_ls_overduePrincipal());
+                    reportData.setRemainingPenalty(reportData.getRemainingPenalty()-lastPenaltyOutstanding+pv.getV_ls_outstading_penalty());
 
-                    childA.setOverduePrincipal(childA.getOverduePrincipal()-lastPrincipleOverdue+pv.getV_ls_overduePrincipal());
-
-
-                    childB.setOverduePrincipal(childB.getOverduePrincipal()-lastPrincipleOverdue+pv.getV_ls_overduePrincipal());
+                    childA.setRemainingPenalty(childA.getRemainingPenalty()-lastPenaltyOutstanding+pv.getV_ls_outstading_penalty());
 
 
-                    childC.setOverduePrincipal(childC.getOverduePrincipal()-lastPrincipleOverdue+pv.getV_ls_overduePrincipal());
-
-                    childD.setOverduePrincipal(childD.getOverduePrincipal()-lastPrincipleOverdue+pv.getV_ls_overduePrincipal());
-
-                    childE.setOverduePrincipal(pv.getV_ls_overduePrincipal());
-
-                    lastPrincipleOverdue = pv.getV_ls_overduePrincipal();
+                    childB.setRemainingPenalty(childB.getRemainingPenalty()-lastPenaltyOutstanding+pv.getV_ls_outstading_penalty());
 
 
-                }
+                    childC.setRemainingPenalty(childC.getRemainingPenalty()-lastPenaltyOutstanding+pv.getV_ls_outstading_penalty());
 
-                if(pv.getV_ls_overdueInterest()>=0)
-                {
+                    childD.setRemainingPenalty(childD.getRemainingPenalty()-lastPenaltyOutstanding+pv.getV_ls_outstading_penalty());
 
-                    reportData.setOverdueInterest(reportData.getOverdueInterest()-lastInteresOverdue+pv.getV_ls_overdueInterest());
+                    childE.setRemainingPenalty(pv.getV_ls_outstading_penalty());
 
-                    childA.setOverdueInterest(childA.getOverdueInterest()-lastInteresOverdue+pv.getV_ls_overdueInterest());
-
-
-                    childB.setOverdueInterest(childB.getOverdueInterest()-lastInteresOverdue+pv.getV_ls_overdueInterest());
-
-
-                    childC.setOverdueInterest(childC.getOverdueInterest()-lastInteresOverdue+pv.getV_ls_overdueInterest());
-
-                    childD.setOverdueInterest(childD.getOverdueInterest()-lastInteresOverdue+pv.getV_ls_overdueInterest());
-
-                    childE.setOverdueInterest(pv.getV_ls_overdueInterest());
-
-                    lastInteresOverdue = pv.getV_ls_overdueInterest();
-
-
-                }
-
-
-                if(pv.getV_ls_overduePenalty()>=0)
-                {
-
-                    reportData.setOverduePenalty(reportData.getOverduePenalty()-lastPenaltyOverdue+pv.getV_ls_overduePenalty());
-
-                    childA.setOverduePenalty(childA.getOverduePenalty()-lastPenaltyOverdue+pv.getV_ls_overduePenalty());
-
-
-                    childB.setOverduePenalty(childB.getOverduePenalty()-lastPenaltyOverdue+pv.getV_ls_overduePenalty());
-
-
-                    childC.setOverduePenalty(childC.getOverduePenalty()-lastPenaltyOverdue+pv.getV_ls_overduePenalty());
-
-                    childD.setOverduePenalty(childD.getOverduePenalty()-lastPenaltyOverdue+pv.getV_ls_overduePenalty());
-
-                    childE.setOverduePenalty(pv.getV_ls_overduePenalty());
-
-                    lastPenaltyOverdue = pv.getV_ls_overduePenalty();
+                    lastPenaltyOutstanding = pv.getV_ls_outstading_penalty();
 
 
                 }
 
 
 
+                if(pv.getV_ls_total_overdue()>=0)
+                {
+
+                    reportData.setOverdueAll(reportData.getOverdueAll()-lastTotalOverdue+pv.getV_ls_total_overdue());
+
+                    childA.setOverdueAll(childA.getOverdueAll()-lastTotalOverdue+pv.getV_ls_total_overdue());
 
 
-                currentgroupEid=reportTool.getIdByGroupType(groupEid,loanSummaryView);
+                    childB.setOverdueAll(childB.getOverdueAll()-lastTotalOverdue+pv.getV_ls_total_overdue());
+
+
+                    childC.setOverdueAll(childC.getOverdueAll()-lastTotalOverdue+pv.getV_ls_total_overdue());
+
+                    childD.setOverdueAll(childD.getOverdueAll()-lastTotalOverdue+pv.getV_ls_total_overdue());
+
+                    childE.setOverdueAll(pv.getV_ls_total_overdue());
+
+                    lastTotalOverdue = pv.getV_ls_total_overdue();
+
+
+                }
+
+
+                if(pv.getV_ls_overdue_principal()>=0)
+                {
+
+                    reportData.setOverduePrincipal(reportData.getOverduePrincipal()-lastPrincipleOverdue+pv.getV_ls_overdue_principal());
+
+                    childA.setOverduePrincipal(childA.getOverduePrincipal()-lastPrincipleOverdue+pv.getV_ls_overdue_principal());
+
+
+                    childB.setOverduePrincipal(childB.getOverduePrincipal()-lastPrincipleOverdue+pv.getV_ls_overdue_principal());
+
+
+                    childC.setOverduePrincipal(childC.getOverduePrincipal()-lastPrincipleOverdue+pv.getV_ls_overdue_principal());
+
+                    childD.setOverduePrincipal(childD.getOverduePrincipal()-lastPrincipleOverdue+pv.getV_ls_overdue_principal());
+
+                    childE.setOverduePrincipal(pv.getV_ls_overdue_principal());
+
+                    lastPrincipleOverdue = pv.getV_ls_overdue_principal();
+
+
+                }
+
+                if(pv.getV_ls_overdue_interest()>=0)
+                {
+
+                    reportData.setOverdueInterest(reportData.getOverdueInterest()-lastInteresOverdue+pv.getV_ls_overdue_interest());
+
+                    childA.setOverdueInterest(childA.getOverdueInterest()-lastInteresOverdue+pv.getV_ls_overdue_interest());
+
+
+                    childB.setOverdueInterest(childB.getOverdueInterest()-lastInteresOverdue+pv.getV_ls_overdue_interest());
+
+
+                    childC.setOverdueInterest(childC.getOverdueInterest()-lastInteresOverdue+pv.getV_ls_overdue_interest());
+
+                    childD.setOverdueInterest(childD.getOverdueInterest()-lastInteresOverdue+pv.getV_ls_overdue_interest());
+
+                    childE.setOverdueInterest(pv.getV_ls_overdue_interest());
+
+                    lastInteresOverdue = pv.getV_ls_overdue_interest();
+
+
+                }
+
+
+                if(pv.getV_ls_overdue_penalty()>=0)
+                {
+
+                    reportData.setOverduePenalty(reportData.getOverduePenalty()-lastPenaltyOverdue+pv.getV_ls_overdue_penalty());
+
+                    childA.setOverduePenalty(childA.getOverduePenalty()-lastPenaltyOverdue+pv.getV_ls_overdue_penalty());
+
+
+                    childB.setOverduePenalty(childB.getOverduePenalty()-lastPenaltyOverdue+pv.getV_ls_overdue_penalty());
+
+
+                    childC.setOverduePenalty(childC.getOverduePenalty()-lastPenaltyOverdue+pv.getV_ls_overdue_penalty());
+
+                    childD.setOverduePenalty(childD.getOverduePenalty()-lastPenaltyOverdue+pv.getV_ls_overdue_penalty());
+
+                    childE.setOverduePenalty(pv.getV_ls_overdue_penalty());
+
+                    lastPenaltyOverdue = pv.getV_ls_overdue_penalty();
+
+
+                }
+
+
+
+                currentgroupEid=reportTool.getIdByGroupType(reportTemplate.getGroupType5(),loanSummaryView);
             }
+
 
 
         }

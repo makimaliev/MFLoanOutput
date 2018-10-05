@@ -102,6 +102,10 @@ public class EntityDocumentReportDataManager {
                 currentgroupCid=reportTool.getIdByGroupType(reportTemplate.getGroupType3(),entityDocumentView);
             }
 
+
+
+
+
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType4(),entityDocumentView)!=currentgroupDid)
             {
                 childD = childC.addChild();
@@ -112,6 +116,9 @@ public class EntityDocumentReportDataManager {
 
                 currentgroupDid=reportTool.getIdByGroupType(reportTemplate.getGroupType4(),entityDocumentView);
             }
+
+
+
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType5(),entityDocumentView)!=currentgroupEid)
             {
@@ -126,33 +133,33 @@ public class EntityDocumentReportDataManager {
                 childA.setEntityDocumentCount(childA.getEntityDocumentCount()+1);
                 reportData.setEntityDocumentCount(reportData.getEntityDocumentCount()+1);
 
-                childE.setEntityDocumentCompletedCount((int)entityDocumentView.getV_entity_document_completed_count());
-                childD.setEntityDocumentCompletedCount(childD.getEntityDocumentCompletedCount()+(int)entityDocumentView.getV_entity_document_completed_count());
-                childC.setEntityDocumentCompletedCount(childC.getEntityDocumentCompletedCount()+(int)entityDocumentView.getV_entity_document_completed_count());
-                childB.setEntityDocumentCompletedCount(childB.getEntityDocumentCompletedCount()+(int)entityDocumentView.getV_entity_document_completed_count());
-                childA.setEntityDocumentCompletedCount(childA.getEntityDocumentCompletedCount()+(int)entityDocumentView.getV_entity_document_completed_count());
-                reportData.setEntityDocumentCompletedCount(reportData.getEntityDocumentCompletedCount()+(int)entityDocumentView.getV_entity_document_completed_count());
+                childE.setEntityDocumentCompletedCount(entityDocumentView.getV_entity_document_completed_count().shortValue());
+                childD.setEntityDocumentCompletedCount(childD.getEntityDocumentCompletedCount()+entityDocumentView.getV_entity_document_completed_count().shortValue());
+                childC.setEntityDocumentCompletedCount(childC.getEntityDocumentCompletedCount()+entityDocumentView.getV_entity_document_completed_count().shortValue());
+                childB.setEntityDocumentCompletedCount(childB.getEntityDocumentCompletedCount()+entityDocumentView.getV_entity_document_completed_count().shortValue());
+                childA.setEntityDocumentCompletedCount(childA.getEntityDocumentCompletedCount()+entityDocumentView.getV_entity_document_completed_count().shortValue());
+                reportData.setEntityDocumentCompletedCount(reportData.getEntityDocumentCompletedCount()+entityDocumentView.getV_entity_document_completed_count().shortValue());
 
-                childE.setEntityDocumentNotCompletedCount((int)entityDocumentView.getV_entity_document_not_completed_count());
-                childD.setEntityDocumentNotCompletedCount(childD.getEntityDocumentNotCompletedCount()+(int)entityDocumentView.getV_entity_document_not_completed_count());
-                childC.setEntityDocumentNotCompletedCount(childC.getEntityDocumentNotCompletedCount()+(int)entityDocumentView.getV_entity_document_not_completed_count());
-                childB.setEntityDocumentNotCompletedCount(childB.getEntityDocumentNotCompletedCount()+(int)entityDocumentView.getV_entity_document_not_completed_count());
-                childA.setEntityDocumentNotCompletedCount(childA.getEntityDocumentNotCompletedCount()+(int)entityDocumentView.getV_entity_document_not_completed_count());
-                reportData.setEntityDocumentNotCompletedCount(reportData.getEntityDocumentNotCompletedCount()+(int)entityDocumentView.getV_entity_document_not_completed_count());
+                childE.setEntityDocumentNotCompletedCount(entityDocumentView.getV_entity_document_not_completed_count().shortValue());
+                childD.setEntityDocumentNotCompletedCount(childD.getEntityDocumentNotCompletedCount()+entityDocumentView.getV_entity_document_not_completed_count().shortValue());
+                childC.setEntityDocumentNotCompletedCount(childC.getEntityDocumentNotCompletedCount()+entityDocumentView.getV_entity_document_not_completed_count().shortValue());
+                childB.setEntityDocumentNotCompletedCount(childB.getEntityDocumentNotCompletedCount()+entityDocumentView.getV_entity_document_not_completed_count().shortValue());
+                childA.setEntityDocumentNotCompletedCount(childA.getEntityDocumentNotCompletedCount()+entityDocumentView.getV_entity_document_not_completed_count().shortValue());
+                reportData.setEntityDocumentNotCompletedCount(reportData.getEntityDocumentNotCompletedCount()+entityDocumentView.getV_entity_document_not_completed_count().shortValue());
 
-                childE.setEntityDocumentApprovedCount((int)entityDocumentView.getV_entity_document_approved_count());
-                childD.setEntityDocumentApprovedCount(childD.getEntityDocumentApprovedCount()+(int)entityDocumentView.getV_entity_document_approved_count());
-                childC.setEntityDocumentApprovedCount(childC.getEntityDocumentApprovedCount()+(int)entityDocumentView.getV_entity_document_approved_count());
-                childB.setEntityDocumentApprovedCount(childB.getEntityDocumentApprovedCount()+(int)entityDocumentView.getV_entity_document_approved_count());
-                childA.setEntityDocumentApprovedCount(childA.getEntityDocumentApprovedCount()+(int)entityDocumentView.getV_entity_document_approved_count());
-                reportData.setEntityDocumentApprovedCount(reportData.getEntityDocumentApprovedCount()+(int)entityDocumentView.getV_entity_document_approved_count());
+                childE.setEntityDocumentApprovedCount(entityDocumentView.getV_entity_document_approved_count().shortValue());
+                childD.setEntityDocumentApprovedCount(childD.getEntityDocumentApprovedCount()+entityDocumentView.getV_entity_document_approved_count().shortValue());
+                childC.setEntityDocumentApprovedCount(childC.getEntityDocumentApprovedCount()+entityDocumentView.getV_entity_document_approved_count().shortValue());
+                childB.setEntityDocumentApprovedCount(childB.getEntityDocumentApprovedCount()+entityDocumentView.getV_entity_document_approved_count().shortValue());
+                childA.setEntityDocumentApprovedCount(childA.getEntityDocumentApprovedCount()+entityDocumentView.getV_entity_document_approved_count().shortValue());
+                reportData.setEntityDocumentApprovedCount(reportData.getEntityDocumentApprovedCount()+entityDocumentView.getV_entity_document_approved_count().shortValue());
 
-                childE.setEntityDocumentNotApprovedCount((int)entityDocumentView.getV_entity_document_not_approved_count());
-                childD.setEntityDocumentNotApprovedCount(childD.getEntityDocumentNotApprovedCount()+(int)entityDocumentView.getV_entity_document_not_approved_count());
-                childC.setEntityDocumentNotApprovedCount(childC.getEntityDocumentNotApprovedCount()+(int)entityDocumentView.getV_entity_document_not_approved_count());
-                childB.setEntityDocumentNotApprovedCount(childB.getEntityDocumentNotApprovedCount()+(int)entityDocumentView.getV_entity_document_not_approved_count());
-                childA.setEntityDocumentNotApprovedCount(childA.getEntityDocumentNotApprovedCount()+(int)entityDocumentView.getV_entity_document_not_approved_count());
-                reportData.setEntityDocumentNotApprovedCount(reportData.getEntityDocumentNotApprovedCount()+(int)entityDocumentView.getV_entity_document_not_approved_count());
+                childE.setEntityDocumentNotApprovedCount(entityDocumentView.getV_entity_document_not_approved_count().shortValue());
+                childD.setEntityDocumentNotApprovedCount(childD.getEntityDocumentNotApprovedCount()+entityDocumentView.getV_entity_document_not_approved_count().shortValue());
+                childC.setEntityDocumentNotApprovedCount(childC.getEntityDocumentNotApprovedCount()+entityDocumentView.getV_entity_document_not_approved_count().shortValue());
+                childB.setEntityDocumentNotApprovedCount(childB.getEntityDocumentNotApprovedCount()+entityDocumentView.getV_entity_document_not_approved_count().shortValue());
+                childA.setEntityDocumentNotApprovedCount(childA.getEntityDocumentNotApprovedCount()+entityDocumentView.getV_entity_document_not_approved_count().shortValue());
+                reportData.setEntityDocumentNotApprovedCount(reportData.getEntityDocumentNotApprovedCount()+entityDocumentView.getV_entity_document_not_approved_count().shortValue());
 
 
                 childE.setV_entity_document_entityDocumentStateId(entityDocumentView.getV_entity_document_entityDocumentStateId());

@@ -1,6 +1,7 @@
 package kg.gov.mf.loan.output.report.dao;
 
 import kg.gov.mf.loan.output.report.model.CollateralItemView;
+import kg.gov.mf.loan.output.report.model.EntityDocumentView;
 import kg.gov.mf.loan.output.report.utils.CollateralItemReportDataManager;
 import kg.gov.mf.loan.output.report.utils.PaymentReportDataManager;
 import kg.gov.mf.loan.output.report.utils.ReportTool;
@@ -102,105 +103,18 @@ public class CollateralItemViewDaoImpl implements CollateralItemViewDao {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<CollateralItemView> findByParameter(LinkedHashMap<String,List<Long>> parameters) {
+	public List<CollateralItemView> findByParameter(LinkedHashMap<String,List<String>> parameters) {
 
 		Session session = this.sessionFactory.getCurrentSession();
 
+		ReportTool reportTool = new ReportTool();
+
 		Criteria criteria = session.createCriteria(CollateralItemView.class);
 
-		CollateralItemReportDataManager collateralItemReportDataManager =  new CollateralItemReportDataManager();
-
-
-		for (Map.Entry<String, List<Long>> parameterInLoop : parameters.entrySet())
-		{
-			String paramaterType = parameterInLoop.getKey();
-
-			List<Long> ids = parameterInLoop.getValue();
-
-			switch(paramaterType)
-			{
-				case "region":
-					criteria.add(Restrictions.in("v_debtor_region_id",ids));
-					break;
-				case "district":
-					criteria.add(Restrictions.in("v_debtor_district_id",ids));
-					break;
-				case "debtor":
-					criteria.add(Restrictions.in("v_debtor_id",ids));
-					break;
-				case "loan":
-					criteria.add(Restrictions.in("v_loan_id",ids));
-					break;
-				case "payment":
-					criteria.add(Restrictions.in("v_payment_id",ids));
-					break;
-				case "paymentDateFrom":
-					criteria.add(Restrictions.ge("v_payment_date",new Date((ids.get(0)))));
-					System.out.println(new Date((ids.get(0))));
-					break;
-				case "paymentDateTo":
-					criteria.add(Restrictions.lt("v_payment_date",new Date((ids.get(0)))));
-					System.out.println(new Date((ids.get(0))));
-					break;
-				case "work_sector":
-					criteria.add(Restrictions.in("v_debtor_work_sector_id",ids));
-					break;
-				case "orderBy":
-					for (Long id:ids
-						 )
-					{
-
-						switch(new ReportTool().getParameterTypeNameById(id.toString()))
-						{
-							case "region":
-								criteria.addOrder(Order.asc("v_debtor_region_id"));
-								break;
-							case "district":
-								criteria.addOrder(Order.asc("v_debtor_district_id"));
-								break;
-							case "debtor":
-								criteria.addOrder(Order.asc("v_debtor_name"));
-								break;
-							case "loan":
-								criteria.addOrder(Order.asc("v_loan_id"));
-								break;
-							case "payment":
-								criteria.addOrder(Order.asc("v_payment_id"));
-								break;
-							case "work_sector":
-								criteria.addOrder(Order.asc("v_debtor_work_sector_id"));
-								break;
-							case "collateral_agreement":
-								criteria.addOrder(Order.asc("v_ca_id"));
-								break;
-
-							case "collateral_item":
-								criteria.addOrder(Order.asc("v_ci_id"));
-								break;
-
-						}
-
-					}
-
-
-					break;
-
-
-
-
-
-
-
-			}
-
-
-		}
-
-		//List<CollateralItemView> collateralItemViewsList = session.createQuery("from CollateralItemView").list();
+		reportTool.applyParameters(parameters,criteria);
 
 		return criteria.list();
 	}
-
 
 
  

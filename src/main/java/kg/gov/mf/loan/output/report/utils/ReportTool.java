@@ -1922,7 +1922,11 @@ public class ReportTool
             {
                 String mapName = variableString.substring(0,variableString.lastIndexOf("Map"));
 
-                return row_name.replace("(="+variableString+"=)",referenceMap.get(mapName).get(this.getIdByGroupType(groupType,reportView)));
+                String returnText = "";
+
+                if(this.getIdByGroupType(groupType,reportView)>0) returnText = row_name.replace("(="+variableString+"=)",referenceMap.get(mapName).get(this.getIdByGroupType(groupType,reportView)));
+
+                return returnText;
             }
             else
             {
@@ -2242,7 +2246,7 @@ public class ReportTool
                 idByGroupType = entityDocumentView.getV_owner_district_id();
                 break;
             case 12:
-                idByGroupType = entityDocumentView.getV_co_id();
+                idByGroupType = entityDocumentView.getV_credit_order_id();
                 break;
             case 13:
                 idByGroupType = entityDocumentView.getV_applied_entity_id();
@@ -2274,18 +2278,18 @@ public class ReportTool
         switch((short)groupType)
         {
             case 1:
-                nameByGroupType = loanSummaryView.getV_region_name();
+                nameByGroupType = loanSummaryView.getV_debtor_name();
                 break;
             case 2:
-                nameByGroupType = loanSummaryView.getV_district_name();
+                nameByGroupType = loanSummaryView.getV_debtor_name();
                 break;
             case 7:
                 nameByGroupType = loanSummaryView.getV_debtor_name();
                 break;
             case 8:
-                nameByGroupType =loanSummaryView.getV_credit_order_regNumber()
+                nameByGroupType =loanSummaryView.getV_credit_order_reg_number()
                         + " от "
-                        + loanSummaryView.getV_credit_order_regDate()
+                        + loanSummaryView.getV_credit_order_reg_date()
                         + ", "
                         + loanSummaryView.getV_loan_reg_number()
                         + " от "
@@ -2295,7 +2299,7 @@ public class ReportTool
                 nameByGroupType = " расчет";
                 break;
             case 3:
-                nameByGroupType = loanSummaryView.getV_work_sector_name();
+                nameByGroupType = loanSummaryView.getV_debtor_name();
                 break;
 
 
@@ -2314,30 +2318,15 @@ public class ReportTool
 
         switch((short)groupType)
         {
-            case 1:
-                nameByGroupType = paymentView.getV_region_name();
-                break;
-            case 2:
-                nameByGroupType = paymentView.getV_district_name();
-                break;
+
             case 7:
                 nameByGroupType = paymentView.getV_debtor_name();
                 break;
-            case 8:
-                nameByGroupType =paymentView.getV_credit_order_regNumber()
-                        + " от "
-                        + paymentView.getV_credit_order_regDate()
-                        + ", "
-                        + paymentView.getV_loan_reg_number()
-                        + " от "
-                        + paymentView.getV_loan_reg_date();
-                break;
+
             case 10:
                 nameByGroupType = " погашение №"+ paymentView.getV_payment_number()+ " от " + paymentView.getV_payment_date();
                 break;
-            case 3:
-                nameByGroupType = paymentView.getV_work_sector_name();
-                break;
+
 
 
 
@@ -2355,30 +2344,15 @@ public class ReportTool
 
         switch((short)groupType)
         {
-            case 1:
-                nameByGroupType = paymentScheduleView.getV_region_name();
-                break;
-            case 2:
-                nameByGroupType = paymentScheduleView.getV_district_name();
-                break;
+
             case 7:
                 nameByGroupType = paymentScheduleView.getV_debtor_name();
                 break;
-            case 8:
-                nameByGroupType =paymentScheduleView.getV_credit_order_regNumber()
-                        + " от "
-                        + paymentScheduleView.getV_credit_order_regDate()
-                        + ", "
-                        + paymentScheduleView.getV_loan_reg_number()
-                        + " от "
-                        + paymentScheduleView.getV_loan_reg_date();
-                break;
+
             case 9:
                 nameByGroupType = " расчет";
                 break;
-            case 3:
-                nameByGroupType = paymentScheduleView.getV_work_sector_name();
-                break;
+
             case 11:
                 nameByGroupType = " графики";
                 break;
@@ -2399,19 +2373,12 @@ public class ReportTool
 
         switch((short)groupType)
         {
-            case 1:
-                nameByGroupType = collateralItemView.getV_region_name();
-                break;
-            case 2:
-                nameByGroupType = collateralItemView.getV_district_name();
-                break;
+
             case 7:
                 nameByGroupType = collateralItemView.getV_debtor_name();
                 break;
 
-            case 3:
-                nameByGroupType = collateralItemView.getV_work_sector_name();
-                break;
+
 
             case 17:
                 nameByGroupType = collateralItemView.getV_ca_arrestRegNumber()+" ot "+collateralItemView.getV_ca_agreementDate();
@@ -2431,138 +2398,6 @@ public class ReportTool
         return  nameByGroupType;
     }
 
-    public String getNameByGroupType(long groupType, CollectionPhaseView collectionPhaseView)
-    {
-        String nameByGroupType="";
-
-        switch((short)groupType)
-        {
-            case 1:
-                nameByGroupType = collectionPhaseView.getV_region_name();
-                break;
-            case 2:
-                nameByGroupType = collectionPhaseView.getV_district_name();
-                break;
-            case 7:
-                nameByGroupType = collectionPhaseView.getV_debtor_name();
-                break;
-            case 3:
-                nameByGroupType = collectionPhaseView.getV_work_sector_name();
-                break;
-
-            case 19:
-                nameByGroupType = "Процедура взыскания";
-                break;
-
-            case 20:
-                nameByGroupType = "Стадия взыскания";
-                break;
-
-        }
-
-        return  nameByGroupType;
-    }
-
-    public String getNameByGroupType(long groupType, long id)
-    {
-
-        String nameByGroupType="";
-
-        switch((short)groupType)
-        {
-            case 1:
-                nameByGroupType = referenceMap.get("region").get(id) ;
-
-                break;
-            case 2:
-                nameByGroupType = referenceMap.get("district").get(id);
-                break;
-            case 12:
-                nameByGroupType = referenceMap.get("credit_order").get(id);
-                break;
-            case 21:
-                nameByGroupType = referenceMap.get("applied_entity_status").get(id);
-                break;
-            case 22:
-                nameByGroupType = referenceMap.get("entity_document_status").get(id);
-                break;
-            case 23:
-                nameByGroupType = referenceMap.get("document_package_status").get(id);
-                break;
-
-            case 5:
-                nameByGroupType = referenceMap.get("supervisor").get(id);
-                break;
-
-
-
-
-
-        }
-
-        return  nameByGroupType;
-    }
-
-
-
-    public String getNameByGroupType(long groupType, EntityDocumentView entityDocumentView)
-    {
-
-        String nameByGroupType="";
-
-        switch((short)groupType)
-        {
-            case 1:
-                nameByGroupType = referenceMap.get("region").get(entityDocumentView.getV_owner_region_id()) ;
-                break;
-            case 2:
-                nameByGroupType = referenceMap.get("district").get(entityDocumentView.getV_owner_district_id()) ;
-                break;
-            case 12:
-                nameByGroupType = referenceMap.get("credit_order").get(entityDocumentView.getV_co_id()) ;
-                break;
-            case 13:
-                nameByGroupType = entityDocumentView.getV_owner_name();
-                break;
-            case 14:
-                nameByGroupType = " Список получателей № "+entityDocumentView.getV_ael_listNumber()+" от "+entityDocumentView.getV_ael_listDate();
-                break;
-            case 15:
-                nameByGroupType = entityDocumentView.getV_document_package_name();
-                break;
-            case 16:
-                nameByGroupType = entityDocumentView.getV_entity_document_name();
-                break;
-
-        }
-
-        return  nameByGroupType;
-    }
-
-
-
-    public String getGroupTypeFieldNameById(String id)
-    {
-        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-
-        String fieldName = "";
-
-        if(groupTypeMap.isEmpty())
-        {
-            for (GroupType groupType: this.groupTypeService.findAll())
-            {
-                groupTypeMap.put(String.valueOf(groupType.getId()),groupType);
-
-            }
-        }
-
-        if(!groupTypeMap.isEmpty())
-        {
-            return groupTypeMap.get(id).getField_name();
-        }
-
-        return fieldName;
-    }
 
 }
 

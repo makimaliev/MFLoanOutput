@@ -20,9 +20,6 @@ public class CollateralItemReportDataManager {
      */
 
     @Autowired
-    LoanViewService loanViewService;
-
-    @Autowired
     ItemTypeService itemTypeService;
 
     @Autowired
@@ -35,113 +32,26 @@ public class CollateralItemReportDataManager {
 
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
-        Set<CollateralItemView> collateralItemViews =  new HashSet<CollateralItemView>();
-
         ReportTool reportTool = new ReportTool();
 
-        Date onDate = reportTool.getOnDate(reportTemplate);
+        LinkedHashMap<String,List<String>> parameterS = new LinkedHashMap<>();
 
-
-        for (ItemType itemType:this.itemTypeService.list()
-             )
-        {
-            itemTypeMap.put(itemType.getId(),itemType);
-        }
-
-        LinkedHashMap<String,List<Long>> parameterS = new LinkedHashMap<String,List<Long>>();
-
-        List<Long> groupIds = new ArrayList<>();
-
-        if(reportTool.getGroupType(reportTemplate,1)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,1));
-
-        if(reportTool.getGroupType(reportTemplate,2)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,2));
-
-        if(reportTool.getGroupType(reportTemplate,3)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,3));
-
-
-        if(reportTool.getGroupType(reportTemplate,4)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,4));
-
-
-        if(reportTool.getGroupType(reportTemplate,5)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,5));
-
-
-        if(reportTool.getGroupType(reportTemplate,6)>0)
-            groupIds.add(reportTool.getGroupType(reportTemplate,6));
-
-        for (FilterParameter filterParameter: reportTemplate.getFilterParameters())
-        {
-
-            if(filterParameter.getFilterParameterType().name()=="OBJECT_LIST")
-            {
-                ObjectList objectList = filterParameter.getObjectList();
-
-                List<Long> Ids = new ArrayList<>();
-
-                for (ObjectListValue objectListValue: objectList.getObjectListValues())
-                {
-                    Ids.add(Long.parseLong(objectListValue.getName()));
-                }
-
-                parameterS.put(reportTool.getParameterTypeNameById(String.valueOf(objectList.getObjectTypeId())),Ids);
-            }
-
-            if(filterParameter.getFilterParameterType().name()=="CONTENT_COMPARE")
-            {
-                List<Long> Ids = new ArrayList<>();
-
-                String string = filterParameter.getComparedValue();
-                DateFormat format = new SimpleDateFormat("dd.MM.yyyy", Locale.ENGLISH);
-
-                try
-                {
-                    Date date = format.parse(string);
-                    Ids.add(date.getTime());
-                }
-                catch ( Exception ex )
-                {
-                    System.out.println(ex);
-                }
-
-                if(Ids.size()>0)
-                {
-                    if(filterParameter.getComparator().toString()=="AFTER")
-                        parameterS.put("paymentDateFrom",Ids);
-                    if(filterParameter.getComparator().toString()=="BEFORE")
-                        parameterS.put("paymentDateTo",Ids);
-                }
-            }
-
-
-
-            parameterS.put("orderBy",groupIds);
-
-        }
-
-
-        // initial filter by report filter parameters
+        parameterS.putAll(reportTool.getParametersByTemplate(reportTemplate));
 
         reportData.getCollateralItemViews().addAll(collateralItemViewService.findByParameter(parameterS));
 
+        for (CollateralItemView collateralItemView: reportData.getCollateralItemViews())
+        {
+            System.out.println(collateralItemView.getV_ci_name());
+        }
 
-        reportData.setOnDate(new java.sql.Date(onDate.getTime()));
-
-
-
-        return groupifyData(reportData,groupIds,reportTemplate);
+        return groupifyData(reportData, reportTemplate, reportTool );
     }
 
-    public CollateralItemReportData groupifyData(CollateralItemReportData reportData, List<Long> groupIds, ReportTemplate reportTemplate)
+    public CollateralItemReportData groupifyData(CollateralItemReportData reportData, ReportTemplate reportTemplate, ReportTool reportTool)
     {
-        ReportTool reportTool = new ReportTool();
 
         reportTool.initReference();
-
-
 
         long groupAid=-1;
         long groupBid=-1;
@@ -164,53 +74,31 @@ public class CollateralItemReportDataManager {
         CollateralItemReportData childE = null;
         CollateralItemReportData childF = null;
 
-
-        if(reportTool.getGroupType(reportTemplate,1)>0)
-            groupAid = reportTool.getGroupType(reportTemplate,1);
-
-
-        if(reportTool.getGroupType(reportTemplate,2)>0)
-            groupBid = reportTool.getGroupType(reportTemplate,2);
-
-        if(reportTool.getGroupType(reportTemplate,3)>0)
-            groupCid = reportTool.getGroupType(reportTemplate,3);
-
-
-        if(reportTool.getGroupType(reportTemplate,4)>0)
-            groupDid = reportTool.getGroupType(reportTemplate,4);
-
-
-        if(reportTool.getGroupType(reportTemplate,5)>0)
-            groupEid = reportTool.getGroupType(reportTemplate,5);
-
-
-        if(reportTool.getGroupType(reportTemplate,6)>0)
-            groupFid = reportTool.getGroupType(reportTemplate,6);
-
         for (CollateralItemView collateralItemView:reportData.getCollateralItemViews())
         {
-            if(reportTool.getIdByGroupType(groupAid,collateralItemView)!=currentgroupAid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType1(),collateralItemView)!=currentgroupAid)
             {
                 childA = reportData.addChild();
-                childA.setName(reportTool.getNameByGroupType(groupAid,collateralItemView));
+                childA.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType1(),collateralItemView));
                 childA.setLevel((short)1);
 
-                currentgroupAid=reportTool.getIdByGroupType(groupAid,collateralItemView);
+                currentgroupAid=reportTool.getIdByGroupType(reportTemplate.getGroupType1(),collateralItemView);
             }
 
-            if(reportTool.getIdByGroupType(groupBid,collateralItemView)!=currentgroupBid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType2(),collateralItemView)!=currentgroupBid)
             {
                 childB = childA.addChild();
-                childB.setName(reportTool.getNameByGroupType(groupBid,collateralItemView));
+                childB.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType2(),collateralItemView));
                 childB.setLevel((short)2);
 
-                currentgroupBid=reportTool.getIdByGroupType(groupBid,collateralItemView);
+                currentgroupBid=reportTool.getIdByGroupType(reportTemplate.getGroupType2(),collateralItemView);
             }
 
-            if(reportTool.getIdByGroupType(groupCid,collateralItemView)!=currentgroupCid)
+
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType3(),collateralItemView)!=currentgroupCid)
             {
                 childC = childB.addChild();
-                childC.setName(reportTool.getNameByGroupType(groupCid,collateralItemView));
+                childC.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType3(),collateralItemView));
                 childC.setLevel((short)3);
 
                 childC.setCount(1);
@@ -218,18 +106,17 @@ public class CollateralItemReportDataManager {
                 childA.setCount(childA.getCount()+1);
                 reportData.setCount(reportData.getCount()+1);
 
-                currentgroupCid=reportTool.getIdByGroupType(groupCid,collateralItemView);
+                currentgroupCid=reportTool.getIdByGroupType(reportTemplate.getGroupType3(),collateralItemView);
             }
 
-            if(reportTool.getIdByGroupType(groupDid,collateralItemView)!=currentgroupDid)
+
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType4(),collateralItemView)!=currentgroupDid)
             {
+
                 CollateralItemView lv = collateralItemView;
 
                 childD = childC.addChild();
-                childD.setName(reportTool.getNameByGroupType(groupDid,collateralItemView));
-                childD.setLevel((short)4);
-
-
+                childD.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType4(),collateralItemView));
                 childD.setLevel((short)4);
 
                 childD.setDetailsCount(1);
@@ -247,34 +134,33 @@ public class CollateralItemReportDataManager {
 
 
                 if(lv.getV_ca_agreementDate()!=null)
-                childD.setCollateralAgreementDate(new java.sql.Date(lv.getV_ca_agreementDate().getTime()));
+                    childD.setCollateralAgreementDate(new java.sql.Date(lv.getV_ca_agreementDate().getTime()));
                 childD.setCollateralAgreementNumber(lv.getV_ca_agreementNumber());
 
                 if(lv.getV_ca_arrestRegDate()!=null)
-                childD.setCollateralArrestRegDate(new java.sql.Date(lv.getV_ca_arrestRegDate().getTime()));
+                    childD.setCollateralArrestRegDate(new java.sql.Date(lv.getV_ca_arrestRegDate().getTime()));
                 childD.setCollateralArrestRegNumber(lv.getV_ca_arrestRegNumber());
 
                 if(lv.getV_ca_collateralOfficeRegDate()!=null)
-                childD.setCollateralOfficeRegDate(new java.sql.Date(lv.getV_ca_collateralOfficeRegDate().getTime()));
+                    childD.setCollateralOfficeRegDate(new java.sql.Date(lv.getV_ca_collateralOfficeRegDate().getTime()));
                 childD.setCollateralOfficeRegNumber(lv.getV_ca_collateralOfficeRegNumber());
 
                 if(lv.getV_ca_notaryOfficeRegDate()!=null)
-                childD.setCollateralNotaryOfficeRegDate(new java.sql.Date(lv.getV_ca_notaryOfficeRegDate().getTime()));
+                    childD.setCollateralNotaryOfficeRegDate(new java.sql.Date(lv.getV_ca_notaryOfficeRegDate().getTime()));
                 else
-                    {
-                        System.out.println("asdf=="+lv.getV_ci_id());
+                {
+                    System.out.println("asdf=="+lv.getV_ci_id());
                 }
                 childD.setCollateralNotaryOfficeRegNumber(lv.getV_ca_notaryOfficeRegNumber());
 
 
-
-
-
-
-
-
-                currentgroupDid=reportTool.getIdByGroupType(groupDid,collateralItemView);
+                currentgroupDid=reportTool.getIdByGroupType(reportTemplate.getGroupType4(),collateralItemView);
             }
+
+
+
+
+
 
             if(reportTool.getIdByGroupType(groupEid,collateralItemView)!=currentgroupEid)
             {
@@ -316,6 +202,51 @@ public class CollateralItemReportDataManager {
                 childE.setCollateralItemTypeName(itemTypeMap.get(pv.getV_ci_itemTypeId()).getName());
 
                 currentgroupEid=reportTool.getIdByGroupType(groupEid,collateralItemView);
+            }
+
+
+
+
+
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType5(),collateralItemView)!=currentgroupEid)
+            {
+
+                CollateralItemView pv = collateralItemView;
+
+                childE = childD.addChild();
+                childE.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType5(),collateralItemView));
+                childE.setLevel((short)5);
+
+                if(pv.getV_ca_agreementDate()!=null)
+                    childE.setCollateralAgreementDate(new java.sql.Date(pv.getV_ca_agreementDate().getTime()));
+                childE.setCollateralAgreementNumber(pv.getV_ca_agreementNumber());
+
+                if(pv.getV_ca_arrestRegDate()!=null)
+                    childE.setCollateralArrestRegDate(new java.sql.Date(pv.getV_ca_arrestRegDate().getTime()));
+                childE.setCollateralArrestRegNumber(pv.getV_ca_arrestRegNumber());
+
+                if(pv.getV_ca_collateralOfficeRegDate()!=null)
+                    childE.setCollateralOfficeRegDate(new java.sql.Date(pv.getV_ca_collateralOfficeRegDate().getTime()));
+                childE.setCollateralOfficeRegNumber(pv.getV_ca_collateralOfficeRegNumber());
+
+                if(pv.getV_ca_notaryOfficeRegDate()!=null)
+                    childE.setCollateralNotaryOfficeRegDate(new java.sql.Date(pv.getV_ca_notaryOfficeRegDate().getTime()));
+                else
+                {
+                    System.out.println("asdf=="+pv.getV_ci_id());
+                }
+                childE.setCollateralNotaryOfficeRegNumber(pv.getV_ca_notaryOfficeRegNumber());
+
+                childE.setCollateralItemName(pv.getV_ci_name());
+                childE.setCollateralItemQuantity(pv.getV_ci_quantity());
+                childE.setCollateralItemQuantityTypeId(pv.getV_ci_quantityTypeId());
+                childE.setCollateralItemTypeId(pv.getV_ci_itemTypeId());
+                childE.setCollateralItemCollateralValue(pv.getV_ci_collateralValue());
+                childE.setCollateralItemEstimatedValue(pv.getV_ci_estimatedValue());
+                childE.setCollateralItemDescription(pv.getV_ci_description());
+
+                childE.setCollateralItemTypeName(itemTypeMap.get(pv.getV_ci_itemTypeId()).getName());
+                currentgroupEid=reportTool.getIdByGroupType(reportTemplate.getGroupType5(),collateralItemView);
             }
 
 

@@ -18,6 +18,6 @@ public interface CollateralItemViewService {
 
 	public List<CollateralItemView> findAll();
 
-	public List<CollateralItemView> findByParameter(LinkedHashMap<String, List<Long>> parameters);
+	public List<CollateralItemView> findByParameter(LinkedHashMap<String, List<String>> parameters);
 
 }
