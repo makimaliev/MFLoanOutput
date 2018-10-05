@@ -1,21 +1,18 @@
 package kg.gov.mf.loan.output.report.dao;
 
 import kg.gov.mf.loan.output.report.model.ReferenceView;
-import kg.gov.mf.loan.output.report.utils.PaymentReportDataManager;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 @Repository
 public class ReferenceViewDaoImpl implements ReferenceViewDao {
@@ -111,8 +108,29 @@ public class ReferenceViewDaoImpl implements ReferenceViewDao {
 		return criteria.list();
 	}
 
+	@Override
+	public HashMap<Object,Object> getByListType(String listType) {
+		Session session = this.sessionFactory.getCurrentSession();
+
+		Criteria criteria = session.createCriteria(ReferenceView.class);
+		criteria.setProjection(org.hibernate.criterion.Projections.projectionList()
+				.add(Projections.property("id"),"id")
+		)
+				.add(Restrictions.eq("list_type",listType));
+		Criteria criteria1 = session.createCriteria(ReferenceView.class);
+		criteria1.setProjection(org.hibernate.criterion.Projections.projectionList()
+				.add(Projections.property("name"),"name")
+		)
+				.add(Restrictions.eq("list_type",listType));
+
+		HashMap<Object,Object> result=new HashMap<>();
+		for(int i=0;i<criteria.list().size();i++){
+			result.put(criteria.list().get(i),criteria1.list().get(i));
+		}
 
 
- 
+		return result;
+	}
+
 
 }

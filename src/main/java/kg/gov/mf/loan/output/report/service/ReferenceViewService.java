@@ -2,7 +2,7 @@ package kg.gov.mf.loan.output.report.service;
 
 import kg.gov.mf.loan.output.report.model.ReferenceView;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 
 public interface ReferenceViewService {
@@ -19,5 +19,7 @@ public interface ReferenceViewService {
 	public List<ReferenceView> findAll();
 
 	public List<ReferenceView> findByParameter(String list_type);
+
+	public HashMap<Object,Object> getByListType(String listType);
 
 }

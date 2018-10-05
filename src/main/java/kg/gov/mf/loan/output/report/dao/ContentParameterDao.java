@@ -18,4 +18,5 @@ public interface ContentParameterDao {
 	
 	public List<ContentParameter> findAll();
 
+	public String findByFieldName(String fieldName);
 }

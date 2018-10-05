@@ -16,5 +16,7 @@ public interface ContentParameterService {
 	public ContentParameter findById(long id);
 	
 	public List<ContentParameter> findAll();
+
+	public String findByFieldName(String fieldName);
 	
 }

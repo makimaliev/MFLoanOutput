@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -59,6 +60,12 @@ public class ReferenceViewServiceJpaImpl implements ReferenceViewService {
 	@Transactional
 	public List<ReferenceView> findByParameter(String link_type) {
 		return this.referenceViewDao.findByParameter(link_type);
+	}
+
+	@Override
+	@Transactional
+	public HashMap<Object,Object> getByListType(String listType) {
+		return this.referenceViewDao.getByListType(listType);
 	}
 
 

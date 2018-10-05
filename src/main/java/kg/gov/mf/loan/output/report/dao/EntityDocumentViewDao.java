@@ -20,7 +20,6 @@ public interface EntityDocumentViewDao {
 	public List<EntityDocumentView> findAll();
 
 	public List<EntityDocumentView> findByParameter(LinkedHashMap<String, List<String>> parameters);
-
-
+	public List<EntityDocumentView> findByParameter(LinkedHashMap<String,List<String>> parameters,int limit, int offset,String sortStr,String sortField);
 
 }

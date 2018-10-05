@@ -61,5 +61,23 @@ public class LoanViewServiceJpaImpl implements LoanViewService {
 		return this.loanViewDao.findByParameter(parameters);
 	}
 
+	@Override
+	@Transactional
+	public List<LoanView> findByParameters(LinkedHashMap<String, List<String>> parameter, Integer perPage, Integer offset) {
+		return this.loanViewDao.findByParameters(parameter,perPage,offset);
+	}
+
+	@Override
+	@Transactional
+	public List<LoanView> findByParameter(LinkedHashMap<String, List<String>> parameter, Integer perPage, Integer offset, String sortStr, String sortField) {
+		return this.loanViewDao.findByParameter(parameter,perPage,offset,sortStr,sortField);
+	}
+
+	@Override
+    @Transactional
+    public int findByParamete(LinkedHashMap<String, List<String>> parameter) {
+        return this.loanViewDao.findByParamete(parameter);
+    }
+
 
 }

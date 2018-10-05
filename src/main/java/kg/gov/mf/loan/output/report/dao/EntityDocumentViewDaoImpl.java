@@ -98,7 +98,6 @@ public class EntityDocumentViewDaoImpl implements EntityDocumentViewDao {
         return entitydocumentViewsList;
     }
 
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<EntityDocumentView> findByParameter(LinkedHashMap<String,List<String>> parameters) {
@@ -113,6 +112,31 @@ public class EntityDocumentViewDaoImpl implements EntityDocumentViewDao {
 
 		return criteria.list();
 	}
+
+	@Override
+	public List<EntityDocumentView> findByParameter(LinkedHashMap<String, List<String>> parameters, int limit, int offset, String sortStr, String sortField) {
+		Session session = this.sessionFactory.getCurrentSession();
+
+		ReportTool reportTool = new ReportTool();
+
+		Criteria criteria = session.createCriteria(EntityDocumentView.class);
+
+		reportTool.applyParameters(parameters,criteria);
+		if(sortStr.equals("desc")){
+			criteria.addOrder(Order.desc(sortField));
+		}
+		else if(sortStr.equals("asc")){
+			criteria.addOrder(Order.asc(sortField));
+		}
+
+		criteria.setFirstResult(offset);
+		criteria.setMaxResults(limit);
+
+		return criteria.list();
+	}
+
+
+
 
 
 

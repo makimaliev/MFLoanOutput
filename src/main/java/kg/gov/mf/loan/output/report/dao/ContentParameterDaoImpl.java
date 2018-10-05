@@ -5,6 +5,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +97,24 @@ public class ContentParameterDaoImpl implements ContentParameterDao {
 
         return contentParametersList;
     }
- 
+
+	@Override
+	public String findByFieldName(String fieldName) {
+		Session session = this.sessionFactory.getCurrentSession();
+
+		Criteria criteria = session.createCriteria(ContentParameter.class);
+		criteria.setProjection(Projections.projectionList()
+				.add(Projections.property("constantText"),"constantText")
+		)
+				.add(Restrictions.eq("fieldName",fieldName));
+		List<ContentParameter> contentParameters=criteria.list();
+		if(contentParameters.size()!=0){
+			return String.valueOf(contentParameters.get(0));
+		}
+		else{
+			return null;
+		}
+	}
+
 
 }

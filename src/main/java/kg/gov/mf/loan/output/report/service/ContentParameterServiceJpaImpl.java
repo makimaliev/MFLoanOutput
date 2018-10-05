@@ -52,4 +52,10 @@ public class ContentParameterServiceJpaImpl implements ContentParameterService {
     public List<ContentParameter> findAll() {
         return this.contentParameterDao.findAll();
     }
+
+	@Override
+	@Transactional
+	public String findByFieldName(String fieldName) {
+		return this.contentParameterDao.findByFieldName(fieldName);
+	}
 }

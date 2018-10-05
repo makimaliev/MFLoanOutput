@@ -61,5 +61,11 @@ public class EntityDocumentViewServiceJpaImpl implements EntityDocumentViewServi
 		return this.entityDocumentViewDao.findByParameter(parameters);
 	}
 
+	@Override
+	@Transactional
+	public List<EntityDocumentView> findByParameter(LinkedHashMap<String, List<String>> parameters, int limit, int offset, String sortStr, String sortField) {
+		return this.entityDocumentViewDao.findByParameter(parameters,limit,offset,sortStr,sortField);
+	}
+
 
 }

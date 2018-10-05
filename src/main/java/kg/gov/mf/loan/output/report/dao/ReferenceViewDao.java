@@ -3,6 +3,7 @@ package kg.gov.mf.loan.output.report.dao;
 import kg.gov.mf.loan.output.report.model.ReferenceView;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public interface ReferenceViewDao {
 
 	public List<ReferenceView> findByParameter(String list_type);
 
+	public HashMap<Object,Object> getByListType(String listType);
 
 
 }
