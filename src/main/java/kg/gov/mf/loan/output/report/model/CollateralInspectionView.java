@@ -7,12 +7,12 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name="collateral_item_view")
+@Table(name="collateral_inspection_view")
 @Immutable
-public class CollateralItemView extends DebtorView
+public class CollateralInspectionView extends DebtorView
 {
 	@Column
-	private Long v_ca_id;
+	private long v_ca_id;
 
 	@DateTimeFormat(pattern = "dd.mm.yyyy")
 	@Temporal(TemporalType.DATE)
@@ -47,11 +47,8 @@ public class CollateralItemView extends DebtorView
 
 
 
-	@Id
 	@Column
-	private Long v_ci_id;
-
-
+	private long v_ci_id;
 
 	@Column
 	private double v_ci_collateralValue;
@@ -61,6 +58,7 @@ public class CollateralItemView extends DebtorView
 
 	@Column
 	private String v_ci_description;
+
 
 
 	@Column
@@ -88,11 +86,30 @@ public class CollateralItemView extends DebtorView
 	private Long v_ci_quantityTypeId;
 
 
-	public Long getV_ca_id() {
+
+
+	@Column
+	private String v_cir_details;
+
+	@Id
+	@Column
+	private Long v_cir_id;
+
+	@DateTimeFormat(pattern = "dd.mm.yyyy")
+	@Temporal(TemporalType.DATE)
+	private Date v_cir_onDate;
+
+	@Column
+	private Long v_cir_TypeId;
+
+	@Column
+	private Long v_cir_addedBy;
+
+	public long getV_ca_id() {
 		return v_ca_id;
 	}
 
-	public void setV_ca_id(Long v_ca_id) {
+	public void setV_ca_id(long v_ca_id) {
 		this.v_ca_id = v_ca_id;
 	}
 
@@ -160,11 +177,11 @@ public class CollateralItemView extends DebtorView
 		this.v_ca_notaryOfficeRegNumber = v_ca_notaryOfficeRegNumber;
 	}
 
-	public Long getV_ci_id() {
+	public long getV_ci_id() {
 		return v_ci_id;
 	}
 
-	public void setV_ci_id(Long v_ci_id) {
+	public void setV_ci_id(long v_ci_id) {
 		this.v_ci_id = v_ci_id;
 	}
 
@@ -248,5 +265,46 @@ public class CollateralItemView extends DebtorView
 		this.v_ci_quantityTypeId = v_ci_quantityTypeId;
 	}
 
+	public String getV_cir_details() {
+		return v_cir_details;
+	}
+
+	public void setV_cir_details(String v_cir_details) {
+		this.v_cir_details = v_cir_details;
+	}
+
+	public Long getV_cir_id() {
+		return v_cir_id;
+	}
+
+	public void setV_cir_id(Long v_cir_id) {
+		this.v_cir_id = v_cir_id;
+	}
+
+	public Date getV_cir_onDate() {
+		return v_cir_onDate;
+	}
+
+	public void setV_cir_onDate(Date v_cir_onDate) {
+		this.v_cir_onDate = v_cir_onDate;
+	}
+
+	public Long getV_cir_TypeId() {
+		return v_cir_TypeId;
+	}
+
+	public void setV_cir_TypeId(Long v_cir_TypeId) {
+		this.v_cir_TypeId = v_cir_TypeId;
+	}
+
+	public Long getV_cir_addedBy() {
+		return v_cir_addedBy;
+	}
+
+	public void setV_cir_addedBy(Long v_cir_addedBy) {
+		this.v_cir_addedBy = v_cir_addedBy;
+	}
+
 
 }
+

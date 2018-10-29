@@ -7,12 +7,12 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name="collateral_item_view")
+@Table(name="collateral_inspection_view")
 @Immutable
-public class CollateralItemView extends DebtorView
+public class CollateralArrestFreeView extends DebtorView
 {
 	@Column
-	private Long v_ca_id;
+	private long v_ca_id;
 
 	@DateTimeFormat(pattern = "dd.mm.yyyy")
 	@Temporal(TemporalType.DATE)
@@ -47,11 +47,8 @@ public class CollateralItemView extends DebtorView
 
 
 
-	@Id
 	@Column
-	private Long v_ci_id;
-
-
+	private long v_ci_id;
 
 	@Column
 	private double v_ci_collateralValue;
@@ -61,6 +58,7 @@ public class CollateralItemView extends DebtorView
 
 	@Column
 	private String v_ci_description;
+
 
 
 	@Column
@@ -87,12 +85,25 @@ public class CollateralItemView extends DebtorView
 	@Column
 	private Long v_ci_quantityTypeId;
 
+	@Column
+	private String c_ciaf_details;
 
-	public Long getV_ca_id() {
+	@Id
+	@Column
+	private Long c_ciaf_id;
+
+	@DateTimeFormat(pattern = "dd.mm.yyyy")
+	@Temporal(TemporalType.DATE)
+	private Date c_ciaf_onDate;
+
+	@Column
+	private Long c_ciaf_arrestFreeBy;
+
+	public long getV_ca_id() {
 		return v_ca_id;
 	}
 
-	public void setV_ca_id(Long v_ca_id) {
+	public void setV_ca_id(long v_ca_id) {
 		this.v_ca_id = v_ca_id;
 	}
 
@@ -160,11 +171,11 @@ public class CollateralItemView extends DebtorView
 		this.v_ca_notaryOfficeRegNumber = v_ca_notaryOfficeRegNumber;
 	}
 
-	public Long getV_ci_id() {
+	public long getV_ci_id() {
 		return v_ci_id;
 	}
 
-	public void setV_ci_id(Long v_ci_id) {
+	public void setV_ci_id(long v_ci_id) {
 		this.v_ci_id = v_ci_id;
 	}
 
@@ -248,5 +259,36 @@ public class CollateralItemView extends DebtorView
 		this.v_ci_quantityTypeId = v_ci_quantityTypeId;
 	}
 
+	public String getC_ciaf_details() {
+		return c_ciaf_details;
+	}
 
+	public void setC_ciaf_details(String c_ciaf_details) {
+		this.c_ciaf_details = c_ciaf_details;
+	}
+
+	public Long getC_ciaf_id() {
+		return c_ciaf_id;
+	}
+
+	public void setC_ciaf_id(Long c_ciaf_id) {
+		this.c_ciaf_id = c_ciaf_id;
+	}
+
+	public Date getC_ciaf_onDate() {
+		return c_ciaf_onDate;
+	}
+
+	public void setC_ciaf_onDate(Date c_ciaf_onDate) {
+		this.c_ciaf_onDate = c_ciaf_onDate;
+	}
+
+	public Long getC_ciaf_arrestFreeBy() {
+		return c_ciaf_arrestFreeBy;
+	}
+
+	public void setC_ciaf_arrestFreeBy(Long c_ciaf_arrestFreeBy) {
+		this.c_ciaf_arrestFreeBy = c_ciaf_arrestFreeBy;
+	}
 }
+

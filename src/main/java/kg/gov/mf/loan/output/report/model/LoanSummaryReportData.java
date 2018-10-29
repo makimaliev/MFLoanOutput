@@ -23,6 +23,8 @@ public class LoanSummaryReportData extends ReportData
 
 	private Date   onDate         = null;
 
+	private Date   lastDate         = null;
+
 	private String loanRegNumber        = "";
 	private String orderRegNumber       = "";
 	private Date   loanRegDate          = null;
@@ -422,5 +424,13 @@ public class LoanSummaryReportData extends ReportData
 
 	public void setPaymentExchangeRate(double paymentExchangeRate) {
 		this.paymentExchangeRate = paymentExchangeRate;
+	}
+
+	public Date getLastDate() {
+		return lastDate;
+	}
+
+	public void setLastDate(Date lastDate) {
+		this.lastDate = lastDate;
 	}
 }

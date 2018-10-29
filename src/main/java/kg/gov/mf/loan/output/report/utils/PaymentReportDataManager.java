@@ -168,6 +168,8 @@ public class PaymentReportDataManager {
                 childE.setPaymentDate(new java.sql.Date(pv.getV_payment_date().getTime()));
                 childE.setPaymentNumber(pv.getV_payment_number());
                 childE.setPaymentTypeName("");
+                childE.setPaymentType(pv.getV_payment_type_id());
+
 
                 long loanCurrencyId = pv.getV_loan_currency_id();
 
@@ -239,23 +241,6 @@ public class PaymentReportDataManager {
 
         return reportData;
     }
-
-    public Date getOnDate(ReportTemplate reportTemplate)
-    {
-
-        Date date = new Date();
-        for (GenerationParameter generationParameter: reportTemplate.getGenerationParameters())
-        {
-            if(generationParameter.getGenerationParameterType().getId()==1)
-            {
-                date = generationParameter.getDate();
-            }
-        }
-
-        return date;
-    }
-
-
 
 
 }

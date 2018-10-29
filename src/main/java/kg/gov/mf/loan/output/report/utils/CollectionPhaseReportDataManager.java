@@ -93,29 +93,6 @@ public class CollectionPhaseReportDataManager {
         CollectionPhaseReportData childE = null;
         CollectionPhaseReportData childF = null;
 
-
-        if(reportTool.getGroupType(reportTemplate,1)>0)
-            groupAid = reportTool.getGroupType(reportTemplate,1);
-
-
-        if(reportTool.getGroupType(reportTemplate,2)>0)
-            groupBid = reportTool.getGroupType(reportTemplate,2);
-
-        if(reportTool.getGroupType(reportTemplate,3)>0)
-            groupCid = reportTool.getGroupType(reportTemplate,3);
-
-
-        if(reportTool.getGroupType(reportTemplate,4)>0)
-            groupDid = reportTool.getGroupType(reportTemplate,4);
-
-
-        if(reportTool.getGroupType(reportTemplate,5)>0)
-            groupEid = reportTool.getGroupType(reportTemplate,5);
-
-
-        if(reportTool.getGroupType(reportTemplate,6)>0)
-            groupFid = reportTool.getGroupType(reportTemplate,6);
-
         for (CollectionPhaseView collectionPhaseView:reportData.getCollectionPhaseViews())
         {
 

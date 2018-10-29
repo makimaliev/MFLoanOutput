@@ -66,6 +66,9 @@ public class PaymentReportData extends ReportData
 	private double paymentFee     		= 0;
 	private double paymentTotalAmount   = 0;
 
+	private long   paymentType          = 0;
+
+
 	private double paymentExchangeRate   = 0;
 
 	public PaymentReportData()
@@ -424,5 +427,13 @@ public class PaymentReportData extends ReportData
 
 	public void setPaymentExchangeRate(double paymentExchangeRate) {
 		this.paymentExchangeRate = paymentExchangeRate;
+	}
+
+	public long getPaymentType() {
+		return paymentType;
+	}
+
+	public void setPaymentType(long paymentType) {
+		this.paymentType = paymentType;
 	}
 }
