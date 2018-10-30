@@ -219,6 +219,9 @@ public class MigrationTool
     @Autowired
     DebtTransferService debtTransferService;
 
+    @Autowired
+    BankruptService bankruptService;
+
     Set<String> errorList = new HashSet<String>();
 
     Map<Long,OrgForm> organizationFormMap = new HashMap<Long,OrgForm>();
@@ -260,7 +263,6 @@ public class MigrationTool
     Map<Long,Debtor> debtorMap = new HashMap<Long,Debtor>();
 
     Map<Long,Long> debtorToBelinkedDebtTransferMap = new HashMap<>();
-
 
 
     public void doMigrate22()
@@ -689,7 +691,9 @@ public class MigrationTool
                                 person.setAddress(address);
                                 person.setContact(contact);
                                 person.setIdentityDoc(identityDoc);
-                                person.setDescription(String.valueOf(rs.getLong("person_id")));
+
+                                if(rs.getString("details")!=null) person.setDescription(rs.getString("details"));
+                                person.setVersion(rs.getLong("person_id"));
 
                                 this.personService.create(person);
 
@@ -705,7 +709,10 @@ public class MigrationTool
                                 organization.setIdentityDoc(identityDoc);
                                 organization.setOrgForm(organizationFormMap.get((long)2));
                                 organization.setEnabled(true);
-                                organization.setDescription(String.valueOf(rs.getLong("person_id")));
+
+                                if(rs.getString("details")!=null) organization.setDescription(rs.getString("details"));
+
+                                organization.setVersion(rs.getLong("person_id"));
 
                                 Department chief = new Department();
                                 chief.setOrganization(organization);
@@ -907,20 +914,37 @@ public class MigrationTool
 
                             debtor.setName(owner.getName());
                             debtor.setOwner(owner);
-                            debtor.setDebtorType(debtorTypeMap.get((long)1));
+
+                            if(rs.getInt("fin_status")>0)
+                            {
+                                debtor.setDebtorType(debtorTypeMap.get((long)rs.getInt("fin_status")));
+                            }
+                            else
+                            {
+                                debtor.setDebtorType(debtorTypeMap.get((long)1));
+                            }
+
+
+
+
+
+
 
 
                             if(isPerson)
                             {
                                 debtor.setOrgForm(organizationForm2);
+                                debtor.setVersion(person.getVersion());
                             }
                             else
                             {
                                 debtor.setOrgForm(organizationForm);
+                                debtor.setVersion(organization.getVersion());
                             }
 
 
                             debtor.setWorkSector(workSectorMap.get((long)rs.getInt("work_sector")));
+
 
                             this.debtorService.add(debtor);
 
@@ -1044,6 +1068,9 @@ public class MigrationTool
                                                 loan.setRegNumber(rsLoan.getString("number"));
                                                 loan.setDebtor(debtor);
                                                 loan.setLoanState(loanStateMap.get((long)rsLoan.getInt("status")));
+                                                loan.setFund(fundMap.get(rsLoan.getLong("credit_line")));
+
+                                                loan.setVersion(Long.valueOf(rsLoan.getInt("credit_id")));
 
                                                 if(debtorHasSubloan && loansToBeLinked.size()>0)
                                                 {
@@ -2164,6 +2191,8 @@ public class MigrationTool
 
                                                 collateralAgreement.setOwner(debtor.getOwner());
 
+                                                collateralAgreement.setVersion((long)rsCollateralAgreement.getInt("id"));
+
                                                 if(rsCollateralAgreement.getDate("official_reg_date")!=null)
                                                 {
                                                     collateralAgreement.setAgreementDate(rsCollateralAgreement.getDate("official_reg_date"));
@@ -2270,6 +2299,8 @@ public class MigrationTool
 
                                                                     collateralItem.setCollateralAgreement(collateralAgreement);
 
+                                                                    collateralItem.setVersion((long)rsCollateralItem.getInt("id"));
+
                                                                     if(rsCollateralItem.getString("deposit_name").length()<200)
                                                                     collateralItem.setName(rsCollateralItem.getString("deposit_name"));
                                                                     else collateralItem.setName(rsCollateralItem.getString("deposit_name").substring(0,199));
@@ -2284,6 +2315,8 @@ public class MigrationTool
 
                                                                     collateralItem.setItemType(itemTypeMap.get((long)rsCollateralItem.getLong("deposit_type")));
                                                                     collateralItem.setQuantityType(quantityTypeMap.get((long)rsCollateralItem.getLong("quantity_type")));
+
+                                                                    collateralItem.setStatus(rsCollateralItem.getShort("status"));
 
                                                                     CollateralItemDetails collateralItemDetails = new CollateralItemDetails();
                                                                     collateralItemDetails.setDetails1(rsCollateralItem.getString("goods_details1"));
@@ -2330,6 +2363,7 @@ public class MigrationTool
                                                                                         collateralItemInspectionResult.setInspectionResultType(inspectionResultTypeMap.get(rsCollateralItemInspection.getLong("status")));
                                                                                         collateralItemInspectionResult.setDetails(rsCollateralItemInspection.getString("details"));
                                                                                         collateralItemInspectionResult.setCollateralItem(collateralItem);
+                                                                                        collateralItemInspectionResult.setVersion(rsCollateralItemInspection.getLong("id"));
 
 
                                                                                         collateralItemInspectionResults.add(collateralItemInspectionResult);
@@ -2528,6 +2562,7 @@ public class MigrationTool
 
                                                 CollectionProcedure collectionProcedure = new CollectionProcedure();
                                                 collectionProcedure.setProcedureType(procedureTypeMap.get((long)1));
+                                                collectionProcedure.setVersion((long)rsCollectionProcedure.getInt("id"));
 
 
                                                 Set<CollectionPhase> listOfPhases = new HashSet<CollectionPhase>();
@@ -2579,6 +2614,9 @@ public class MigrationTool
                                                                     if(rsCollection.getLong("result")>1)
                                                                         if(rsCollection.getDate("result_date")!=null)
                                                                             collectionPhase.setCloseDate(rsCollection.getDate("result_date"));
+
+                                                                    collectionPhase.setDocNumber(rsCollection.getString("doc_number"));
+                                                                    collectionPhase.setResultDocNumber(rsCollection.getString("result_doc_number"));
 
                                                                     Set<PhaseDetails> allPhaseDetails = new HashSet<PhaseDetails>();
 
@@ -2639,6 +2677,7 @@ public class MigrationTool
 
                                                                             phaseDetails.setCollectionPhase(collectionPhase);
                                                                             collectionPhase.setPhaseDetails(allPhaseDetails);
+                                                                            collectionPhase.setVersion((long)rsCollection.getInt("id"));
 
                                                                             rsCollectionDetails.close();
                                                                             stCollectionDetails.close();
@@ -2713,6 +2752,23 @@ public class MigrationTool
                                 System.out.println("Connection Failed! Check output console");
                                 ex.printStackTrace();
                                 errorList.add(" collection error " + ex + " debtor id == "+debtor.getId());
+                            }
+
+
+                            if(rs.getInt("fin_status")==7)
+                            {
+                                for (Loan loan:debtorLoans.values())
+                                {
+                                    Bankrupt bankrupt = new Bankrupt();
+                                    bankrupt.setLoan(loan);
+
+                                    if(rs.getDate("fin_status_date")!=null) bankrupt.setFinishedOnDate(rs.getDate("fin_status_date"));
+
+                                    bankruptService.add(bankrupt);
+
+                                }
+
+
                             }
 
                         }
@@ -4563,7 +4619,7 @@ public class MigrationTool
         try
         {
             connection = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/migration", "postgres",
+                    "jdbc:postgresql://localhost:5432/migration2", "postgres",
                     "armad27raptor");
         }
         catch (SQLException e)
