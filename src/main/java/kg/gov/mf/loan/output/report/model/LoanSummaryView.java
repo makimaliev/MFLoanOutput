@@ -119,6 +119,10 @@ public class LoanSummaryView extends DebtorView
 	@Column
 	private  double v_ls_total_paid;
 
+	@Column
+	private  double v_ls_total_paid_kgs;
+
+
 
 	public Long getV_loan_id() {
 		return v_loan_id;
@@ -366,5 +370,13 @@ public class LoanSummaryView extends DebtorView
 
 	public void setV_last_date(Date v_last_date) {
 		this.v_last_date = v_last_date;
+	}
+
+	public double getV_ls_total_paid_kgs() {
+		return v_ls_total_paid_kgs;
+	}
+
+	public void setV_ls_total_paid_kgs(double v_ls_total_paid_kgs) {
+		this.v_ls_total_paid_kgs = v_ls_total_paid_kgs;
 	}
 }

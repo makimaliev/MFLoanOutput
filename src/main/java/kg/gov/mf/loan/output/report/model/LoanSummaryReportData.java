@@ -37,6 +37,7 @@ public class LoanSummaryReportData extends ReportData
 	private double loanAmount           = 0;
 	private double TotalDisbursment     = 0;
 	private double TotalPaid         	= 0;
+	private double TotalPaidKGS         = 0;
 	private double RemainingSum   		= 0;
 	private double RemainingPrincipal 	= 0;
 	private double RemainingInterest  	= 0;
@@ -432,5 +433,13 @@ public class LoanSummaryReportData extends ReportData
 
 	public void setLastDate(Date lastDate) {
 		this.lastDate = lastDate;
+	}
+
+	public double getTotalPaidKGS() {
+		return TotalPaidKGS;
+	}
+
+	public void setTotalPaidKGS(double totalPaidKGS) {
+		TotalPaidKGS = totalPaidKGS;
 	}
 }

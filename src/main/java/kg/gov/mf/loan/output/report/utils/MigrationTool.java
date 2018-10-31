@@ -269,108 +269,69 @@ public class MigrationTool
     {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
-//        try
-//        {
-//            Person person = new Person();
-//            person.setName(" test person");
-//            person.setEnabled(true);
-//
-//            this.personService.create(person);
-//
-//            Owner owner = new Owner();
-//
-//                owner.setName(person.getName());
-//                owner.setOwnerType(OwnerType.PERSON);
-//                owner.setEntityId(person.getId());
-//
-//            this.ownerService.add(owner);
-//
-//            Debtor debtor = new Debtor();
-//
-//            debtor.setName(owner.getName());
-//            debtor.setOwner(owner);
-//
-//            this.debtorService.add(debtor);
-//
-//
-//            Loan loan = new NormalLoan();
-//            loan.setAmount((double)1000);
-//            loan.setCreditOrder(this.creditOrderService.getById((long)1));
-//
-//            loan.setSupervisorId((long)1);
-//            loan.setLoanType(this.loanTypeService.getById((long)1));
-//            loan.setCurrency(this.orderTermCurrencyService.getById((long)1));
-//            loan.setRegDate(new Date());
-//            loan.setRegNumber("123");
-//            loan.setDebtor(debtor);
-//            loan.setLoanState(this.loanStateService.getById((long)1));
-//
-////            this.loanService.add(loan);
-//
-//            Set<Loan> children = new HashSet<>();
-//
-//            children.add(loan);
-//
-//            Loan parentLoan = new TrancheeLoan();
-//            parentLoan.setAmount((double)1000);
-//            parentLoan.setCreditOrder(this.creditOrderService.getById((long)1));
-//
-//            parentLoan.setSupervisorId((long)1);
-//            parentLoan.setLoanType(this.loanTypeService.getById((long)1));
-//            parentLoan.setCurrency(this.orderTermCurrencyService.getById((long)1));
-//            parentLoan.setRegDate(new Date());
-//            parentLoan.setRegNumber("tranchee");
-//            parentLoan.setDebtor(debtor);
-//            parentLoan.setLoanState(this.loanStateService.getById((long)1));
-//
-//            parentLoan.setChildren(children);
-//
-//            loan.setParent(parentLoan);
-//
-//            this.loanService.add(parentLoan);
-//
-//
-//
-//            Loan loan2 = new NormalLoan();
-//            loan2.setAmount((double)1000);
-//            loan2.setCreditOrder(this.creditOrderService.getById((long)1));
-//
-//            loan2.setSupervisorId((long)1);
-//            loan2.setLoanType(this.loanTypeService.getById((long)1));
-//            loan2.setCurrency(this.orderTermCurrencyService.getById((long)1));
-//            loan2.setRegDate(new Date());
-//            loan2.setRegNumber("456");
-//            loan2.setDebtor(debtor);
-//            loan2.setLoanState(this.loanStateService.getById((long)1));
-//
-//            Loan parentOldLoan = this.loanService.getById(parentLoan.getId());
-//
-//            loan2.setParent(parentOldLoan);
-//
-//            this.loanService.add(loan2);
-//
-//
-//
-//            for (Loan loanChild : this.loanService.getById(parentOldLoan.getId()).getChildren())
-//            {
-//                System.out.println(loanChild.getId());
-//            }
-//
-//        }
-//        catch (Exception ex)
-//        {
-//            System.out.println(ex);
-//
-//        }
+        try
+        {
+            Person person = new Person();
+            person.setName(" test person");
+            person.setEnabled(true);
 
-        String details = "(id=45)";
+            this.personService.create(person);
 
-        String id = details.substring(details.indexOf("id=")+3, details.lastIndexOf(")"));
+            Owner owner = new Owner();
 
-        int subCreditID=Integer.parseInt(id);
+                owner.setName(person.getName());
+                owner.setOwnerType(OwnerType.PERSON);
+                owner.setEntityId(person.getId());
 
-        System.out.println(subCreditID);
+            this.ownerService.add(owner);
 
+            Debtor debtor = new Debtor();
+
+            debtor.setName(owner.getName());
+            debtor.setOwner(owner);
+
+            this.debtorService.add(debtor);
+
+
+            Loan loan = new NormalLoan();
+            loan.setAmount((double)1000);
+            loan.setCreditOrder(this.creditOrderService.getById((long)1));
+
+            loan.setSupervisorId((long)1);
+            loan.setLoanType(this.loanTypeService.getById((long)1));
+            loan.setCurrency(this.orderTermCurrencyService.getById((long)1));
+            loan.setRegDate(new Date());
+            loan.setRegNumber("123");
+            loan.setDebtor(debtor);
+            loan.setLoanState(this.loanStateService.getById((long)1));
+
+            this.loanService.add(loan);
+
+            Bankrupt bankrupt = new Bankrupt();
+
+            bankrupt.setLoan(loan);
+            //bankrupt.setStartedOnDate(loan.getRegDate());
+            bankrupt.setFinishedOnDate(loan.getRegDate());
+
+            this.bankruptService.add(bankrupt);
+
+
+            for (Bankrupt bank: this.bankruptService.list())
+            {
+                System.out.println(bank.getId());
+
+            }
+
+
+
+
+
+        }
+        catch (Exception ex)
+        {
+            System.out.println(ex);
+
+        }
     }
 
     public void doMigrate()
@@ -405,7 +366,7 @@ public class MigrationTool
 
 
 
-        boolean done = true;
+        boolean done = false;
 
         boolean inProcess = false;
 
@@ -495,13 +456,13 @@ public class MigrationTool
         boolean collectionMigrateDone = light;
         if(!collectionMigrateDone) collectionMigrateDone = this.collectionPhaseTypeMigrate(connection);
 
-        boolean currencyRateMigrateDone = light;
+        boolean currencyRateMigrateDone = done;
         if(!currencyRateMigrateDone) currencyRateMigrateDone = this.currencyRateMigrate(connection);
 
-        boolean floatingRateMigrateDone = light;
+        boolean floatingRateMigrateDone = done;
         if(!floatingRateMigrateDone) floatingRateMigrateDone = this.floatingRateMigrate(connection);
 
-        boolean debtorMigrationDone = light;
+        boolean debtorMigrationDone = done;
         if(!debtorMigrationDone) debtorMigrationDone = this.debtorMigrate(connection);
 
 
@@ -695,7 +656,17 @@ public class MigrationTool
                                 if(rs.getString("details")!=null) person.setDescription(rs.getString("details"));
                                 person.setVersion(rs.getLong("person_id"));
 
-                                this.personService.create(person);
+
+                                try
+                                {
+                                    this.personService.create(person);
+                                }
+                                catch( Exception ex)
+                                {
+                                    System.out.println(ex+person.getName());
+                                }
+
+
 
 
                             }
@@ -740,7 +711,17 @@ public class MigrationTool
                                 organization.setDepartment(departments);
 
 
-                                this.organizationService.create(organization);
+                                try
+                                {
+                                    this.organizationService.create(organization);
+                                }
+                                catch( Exception ex)
+                                {
+                                    System.out.println(ex+organization.getName());
+
+                                }
+
+
 
 //                                Responsible and Accountant Migration
                                 try {
@@ -2754,21 +2735,32 @@ public class MigrationTool
                                 errorList.add(" collection error " + ex + " debtor id == "+debtor.getId());
                             }
 
-
-                            if(rs.getInt("fin_status")==7)
+                            try
                             {
-                                for (Loan loan:debtorLoans.values())
+                                if(rs.getInt("fin_status")==7 && (rs.getDate("fin_status_date")!=null))
                                 {
-                                    Bankrupt bankrupt = new Bankrupt();
-                                    bankrupt.setLoan(loan);
+                                    for (Loan loan:debtorLoans.values())
+                                    {
+                                        Bankrupt bankrupt = new Bankrupt();
+                                        bankrupt.setLoan(loan);
 
-                                    if(rs.getDate("fin_status_date")!=null) bankrupt.setFinishedOnDate(rs.getDate("fin_status_date"));
+                                        if(rs.getDate("fin_status_date")!=null)
+                                        {
+                                            bankrupt.setFinishedOnDate(rs.getDate("fin_status_date"));
+                                            bankrupt.setStartedOnDate(rs.getDate("fin_status_date"));
+                                        }
 
-                                    bankruptService.add(bankrupt);
+                                        bankruptService.add(bankrupt);
+
+                                    }
+
 
                                 }
 
-
+                            }
+                            catch(Exception ex)
+                            {
+                                System.out.println(" bankrupt error");
                             }
 
                         }

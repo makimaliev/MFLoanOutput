@@ -87,6 +87,7 @@ public class LoanSummaryReportDataManager {
 
         double lastDisbursement = 0;
         double lastTotalPaid = 0;
+        double lastTotalPaidKGS = 0;
         double lastTotalOustanding = 0;
         double lastPrincipleOutstanding = 0;
         double lastInteresOutstanding = 0;
@@ -249,27 +250,28 @@ public class LoanSummaryReportDataManager {
 
                 }
 
-                if(pv.getV_ls_total_paid()>=0)
+                if(pv.getV_ls_total_paid_kgs()>=0)
                 {
 
-                    reportData.setTotalPaid(reportData.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid()/thousands);
+                    reportData.setTotalPaid(reportData.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid_kgs()/thousands);
 
-                    childA.setTotalPaid(childA.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid()/thousands);
-
-
-                    childB.setTotalPaid(childB.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid()/thousands);
+                    childA.setTotalPaid(childA.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid_kgs()/thousands);
 
 
-                    childC.setTotalPaid(childC.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid()/thousands);
+                    childB.setTotalPaid(childB.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid_kgs()/thousands);
 
-                    childD.setTotalPaid(childD.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid()/thousands);
+
+                    childC.setTotalPaid(childC.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid_kgs()/thousands);
+
+                    childD.setTotalPaid(childD.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid_kgs()/thousands);
 
                     childE.setTotalPaid(pv.getV_ls_total_paid()/thousands);
 
-                    lastTotalPaid = pv.getV_ls_total_paid()/thousands;
+                    lastTotalPaid = pv.getV_ls_total_paid_kgs()/thousands;
 
 
                 }
+
 
                 if(pv.getV_ls_total_outstanding()>=0)
                 {
