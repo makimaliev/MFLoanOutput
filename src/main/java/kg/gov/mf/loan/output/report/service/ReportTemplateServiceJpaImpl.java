@@ -53,4 +53,12 @@ public class ReportTemplateServiceJpaImpl implements ReportTemplateService {
     public List<ReportTemplate> findAll() {
         return this.reportTemplateDao.findAll();
     }
+
+
+	@Override
+	@Transactional
+	public void clone(ReportTemplate reportTemplate) {
+		this.reportTemplateDao.clone(reportTemplate);
+
+	}
 }

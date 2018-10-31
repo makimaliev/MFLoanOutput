@@ -104,6 +104,34 @@ public class ReportTemplateDaoImpl implements ReportTemplateDao {
         List<ReportTemplate> reportTemplatesList = session.createQuery("from ReportTemplate").list();
         return reportTemplatesList;
     }
+
+	@Override
+	public void clone(ReportTemplate reportTemplate) {
+
+    	ReportTemplate clonedTemplate = new ReportTemplate();
+
+    	clonedTemplate.setGenerationParameters(reportTemplate.getGenerationParameters());
+    	clonedTemplate.setName(reportTemplate.getName()+" копия ");
+    	clonedTemplate.setReport(reportTemplate.getReport());
+    	clonedTemplate.setContentParameters(reportTemplate.getContentParameters());
+    	clonedTemplate.setFilterParameters(reportTemplate.getFilterParameters());
+    	clonedTemplate.setGroupType1(reportTemplate.getGroupType1());
+		clonedTemplate.setGroupType2(reportTemplate.getGroupType2());
+		clonedTemplate.setGroupType3(reportTemplate.getGroupType3());
+		clonedTemplate.setGroupType4(reportTemplate.getGroupType4());
+		clonedTemplate.setGroupType5(reportTemplate.getGroupType5());
+		clonedTemplate.setGroupType6(reportTemplate.getGroupType6());
+		clonedTemplate.setOnDate(reportTemplate.getOnDate());
+		clonedTemplate.setOutputParameters(reportTemplate.getOutputParameters());
+
+
+
+		Session session = this.sessionFactory.getCurrentSession();
+		session.persist(clonedTemplate);
+
+		logger.info("ReportTemplate cloned == "+reportTemplate);
+
+	}
  
 
 }

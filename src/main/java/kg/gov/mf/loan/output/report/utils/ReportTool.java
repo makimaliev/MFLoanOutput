@@ -16,6 +16,8 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.lang.reflect.Field;
@@ -1299,104 +1301,7 @@ public class ReportTool
 
         for (FilterParameter filterParameter: reportTemplate.getFilterParameters())
         {
-            if(filterParameter.getFilterParameterType().name()=="OBJECT_LIST")
-            {
-                ObjectList objectList = filterParameter.getObjectList();
-
-                List<String> Ids = new ArrayList<>();
-
-                for (ObjectListValue objectListValue: objectList.getObjectListValues())
-                {
-                    Ids.add(objectListValue.getName());
-                }
-
-                parameterS.put("r=in"+objectList.getGroupType().getField_name(),Ids);
-            }
-
-            if(filterParameter.getFilterParameterType().name()=="CONTENT_COMPARE")
-            {
-                List<String> Ids = new ArrayList<>();
-
-                String comparedValue = filterParameter.getComparedValue();
-
-                Ids.add(comparedValue);
-
-                String fieldName = filterParameter.getFieldName();
-
-                String comparatorShort = "";
-
-                switch (filterParameter.getComparator().name())
-                {
-                    case "EQUALS" :
-                        comparatorShort = "r=eq";
-                        break;
-
-                    case "NOT_EQUALS" :
-                        comparatorShort = "r=ne";
-                        break;
-
-                    case "GREATER_THEN" :
-                        comparatorShort = "r=gt";
-                        break;
-
-                    case "GREATER_THEN_OR_EQUALS" :
-                        comparatorShort = "r=ge";
-                        break;
-
-                    case "LESS_THEN" :
-                        comparatorShort = "r=lt";
-                        break;
-
-                    case "LESS_THEN_OR_EQUALS" :
-                        comparatorShort = "r=le";
-                        break;
-
-                    case "CONTAINS" :
-                        comparatorShort = "r=yc";
-                        break;
-
-                    case "DOES_NOT_CONTAIN" :
-                        comparatorShort = "r=nc";
-                        break;
-
-                    case "BEGINS" :
-                        comparatorShort = "r=bs";
-                        break;
-
-                    case "FINISHES" :
-                        comparatorShort = "r=fs";
-                        break;
-
-                    case "AFTER_DATE" :
-                        comparatorShort = "r=ad";
-                        break;
-
-                    case "AFTER_OR_ON_DATE" :
-                        comparatorShort = "r=ao";
-                        break;
-
-                    case "BEFORE_DATE" :
-                        comparatorShort = "r=bd";
-                        break;
-
-                    case "BEFORE_OR_ON_DATE" :
-                        comparatorShort = "r=bo";
-                        break;
-
-                    case "ON_DATE" :
-                        comparatorShort = "r=od";
-                        break;
-                }
-
-                parameterS.put(comparatorShort+fieldName,Ids);
-
-            }
-
-
-
-
-
-
+            drawParameter(parameterS,filterParameter);
         }
 
         if(reportTemplate.getOnDate()!=null)
@@ -1428,8 +1333,115 @@ public class ReportTool
         return parameterS;
     }
 
+
+    public void drawParameter(LinkedHashMap<String,List<String>> parameters, FilterParameter filterParameter)
+    {
+
+        if(filterParameter.getFilterParameterType().name()=="OBJECT_LIST")
+        {
+            ObjectList objectList = filterParameter.getObjectList();
+
+            List<String> Ids = new ArrayList<>();
+
+            for (ObjectListValue objectListValue: objectList.getObjectListValues())
+            {
+                Ids.add(objectListValue.getName());
+            }
+
+            parameters.put("r=in"+objectList.getGroupType().getField_name(),Ids);
+        }
+
+        if(filterParameter.getFilterParameterType().name()=="CONTENT_COMPARE")
+        {
+            List<String> Ids = new ArrayList<>();
+
+            String comparedValue = filterParameter.getComparedValue();
+
+            Ids.add(comparedValue);
+
+            String fieldName = filterParameter.getFieldName();
+
+            String comparatorShort = "";
+
+            switch (filterParameter.getComparator().name())
+            {
+                case "EQUALS" :
+                    comparatorShort = "r=eq";
+                    break;
+
+                case "NOT_EQUALS" :
+                    comparatorShort = "r=ne";
+                    break;
+
+                case "GREATER_THEN" :
+                    comparatorShort = "r=gt";
+                    break;
+
+                case "GREATER_THEN_OR_EQUALS" :
+                    comparatorShort = "r=ge";
+                    break;
+
+                case "LESS_THEN" :
+                    comparatorShort = "r=lt";
+                    break;
+
+                case "LESS_THEN_OR_EQUALS" :
+                    comparatorShort = "r=le";
+                    break;
+
+                case "CONTAINS" :
+                    comparatorShort = "r=yc";
+                    break;
+
+                case "DOES_NOT_CONTAIN" :
+                    comparatorShort = "r=nc";
+                    break;
+
+                case "BEGINS" :
+                    comparatorShort = "r=bs";
+                    break;
+
+                case "FINISHES" :
+                    comparatorShort = "r=fs";
+                    break;
+
+                case "AFTER_DATE" :
+                    comparatorShort = "r=ad";
+                    break;
+
+                case "AFTER_OR_ON_DATE" :
+                    comparatorShort = "r=ao";
+                    break;
+
+                case "BEFORE_DATE" :
+                    comparatorShort = "r=bd";
+                    break;
+
+                case "BEFORE_OR_ON_DATE" :
+                    comparatorShort = "r=bo";
+                    break;
+
+                case "ON_DATE" :
+                    comparatorShort = "r=od";
+                    break;
+            }
+
+            parameters.put(comparatorShort+fieldName,Ids);
+
+        }
+
+    }
+
+
     public void applyParameters(LinkedHashMap<String,List<String>> parameters, Criteria criteria)
     {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String currentUserName = authentication.getName();
+
+        System.out.println(currentUserName);
+
         for (Map.Entry<String, List<String>> parameterInLoop : parameters.entrySet())
         {
             String parameterType = parameterInLoop.getKey();

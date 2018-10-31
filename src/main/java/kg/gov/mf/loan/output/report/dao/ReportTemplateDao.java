@@ -19,4 +19,6 @@ public interface ReportTemplateDao {
 	
 	public List<ReportTemplate> findAll();
 
+	public void clone(ReportTemplate reportTemplate);
+
 }
