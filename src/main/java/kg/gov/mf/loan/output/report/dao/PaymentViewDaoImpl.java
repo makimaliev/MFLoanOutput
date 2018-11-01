@@ -7,6 +7,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,7 +116,46 @@ public class PaymentViewDaoImpl implements PaymentViewDao {
 	}
 
 
+	@Override
+	public List<PaymentView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit, String sortStr, String sortField) {
 
- 
+    	Session session=this.sessionFactory.getCurrentSession();
+
+    	ReportTool reportTool=new ReportTool();
+
+    	Criteria criteria=session.createCriteria(PaymentView.class);
+
+    	reportTool.applyParameters(parameters,criteria);
+
+		if(sortStr.equals("asc")){
+			criteria.addOrder(Order.asc(sortField));
+		}
+		else if(sortStr.equals("desc")){
+			criteria.addOrder(Order.desc(sortField));
+		}
+		criteria.setFirstResult(offset);
+		criteria.setMaxResults(limit);
+
+
+    	return criteria.list();
+	}
+
+	@Override
+	public Long getCount(LinkedHashMap<String, List<String>> parameters) {
+		Session session=this.sessionFactory.getCurrentSession();
+
+		ReportTool reportTool=new ReportTool();
+
+		Criteria criteria=session.createCriteria(PaymentView.class);
+
+		reportTool.applyParameters(parameters,criteria);
+
+		Long count= (Long) criteria
+				.setProjection(Projections.rowCount())
+				.uniqueResult();
+
+		return count;
+	}
+
 
 }

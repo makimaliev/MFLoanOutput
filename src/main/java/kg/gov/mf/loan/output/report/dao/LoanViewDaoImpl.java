@@ -134,19 +134,6 @@ public class LoanViewDaoImpl implements LoanViewDao {
 		return criteria.list();
 	}
 
-    @Override
-    public int findByParamete(LinkedHashMap<String, List<String>> parameter) {
-        Session session = this.sessionFactory.getCurrentSession();
-
-        ReportTool reportTool = new ReportTool();
-
-        Criteria criteria = session.createCriteria(LoanView.class);
-
-        reportTool.applyParameters(parameter,criteria);
-
-
-        return criteria.list().size();
-    }
 
     @Override
     public List<LoanView> findByParameter(LinkedHashMap<String, List<String>> parameter, Integer perPage, Integer offset, String sortStr, String sortField) {
@@ -170,8 +157,21 @@ public class LoanViewDaoImpl implements LoanViewDao {
         return criteria.list();
     }
 
+    @Override
+    public Long getCount(LinkedHashMap<String, List<String>> parameter) {
+        Session session=this.sessionFactory.getCurrentSession();
 
+        ReportTool reportTool=new ReportTool();
 
- 
+        Criteria criteria=session.createCriteria(LoanView.class);
+
+        reportTool.applyParameters(parameter,criteria);
+
+        Long count= (Long) criteria
+                .setProjection(Projections.rowCount())
+                .uniqueResult();
+        return count;
+    }
+
 
 }

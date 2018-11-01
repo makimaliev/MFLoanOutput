@@ -114,7 +114,20 @@ public class PaymentScheduleViewDaoImpl implements PaymentScheduleViewDao {
 		return criteria.list();
 	}
 
+	@Override
+	public List<PaymentScheduleView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit) {
+		Session session = this.sessionFactory.getCurrentSession();
 
- 
+		ReportTool reportTool = new ReportTool();
+
+		Criteria criteria = session.createCriteria(PaymentScheduleView.class);
+
+		reportTool.applyParameters(parameters,criteria);
+		criteria.setMaxResults(limit);
+		criteria.setFirstResult(offset);
+
+		return criteria.list();
+	}
+
 
 }

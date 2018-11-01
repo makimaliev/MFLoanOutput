@@ -21,6 +21,8 @@ public interface PaymentScheduleViewDao {
 
 	public List<PaymentScheduleView> findByParameter(LinkedHashMap<String, List<String>> parameters);
 
+	public List<PaymentScheduleView> findByParameter(LinkedHashMap<String, List<String>> parameters,Integer offset,Integer limit);
+
 
 
 }

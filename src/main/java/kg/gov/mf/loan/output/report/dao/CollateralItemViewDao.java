@@ -21,6 +21,10 @@ public interface CollateralItemViewDao {
 
 	public List<CollateralItemView> findByParameter(LinkedHashMap<String, List<String>> parameters);
 
+	public List<CollateralItemView> findByParameter(LinkedHashMap<String, List<String>> parameters,Integer offset,Integer limit,String sortStr,String sortField);
+
+	public Long getCount(LinkedHashMap<String, List<String>> parameters);
+
 
 
 }

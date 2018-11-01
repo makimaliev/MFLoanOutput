@@ -114,5 +114,25 @@ public class CollectionPhaseViewDaoImpl implements CollectionPhaseViewDao {
 		return criteria.list();
 	}
 
+	@Override
+	public List<CollectionPhaseView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit, String sortStr, String sortField) {
+		Session session=sessionFactory.getCurrentSession();
+
+		Criteria criteria=session.createCriteria(CollectionPhaseView.class);
+		ReportTool reportTool = new ReportTool();
+		reportTool.applyParameters(parameters,criteria);
+
+		if(sortStr.equals("asc")){
+			criteria.addOrder(Order.asc(sortField));
+		}
+		else {
+			criteria.addOrder(Order.desc(sortField));
+		}
+
+		criteria.setFirstResult(offset);
+		criteria.setMaxResults(limit);
+		return criteria.list();
+	}
+
 
 }

@@ -20,4 +20,8 @@ public interface PaymentViewService {
 
 	public List<PaymentView> findByParameter(LinkedHashMap<String, List<String>> parameters);
 
+	public List<PaymentView> findByParameter(LinkedHashMap<String, List<String>> parameters,Integer offset,Integer limit,String sortStr,String sortField);
+
+	public Long getCount(LinkedHashMap<String, List<String>> parameters);
+
 }

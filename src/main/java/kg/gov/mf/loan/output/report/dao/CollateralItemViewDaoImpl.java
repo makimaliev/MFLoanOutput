@@ -6,39 +6,39 @@ import kg.gov.mf.loan.output.report.utils.CollateralItemReportDataManager;
 import kg.gov.mf.loan.output.report.utils.PaymentReportDataManager;
 import kg.gov.mf.loan.output.report.utils.ReportTool;
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigInteger;
+import java.util.*;
 
 @Repository
 public class CollateralItemViewDaoImpl implements CollateralItemViewDao {
 
-    private static final Logger logger = LoggerFactory.getLogger(CollateralItemViewDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(CollateralItemViewDaoImpl.class);
 
-    @Autowired
-    private SessionFactory sessionFactory;
+	@Autowired
+	private SessionFactory sessionFactory;
 
-    public void setSessionFactory(SessionFactory sf){
-        this.sessionFactory = sf;
-    }
+	public void setSessionFactory(SessionFactory sf){
+		this.sessionFactory = sf;
+	}
 
 
-    @Autowired
-    public CollateralItemViewDaoImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
- 
- 
+	@Autowired
+	public CollateralItemViewDaoImpl(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
+
+
+
+
 
 
 
@@ -116,7 +116,53 @@ public class CollateralItemViewDaoImpl implements CollateralItemViewDao {
 		return criteria.list();
 	}
 
+//	@SuppressWarnings("unchecked")
+	@Override
+	public List<CollateralItemView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit, String sortStr, String sortField) {
 
- 
+		Session session=this.sessionFactory.getCurrentSession();
+		ReportTool reportTool=new ReportTool();
+
+		Criteria criteria=session.createCriteria(CollateralItemView.class);
+		reportTool.applyParameters(parameters,criteria);
+
+//		if(sortStr.equals("asc")){
+//			criteria.addOrder(Order.asc(sortField));
+//		}
+//		else if(sortStr.equals("desc")){
+//			criteria.addOrder(Order.desc(sortField));
+//		}
+		criteria.setFirstResult(offset);
+		criteria.setMaxResults(limit);
+
+//		System.out.println("======================KARA============================================================");
+//		Iterator it2 = list2.iterator();
+//		while (it2.hasNext()) {
+//			Object[] obj = (Object[]) it2.next();
+//			System.out.println("Id : " + obj[0]+" DeptorName: "+obj[1]);
+//		}
+//		System.out.println("==================================================================================");
+
+		return criteria.list();
+	}
+
+//	@SuppressWarnings("unchecked")
+	@Override
+	public Long getCount(LinkedHashMap<String, List<String>> parameters) {
+
+		Session session=this.sessionFactory.getCurrentSession();
+		ReportTool reportTool=new ReportTool();
+
+		Criteria criteria=session.createCriteria(CollateralItemView.class);
+		reportTool.applyParameters(parameters,criteria);
+
+//		criteria.setProjection(Projections.property("v_ci_id"));
+
+		Long count= (Long) criteria
+				.setProjection(Projections.rowCount())
+				.uniqueResult();
+		return count;
+	}
+
 
 }

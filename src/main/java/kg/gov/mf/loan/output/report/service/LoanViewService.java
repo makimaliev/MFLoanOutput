@@ -22,5 +22,5 @@ public interface LoanViewService {
 
     List<LoanView> findByParameters(LinkedHashMap<String,List<String>> parameter, Integer perPage, Integer offset);
     List<LoanView> findByParameter(LinkedHashMap<String,List<String>> parameter, Integer perPage, Integer offset,String sortStr,String sortField);
-    int findByParamete(LinkedHashMap<String,List<String>> parameter);
+    public Long getCount(LinkedHashMap<String,List<String>> parameter);
 }

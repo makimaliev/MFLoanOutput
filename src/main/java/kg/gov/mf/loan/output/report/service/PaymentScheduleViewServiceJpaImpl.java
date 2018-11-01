@@ -61,5 +61,11 @@ public class PaymentScheduleViewServiceJpaImpl implements PaymentScheduleViewSer
 		return this.paymentScheduleViewDao.findByParameter(parameters);
 	}
 
+	@Override
+	@Transactional
+	public List<PaymentScheduleView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit) {
+		return this.paymentScheduleViewDao.findByParameter(parameters,offset,limit);
+	}
+
 
 }

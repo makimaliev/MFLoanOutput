@@ -74,10 +74,11 @@ public class LoanViewServiceJpaImpl implements LoanViewService {
 	}
 
 	@Override
-    @Transactional
-    public int findByParamete(LinkedHashMap<String, List<String>> parameter) {
-        return this.loanViewDao.findByParamete(parameter);
-    }
+	@Transactional
+	public Long getCount(LinkedHashMap<String, List<String>> parameter) {
+		return this.loanViewDao.getCount(parameter);
+	}
+
 
 
 }

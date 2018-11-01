@@ -61,5 +61,17 @@ public class CollateralItemViewServiceJpaImpl implements CollateralItemViewServi
 		return this.collateralItemViewDao.findByParameter(parameters);
 	}
 
+	@Override
+	@Transactional
+	public List<CollateralItemView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit, String sortStr, String sortField) {
+		return this.collateralItemViewDao.findByParameter(parameters,offset,limit,sortStr,sortField);
+	}
+
+	@Override
+	@Transactional
+	public Long getCount(LinkedHashMap<String, List<String>> parameters) {
+		return this.collateralItemViewDao.getCount(parameters);
+	}
+
 
 }

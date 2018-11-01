@@ -24,6 +24,6 @@ public interface LoanViewDao {
 
 
     List<LoanView> findByParameters(LinkedHashMap<String,List<String>> parameter, Integer perPage, Integer offset);
-    int findByParamete(LinkedHashMap<String,List<String>> parameter);
     List<LoanView> findByParameter(LinkedHashMap<String,List<String>> parameter,Integer perPage,Integer offset,String sortStr,String sortField);
+    public Long getCount(LinkedHashMap<String,List<String>> parameter);
 }
