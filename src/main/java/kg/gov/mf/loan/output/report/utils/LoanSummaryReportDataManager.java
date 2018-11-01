@@ -98,6 +98,10 @@ public class LoanSummaryReportDataManager {
         double lastInteresOverdue = 0;
         double lastPenaltyOverdue = 0;
 
+        double lastTotalOustandingDiff = 0;
+        double lastTotalOverdueDiff = 0;
+
+
         for (LoanSummaryView loanSummaryView:reportData.getLoanSummaryViews())
         {
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType1(),loanSummaryView)!=currentgroupAid)
@@ -175,6 +179,10 @@ public class LoanSummaryReportDataManager {
                 lastInteresOverdue = 0;
                 lastPenaltyOverdue = 0;
 
+                lastTotalOustandingDiff = 0;
+                lastTotalOverdueDiff = 0;
+
+
                 currentgroupDid=reportTool.getIdByGroupType(reportTemplate.getGroupType4(),loanSummaryView);
             }
 
@@ -182,10 +190,17 @@ public class LoanSummaryReportDataManager {
             {
                 double thousands = 1000;
                 double rate = 1;
+                double rate2 = 1;
 
                 if(loanSummaryView.getV_loan_currency_id()>1)
                 {
                     rate = reportTool.getCurrencyRateValueByDateAndCurrencyTypeId(reportTemplate.getOnDate(),loanSummaryView.getV_loan_currency_id());
+
+                    if(reportTemplate.getAdditionalDate()!=null)
+                    {
+                        rate2 = reportTool.getCurrencyRateValueByDateAndCurrencyTypeId(reportTemplate.getAdditionalDate(),loanSummaryView.getV_loan_currency_id());
+                    }
+
                 }
                 childD.getChildDataList().removeAll(childD.getChildDataList());
 
@@ -293,6 +308,24 @@ public class LoanSummaryReportDataManager {
                     lastTotalOustanding = pv.getV_ls_total_outstanding()*rate/thousands;
 
 
+
+                    reportData.setRemainingDiff(reportData.getRemainingDiff()-lastTotalOustandingDiff+pv.getV_ls_total_outstanding()*(rate-rate2)/thousands);
+
+                    childA.setRemainingDiff(childA.getRemainingDiff()-lastTotalOustandingDiff+pv.getV_ls_total_outstanding()*(rate-rate2)/thousands);
+
+
+                    childB.setRemainingDiff(childB.getRemainingDiff()-lastTotalOustandingDiff+pv.getV_ls_total_outstanding()*(rate-rate2)/thousands);
+
+
+                    childC.setRemainingDiff(childC.getRemainingDiff()-lastTotalOustandingDiff+pv.getV_ls_total_outstanding()*(rate-rate2)/thousands);
+
+                    childD.setRemainingDiff(childD.getRemainingDiff()-lastTotalOustandingDiff+pv.getV_ls_total_outstanding()*(rate-rate2)/thousands);
+
+                    childE.setRemainingDiff(0);
+
+                    lastTotalOustandingDiff = pv.getV_ls_total_outstanding()*(rate-rate2)/thousands;
+
+
                 }
 
 
@@ -383,6 +416,25 @@ public class LoanSummaryReportDataManager {
                     childE.setOverdueAll(pv.getV_ls_total_overdue()/thousands);
 
                     lastTotalOverdue = pv.getV_ls_total_overdue()*rate/thousands;
+
+
+
+
+                    reportData.setOverdueDiff(reportData.getOverdueDiff()-lastTotalOverdueDiff+pv.getV_ls_total_overdue()*(rate-rate2)/thousands);
+
+                    childA.setOverdueDiff(childA.getOverdueDiff()-lastTotalOverdueDiff+pv.getV_ls_total_overdue()*(rate-rate2)/thousands);
+
+
+                    childB.setOverdueDiff(childB.getOverdueDiff()-lastTotalOverdueDiff+pv.getV_ls_total_overdue()*(rate-rate2)/thousands);
+
+
+                    childC.setOverdueDiff(childC.getOverdueDiff()-lastTotalOverdueDiff+pv.getV_ls_total_overdue()*(rate-rate2)/thousands);
+
+                    childD.setOverdueDiff(childD.getOverdueDiff()-lastTotalOverdueDiff+pv.getV_ls_total_overdue()*(rate-rate2)/thousands);
+
+                    childE.setOverdueDiff(0);
+
+                    lastTotalOverdueDiff = pv.getV_ls_total_overdue()*(rate-rate2)/thousands;
 
 
                 }

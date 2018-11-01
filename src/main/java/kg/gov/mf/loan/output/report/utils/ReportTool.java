@@ -193,9 +193,15 @@ public class ReportTool
         for (OrderTermCurrency orderTermCurrency:this.orderTermCurrencyService.list())
         {
             Date date = new Date();
+            Date date2 = new Date(date.getTime());
+
             if(reportTemplate.getOnDate()!=null) date= reportTemplate.getOnDate();
 
+            if(reportTemplate.getAdditionalDate()!=null) date2= reportTemplate.getAdditionalDate();
+
             Double currencyRateValue = this.currencyRateService.findByDateAndType(date, orderTermCurrency ).getRate();
+            Double currencyRateValue2 = this.currencyRateService.findByDateAndType(date2, orderTermCurrency ).getRate();
+
 
             if(CurrencyRateMap.get(date)==null)
             {
@@ -207,6 +213,18 @@ public class ReportTool
             {
                 CurrencyRateMap.get(date).put(orderTermCurrency.getId(),currencyRateValue);
             }
+
+            if(CurrencyRateMap.get(date2)==null)
+            {
+                Map<Long,Double> newMap      = new HashMap<>();
+                newMap.put(orderTermCurrency.getId(),currencyRateValue2);
+                CurrencyRateMap.put(date2, newMap);
+            }
+            else
+            {
+                CurrencyRateMap.get(date2).put(orderTermCurrency.getId(),currencyRateValue2);
+            }
+
 
 
         }
@@ -1867,33 +1885,55 @@ public class ReportTool
 
         ReportData GroupData1[] = reportData.getChilds();
 
+        boolean drawGroup1 = reportTemplate.getShowGroup1();
+        boolean drawGroup2 = reportTemplate.getShowGroup2();
+        boolean drawGroup3 = reportTemplate.getShowGroup3();
+        boolean drawGroup4 = reportTemplate.getShowGroup4();
+        boolean drawGroup5 = reportTemplate.getShowGroup5();
+        boolean drawGroup6 = reportTemplate.getShowGroup6();
+
         for(int x=0;x<GroupData1.length;x++)
         {
+            if(drawGroup1)
             reportTool.drawGroupRow(reportTemplate,Sheet, GroupData1[x],1);
 
             ReportData GroupData2[] = GroupData1[x].getChilds();
 
             for(int y=0;y<GroupData2.length;y++)
             {
+                if(drawGroup2)
                 reportTool.drawGroupRow(reportTemplate,Sheet, GroupData2[y],2);
 
                 ReportData GroupData3[] = GroupData2[y].getChilds();
 
                 for(int z=0;z<GroupData3.length;z++)
                 {
+                    if(drawGroup3)
                     reportTool.drawGroupRow(reportTemplate,Sheet, GroupData3[z],3);
 
                     ReportData GroupData4[] = GroupData3[z].getChilds();
 
                     for(int a=0;a<GroupData4.length;a++)
                     {
+                        if(drawGroup4)
                         reportTool.drawGroupRow(reportTemplate,Sheet, GroupData4[a],4);
 
                         ReportData GroupData5[] = GroupData4[a].getChilds();
 
                         for(int b=0;b<GroupData5.length;b++)
                         {
+                            if(drawGroup5)
                             reportTool.drawGroupRow(reportTemplate,Sheet, GroupData5[b],5);
+
+                            ReportData GroupData6[] = GroupData5[b].getChilds();
+
+                            for(int c=0;c<GroupData6.length;c++)
+                            {
+                                if(drawGroup6)
+                                    reportTool.drawGroupRow(reportTemplate,Sheet, GroupData6[c],6);
+
+                            }
+
 
                         }
 
@@ -1906,7 +1946,7 @@ public class ReportTool
 
         }
 
-        reportTool.drawSumRow(reportTemplate,Sheet,reportData);
+//        reportTool.drawSumRow(reportTemplate,Sheet,reportData);
     }
 
 

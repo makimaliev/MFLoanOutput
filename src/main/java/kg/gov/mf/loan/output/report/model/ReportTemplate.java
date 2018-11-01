@@ -20,8 +20,26 @@ public class ReportTemplate {
  
     @Column(name="name", nullable=false)
     private String name;
-    
-    @ManyToOne(targetEntity=Report.class, fetch = FetchType.LAZY)
+
+	@Column(name="showGroup1", columnDefinition = "boolean default true")
+	private Boolean showGroup1 = true;
+
+	@Column(name="showGroup2", columnDefinition = "boolean default true")
+	private Boolean showGroup2 = true;
+
+	@Column(name="showGroup3", columnDefinition = "boolean default false")
+	private Boolean showGroup3 = true;
+
+	@Column(name="showGroup4", columnDefinition = "boolean default false")
+	private Boolean showGroup4 = true;
+
+	@Column(name="showGroup5", columnDefinition = "boolean default false")
+	private Boolean showGroup5 = true;
+
+	@Column(name="showGroup6", columnDefinition = "boolean default false")
+	private Boolean showGroup6 = true;
+
+	@ManyToOne(targetEntity=Report.class, fetch = FetchType.LAZY)
     @JoinColumn(name="report_id")
     Report report;
 
@@ -59,6 +77,11 @@ public class ReportTemplate {
 	@DateTimeFormat(pattern = "dd.mm.yyyy")
 	@Temporal(TemporalType.DATE)
 	private Date onDate;
+
+	@DateTimeFormat(pattern = "dd.mm.yyyy")
+	@Temporal(TemporalType.DATE)
+	private Date additionalDate;
+
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
@@ -203,6 +226,62 @@ public class ReportTemplate {
 
 	public void setOnDate(Date onDate) {
 		this.onDate = onDate;
+	}
+
+	public Date getAdditionalDate() {
+		return additionalDate;
+	}
+
+	public void setAdditionalDate(Date additionalDate) {
+		this.additionalDate = additionalDate;
+	}
+
+	public Boolean getShowGroup1() {
+		return showGroup1;
+	}
+
+	public void setShowGroup1(Boolean showGroup1) {
+		this.showGroup1 = showGroup1;
+	}
+
+	public Boolean getShowGroup2() {
+		return showGroup2;
+	}
+
+	public void setShowGroup2(Boolean showGroup2) {
+		this.showGroup2 = showGroup2;
+	}
+
+	public Boolean getShowGroup3() {
+		return showGroup3;
+	}
+
+	public void setShowGroup3(Boolean showGroup3) {
+		this.showGroup3 = showGroup3;
+	}
+
+	public Boolean getShowGroup4() {
+		return showGroup4;
+	}
+
+	public void setShowGroup4(Boolean showGroup4) {
+		this.showGroup4 = showGroup4;
+	}
+
+	public Boolean getShowGroup5() {
+		return showGroup5;
+	}
+
+	public void setShowGroup5(Boolean showGroup5) {
+		this.showGroup5 = showGroup5;
+	}
+
+	public Boolean getShowGroup6() {
+		return showGroup6;
+	}
+
+	public void setShowGroup6(Boolean showGroup6) {
+		this.showGroup6 = showGroup6;
 	}
 
 	@Override

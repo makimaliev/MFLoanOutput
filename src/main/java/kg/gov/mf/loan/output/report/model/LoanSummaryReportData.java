@@ -69,6 +69,10 @@ public class LoanSummaryReportData extends ReportData
 
 	private double paymentExchangeRate   = 0;
 
+
+	private double OverdueDiff      	= 0;
+	private double RemainingDiff   		= 0;
+
 	public LoanSummaryReportData()
 	{
 		ChildDataList = new LinkedList<LoanSummaryReportData>();
@@ -441,5 +445,21 @@ public class LoanSummaryReportData extends ReportData
 
 	public void setTotalPaidKGS(double totalPaidKGS) {
 		TotalPaidKGS = totalPaidKGS;
+	}
+
+	public double getOverdueDiff() {
+		return OverdueDiff;
+	}
+
+	public void setOverdueDiff(double overdueDiff) {
+		OverdueDiff = overdueDiff;
+	}
+
+	public double getRemainingDiff() {
+		return RemainingDiff;
+	}
+
+	public void setRemainingDiff(double remainingDiff) {
+		RemainingDiff = remainingDiff;
 	}
 }
