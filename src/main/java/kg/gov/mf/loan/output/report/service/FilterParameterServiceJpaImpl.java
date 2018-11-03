@@ -1,5 +1,6 @@
 package kg.gov.mf.loan.output.report.service;
 
+import kg.gov.mf.loan.admin.sys.model.User;
 import kg.gov.mf.loan.output.report.dao.FilterParameterDao;
 import kg.gov.mf.loan.output.report.model.FilterParameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,4 +53,11 @@ public class FilterParameterServiceJpaImpl implements FilterParameterService {
     public List<FilterParameter> findAll() {
         return this.filterParameterDao.findAll();
     }
+
+	@Override
+	@Transactional
+	public List<FilterParameter> findByUser(User user) {
+		return this.filterParameterDao.findByUser(user);
+	}
+
 }

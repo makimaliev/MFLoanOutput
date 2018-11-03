@@ -1,10 +1,13 @@
 package kg.gov.mf.loan.output.report.model;
 
+import kg.gov.mf.loan.admin.sys.model.User;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name="filter_parameter")
@@ -37,7 +40,14 @@ public class FilterParameter {
 	
 	@Enumerated(EnumType.STRING)
 	private FilterParameterType filterParameterType;
-    
+
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+			name="filter_parameter_user",
+			joinColumns = { @JoinColumn(name = "filter_parameter_id") },
+			inverseJoinColumns = { @JoinColumn(name = "user_id") })
+	Set<User> users = new HashSet<User>();
 
 	public long getId() {
 		return id;
@@ -123,5 +133,13 @@ public class FilterParameter {
 			return false;
 		}
 		return true;
+	}
+
+	public Set<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Set<User> users) {
+		this.users = users;
 	}
 }

@@ -1,5 +1,6 @@
 package kg.gov.mf.loan.output.report.dao;
 
+import kg.gov.mf.loan.admin.sys.model.User;
 import kg.gov.mf.loan.output.report.model.FilterParameter;
 import org.springframework.stereotype.Repository;
 
@@ -17,5 +18,7 @@ public interface FilterParameterDao {
 	public FilterParameter findById(long id);
 	
 	public List<FilterParameter> findAll();
+
+	public List<FilterParameter> findByUser(User user);
 
 }

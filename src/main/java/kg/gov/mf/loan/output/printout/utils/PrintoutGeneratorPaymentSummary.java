@@ -158,7 +158,7 @@ public class PrintoutGeneratorPaymentSummary {
             Ids.add(String.valueOf(iCreditID));
 
 
-            parameterS.put("loan",Ids);
+            parameterS.put("r=inv_loan_id",Ids);
 
             paymentViews.addAll(this.paymentViewService.findByParameter(parameterS));
 

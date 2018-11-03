@@ -36,6 +36,7 @@ import kg.gov.mf.loan.output.report.model.CollectionPhaseView;
 import kg.gov.mf.loan.output.report.model.LoanSummaryView;
 import kg.gov.mf.loan.output.report.model.LoanView;
 import kg.gov.mf.loan.output.report.service.*;
+import kg.gov.mf.loan.output.report.utils.ReportTool;
 import org.apache.commons.lang3.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -211,7 +212,8 @@ public class PrintoutGeneratorPhaseSummary {
                     cell.setBorder(TitleColumnBorder);
                     table.addCell (cell);
 
-                    cell = new RtfCell (new com.lowagie.text.Paragraph (sTitle3,TitleFont));
+//                    cell = new RtfCell (new com.lowagie.text.Paragraph (sTitle3,TitleFont));
+                    cell = new RtfCell (new com.lowagie.text.Paragraph ("",TitleFont));
                     cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                     cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                     cell.setBorder(TitleColumnBorder);
@@ -231,7 +233,8 @@ public class PrintoutGeneratorPhaseSummary {
                     cell.setBorder(TitleColumnBorder);
                     table.addCell (cell);
 
-                    cell = new RtfCell (new com.lowagie.text.Paragraph (sAddress2,AddressFont));
+//                    cell = new RtfCell (new com.lowagie.text.Paragraph (sAddress2,AddressFont));
+                    cell = new RtfCell (new com.lowagie.text.Paragraph ("",AddressFont));
                     cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                     cell.setVerticalAlignment(Element.ALIGN_TOP);
                     cell.setBorder(TitleColumnBorder);
@@ -261,7 +264,7 @@ public class PrintoutGeneratorPhaseSummary {
 
                     Ids.add(String.valueOf(objectId));
 
-                    parameterS.put("collection_phase",Ids);
+                    parameterS.put("r=inv_cph_id",Ids);
 
                     CollectionPhaseView collectionPhaseView = this.collectionPhaseViewService.findByParameter(parameterS).get(0);
 
@@ -278,12 +281,16 @@ public class PrintoutGeneratorPhaseSummary {
 
                     iRegion        =  collectionPhaseView.getV_debtor_district_id().shortValue();
 
-                    String RegionName = collectionPhaseView.getV_debtor_name();
+                    ReportTool reportTool = new ReportTool();
+                    reportTool.initReference();
 
-                    String DistrictName = collectionPhaseView.getV_debtor_name();
+                    String RegionName = reportTool.getNameByMapName("region",collectionPhaseView.getV_debtor_region_id());
+
+
+                    String DistrictName = reportTool.getNameByMapName("district",collectionPhaseView.getV_debtor_district_id());
 
                     Address address = new Address();
-                    sRasDate = collectionPhaseView.getV_cph_startDate().toString();
+                    sRasDate = reportTool.DateToString(collectionPhaseView.getV_cph_startDate());
 
 
                     sAdres         =  "";
@@ -349,7 +356,7 @@ public class PrintoutGeneratorPhaseSummary {
                     cell.setBorder(TitleColumnBorder);
                     table.addCell (cell);
 
-                    cell = new RtfCell (new Paragraph ("На сумму "+SumProsAll+" с.",TitleFont));
+                    cell = new RtfCell (new Paragraph ("На сумму "+reportTool.FormatNumber(SumProsAll)+" с.",TitleFont));
                     cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                     cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
@@ -359,7 +366,7 @@ public class PrintoutGeneratorPhaseSummary {
 
                     String sText1="";
 
-                    sText1+="     Согласно данным Государственного агентства по управлению бюджетными кредитами при Министерстве финансов Кыргызской Республики по состоянию на  "+sRasDate+"г. за Вами имеется просроченная задолженность  в сумме "+SumProsAll+" сомов";
+                    sText1+="     Согласно данным Государственного агентства по управлению бюджетными кредитами при Министерстве финансов Кыргызской Республики по состоянию на  "+sRasDate+"г. за Вами имеется просроченная задолженность  в сумме "+reportTool.FormatNumber(SumProsAll)+" сомов";
 
 
                     sText1+=" по ниже указанным кредитным договорам:";
@@ -431,7 +438,7 @@ public class PrintoutGeneratorPhaseSummary {
 
                         loanIds.add(String.valueOf(iCreditID));
 
-                        parameterL.put("loan",loanIds);
+                        parameterL.put("r=inv_loan_id",loanIds);
 
                         LoanView loanView = loanViewService.findByParameter(parameterL).get(0);
 
@@ -450,7 +457,8 @@ public class PrintoutGeneratorPhaseSummary {
                         if(loanView.getV_loan_supervisor_id()>0)
                         {
                             if(userService.findById(loanView.getV_loan_supervisor_id()).getStaff()!=null)
-                                curatorStaff = staffService.findById(userService.findById(loanView.getV_loan_supervisor_id()).getStaff().getId());
+//                                curatorStaff = staffService.findById(userService.findById(loanView.getV_loan_supervisor_id()).getStaff().getId());
+                                curatorStaff = userService.findById(loanView.getV_loan_supervisor_id()).getStaff();
                         }
 
 
@@ -483,7 +491,7 @@ public class PrintoutGeneratorPhaseSummary {
                         cell.setBorders(TbBorder);
                         table.addCell (cell);
 
-                        cell = new RtfCell (new Paragraph (String.valueOf((iDebtAll/(Thousands))),HeaderFont));
+                        cell = new RtfCell (new Paragraph (reportTool.FormatNumber(iDebtAll/(Thousands)),HeaderFont));
                         cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                         cell.setVerticalAlignment(Element.ALIGN_CENTER);
                         cell.setBorders(TbBorder);
@@ -505,7 +513,7 @@ public class PrintoutGeneratorPhaseSummary {
                     cell.setBorders(TbBorder);
                     table.addCell (cell);
 
-                    cell = new RtfCell (new Paragraph (String.valueOf(SumProsAll/Thousands),TitleFont2));
+                    cell = new RtfCell (new Paragraph (reportTool.FormatNumber(SumProsAll/(Thousands)),TitleFont2));
                     cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                     cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                     cell.setBorders(TbBorder);
@@ -558,7 +566,7 @@ public class PrintoutGeneratorPhaseSummary {
                     cell.setBorder(TitleColumnBorder);
                     table.addCell (cell);
 
-                    cell = new RtfCell (new Paragraph ("\nЗаместитель директора\n",TitleFont));
+                    cell = new RtfCell (new Paragraph ("Заместитель директора",TitleFont));
                     cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                     cell.setVerticalAlignment(Element.ALIGN_TOP);
 
@@ -573,7 +581,7 @@ public class PrintoutGeneratorPhaseSummary {
                     table.addCell (cell);
 
 
-                    cell = new RtfCell (new Paragraph ("\nДж. Сагынов \n",TitleFont));
+                    cell = new RtfCell (new Paragraph ("Дж. Сагынов",TitleFont));
 
                     cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                     cell.setVerticalAlignment(Element.ALIGN_TOP);
@@ -683,6 +691,9 @@ public class PrintoutGeneratorPhaseSummary {
                     if(curatorStaff.getId()>0)
                     {
                         sCurator = curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getFirstname().substring(0,1)+" "+curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getLastname();
+
+                        if(curatorStaff.getPerson().getContact().getName()!=null)
+                        sCuratorPhone = curatorStaff.getPerson().getContact().getName();
 
                         HeaderFooter footer = new HeaderFooter(new Paragraph("Исп.: "+sCurator+"  тел: "+sCuratorPhone,PerformerFont),false);
                         document.setFooter(footer);

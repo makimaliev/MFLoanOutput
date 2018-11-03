@@ -147,6 +147,7 @@ public class PrintoutGeneratorLoanSummary {
 
 
                     ReportTool reportTool = new ReportTool();
+                    reportTool.initReference();
 
                     LoanSummary loanSummary = loanSummaryService.getById(objectId);
                     Loan loan = loanSummary.getLoan();
@@ -165,17 +166,18 @@ public class PrintoutGeneratorLoanSummary {
 
                     Ids.add(String.valueOf(iPersonID));
 
+//                    List<String> dates = new ArrayList<>();
+//
+////                    long    iOneDay        = 1 * 24 * 60 * 60 * 1000;
+//
+//                    dates.add(String.valueOf(loanSummary.getOnDate().getTime()));
+//                    dates.add(String.valueOf(loanSummary.getOnDate().getTime()));
+
                     List<String> dates = new ArrayList<>();
-
-//                    long    iOneDay        = 1 * 24 * 60 * 60 * 1000;
-
-                    dates.add(String.valueOf(loanSummary.getOnDate().getTime()));
                     dates.add(String.valueOf(loanSummary.getOnDate().getTime()));
 
-
-
-                    parameterS.put("debtor",Ids);
-                    parameterS.put("betweenDates",dates);
+                    parameterS.put("r=inv_debtor_id",Ids);
+                    parameterS.put("r=odv_ls_on_date",dates);
 
                     loanSummaryViews.addAll(this.loanSummaryViewService.findByParameter(parameterS));
 
@@ -244,7 +246,13 @@ public class PrintoutGeneratorLoanSummary {
                         cell.setBorder(TitleColumnBorder);
                         table.addCell (cell);
 
-                        cell = new PdfPCell (new Paragraph (lv.getV_debtor_name() +", "+ lv.getV_debtor_name().replace("ий","ого района")+", "+lv.getV_debtor_name().replace("ая","ой области ") +" перед Государственным агентством по управлению ",TitleFont));
+                        String regionName = "";
+                        String districtName = "";
+
+                        regionName = reportTool.getNameByMapName("region", lv.getV_debtor_region_id());
+                        districtName = reportTool.getNameByMapName("district",lv.getV_debtor_district_id());
+
+                        cell = new PdfPCell (new Paragraph (lv.getV_debtor_name() +", "+ districtName.replace("ий","ого района")+", "+regionName.replace("ая","ой области ") +" перед Государственным агентством по управлению ",TitleFont));
                         cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                         cell.setPadding(TitleColumnPadding);
@@ -429,12 +437,14 @@ int x = 0;
 
 
 
-                            Loan currentLoan = loanService.getById(lsv.getV_loan_id());
-
-                            for (PaymentSchedule ps: loan.getPaymentSchedules())
-                            {
-                                Srok = ps.getExpectedDate();
-                            }
+//                            Loan currentLoan = loanService.getById(lsv.getV_loan_id());
+//
+//                            for (PaymentSchedule ps: loan.getPaymentSchedules())
+//                            {
+//                                Srok = ps.getExpectedDate();
+//                            }
+//
+                            Srok = lv.getV_last_date();
 
                             if(loan.getSupervisorId()>0) curator = userService.findById(loan.getSupervisorId());
 
@@ -445,7 +455,7 @@ int x = 0;
                             Cost            = lsv.getV_loan_amount();
                             Profit          = lsv.getV_ls_total_disbursed();
                             Payments        = lsv.getV_ls_total_paid();
-                            PaymentsSom     = lsv.getV_ls_total_paid();
+                            PaymentsSom     = lsv.getV_ls_total_paid_kgs();
 
                             OstMain         = lsv.getV_ls_outstading_principal();
                             OstPercent      = lsv.getV_ls_outstading_interest();
@@ -631,7 +641,7 @@ int x = 0;
                                 cell.setBackgroundColor (ColumnColor2);
                                 table.addCell (cell);
 
-                                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(PaymentsSom*Rate/(Thousands)),ColumnFont));
+                                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(PaymentsSom/(Thousands)),ColumnFont));
                                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                                 cell.setBackgroundColor (ColumnColor2);

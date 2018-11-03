@@ -1,9 +1,12 @@
 package kg.gov.mf.loan.output.report.utils;
 
+import kg.gov.mf.loan.admin.sys.model.User;
+import kg.gov.mf.loan.admin.sys.service.UserService;
 import kg.gov.mf.loan.manage.model.orderterm.OrderTermCurrency;
 import kg.gov.mf.loan.manage.service.orderterm.CurrencyRateService;
 import kg.gov.mf.loan.manage.service.orderterm.OrderTermCurrencyService;
 import kg.gov.mf.loan.output.report.model.*;
+import kg.gov.mf.loan.output.report.service.FilterParameterService;
 import kg.gov.mf.loan.output.report.service.GroupTypeService;
 import kg.gov.mf.loan.output.report.service.OutputParameterService;
 import kg.gov.mf.loan.output.report.service.ReferenceViewService;
@@ -40,6 +43,12 @@ public class ReportTool
 
     @Autowired
     CurrencyRateService currencyRateService;
+
+    @Autowired
+    FilterParameterService filterParameterService;
+
+    @Autowired
+    UserService userService;
 
 
 
@@ -1453,12 +1462,32 @@ public class ReportTool
 
     public void applyParameters(LinkedHashMap<String,List<String>> parameters, Criteria criteria)
     {
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         String currentUserName = authentication.getName();
 
-        System.out.println(currentUserName);
+        User currentUser = this.userService.findByUsername(currentUserName);
+
+        if(currentUser!=null)
+        {
+
+            if(this.filterParameterService.findByUser(currentUser).size()>0)
+            {
+                LinkedHashMap<String,List<String>> userParameters = new LinkedHashMap<>();
+
+                for (FilterParameter filterParameter: this.filterParameterService.findByUser(currentUser))
+                {
+                    drawParameter(userParameters,filterParameter);
+                }
+
+                if(userParameters.size()>0)
+                    parameters.putAll(userParameters);
+            }
+
+        }
+
 
         for (Map.Entry<String, List<String>> parameterInLoop : parameters.entrySet())
         {
@@ -1488,7 +1517,7 @@ public class ReportTool
 
 
                 case "r=eq" :
-                    criteria.add(Restrictions.eq(propertyName,ids.get(0)));
+                    criteria.add(Restrictions.eq(propertyName,Long.parseLong(ids.get(0))));
                     break;
 
                 case "r=ne" :
@@ -1496,19 +1525,19 @@ public class ReportTool
                     break;
 
                 case "r=gt" :
-                    criteria.add(Restrictions.gt(propertyName,ids.get(0)));
+                    criteria.add(Restrictions.gt(propertyName,Double.valueOf(ids.get(0))));
                     break;
 
                 case "r=ge" :
-                    criteria.add(Restrictions.ge(propertyName,ids.get(0)));
+                    criteria.add(Restrictions.ge(propertyName,Double.valueOf(ids.get(0))));
                     break;
 
                 case "r=lt" :
-                    criteria.add(Restrictions.lt(propertyName,ids.get(0)));
+                    criteria.add(Restrictions.lt(propertyName,Double.valueOf(ids.get(0))));
                     break;
 
                 case "r=le" :
-                    criteria.add(Restrictions.le(propertyName,ids.get(0)));
+                    criteria.add(Restrictions.le(propertyName,Double.valueOf(ids.get(0))));
                     break;
 
                 case "r=yc" :
@@ -1529,24 +1558,24 @@ public class ReportTool
                     break;
 
                 case "r=ad" :
-                    criteria.add(Restrictions.gt(propertyName, this.StringToDate(ids.get(0))));
+                    criteria.add(Restrictions.gt(propertyName, new Date(Long.parseLong(ids.get(0)))));
                     break;
 
                 case "r=ao" :
-                    criteria.add(Restrictions.ge(propertyName, this.StringToDate(ids.get(0))));
+                    criteria.add(Restrictions.ge(propertyName, new Date(Long.parseLong(ids.get(0)))));
 
                     break;
 
                 case "r=bd" :
-                    criteria.add(Restrictions.lt(propertyName, this.StringToDate(ids.get(0))));
+                    criteria.add(Restrictions.lt(propertyName, new Date(Long.parseLong(ids.get(0)))));
                     break;
 
                 case "r=bo" :
-                    criteria.add(Restrictions.le(propertyName, this.StringToDate(ids.get(0))));
+                    criteria.add(Restrictions.le(propertyName, new Date(Long.parseLong(ids.get(0)))));
                     break;
 
                 case "r=od" :
-                    criteria.add(Restrictions.eq(propertyName, this.StringToDate(ids.get(0))));
+                    criteria.add(Restrictions.eq(propertyName, new Date(Long.parseLong(ids.get(0)))));
                     break;
             }
 
