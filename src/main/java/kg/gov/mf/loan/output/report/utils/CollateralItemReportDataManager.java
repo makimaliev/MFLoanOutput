@@ -192,8 +192,21 @@ public class CollateralItemReportDataManager {
                 childE.setCollateralItemQuantity(pv.getV_ci_quantity());
                 childE.setCollateralItemQuantityTypeId(pv.getV_ci_quantityTypeId());
                 childE.setCollateralItemTypeId(pv.getV_ci_itemTypeId());
-                childE.setCollateralItemCollateralValue(pv.getV_ci_collateralValue());
+
+
+                if(pv.getV_ci_collateralValue()>0)
+                {
+                    childE.setCollateralItemCollateralValue(childE.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
+                    childA.setCollateralItemCollateralValue(childA.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
+                    childB.setCollateralItemCollateralValue(childB.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
+                    childC.setCollateralItemCollateralValue(childC.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
+                    childD.setCollateralItemCollateralValue(childD.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
+                    reportData.setCollateralItemCollateralValue(reportData.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
+                }
+
+
                 childE.setCollateralItemEstimatedValue(pv.getV_ci_estimatedValue());
+
                 childE.setCollateralItemDescription(pv.getV_ci_description());
 
 //                childE.setCollateralItemTypeName(itemTypeMap.get(pv.getV_ci_itemTypeId()).getName());

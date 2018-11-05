@@ -2391,7 +2391,7 @@ public class MigrationTool
                                                                                     {
                                                                                         CollateralItemArrestFree collateralItemArrestFree = new CollateralItemArrestFree();
 
-                                                                                        collateralItemArrestFree.setArrestFreeBy(rsCollateralItemArestFree.getLong("release_by"));
+                                                                                        collateralItemArrestFree.setArrestFreeBy(userMap.get(rsCollateralItemArestFree.getLong("release_by")).getId());
                                                                                         collateralItem.setCollateralItemArrestFree(collateralItemArrestFree);
 
                                                                                         collateralItemArrestFree.setOnDate(rsCollateralItemArestFree.getDate("release_date"));

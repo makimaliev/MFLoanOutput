@@ -5,16 +5,16 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
 
-public class CollateralInspectionReportData extends ReportData
+public class CollateralArrestFreeReportData extends ReportData
 {
-	private CollateralInspectionReportData Parent                = null;
-	private LinkedList<CollateralInspectionReportData> ChildDataList = null;
+	private CollateralArrestFreeReportData Parent                = null;
+	private LinkedList<CollateralArrestFreeReportData> ChildDataList = null;
 
 	private short  Level             = 0;
 
 	private String Name                 = "";
 
-	private LinkedHashSet<CollateralInspectionView> collateralInspectionViews = new LinkedHashSet<CollateralInspectionView>(0);
+	private LinkedHashSet<CollateralArrestFreeView> collateralArrestFreeViews = new LinkedHashSet<CollateralArrestFreeView>(0);
 
 
 
@@ -110,26 +110,26 @@ public class CollateralInspectionReportData extends ReportData
 
 
 
-	private String collateralInspectionDetails        = "";
+	private String collateralArrestFreeDetails        = "";
 
-	private long collateralInspectionResultTypeId = 0;
+	private long collateralArrestFreeBy = 0;
 
-	private Date   collateralInspectionOnDate          = null;
-
-
-	private int    inspectionCount                = 0;
+	private Date   collateralArrestFreeOnDate          = null;
 
 
+	private int    arrestFreeCount                = 0;
 
-	public CollateralInspectionReportData()
+
+
+	public CollateralArrestFreeReportData()
 	{
-		ChildDataList = new LinkedList<CollateralInspectionReportData>();
+		ChildDataList = new LinkedList<CollateralArrestFreeReportData>();
 	}
 
 
-	public CollateralInspectionReportData addChild()
+	public CollateralArrestFreeReportData addChild()
 	{
-		CollateralInspectionReportData ChildData = new CollateralInspectionReportData();
+		CollateralArrestFreeReportData ChildData = new CollateralArrestFreeReportData();
 		ChildData.setParent(this);
 		ChildDataList.add(ChildData);
 
@@ -137,27 +137,27 @@ public class CollateralInspectionReportData extends ReportData
 	}
 
 
-	public CollateralInspectionReportData[] getChilds()
+	public CollateralArrestFreeReportData[] getChilds()
 	{
-		return  (CollateralInspectionReportData[])ChildDataList.toArray(new CollateralInspectionReportData[ChildDataList.size()]);
+		return  (CollateralArrestFreeReportData[])ChildDataList.toArray(new CollateralArrestFreeReportData[ChildDataList.size()]);
 	}
 
 
-	public LinkedList<CollateralInspectionReportData> getChildDataList() {
+	public LinkedList<CollateralArrestFreeReportData> getChildDataList() {
 		return ChildDataList;
 	}
 
-	public void setChildDataList(LinkedList<CollateralInspectionReportData> childDataList) {
+	public void setChildDataList(LinkedList<CollateralArrestFreeReportData> childDataList) {
 		ChildDataList = childDataList;
 	}
 
-	public LinkedList<CollateralInspectionReportData> getData()
+	public LinkedList<CollateralArrestFreeReportData> getData()
 	{
 		return ChildDataList;
 	}
 
 
-	public void setData(LinkedList<CollateralInspectionReportData> data)
+	public void setData(LinkedList<CollateralArrestFreeReportData> data)
 	{
 		ChildDataList = data;
 	}
@@ -171,11 +171,11 @@ public class CollateralInspectionReportData extends ReportData
 	{
 		Name = name;
 	}
-	public CollateralInspectionReportData getParent()
+	public CollateralArrestFreeReportData getParent()
 	{
 		return Parent;
 	}
-	public void setParent(CollateralInspectionReportData parent)
+	public void setParent(CollateralArrestFreeReportData parent)
 	{
 		Parent = parent;
 	}
@@ -189,12 +189,12 @@ public class CollateralInspectionReportData extends ReportData
 	}
 
 
-	public LinkedHashSet<CollateralInspectionView> getCollateralInspectionViews() {
-		return collateralInspectionViews;
+	public LinkedHashSet<CollateralArrestFreeView> getCollateralArrestFreeViews() {
+		return collateralArrestFreeViews;
 	}
 
-	public void setCollateralInspectionViews(LinkedHashSet<CollateralInspectionView> collateralInspectionViews) {
-		this.collateralInspectionViews = collateralInspectionViews;
+	public void setCollateralArrestFreeViews(LinkedHashSet<CollateralArrestFreeView> collateralArrestFreeViews) {
+		this.collateralArrestFreeViews = collateralArrestFreeViews;
 	}
 
 	public Date getOnDate() {
@@ -641,35 +641,37 @@ public class CollateralInspectionReportData extends ReportData
 	}
 
 
-	public String getCollateralInspectionDetails() {
-		return collateralInspectionDetails;
+	public String getCollateralArrestFreeDetails() {
+		return collateralArrestFreeDetails;
 	}
 
-	public void setCollateralInspectionDetails(String collateralInspectionDetails) {
-		this.collateralInspectionDetails = collateralInspectionDetails;
+	public void setCollateralArrestFreeDetails(String collateralArrestFreeDetails) {
+		this.collateralArrestFreeDetails = collateralArrestFreeDetails;
 	}
 
-	public long getCollateralInspectionResultTypeId() {
-		return collateralInspectionResultTypeId;
+
+
+	public Date getCollateralArrestFreeOnDate() {
+		return collateralArrestFreeOnDate;
 	}
 
-	public void setCollateralInspectionResultTypeId(long collateralInspectionResultTypeId) {
-		this.collateralInspectionResultTypeId = collateralInspectionResultTypeId;
+	public void setCollateralArrestFreeOnDate(Date collateralArrestFreeOnDate) {
+		this.collateralArrestFreeOnDate = collateralArrestFreeOnDate;
 	}
 
-	public Date getCollateralInspectionOnDate() {
-		return collateralInspectionOnDate;
+	public long getCollateralArrestFreeBy() {
+		return collateralArrestFreeBy;
 	}
 
-	public void setCollateralInspectionOnDate(Date collateralInspectionOnDate) {
-		this.collateralInspectionOnDate = collateralInspectionOnDate;
+	public void setCollateralArrestFreeBy(long collateralArrestFreeBy) {
+		this.collateralArrestFreeBy = collateralArrestFreeBy;
 	}
 
-	public int getInspectionCount() {
-		return inspectionCount;
+	public int getArrestFreeCount() {
+		return arrestFreeCount;
 	}
 
-	public void setInspectionCount(int inspectionCount) {
-		this.inspectionCount = inspectionCount;
+	public void setArrestFreeCount(int arrestFreeCount) {
+		this.arrestFreeCount = arrestFreeCount;
 	}
 }

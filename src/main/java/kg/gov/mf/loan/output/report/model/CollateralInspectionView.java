@@ -100,10 +100,10 @@ public class CollateralInspectionView extends DebtorView
 	private Date v_cir_onDate;
 
 	@Column
-	private Long v_cir_TypeId;
+	private Long v_cir_inspectionResultTypeId;
 
-	@Column
-	private Long v_cir_addedBy;
+//	@Column
+//	private Long v_cir_addedBy;
 
 	public long getV_ca_id() {
 		return v_ca_id;
@@ -289,22 +289,12 @@ public class CollateralInspectionView extends DebtorView
 		this.v_cir_onDate = v_cir_onDate;
 	}
 
-	public Long getV_cir_TypeId() {
-		return v_cir_TypeId;
+	public Long getV_cir_inspectionResultTypeId() {
+		return v_cir_inspectionResultTypeId;
 	}
 
-	public void setV_cir_TypeId(Long v_cir_TypeId) {
-		this.v_cir_TypeId = v_cir_TypeId;
+	public void setV_cir_inspectionResultTypeId(Long v_cir_inspectionResultTypeId) {
+		this.v_cir_inspectionResultTypeId = v_cir_inspectionResultTypeId;
 	}
-
-	public Long getV_cir_addedBy() {
-		return v_cir_addedBy;
-	}
-
-	public void setV_cir_addedBy(Long v_cir_addedBy) {
-		this.v_cir_addedBy = v_cir_addedBy;
-	}
-
-
 }
 

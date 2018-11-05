@@ -2,10 +2,10 @@ package kg.gov.mf.loan.output.report.utils;
 
 import kg.gov.mf.loan.manage.model.collateral.ItemType;
 import kg.gov.mf.loan.manage.service.collateral.ItemTypeService;
-import kg.gov.mf.loan.output.report.model.CollateralInspectionReportData;
-import kg.gov.mf.loan.output.report.model.CollateralInspectionView;
+import kg.gov.mf.loan.output.report.model.CollateralArrestFreeReportData;
+import kg.gov.mf.loan.output.report.model.CollateralArrestFreeView;
 import kg.gov.mf.loan.output.report.model.ReportTemplate;
-import kg.gov.mf.loan.output.report.service.CollateralInspectionViewService;
+import kg.gov.mf.loan.output.report.service.CollateralArrestFreeViewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -15,21 +15,16 @@ import java.util.List;
 import java.util.Map;
 
 
-public class CollateralInspectionReportDataManager {
+public class CollateralArrestFreeReportDataManager {
 	
 	/**
      * Report GENERATION TOOL
      */
 
     @Autowired
-    ItemTypeService itemTypeService;
+    CollateralArrestFreeViewService collateralArrestFreeViewService;
 
-    @Autowired
-    CollateralInspectionViewService collateralInspectionViewService;
-
-    Map<Long,ItemType> itemTypeMap = new HashMap<Long,ItemType>();
-
-    public CollateralInspectionReportData getReportDataGrouped(CollateralInspectionReportData reportData,ReportTemplate reportTemplate)
+    public CollateralArrestFreeReportData getReportDataGrouped(CollateralArrestFreeReportData reportData,ReportTemplate reportTemplate)
     {
 
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
@@ -40,17 +35,17 @@ public class CollateralInspectionReportDataManager {
 
         parameterS.putAll(reportTool.getParametersByTemplate(reportTemplate));
 
-        reportData.getCollateralInspectionViews().addAll(collateralInspectionViewService.findByParameter(parameterS));
+        reportData.getCollateralArrestFreeViews().addAll(collateralArrestFreeViewService.findByParameter(parameterS));
 
-        for (CollateralInspectionView collateralInspectionView: reportData.getCollateralInspectionViews())
+        for (CollateralArrestFreeView collateralArrestFreeView: reportData.getCollateralArrestFreeViews())
         {
-            System.out.println(collateralInspectionView.getV_ci_name());
+            System.out.println(collateralArrestFreeView.getV_ci_name());
         }
 
         return groupifyData(reportData, reportTemplate, reportTool );
     }
 
-    public CollateralInspectionReportData groupifyData(CollateralInspectionReportData reportData, ReportTemplate reportTemplate, ReportTool reportTool)
+    public CollateralArrestFreeReportData groupifyData(CollateralArrestFreeReportData reportData, ReportTemplate reportTemplate, ReportTool reportTool)
     {
 
         reportTool.initReference();
@@ -69,38 +64,38 @@ public class CollateralInspectionReportDataManager {
         long currentgroupEid=-1;
         long currentgroupFid=-1;
 
-        CollateralInspectionReportData childA = null;
-        CollateralInspectionReportData childB = null;
-        CollateralInspectionReportData childC = null;
-        CollateralInspectionReportData childD = null;
-        CollateralInspectionReportData childE = null;
-        CollateralInspectionReportData childF = null;
+        CollateralArrestFreeReportData childA = null;
+        CollateralArrestFreeReportData childB = null;
+        CollateralArrestFreeReportData childC = null;
+        CollateralArrestFreeReportData childD = null;
+        CollateralArrestFreeReportData childE = null;
+        CollateralArrestFreeReportData childF = null;
 
-        for (CollateralInspectionView collateralInspectionView:reportData.getCollateralInspectionViews())
+        for (CollateralArrestFreeView collateralArrestFreeView:reportData.getCollateralArrestFreeViews())
         {
-            if(reportTool.getIdByGroupType(reportTemplate.getGroupType1(),collateralInspectionView)!=currentgroupAid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType1(),collateralArrestFreeView)!=currentgroupAid)
             {
                 childA = reportData.addChild();
-                childA.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType1(),collateralInspectionView));
+                childA.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType1(),collateralArrestFreeView));
                 childA.setLevel((short)1);
 
-                currentgroupAid=reportTool.getIdByGroupType(reportTemplate.getGroupType1(),collateralInspectionView);
+                currentgroupAid=reportTool.getIdByGroupType(reportTemplate.getGroupType1(),collateralArrestFreeView);
             }
 
-            if(reportTool.getIdByGroupType(reportTemplate.getGroupType2(),collateralInspectionView)!=currentgroupBid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType2(),collateralArrestFreeView)!=currentgroupBid)
             {
                 childB = childA.addChild();
-                childB.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType2(),collateralInspectionView));
+                childB.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType2(),collateralArrestFreeView));
                 childB.setLevel((short)2);
 
-                currentgroupBid=reportTool.getIdByGroupType(reportTemplate.getGroupType2(),collateralInspectionView);
+                currentgroupBid=reportTool.getIdByGroupType(reportTemplate.getGroupType2(),collateralArrestFreeView);
             }
 
 
-            if(reportTool.getIdByGroupType(reportTemplate.getGroupType3(),collateralInspectionView)!=currentgroupCid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType3(),collateralArrestFreeView)!=currentgroupCid)
             {
                 childC = childB.addChild();
-                childC.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType3(),collateralInspectionView));
+                childC.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType3(),collateralArrestFreeView));
                 childC.setLevel((short)3);
 
                 childC.setCount(1);
@@ -108,17 +103,17 @@ public class CollateralInspectionReportDataManager {
                 childA.setCount(childA.getCount()+1);
                 reportData.setCount(reportData.getCount()+1);
 
-                currentgroupCid=reportTool.getIdByGroupType(reportTemplate.getGroupType3(),collateralInspectionView);
+                currentgroupCid=reportTool.getIdByGroupType(reportTemplate.getGroupType3(),collateralArrestFreeView);
             }
 
 
-            if(reportTool.getIdByGroupType(reportTemplate.getGroupType4(),collateralInspectionView)!=currentgroupDid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType4(),collateralArrestFreeView)!=currentgroupDid)
             {
 
-                CollateralInspectionView lv = collateralInspectionView;
+                CollateralArrestFreeView lv = collateralArrestFreeView;
 
                 childD = childC.addChild();
-                childD.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType4(),collateralInspectionView));
+                childD.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType4(),collateralArrestFreeView));
                 childD.setLevel((short)4);
 
                 childD.setDetailsCount(1);
@@ -156,18 +151,18 @@ public class CollateralInspectionReportDataManager {
                 childD.setCollateralNotaryOfficeRegNumber(lv.getV_ca_notaryOfficeRegNumber());
 
 
-                currentgroupDid=reportTool.getIdByGroupType(reportTemplate.getGroupType4(),collateralInspectionView);
+                currentgroupDid=reportTool.getIdByGroupType(reportTemplate.getGroupType4(),collateralArrestFreeView);
             }
 
 
 
-            if(reportTool.getIdByGroupType(reportTemplate.getGroupType5(),collateralInspectionView)!=currentgroupEid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType5(),collateralArrestFreeView)!=currentgroupEid)
             {
 
-                CollateralInspectionView pv = collateralInspectionView;
+                CollateralArrestFreeView pv = collateralArrestFreeView;
 
                 childE = childD.addChild();
-                childE.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType5(),collateralInspectionView));
+                childE.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType5(),collateralArrestFreeView));
                 childE.setLevel((short)5);
 
                 if(pv.getV_ca_agreementDate()!=null)
@@ -212,38 +207,38 @@ public class CollateralInspectionReportDataManager {
                 childE.setCollateralItemDescription(pv.getV_ci_description());
 
 //                childE.setCollateralItemTypeName(itemTypeMap.get(pv.getV_ci_itemTypeId()).getName());
-                currentgroupEid=reportTool.getIdByGroupType(reportTemplate.getGroupType5(),collateralInspectionView);
+                currentgroupEid=reportTool.getIdByGroupType(reportTemplate.getGroupType5(),collateralArrestFreeView);
             }
 
 
 
-            if(reportTool.getIdByGroupType(reportTemplate.getGroupType6(),collateralInspectionView)!=currentgroupFid)
+            if(reportTool.getIdByGroupType(reportTemplate.getGroupType6(),collateralArrestFreeView)!=currentgroupFid)
             {
 
-                CollateralInspectionView pv = collateralInspectionView;
+                CollateralArrestFreeView pv = collateralArrestFreeView;
 
                 childF = childE.addChild();
-                childF.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType6(),collateralInspectionView));
+                childF.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType6(),collateralArrestFreeView));
                 childF.setLevel((short)6);
 
 
-                if(pv.getV_cir_onDate()!=null)
-                    childF.setCollateralInspectionOnDate(new java.sql.Date(pv.getV_cir_onDate().getTime()));
+                if(pv.getV_ciaf_onDate()!=null)
+                    childF.setCollateralArrestFreeOnDate(new java.sql.Date(pv.getV_ciaf_onDate().getTime()));
 
-                childF.setCollateralInspectionDetails(pv.getV_cir_details());
+                childF.setCollateralArrestFreeDetails(pv.getV_ciaf_details());
 
-                childF.setCollateralInspectionResultTypeId(pv.getV_cir_inspectionResultTypeId());
-
-
-                reportData.setInspectionCount(reportData.getInspectionCount()+1);
-                childA.setInspectionCount(childA.getInspectionCount()+1);
-                childB.setInspectionCount(childB.getInspectionCount()+1);
-                childC.setInspectionCount(childC.getInspectionCount()+1);
-                childD.setInspectionCount(childD.getInspectionCount()+1);
-                childE.setInspectionCount(childE.getInspectionCount()+1);
+                childF.setCollateralArrestFreeBy(pv.getV_ciaf_arrestFreeBy());
 
 
-                currentgroupFid=reportTool.getIdByGroupType(reportTemplate.getGroupType6(),collateralInspectionView);
+                reportData.setArrestFreeCount(reportData.getArrestFreeCount()+1);
+                childA.setArrestFreeCount(childA.getArrestFreeCount()+1);
+                childB.setArrestFreeCount(childB.getArrestFreeCount()+1);
+                childC.setArrestFreeCount(childC.getArrestFreeCount()+1);
+                childD.setArrestFreeCount(childD.getArrestFreeCount()+1);
+                childE.setArrestFreeCount(childE.getArrestFreeCount()+1);
+
+
+                currentgroupFid=reportTool.getIdByGroupType(reportTemplate.getGroupType6(),collateralArrestFreeView);
             }
 
         }
