@@ -109,8 +109,21 @@ public class SupervisorPlanViewDaoImpl implements SupervisorPlanViewDao {
 		return criteria.list();
 	}
 
+	@Override
+	public List<SupervisorPlanView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit) {
+		Session session = this.sessionFactory.getCurrentSession();
 
+		ReportTool reportTool = new ReportTool();
 
- 
+		Criteria criteria = session.createCriteria(SupervisorPlanView.class);
+
+		reportTool.applyParameters(parameters,criteria);
+
+		criteria.setFirstResult(offset);
+		criteria.setMaxResults(limit);
+
+		return criteria.list();
+	}
+
 
 }

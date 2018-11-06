@@ -61,5 +61,11 @@ public class CollateralInspectionViewServiceJpaImpl implements CollateralInspect
 		return this.collateralInspectionViewDao.findByParameter(parameters);
 	}
 
+	@Override
+	@Transactional
+	public List<CollateralInspectionView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit) {
+		return this.collateralInspectionViewDao.findByParameter(parameters,offset,limit);
+	}
+
 
 }

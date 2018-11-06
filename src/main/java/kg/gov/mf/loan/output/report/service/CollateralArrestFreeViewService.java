@@ -20,4 +20,6 @@ public interface CollateralArrestFreeViewService {
 
 	public List<CollateralArrestFreeView> findByParameter(LinkedHashMap<String, List<String>> parameters);
 
+	public List<CollateralArrestFreeView> findByParameter(LinkedHashMap<String, List<String>> parameters,Integer offset,Integer limit);
+
 }

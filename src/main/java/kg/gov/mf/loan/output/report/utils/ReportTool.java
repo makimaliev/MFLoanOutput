@@ -1558,24 +1558,24 @@ public class ReportTool
                     break;
 
                 case "r=ad" :
-                    criteria.add(Restrictions.gt(propertyName, new Date(Long.parseLong(ids.get(0)))));
+                    criteria.add(Restrictions.gt(propertyName, this.StringToDate(ids.get(0))));
                     break;
 
                 case "r=ao" :
-                    criteria.add(Restrictions.ge(propertyName, new Date(Long.parseLong(ids.get(0)))));
+                    criteria.add(Restrictions.ge(propertyName, this.StringToDate(ids.get(0))));
 
                     break;
 
                 case "r=bd" :
-                    criteria.add(Restrictions.lt(propertyName, new Date(Long.parseLong(ids.get(0)))));
+                    criteria.add(Restrictions.lt(propertyName, this.StringToDate(ids.get(0))));
                     break;
 
                 case "r=bo" :
-                    criteria.add(Restrictions.le(propertyName, new Date(Long.parseLong(ids.get(0)))));
+                    criteria.add(Restrictions.le(propertyName, this.StringToDate(ids.get(0))));
                     break;
 
                 case "r=od" :
-                    criteria.add(Restrictions.eq(propertyName, new Date(Long.parseLong(ids.get(0)))));
+                    criteria.add(Restrictions.eq(propertyName, this.StringToDate(ids.get(0))));
                     break;
             }
 

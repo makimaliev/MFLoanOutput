@@ -61,5 +61,11 @@ public class CollateralArrestFreeViewServiceJpaImpl implements CollateralArrestF
 		return this.collateralArrestFreeViewDao.findByParameter(parameters);
 	}
 
+	@Override
+	@Transactional
+	public List<CollateralArrestFreeView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit) {
+		return this.collateralArrestFreeViewDao.findByParameter(parameters,offset,limit);
+	}
+
 
 }

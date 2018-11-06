@@ -61,5 +61,11 @@ public class SupervisorPlanViewServiceJpaImpl implements SupervisorPlanViewServi
 		return this.supervisorPlanViewDao.findByParameter(parameters);
 	}
 
+	@Override
+	@Transactional
+	public List<SupervisorPlanView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit) {
+		return this.supervisorPlanViewDao.findByParameter(parameters,offset,limit);
+	}
+
 
 }

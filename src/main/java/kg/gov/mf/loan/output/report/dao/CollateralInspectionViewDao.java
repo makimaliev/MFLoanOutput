@@ -21,6 +21,8 @@ public interface CollateralInspectionViewDao {
 
 	public List<CollateralInspectionView> findByParameter(LinkedHashMap<String, List<String>> parameters);
 
+	public List<CollateralInspectionView> findByParameter(LinkedHashMap<String, List<String>> parameters,Integer offset,Integer limit);
+
 
 
 }

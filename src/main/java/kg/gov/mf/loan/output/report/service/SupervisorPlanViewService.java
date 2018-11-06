@@ -20,4 +20,6 @@ public interface SupervisorPlanViewService {
 
 	public List<SupervisorPlanView> findByParameter(LinkedHashMap<String, List<String>> parameters);
 
+	public List<SupervisorPlanView> findByParameter(LinkedHashMap<String, List<String>> parameters,Integer offset,Integer limit);
+
 }

@@ -109,8 +109,21 @@ public class LoanDebtTransferViewDaoImpl implements LoanDebtTransferViewDao {
 		return criteria.list();
 	}
 
+	@Override
+	public List<LoanDebtTransferView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit) {
+		Session session = this.sessionFactory.getCurrentSession();
 
+		ReportTool reportTool = new ReportTool();
 
- 
+		Criteria criteria = session.createCriteria(LoanDebtTransferView.class);
+
+		reportTool.applyParameters(parameters,criteria);
+
+		criteria.setFirstResult(offset);
+		criteria.setMaxResults(limit);
+
+		return criteria.list();
+	}
+
 
 }

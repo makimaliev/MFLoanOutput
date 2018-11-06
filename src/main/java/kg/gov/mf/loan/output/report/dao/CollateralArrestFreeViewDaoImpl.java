@@ -109,7 +109,23 @@ public class CollateralArrestFreeViewDaoImpl implements CollateralArrestFreeView
 		return criteria.list();
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CollateralArrestFreeView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit) {
 
- 
+    	Session session = this.sessionFactory.getCurrentSession();
+
+		ReportTool reportTool = new ReportTool();
+
+		Criteria criteria = session.createCriteria(CollateralArrestFreeView.class);
+
+		reportTool.applyParameters(parameters,criteria);
+
+		criteria.setFirstResult(offset);
+		criteria.setMaxResults(limit);
+
+		return criteria.list();
+	}
+
 
 }

@@ -61,5 +61,11 @@ public class LoanDebtTranferViewServiceJpaImpl implements LoanDebtTransferViewSe
 		return this.loanDebtTransferViewDao.findByParameter(parameters);
 	}
 
+	@Override
+	@Transactional
+	public List<LoanDebtTransferView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit) {
+		return this.loanDebtTransferViewDao.findByParameter(parameters,offset,limit);
+	}
+
 
 }

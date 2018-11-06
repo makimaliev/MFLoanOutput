@@ -21,6 +21,8 @@ public interface LoanDebtTransferViewDao {
 
 	public List<LoanDebtTransferView> findByParameter(LinkedHashMap<String, List<String>> parameters);
 
+	public List<LoanDebtTransferView> findByParameter(LinkedHashMap<String, List<String>> parameters,Integer offset,Integer limit);
+
 
 
 }
