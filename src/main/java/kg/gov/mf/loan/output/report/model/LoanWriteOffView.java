@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name="payment_view")
+@Table(name="loan_write_off_view")
 @Immutable
 public class LoanWriteOffView extends DebtorView
 {

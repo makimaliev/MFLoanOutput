@@ -41,6 +41,7 @@ import kg.gov.mf.loan.output.report.utils.ReportTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -174,7 +175,8 @@ public class PrintoutGeneratorLoanSummary {
 //                    dates.add(String.valueOf(loanSummary.getOnDate().getTime()));
 
                     List<String> dates = new ArrayList<>();
-                    dates.add(String.valueOf(loanSummary.getOnDate().getTime()));
+
+                    dates.add(String.valueOf(new SimpleDateFormat("dd.MM.yyyy").format(loanSummary.getOnDate())));
 
                     parameterS.put("r=inv_debtor_id",Ids);
                     parameterS.put("r=odv_ls_on_date",dates);
