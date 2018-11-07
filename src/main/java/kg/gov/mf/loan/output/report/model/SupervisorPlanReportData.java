@@ -67,6 +67,8 @@ public class SupervisorPlanReportData extends ReportData
 	private double paymentExchangeRate   = 0;
 
 
+	private int    sp_Count         = 0;
+
 	private String sp_description        = "";
 
 	private Date   sp_date          = null;
@@ -527,5 +529,13 @@ public class SupervisorPlanReportData extends ReportData
 
 	public void setSp_reg_by_id(long sp_reg_by_id) {
 		this.sp_reg_by_id = sp_reg_by_id;
+	}
+
+	public int getSp_Count() {
+		return sp_Count;
+	}
+
+	public void setSp_Count(int sp_Count) {
+		this.sp_Count = sp_Count;
 	}
 }

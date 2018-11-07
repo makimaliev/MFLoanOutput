@@ -166,13 +166,12 @@ public class SupervisorPlanReportDataManager {
                 childE.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType5(),supervisorPlanView));
                 childE.setLevel((short)5);
 
-                childE.setPaymentCount(1);
-                childD.setPaymentCount(childD.getPaymentCount()+1);
-                childC.setPaymentCount(childC.getPaymentCount()+1);
-                childA.setPaymentCount(childA.getPaymentCount()+1);
-                childB.setPaymentCount(childB.getPaymentCount()+1);
-                reportData.setPaymentCount(reportData.getPaymentCount()+1);
-
+                childE.setSp_Count(1);
+                childD.setSp_Count(childD.getSp_Count()+1);
+                childC.setSp_Count(childC.getSp_Count()+1);
+                childA.setSp_Count(childA.getSp_Count()+1);
+                childB.setSp_Count(childB.getSp_Count()+1);
+                reportData.setSp_Count(reportData.getSp_Count()+1);
 
                 childE.setSp_date(new java.sql.Date(pv.getV_sp_date().getTime()));
                 childE.setSp_reg_date(new java.sql.Date(pv.getV_sp_reg_date().getTime()));
