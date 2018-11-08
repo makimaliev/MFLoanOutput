@@ -14,7 +14,7 @@ public class LoanWriteOffReportData extends ReportData
 
 	private String Name                 = "";
 
-	private LinkedHashSet<LoanWriteOffView> supervisorPlanView = new LinkedHashSet<LoanWriteOffView>(0);
+	private LinkedHashSet<LoanWriteOffView> loanWriteOffView = new LinkedHashSet<LoanWriteOffView>(0);
 
 
 
@@ -87,6 +87,8 @@ public class LoanWriteOffReportData extends ReportData
 
 	private double wo_penalty= 0;
 
+	private int    writeOffCount         = 0;
+
 	public LoanWriteOffReportData()
 	{
 		ChildDataList = new LinkedList<LoanWriteOffReportData>();
@@ -156,11 +158,11 @@ public class LoanWriteOffReportData extends ReportData
 
 
 	public LinkedHashSet<LoanWriteOffView> getLoanWriteOffViews() {
-		return supervisorPlanView;
+		return loanWriteOffView;
 	}
 
-	public void setLoanWriteOffViews(LinkedHashSet<LoanWriteOffView> supervisorPlanView) {
-		this.supervisorPlanView = supervisorPlanView;
+	public void setLoanWriteOffViews(LinkedHashSet<LoanWriteOffView> loanWriteOffView) {
+		this.loanWriteOffView = loanWriteOffView;
 	}
 
 	public Date getOnDate() {
@@ -447,11 +449,11 @@ public class LoanWriteOffReportData extends ReportData
 
 
 	public LinkedHashSet<LoanWriteOffView> getLoanWriteOffView() {
-		return supervisorPlanView;
+		return loanWriteOffView;
 	}
 
-	public void setLoanWriteOffView(LinkedHashSet<LoanWriteOffView> supervisorPlanView) {
-		this.supervisorPlanView = supervisorPlanView;
+	public void setLoanWriteOffView(LinkedHashSet<LoanWriteOffView> loanWriteOffView) {
+		this.loanWriteOffView = loanWriteOffView;
 	}
 
 	public String getWo_description() {
@@ -516,5 +518,13 @@ public class LoanWriteOffReportData extends ReportData
 
 	public void setWo_penalty(double wo_penalty) {
 		this.wo_penalty = wo_penalty;
+	}
+
+	public int getWriteOffCount() {
+		return writeOffCount;
+	}
+
+	public void setWriteOffCount(int writeOffCount) {
+		this.writeOffCount = writeOffCount;
 	}
 }

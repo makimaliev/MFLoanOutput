@@ -166,12 +166,12 @@ public class LoanWriteOffReportDataManager {
                 childE.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType5(),LoanWriteOffView));
                 childE.setLevel((short)5);
 
-                childE.setPaymentCount(1);
-                childD.setPaymentCount(childD.getPaymentCount()+1);
-                childC.setPaymentCount(childC.getPaymentCount()+1);
-                childA.setPaymentCount(childA.getPaymentCount()+1);
-                childB.setPaymentCount(childB.getPaymentCount()+1);
-                reportData.setPaymentCount(reportData.getPaymentCount()+1);
+                childE.setWriteOffCount(1);
+                childD.setWriteOffCount(childD.getWriteOffCount()+1);
+                childC.setWriteOffCount(childC.getWriteOffCount()+1);
+                childA.setWriteOffCount(childA.getWriteOffCount()+1);
+                childB.setWriteOffCount(childB.getWriteOffCount()+1);
+                reportData.setWriteOffCount(reportData.getWriteOffCount()+1);
 
 
                 childE.setWo_date(new java.sql.Date(pv.getV_wo_date().getTime()));
