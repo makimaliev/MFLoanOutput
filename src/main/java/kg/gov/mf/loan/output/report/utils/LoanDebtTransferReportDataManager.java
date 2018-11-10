@@ -166,12 +166,12 @@ public class LoanDebtTransferReportDataManager {
                 childE.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType5(),loanDebtTransferView));
                 childE.setLevel((short)5);
 
-                childE.setPaymentCount(1);
-                childD.setPaymentCount(childD.getPaymentCount()+1);
-                childC.setPaymentCount(childC.getPaymentCount()+1);
-                childA.setPaymentCount(childA.getPaymentCount()+1);
-                childB.setPaymentCount(childB.getPaymentCount()+1);
-                reportData.setPaymentCount(reportData.getPaymentCount()+1);
+                childE.setDt_Count(1);
+                childD.setDt_Count(childD.getDt_Count()+1);
+                childC.setDt_Count(childC.getDt_Count()+1);
+                childA.setDt_Count(childA.getDt_Count()+1);
+                childB.setDt_Count(childB.getDt_Count()+1);
+                reportData.setDt_Count(reportData.getDt_Count()+1);
 
 
                 childE.setDt_date(new java.sql.Date(pv.getV_dt_date().getTime()));

@@ -79,6 +79,7 @@ public class LoanDebtTransferReportData extends ReportData
 	private long dt_transferPersonId= 0;
 
 
+	private int    dt_Count         = 0;
 
 	private double dt_pricePerUnit   = 0;
 
@@ -533,5 +534,13 @@ public class LoanDebtTransferReportData extends ReportData
 
 	public void setDt_totalCost(double dt_totalCost) {
 		this.dt_totalCost = dt_totalCost;
+	}
+
+	public int getDt_Count() {
+		return dt_Count;
+	}
+
+	public void setDt_Count(int dt_Count) {
+		this.dt_Count = dt_Count;
 	}
 }
