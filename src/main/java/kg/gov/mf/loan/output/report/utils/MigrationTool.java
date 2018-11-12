@@ -1069,6 +1069,9 @@ public class MigrationTool
 
                                                 Boolean penalyLimit20 = true;
 
+                                                if(rsLoan.getShort("limit_penalty_20")!=20)
+                                                    penalyLimit20 = false;
+
                                                 // schedule migration
                                                 try
                                                 {

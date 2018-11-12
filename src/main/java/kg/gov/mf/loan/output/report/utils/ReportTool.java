@@ -1353,6 +1353,8 @@ public class ReportTool
         groupFieldNames.add(reportTemplate.getGroupType2().getField_name());
         groupFieldNames.add(reportTemplate.getGroupType3().getField_name());
         groupFieldNames.add(reportTemplate.getGroupType4().getField_name());
+
+        if(reportTemplate.getGroupType5()!=null)
         groupFieldNames.add(reportTemplate.getGroupType5().getField_name());
 
         parameterS.put("orderBy",groupFieldNames);
