@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import kg.gov.mf.loan.admin.sys.model.User;
 import kg.gov.mf.loan.output.report.model.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -113,6 +114,13 @@ public class ReportTemplate {
 			joinColumns = { @JoinColumn(name = "report_template_id") },
 			inverseJoinColumns = { @JoinColumn(name = "output_parameter_id") })
 	Set<OutputParameter> outputParameters = new HashSet<OutputParameter>();
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+			name="report_template_user",
+			joinColumns = { @JoinColumn(name = "report_template_id") },
+			inverseJoinColumns = { @JoinColumn(name = "user_id") })
+	Set<User> users = new HashSet<User>();
 
 
 	public long getId() {
@@ -282,6 +290,15 @@ public class ReportTemplate {
 
 	public void setShowGroup6(Boolean showGroup6) {
 		this.showGroup6 = showGroup6;
+	}
+
+
+	public Set<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Set<User> users) {
+		this.users = users;
 	}
 
 	@Override

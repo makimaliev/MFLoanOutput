@@ -3,9 +3,12 @@ package kg.gov.mf.loan.output.report.dao;
 import java.util.List;
 import java.util.Set;
 
+import kg.gov.mf.loan.admin.sys.model.User;
+import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,11 +81,14 @@ public class ReportDaoImpl implements ReportDao {
 		Session session = this.sessionFactory.getCurrentSession();
 		Report report = (Report) session.load(Report.class, new Long (id));
 
+
+
 		Hibernate.initialize(report.getContentParameters());
 		Hibernate.initialize(report.getFilterParameters());
 		Hibernate.initialize(report.getGroupTypes());
 		Hibernate.initialize(report.getReportTemplates());
 		Hibernate.initialize(report.getOutputParameters());
+		Hibernate.initialize(report.getUsers());
 		
 		logger.info("Report get by id == "+report);
 
@@ -98,6 +104,21 @@ public class ReportDaoImpl implements ReportDao {
         List<Report> reportsList = session.createQuery("from Report").list();
         return reportsList;
     }
- 
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Report> findByUser(User user)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+
+		Criteria criteria = session.createCriteria(Report.class);
+
+		criteria.createAlias("users", "usersAlias");
+		criteria.add(Restrictions.eq("usersAlias.id", user.getId()));
+
+		return criteria.list() ;
+
+	}
 
 }

@@ -224,287 +224,294 @@ public class LoanSummaryReportDataManager {
                 {
 
                     reportData.setLoanAmount(reportData.getLoanAmount()-lastLoanAmount+pv.getV_loan_amount()*rate/thousands);
-
                     childA.setLoanAmount(childA.getLoanAmount()-lastLoanAmount+pv.getV_loan_amount()*rate/thousands);
-
-
                     childB.setLoanAmount(childB.getLoanAmount()-lastLoanAmount+pv.getV_loan_amount()*rate/thousands);
-
-
                     childC.setLoanAmount(childC.getLoanAmount()-lastLoanAmount+pv.getV_loan_amount()*rate/thousands);
-
                     childD.setLoanAmount(childD.getLoanAmount()-lastLoanAmount+pv.getV_loan_amount()*rate/thousands);
-
                     childE.setLoanAmount(pv.getV_loan_amount()/thousands);
-
                     lastLoanAmount  = pv.getV_loan_amount()*rate/thousands;
+                }
+                else
+                {
+                    if(lastLoanAmount>=0)
+                    {
+                        reportData.setLoanAmount(reportData.getLoanAmount()-lastLoanAmount);
+                        childA.setLoanAmount(childA.getLoanAmount()-lastLoanAmount);
+                        childB.setLoanAmount(childB.getLoanAmount()-lastLoanAmount);
+                        childC.setLoanAmount(childC.getLoanAmount()-lastLoanAmount);
+                        childD.setLoanAmount(childD.getLoanAmount()-lastLoanAmount);
 
+                        lastLoanAmount=0;
+                    }
 
                 }
 
 
+
+
                 if(pv.getV_ls_total_disbursed()>=0)
                 {
-
                     reportData.setTotalDisbursment(reportData.getTotalDisbursment()-lastDisbursement+pv.getV_ls_total_disbursed()*rate/thousands);
-
                     childA.setTotalDisbursment(childA.getTotalDisbursment()-lastDisbursement+pv.getV_ls_total_disbursed()*rate/thousands);
-
-
                     childB.setTotalDisbursment(childB.getTotalDisbursment()-lastDisbursement+pv.getV_ls_total_disbursed()*rate/thousands);
-
-
                     childC.setTotalDisbursment(childC.getTotalDisbursment()-lastDisbursement+pv.getV_ls_total_disbursed()*rate/thousands);
-
                     childD.setTotalDisbursment(childD.getTotalDisbursment()-lastDisbursement+pv.getV_ls_total_disbursed()*rate/thousands);
-
                     childE.setTotalDisbursment(pv.getV_ls_total_disbursed()/thousands);
-
                     lastDisbursement = pv.getV_ls_total_disbursed()*rate/thousands;
+                }
 
+                else
+                {
+                    if(lastDisbursement>=0)
+                    {
+                        reportData.setTotalDisbursment(reportData.getTotalDisbursment()-lastDisbursement);
+                        childA.setTotalDisbursment(childA.getTotalDisbursment()-lastDisbursement);
+                        childB.setTotalDisbursment(childB.getTotalDisbursment()-lastDisbursement);
+                        childC.setTotalDisbursment(childC.getTotalDisbursment()-lastDisbursement);
+                        childD.setTotalDisbursment(childD.getTotalDisbursment()-lastDisbursement);
+
+                        lastDisbursement=0;
+                    }
 
                 }
 
                 if(pv.getV_ls_total_paid_kgs()>=0)
                 {
-
                     reportData.setTotalPaid(reportData.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid_kgs()/thousands);
-
                     childA.setTotalPaid(childA.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid_kgs()/thousands);
-
-
                     childB.setTotalPaid(childB.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid_kgs()/thousands);
-
-
                     childC.setTotalPaid(childC.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid_kgs()/thousands);
-
                     childD.setTotalPaid(childD.getTotalPaid()-lastTotalPaid+pv.getV_ls_total_paid_kgs()/thousands);
-
                     childE.setTotalPaid(pv.getV_ls_total_paid()/thousands);
-
                     lastTotalPaid = pv.getV_ls_total_paid_kgs()/thousands;
-
-
                 }
 
 
                 if(pv.getV_ls_total_outstanding()>=0)
                 {
-
                     reportData.setRemainingSum(reportData.getRemainingSum()-lastTotalOustanding+pv.getV_ls_total_outstanding()*rate/thousands);
-
                     childA.setRemainingSum(childA.getRemainingSum()-lastTotalOustanding+pv.getV_ls_total_outstanding()*rate/thousands);
-
-
                     childB.setRemainingSum(childB.getRemainingSum()-lastTotalOustanding+pv.getV_ls_total_outstanding()*rate/thousands);
-
-
                     childC.setRemainingSum(childC.getRemainingSum()-lastTotalOustanding+pv.getV_ls_total_outstanding()*rate/thousands);
-
                     childD.setRemainingSum(childD.getRemainingSum()-lastTotalOustanding+pv.getV_ls_total_outstanding()*rate/thousands);
-
                     childE.setRemainingSum(pv.getV_ls_total_outstanding()/thousands);
-
                     lastTotalOustanding = pv.getV_ls_total_outstanding()*rate/thousands;
 
-
-
                     reportData.setRemainingDiff(reportData.getRemainingDiff()-lastTotalOustandingDiff+pv.getV_ls_total_outstanding()*(rate-rate2)/thousands);
-
                     childA.setRemainingDiff(childA.getRemainingDiff()-lastTotalOustandingDiff+pv.getV_ls_total_outstanding()*(rate-rate2)/thousands);
-
-
                     childB.setRemainingDiff(childB.getRemainingDiff()-lastTotalOustandingDiff+pv.getV_ls_total_outstanding()*(rate-rate2)/thousands);
-
-
                     childC.setRemainingDiff(childC.getRemainingDiff()-lastTotalOustandingDiff+pv.getV_ls_total_outstanding()*(rate-rate2)/thousands);
-
                     childD.setRemainingDiff(childD.getRemainingDiff()-lastTotalOustandingDiff+pv.getV_ls_total_outstanding()*(rate-rate2)/thousands);
-
                     childE.setRemainingDiff(0);
-
                     lastTotalOustandingDiff = pv.getV_ls_total_outstanding()*(rate-rate2)/thousands;
-
-
                 }
+                else
+                {
+                    if(lastTotalOustanding>=0)
+                    {
+                        reportData.setRemainingSum(reportData.getRemainingSum()-lastTotalOustanding);
+                        childA.setRemainingSum(childA.getRemainingSum()-lastTotalOustanding);
+                        childB.setRemainingSum(childB.getRemainingSum()-lastTotalOustanding);
+                        childC.setRemainingSum(childC.getRemainingSum()-lastTotalOustanding);
+                        childD.setRemainingSum(childD.getRemainingSum()-lastTotalOustanding);
 
+                        reportData.setRemainingDiff(reportData.getRemainingDiff()-lastTotalOustandingDiff);
+                        childA.setRemainingDiff(childA.getRemainingDiff()-lastTotalOustandingDiff);
+                        childB.setRemainingDiff(childB.getRemainingDiff()-lastTotalOustandingDiff);
+                        childC.setRemainingDiff(childC.getRemainingDiff()-lastTotalOustandingDiff);
+                        childD.setRemainingDiff(childD.getRemainingDiff()-lastTotalOustandingDiff);
+
+                        lastTotalOustanding=0;
+                        lastTotalOustandingDiff=0;
+                    }
+                }
 
                 if(pv.getV_ls_outstading_principal()>=0)
                 {
-
                     reportData.setRemainingPrincipal(reportData.getRemainingPrincipal()-lastPrincipleOutstanding+pv.getV_ls_outstading_principal()*rate/thousands);
-
                     childA.setRemainingPrincipal(childA.getRemainingPrincipal()-lastPrincipleOutstanding+pv.getV_ls_outstading_principal()*rate/thousands);
-
-
                     childB.setRemainingPrincipal(childB.getRemainingPrincipal()-lastPrincipleOutstanding+pv.getV_ls_outstading_principal()*rate/thousands);
-
-
                     childC.setRemainingPrincipal(childC.getRemainingPrincipal()-lastPrincipleOutstanding+pv.getV_ls_outstading_principal()*rate/thousands);
-
                     childD.setRemainingPrincipal(childD.getRemainingPrincipal()-lastPrincipleOutstanding+pv.getV_ls_outstading_principal()*rate/thousands);
-
                     childE.setRemainingPrincipal(pv.getV_ls_outstading_principal()/thousands);
-
                     lastPrincipleOutstanding = pv.getV_ls_outstading_principal()*rate/thousands;
+                }
+                else
+                {
+                    if(lastPrincipleOutstanding>=0)
+                    {
+                        reportData.setRemainingPrincipal(reportData.getRemainingPrincipal()-lastPrincipleOutstanding);
+                        childA.setRemainingPrincipal(childA.getRemainingPrincipal()-lastPrincipleOutstanding);
+                        childB.setRemainingPrincipal(childB.getRemainingPrincipal()-lastPrincipleOutstanding);
+                        childC.setRemainingPrincipal(childC.getRemainingPrincipal()-lastPrincipleOutstanding);
+                        childD.setRemainingPrincipal(childD.getRemainingPrincipal()-lastPrincipleOutstanding);
 
-
+                        lastPrincipleOutstanding=0;
+                    }
                 }
 
 
                 if(pv.getV_ls_outstading_interest()>=0)
                 {
-
                     reportData.setRemainingInterest(reportData.getRemainingInterest()-lastInteresOutstanding+pv.getV_ls_outstading_interest()*rate/thousands);
-
                     childA.setRemainingInterest(childA.getRemainingInterest()-lastInteresOutstanding+pv.getV_ls_outstading_interest()*rate/thousands);
-
-
                     childB.setRemainingInterest(childB.getRemainingInterest()-lastInteresOutstanding+pv.getV_ls_outstading_interest()*rate/thousands);
-
-
                     childC.setRemainingInterest(childC.getRemainingInterest()-lastInteresOutstanding+pv.getV_ls_outstading_interest()*rate/thousands);
-
                     childD.setRemainingInterest(childD.getRemainingInterest()-lastInteresOutstanding+pv.getV_ls_outstading_interest()*rate/thousands);
-
                     childE.setRemainingInterest(pv.getV_ls_outstading_interest()/thousands);
-
                     lastInteresOutstanding = pv.getV_ls_outstading_interest()*rate/thousands;
+                }
+                else
+                {
+                    if(lastInteresOutstanding>=0)
+                    {
+                        reportData.setRemainingInterest(reportData.getRemainingInterest()-lastInteresOutstanding);
+                        childA.setRemainingInterest(childA.getRemainingInterest()-lastInteresOutstanding);
+                        childB.setRemainingInterest(childB.getRemainingInterest()-lastInteresOutstanding);
+                        childC.setRemainingInterest(childC.getRemainingInterest()-lastInteresOutstanding);
+                        childD.setRemainingInterest(childD.getRemainingInterest()-lastInteresOutstanding);
 
-
+                        lastInteresOutstanding=0;
+                    }
                 }
 
                 if(pv.getV_ls_outstading_penalty()>=0)
                 {
-
                     reportData.setRemainingPenalty(reportData.getRemainingPenalty()-lastPenaltyOutstanding+pv.getV_ls_outstading_penalty()*rate/thousands);
-
                     childA.setRemainingPenalty(childA.getRemainingPenalty()-lastPenaltyOutstanding+pv.getV_ls_outstading_penalty()*rate/thousands);
-
-
                     childB.setRemainingPenalty(childB.getRemainingPenalty()-lastPenaltyOutstanding+pv.getV_ls_outstading_penalty()*rate/thousands);
-
-
                     childC.setRemainingPenalty(childC.getRemainingPenalty()-lastPenaltyOutstanding+pv.getV_ls_outstading_penalty()*rate/thousands);
-
                     childD.setRemainingPenalty(childD.getRemainingPenalty()-lastPenaltyOutstanding+pv.getV_ls_outstading_penalty()*rate/thousands);
-
                     childE.setRemainingPenalty(pv.getV_ls_outstading_penalty()/thousands);
-
                     lastPenaltyOutstanding = pv.getV_ls_outstading_penalty()*rate/thousands;
+                }
+                else
+                {
+                    if(lastPenaltyOutstanding>=0)
+                    {
+                        reportData.setRemainingPenalty(reportData.getRemainingPenalty()-lastPenaltyOutstanding);
+                        childA.setRemainingPenalty(childA.getRemainingPenalty()-lastPenaltyOutstanding);
+                        childB.setRemainingPenalty(childB.getRemainingPenalty()-lastPenaltyOutstanding);
+                        childC.setRemainingPenalty(childC.getRemainingPenalty()-lastPenaltyOutstanding);
+                        childD.setRemainingPenalty(childD.getRemainingPenalty()-lastPenaltyOutstanding);
 
-
+                        lastPenaltyOutstanding=0;
+                    }
                 }
 
 
 
                 if(pv.getV_ls_total_overdue()>=0)
                 {
-
                     reportData.setOverdueAll(reportData.getOverdueAll()-lastTotalOverdue+pv.getV_ls_total_overdue()*rate/thousands);
-
                     childA.setOverdueAll(childA.getOverdueAll()-lastTotalOverdue+pv.getV_ls_total_overdue()*rate/thousands);
-
-
                     childB.setOverdueAll(childB.getOverdueAll()-lastTotalOverdue+pv.getV_ls_total_overdue()*rate/thousands);
-
-
                     childC.setOverdueAll(childC.getOverdueAll()-lastTotalOverdue+pv.getV_ls_total_overdue()*rate/thousands);
-
                     childD.setOverdueAll(childD.getOverdueAll()-lastTotalOverdue+pv.getV_ls_total_overdue()*rate/thousands);
-
                     childE.setOverdueAll(pv.getV_ls_total_overdue()/thousands);
-
                     lastTotalOverdue = pv.getV_ls_total_overdue()*rate/thousands;
 
-
-
-
                     reportData.setOverdueDiff(reportData.getOverdueDiff()-lastTotalOverdueDiff+pv.getV_ls_total_overdue()*(rate-rate2)/thousands);
-
                     childA.setOverdueDiff(childA.getOverdueDiff()-lastTotalOverdueDiff+pv.getV_ls_total_overdue()*(rate-rate2)/thousands);
-
-
                     childB.setOverdueDiff(childB.getOverdueDiff()-lastTotalOverdueDiff+pv.getV_ls_total_overdue()*(rate-rate2)/thousands);
-
-
                     childC.setOverdueDiff(childC.getOverdueDiff()-lastTotalOverdueDiff+pv.getV_ls_total_overdue()*(rate-rate2)/thousands);
-
                     childD.setOverdueDiff(childD.getOverdueDiff()-lastTotalOverdueDiff+pv.getV_ls_total_overdue()*(rate-rate2)/thousands);
-
                     childE.setOverdueDiff(0);
-
                     lastTotalOverdueDiff = pv.getV_ls_total_overdue()*(rate-rate2)/thousands;
+                }
+                else
+                {
+                    if(lastTotalOverdue>=0)
+                    {
+                        reportData.setOverdueAll(reportData.getOverdueAll()-lastTotalOverdue);
+                        childA.setOverdueAll(childA.getOverdueAll()-lastTotalOverdue);
+                        childB.setOverdueAll(childB.getOverdueAll()-lastTotalOverdue);
+                        childC.setOverdueAll(childC.getOverdueAll()-lastTotalOverdue);
+                        childD.setOverdueAll(childD.getOverdueAll()-lastTotalOverdue);
 
+                        reportData.setOverdueDiff(reportData.getOverdueDiff()-lastTotalOverdueDiff);
+                        childA.setOverdueDiff(childA.getOverdueDiff()-lastTotalOverdueDiff);
+                        childB.setOverdueDiff(childB.getOverdueDiff()-lastTotalOverdueDiff);
+                        childC.setOverdueDiff(childC.getOverdueDiff()-lastTotalOverdueDiff);
+                        childD.setOverdueDiff(childD.getOverdueDiff()-lastTotalOverdueDiff);
 
+                        lastTotalOverdue=0;
+                        lastTotalOverdueDiff=0;
+                    }
                 }
 
 
                 if(pv.getV_ls_overdue_principal()>=0)
                 {
-
                     reportData.setOverduePrincipal(reportData.getOverduePrincipal()-lastPrincipleOverdue+pv.getV_ls_overdue_principal()*rate/thousands);
-
                     childA.setOverduePrincipal(childA.getOverduePrincipal()-lastPrincipleOverdue+pv.getV_ls_overdue_principal()*rate/thousands);
-
-
                     childB.setOverduePrincipal(childB.getOverduePrincipal()-lastPrincipleOverdue+pv.getV_ls_overdue_principal()*rate/thousands);
-
-
                     childC.setOverduePrincipal(childC.getOverduePrincipal()-lastPrincipleOverdue+pv.getV_ls_overdue_principal()*rate/thousands);
-
                     childD.setOverduePrincipal(childD.getOverduePrincipal()-lastPrincipleOverdue+pv.getV_ls_overdue_principal()*rate/thousands);
-
                     childE.setOverduePrincipal(pv.getV_ls_overdue_principal()/thousands);
-
                     lastPrincipleOverdue = pv.getV_ls_overdue_principal()*rate/thousands;
+                }
+                else
+                {
+                    if(lastPrincipleOverdue>=0)
+                    {
+                        reportData.setOverduePrincipal(reportData.getOverduePrincipal()-lastPrincipleOverdue);
+                        childA.setOverduePrincipal(childA.getOverduePrincipal()-lastPrincipleOverdue);
+                        childB.setOverduePrincipal(childB.getOverduePrincipal()-lastPrincipleOverdue);
+                        childC.setOverduePrincipal(childC.getOverduePrincipal()-lastPrincipleOverdue);
+                        childD.setOverduePrincipal(childD.getOverduePrincipal()-lastPrincipleOverdue);
 
-
+                        lastPrincipleOverdue=0;
+                    }
                 }
 
                 if(pv.getV_ls_overdue_interest()>=0)
                 {
-
                     reportData.setOverdueInterest(reportData.getOverdueInterest()-lastInteresOverdue+pv.getV_ls_overdue_interest()*rate/thousands);
-
                     childA.setOverdueInterest(childA.getOverdueInterest()-lastInteresOverdue+pv.getV_ls_overdue_interest()*rate/thousands);
-
-
                     childB.setOverdueInterest(childB.getOverdueInterest()-lastInteresOverdue+pv.getV_ls_overdue_interest()*rate/thousands);
-
-
                     childC.setOverdueInterest(childC.getOverdueInterest()-lastInteresOverdue+pv.getV_ls_overdue_interest()*rate/thousands);
-
                     childD.setOverdueInterest(childD.getOverdueInterest()-lastInteresOverdue+pv.getV_ls_overdue_interest()*rate/thousands);
-
                     childE.setOverdueInterest(pv.getV_ls_overdue_interest()/thousands);
-
                     lastInteresOverdue = pv.getV_ls_overdue_interest()*rate/thousands;
+                }
+                else
+                {
+                    if(lastInteresOverdue>=0)
+                    {
+                        reportData.setOverdueInterest(reportData.getOverdueInterest()-lastInteresOverdue);
+                        childA.setOverdueInterest(childA.getOverdueInterest()-lastInteresOverdue);
+                        childB.setOverdueInterest(childB.getOverdueInterest()-lastInteresOverdue);
+                        childC.setOverdueInterest(childC.getOverdueInterest()-lastInteresOverdue);
+                        childD.setOverdueInterest(childD.getOverdueInterest()-lastInteresOverdue);
 
-
+                        lastInteresOverdue=0;
+                    }
                 }
 
 
                 if(pv.getV_ls_overdue_penalty()>=0)
                 {
-
                     reportData.setOverduePenalty(reportData.getOverduePenalty()-lastPenaltyOverdue+pv.getV_ls_overdue_penalty()*rate/thousands);
-
                     childA.setOverduePenalty(childA.getOverduePenalty()-lastPenaltyOverdue+pv.getV_ls_overdue_penalty()*rate/thousands);
-
-
                     childB.setOverduePenalty(childB.getOverduePenalty()-lastPenaltyOverdue+pv.getV_ls_overdue_penalty()*rate/thousands);
-
-
                     childC.setOverduePenalty(childC.getOverduePenalty()-lastPenaltyOverdue+pv.getV_ls_overdue_penalty()*rate/thousands);
-
                     childD.setOverduePenalty(childD.getOverduePenalty()-lastPenaltyOverdue+pv.getV_ls_overdue_penalty()*rate/thousands);
-
                     childE.setOverduePenalty(pv.getV_ls_overdue_penalty()/thousands);
-
                     lastPenaltyOverdue = pv.getV_ls_overdue_penalty()*rate/thousands;
+                }
+                else
+                {
+                    if(lastPenaltyOverdue>=0)
+                    {
+                        reportData.setOverduePenalty(reportData.getOverduePenalty()-lastPenaltyOverdue);
+                        childA.setOverduePenalty(childA.getOverduePenalty()-lastPenaltyOverdue);
+                        childB.setOverduePenalty(childB.getOverduePenalty()-lastPenaltyOverdue);
+                        childC.setOverduePenalty(childC.getOverduePenalty()-lastPenaltyOverdue);
+                        childD.setOverduePenalty(childD.getOverduePenalty()-lastPenaltyOverdue);
 
-
+                        lastPenaltyOverdue=0;
+                    }
                 }
 
 

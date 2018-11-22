@@ -2,6 +2,7 @@ package kg.gov.mf.loan.output.report.service;
 
 import java.util.List;
 
+import kg.gov.mf.loan.admin.sys.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,6 +55,11 @@ public class ReportTemplateServiceJpaImpl implements ReportTemplateService {
         return this.reportTemplateDao.findAll();
     }
 
+	@Override
+	@Transactional
+	public List<ReportTemplate> findByUser(User user) {
+		return this.reportTemplateDao.findByUser(user);
+	}
 
 	@Override
 	@Transactional

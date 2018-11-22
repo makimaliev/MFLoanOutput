@@ -3,9 +3,12 @@ package kg.gov.mf.loan.output.report.dao;
 import java.util.List;
 import java.util.Set;
 
+import kg.gov.mf.loan.admin.sys.model.User;
+import org.hibernate.Criteria;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +92,7 @@ public class ReportTemplateDaoImpl implements ReportTemplateDao {
 		Hibernate.initialize(reportTemplate.getGroupType5());
 		Hibernate.initialize(reportTemplate.getGroupType6());
 		Hibernate.initialize(reportTemplate.getReport());
+		Hibernate.initialize(reportTemplate.getUsers());
 
 		logger.info("ReportTemplate get by id == "+reportTemplate);
 
@@ -104,6 +108,24 @@ public class ReportTemplateDaoImpl implements ReportTemplateDao {
         List<ReportTemplate> reportTemplatesList = session.createQuery("from ReportTemplate").list();
         return reportTemplatesList;
     }
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ReportTemplate> findByUser(User user)
+	{
+		Session session = this.sessionFactory.getCurrentSession();
+
+		Criteria criteria = session.createCriteria(ReportTemplate.class);
+
+		criteria.createAlias("users", "usersAlias");
+		criteria.add(Restrictions.eq("usersAlias.id", user.getId()));
+
+		return criteria.list() ;
+
+	}
+
+
 
 	@Override
 	public void clone(ReportTemplate reportTemplate) {
@@ -121,8 +143,15 @@ public class ReportTemplateDaoImpl implements ReportTemplateDao {
 		clonedTemplate.setGroupType4(reportTemplate.getGroupType4());
 		clonedTemplate.setGroupType5(reportTemplate.getGroupType5());
 		clonedTemplate.setGroupType6(reportTemplate.getGroupType6());
-		clonedTemplate.setOnDate(reportTemplate.getOnDate());
+
+		if(reportTemplate.getOnDate()!=null)
+			clonedTemplate.setOnDate(reportTemplate.getOnDate());
+
+		if(reportTemplate.getAdditionalDate()!=null)
+			clonedTemplate.setAdditionalDate(reportTemplate.getAdditionalDate());
+
 		clonedTemplate.setOutputParameters(reportTemplate.getOutputParameters());
+		clonedTemplate.setUsers(reportTemplate.getUsers());
 
 
 

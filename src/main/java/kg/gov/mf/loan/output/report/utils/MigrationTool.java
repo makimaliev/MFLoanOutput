@@ -37,6 +37,10 @@ import java.util.Date;
 public class MigrationTool
 {
 
+
+    @Autowired
+    GoodTypeService goodTypeService;
+
     @Autowired
     PhaseDetailsService phaseDetailsService;
 
@@ -46,6 +50,9 @@ public class MigrationTool
 
     @Autowired
     CollateralItemDetailsService collateralItemDetailsService;
+
+    @Autowired
+    CollateralItemService collateralItemService;
 
     @Autowired
     CollateralItemArrestFreeService collateralItemArrestFreeService;
@@ -262,7 +269,13 @@ public class MigrationTool
 
     Map<Long,Debtor> debtorMap = new HashMap<Long,Debtor>();
 
+    Map<Long,CollateralItem> collateralItemMap = new HashMap<Long,CollateralItem>();
+
     Map<Long,Long> debtorToBelinkedDebtTransferMap = new HashMap<>();
+
+    Map<Long,Long> debtorToBelinkedCollateralItemMap = new HashMap<>();
+
+    Map<Long,GoodType> goodTypeMap = new HashMap<Long,GoodType>();
 
 
     public void doMigrate22()
@@ -271,56 +284,32 @@ public class MigrationTool
 
         try
         {
-            Person person = new Person();
-            person.setName(" test person");
-            person.setEnabled(true);
+            User user = new User();
 
-            this.personService.create(person);
-
-            Owner owner = new Owner();
-
-                owner.setName(person.getName());
-                owner.setOwnerType(OwnerType.PERSON);
-                owner.setEntityId(person.getId());
-
-            this.ownerService.add(owner);
-
-            Debtor debtor = new Debtor();
-
-            debtor.setName(owner.getName());
-            debtor.setOwner(owner);
-
-            this.debtorService.add(debtor);
+            user.setUsername("test2");
+            user.setPassword("admin");
+            user.setEnabled(true);
 
 
-            Loan loan = new NormalLoan();
-            loan.setAmount((double)1000);
-            loan.setCreditOrder(this.creditOrderService.getById((long)1));
-
-            loan.setSupervisorId((long)1);
-            loan.setLoanType(this.loanTypeService.getById((long)1));
-            loan.setCurrency(this.orderTermCurrencyService.getById((long)1));
-            loan.setRegDate(new Date());
-            loan.setRegNumber("123");
-            loan.setDebtor(debtor);
-            loan.setLoanState(this.loanStateService.getById((long)1));
-
-            this.loanService.add(loan);
-
-            Bankrupt bankrupt = new Bankrupt();
-
-            bankrupt.setLoan(loan);
-            //bankrupt.setStartedOnDate(loan.getRegDate());
-            bankrupt.setFinishedOnDate(loan.getRegDate());
-
-            this.bankruptService.add(bankrupt);
-
-
-            for (Bankrupt bank: this.bankruptService.list())
+            if(user.isEnabled())
             {
-                System.out.println(bank.getId());
+                Staff staff = new Staff();
 
+                staff.setEnabled(true);
+                staff.setName("staff name");
+                //staff.setUser(user);
+
+                EmploymentHistory employmentHistory = new EmploymentHistory();
+
+                staff.setEmploymentHistory(employmentHistory);
+
+                this.staffService.create(staff);
+
+                user.setStaff(staff);
             }
+
+
+            userService.create(user);
 
 
 
@@ -456,6 +445,10 @@ public class MigrationTool
         boolean collectionMigrateDone = light;
         if(!collectionMigrateDone) collectionMigrateDone = this.collectionPhaseTypeMigrate(connection);
 
+
+        boolean goodTypeMigrateDone = light;
+        if(!goodTypeMigrateDone) goodTypeMigrateDone = this.goodsTypeMigrate(connection);
+
         boolean currencyRateMigrateDone = done;
         if(!currencyRateMigrateDone) currencyRateMigrateDone = this.currencyRateMigrate(connection);
 
@@ -507,7 +500,7 @@ public class MigrationTool
                             "\n" +
                             "      * from person, person_details,address,phone\n" +
                             "where person.id = person_details.person_id AND\n" +
-                            "      address.user_id = person.id AND address.contact_type = 2 AND\n" +
+                            "      address.user_id = person.id AND address.contact_type = 2 AND \n" +
                             "      phone.user_id = person.id and phone.contact_type = 2 order by person.id ");
                     if(rs != null)
                     {
@@ -547,7 +540,6 @@ public class MigrationTool
                             }
                             else
                             {
-                                errorList.add(" aokmotu is 0 "+rs.getLong("person_id"));
                                 aokmotu = aokmotuMap.get((long)1);
                                 address.setAokmotu(aokmotu);
                             }
@@ -1739,7 +1731,7 @@ public class MigrationTool
 
                                                                         supervisorPlanJan.setDate(jan);
 
-                                                                        supervisorPlanJan.setReg_by_id(rsPlan.getLong("reg_by"));
+                                                                        supervisorPlanJan.setReg_by_id(userMap.get(rsPlan.getLong("reg_by")).getId());
                                                                         supervisorPlanJan.setReg_date(rsPlan.getDate("reg_date"));
 
                                                                         // plan Feb
@@ -1757,7 +1749,7 @@ public class MigrationTool
 
                                                                         supervisorPlanFeb.setDate(feb);
 
-                                                                        supervisorPlanFeb.setReg_by_id(rsPlan.getLong("reg_by"));
+                                                                        supervisorPlanFeb.setReg_by_id(userMap.get(rsPlan.getLong("reg_by")).getId());
                                                                         supervisorPlanFeb.setReg_date(rsPlan.getDate("reg_date"));
 
 
@@ -1776,7 +1768,7 @@ public class MigrationTool
 
                                                                         supervisorPlanMar.setDate(mar);
 
-                                                                        supervisorPlanMar.setReg_by_id(rsPlan.getLong("reg_by"));
+                                                                        supervisorPlanMar.setReg_by_id(userMap.get(rsPlan.getLong("reg_by")).getId());
                                                                         supervisorPlanMar.setReg_date(rsPlan.getDate("reg_date"));
 
                                                                         // plan Apr
@@ -1794,7 +1786,7 @@ public class MigrationTool
 
                                                                         supervisorPlanApr.setDate(apr);
 
-                                                                        supervisorPlanApr.setReg_by_id(rsPlan.getLong("reg_by"));
+                                                                        supervisorPlanApr.setReg_by_id(userMap.get(rsPlan.getLong("reg_by")).getId());
                                                                         supervisorPlanApr.setReg_date(rsPlan.getDate("reg_date"));
 
                                                                         // plan May
@@ -1812,7 +1804,7 @@ public class MigrationTool
 
                                                                         supervisorPlanMay.setDate(may);
 
-                                                                        supervisorPlanMay.setReg_by_id(rsPlan.getLong("reg_by"));
+                                                                        supervisorPlanMay.setReg_by_id(userMap.get(rsPlan.getLong("reg_by")).getId());
                                                                         supervisorPlanMay.setReg_date(rsPlan.getDate("reg_date"));
 
 
@@ -1833,7 +1825,7 @@ public class MigrationTool
 
                                                                         supervisorPlanJun.setDate(jun);
 
-                                                                        supervisorPlanJun.setReg_by_id(rsPlan.getLong("reg_by"));
+                                                                        supervisorPlanJun.setReg_by_id(userMap.get(rsPlan.getLong("reg_by")).getId());
                                                                         supervisorPlanJun.setReg_date(rsPlan.getDate("reg_date"));
 
 
@@ -1853,7 +1845,7 @@ public class MigrationTool
 
                                                                         supervisorPlanJul.setDate(jul);
 
-                                                                        supervisorPlanJul.setReg_by_id(rsPlan.getLong("reg_by"));
+                                                                        supervisorPlanJul.setReg_by_id(userMap.get(rsPlan.getLong("reg_by")).getId());
                                                                         supervisorPlanJul.setReg_date(rsPlan.getDate("reg_date"));
 
 
@@ -1872,7 +1864,7 @@ public class MigrationTool
 
                                                                         supervisorPlanAug.setDate(aug);
 
-                                                                        supervisorPlanAug.setReg_by_id(rsPlan.getLong("reg_by"));
+                                                                        supervisorPlanAug.setReg_by_id(userMap.get(rsPlan.getLong("reg_by")).getId());
                                                                         supervisorPlanAug.setReg_date(rsPlan.getDate("reg_date"));
 
 
@@ -1891,7 +1883,7 @@ public class MigrationTool
 
                                                                         supervisorPlanSep.setDate(sep);
 
-                                                                        supervisorPlanSep.setReg_by_id(rsPlan.getLong("reg_by"));
+                                                                        supervisorPlanSep.setReg_by_id(userMap.get(rsPlan.getLong("reg_by")).getId());
                                                                         supervisorPlanSep.setReg_date(rsPlan.getDate("reg_date"));
 
 
@@ -1910,7 +1902,7 @@ public class MigrationTool
 
                                                                         supervisorPlanOct.setDate(oct);
 
-                                                                        supervisorPlanOct.setReg_by_id(rsPlan.getLong("reg_by"));
+                                                                        supervisorPlanOct.setReg_by_id(userMap.get(rsPlan.getLong("reg_by")).getId());
                                                                         supervisorPlanOct.setReg_date(rsPlan.getDate("reg_date"));
 
 
@@ -1929,7 +1921,7 @@ public class MigrationTool
 
                                                                         supervisorPlanNov.setDate(nov);
 
-                                                                        supervisorPlanNov.setReg_by_id(rsPlan.getLong("reg_by"));
+                                                                        supervisorPlanNov.setReg_by_id(userMap.get(rsPlan.getLong("reg_by")).getId());
                                                                         supervisorPlanNov.setReg_date(rsPlan.getDate("reg_date"));
 
 
@@ -1948,7 +1940,7 @@ public class MigrationTool
 
                                                                         supervisorPlanDec.setDate(dec);
 
-                                                                        supervisorPlanDec.setReg_by_id(rsPlan.getLong("reg_by"));
+                                                                        supervisorPlanDec.setReg_by_id(userMap.get(rsPlan.getLong("reg_by")).getId());
                                                                         supervisorPlanDec.setReg_date(rsPlan.getDate("reg_date"));
 
 
@@ -2014,8 +2006,11 @@ public class MigrationTool
                                                                     LoanGoods loanGoods = new LoanGoods();
 
                                                                     loanGoods.setLoan(loan);
-                                                                    loanGoods.setGoodsTypeId(rsCreditGoods.getLong("goods_type_id"));
-                                                                    loanGoods.setUnitTypeId(rsCreditGoods.getLong("quantity_type"));
+//                                                                    loanGoods.setGoodsTypeId(rsCreditGoods.getLong("goods_type_id"));
+
+                                                                    loanGoods.setGoodType(goodTypeMap.get(rsCreditGoods.getLong("goods_type_id")));
+
+                                                                    loanGoods.setQuantityType(quantityTypeMap.get(rsCreditGoods.getLong("quantity_type")));
                                                                     loanGoods.setQuantity(rsCreditGoods.getDouble("quantity"));
 
                                                                     this.loanGoodsService.add(loanGoods);
@@ -2076,17 +2071,9 @@ public class MigrationTool
                                                                     debtTransfer.setTotalCost(rsDebtTransfer.getDouble("cost"));
                                                                     debtTransfer.setQuantity(rsDebtTransfer.getDouble("quantity"));
 
-//                                                                    if(debtorMap.get(rsDebtTransfer.getLong("person_id_from"))!=null)
-//                                                                        debtTransfer.setTransferPersonId(debtorMap.get(rsDebtTransfer.getLong("person_id_from")).getId());
-//                                                                    else
-//                                                                        {
-//                                                                            errorList.add(" debtor transfer from unknown debtor id == "+ rsDebtTransfer.getLong("person_id_from"));
-//                                                                        }
+                                                                    debtTransfer.setGoodType(goodTypeMap.get(rsDebtTransfer.getLong("goods_type_id")));
 
-
-
-                                                                    debtTransfer.setGoodsTypeId(rsDebtTransfer.getLong("goods_type_id"));
-                                                                    debtTransfer.setUnitTypeId((long)1);
+                                                                    debtTransfer.setQuantityType(quantityTypeMap.get((long)1));
 
                                                                     this.debtTransferService.add(debtTransfer);
 
@@ -2285,6 +2272,15 @@ public class MigrationTool
 
                                                                     collateralItem.setVersion((long)rsCollateralItem.getInt("id"));
 
+                                                                    if(rsCollateralItem.getLong("person_id")==debtor.getVersion())
+                                                                        collateralItem.setOwner(owner);
+                                                                    else
+                                                                        {
+                                                                            debtorToBelinkedCollateralItemMap.put(rsCollateralItem.getLong("id"),rsCollateralItem.getLong("person_id"));
+                                                                        }
+
+
+
                                                                     if(rsCollateralItem.getString("deposit_name").length()<200)
                                                                     collateralItem.setName(rsCollateralItem.getString("deposit_name"));
                                                                     else collateralItem.setName(rsCollateralItem.getString("deposit_name").substring(0,199));
@@ -2479,16 +2475,10 @@ public class MigrationTool
                                                 {
                                                     this.collateralAgreementService.add(collateralAgreement);
 
-                                                    /*for(CollateralItem item :collateralAgreement.getCollateralItems())
+                                                    for(CollateralItem item :collateralAgreement.getCollateralItems())
                                                     {
-
-                                                        this.collateralItemDetailsService.add(item.getCollateralItemDetails());
-
-                                                        for (CollateralItemInspectionResult inspection : item.getCollateralItemInspectionResults())
-                                                        {
-                                                            this.collateralItemInspectionResultService.add(inspection);
-                                                        }
-                                                    }*/
+                                                        collateralItemMap.put(item.getVersion(),item);
+                                                    }
 
 
 
@@ -2773,15 +2763,81 @@ public class MigrationTool
                     }
 
 
-                    for (DebtTransfer debtTransfer : this.debtTransferService.list())
-                    {
-                        if(debtorToBelinkedDebtTransferMap.get(debtTransfer.getId())!=null)
+                    try {
+
+                        for (DebtTransfer debtTransfer : this.debtTransferService.list())
                         {
-                            debtTransfer.setTransferPersonId(debtorMap.get(debtorToBelinkedDebtTransferMap.get(debtTransfer.getId())).getId());
-                            this.debtTransferService.update(debtTransfer);
+                            if(debtorToBelinkedDebtTransferMap.get(debtTransfer.getId())!=null)
+                            {
+
+                                if(debtorMap.get(debtorToBelinkedDebtTransferMap.get(debtTransfer.getId()))!=null)
+                                {
+                                    debtTransfer.setTransferPersonId(debtorMap.get(debtorToBelinkedDebtTransferMap.get(debtTransfer.getId())).getId());
+                                    this.debtTransferService.update(debtTransfer);
+                                }
+
+
+                            }
+
                         }
 
                     }
+                    catch (Exception ex)
+                    {
+                        System.out.println(" debt transfer person migration error");
+                        System.out.println(" debt transfer person migration error");
+                        System.out.println(" debt transfer person migration error");
+                        System.out.println(" debt transfer person migration error");
+                        System.out.println(" debt transfer person migration error");
+                        System.out.println(" debt transfer person migration error");
+                    }
+
+
+
+                    try {
+                        for (Map.Entry<Long, Long> entry : debtorToBelinkedCollateralItemMap.entrySet())
+                        {
+
+                            try {
+                                CollateralItem item = collateralItemMap.get(entry.getKey());
+
+                                Debtor debtor = debtorMap.get(entry.getValue());
+
+                                if(debtor!=null)
+                                {
+                                    Owner guarantor = debtor.getOwner();
+
+                                    item.setOwner(guarantor);
+
+                                    this.collateralItemService.update(item);
+                                }
+
+                            }
+                            catch(Exception ex)
+                            {
+                                errorList.add("debtorToBelinkedCollateralItemMap "+ entry.getKey() + " "+entry.getValue()+" error == "+ ex);
+                            }
+
+
+
+                        }
+
+
+                    }
+                    catch (Exception ex)
+                    {
+                        System.out.println(" collateral item person migration error");
+                        System.out.println(" collateral item person migration error");
+                        System.out.println(" collateral item person migration error");
+                        System.out.println(" collateral item person migration error");
+                        System.out.println(" collateral item person migration error");
+                        System.out.println(" collateral item person migration error");
+
+                    }
+
+
+
+
                 }
                 catch (SQLException ex)
                 {
@@ -3384,6 +3440,57 @@ public class MigrationTool
         return migrationSuccess;
     }
 
+    private boolean goodsTypeMigrate(Connection connection)
+    {
+        boolean migrationSuccess = false;
+
+        try
+        {
+            if (connection != null) {
+                ResultSet rs = null;
+                try
+                {
+                    Statement st = connection.createStatement();
+                    rs = st.executeQuery("select * from goods_type");
+                    if(rs != null)
+                    {
+                        while (rs.next())
+                        {
+                            GoodType goodType = new GoodType();
+                            goodType.setName(rs.getString("code"));
+
+                            this.goodTypeService.add(goodType);
+
+                            goodTypeMap.put(rs.getLong("type_id"),goodType);
+
+                        }
+
+                        migrationSuccess = true;
+                        rs.close();
+                        st.close();
+                    }
+                }
+                catch (SQLException ex)
+                {
+                    System.out.println("Connection Failed! Check output console");
+                    ex.printStackTrace();
+                    return migrationSuccess;
+                }
+
+            }
+            else
+            {
+                System.out.println("Failed to make connection!");
+            }
+        }
+        catch(Exception ex)
+        {
+            System.out.println(" Error in goodType migration "+ex);
+        }
+
+        return migrationSuccess;
+    }
+
     private boolean itemTypeMigrate(Connection connection)
     {
         boolean migrationSuccess = false;
@@ -3889,7 +3996,7 @@ public class MigrationTool
                                 Address address = new Address();
 
                                 Region region = new Region();
-                                if(this.regionService.findById((long)rs.getInt("region"))!=null)
+                                if(this.regionService.findById((long)rs.getInt("region"))!=null && rs.getInt("region")>0)
                                     region = this.regionService.findById((long)rs.getInt("region"));
                                 else region = this.regionService.findById((long)2);
 
@@ -3935,6 +4042,11 @@ public class MigrationTool
                                 this.personService.create(person);
 
                                 staff.setPerson(person);
+
+
+                                EmploymentHistory employmentHistory = new EmploymentHistory();
+
+                                staff.setEmploymentHistory(employmentHistory);
 
                                 this.staffService.create(staff);
 

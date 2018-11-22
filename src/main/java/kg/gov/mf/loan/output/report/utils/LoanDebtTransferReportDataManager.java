@@ -139,6 +139,8 @@ public class LoanDebtTransferReportDataManager {
                 childD.setCurrency(lv.getV_loan_currency_id().shortValue());
                 childD.setLoanRegNumber(lv.getV_loan_reg_number());
                 childD.setOrderRegNumber(lv.getV_credit_order_reg_number());
+
+                if(lv.getV_loan_reg_date()!=null)
                 childD.setLoanRegDate(new java.sql.Date(lv.getV_loan_reg_date().getTime()));
 
                 childD.setLoanType(lv.getV_loan_type_id().shortValue());
@@ -173,7 +175,7 @@ public class LoanDebtTransferReportDataManager {
                 childB.setDt_Count(childB.getDt_Count()+1);
                 reportData.setDt_Count(reportData.getDt_Count()+1);
 
-
+                if(pv.getV_dt_date()!=null)
                 childE.setDt_date(new java.sql.Date(pv.getV_dt_date().getTime()));
 
 

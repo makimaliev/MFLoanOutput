@@ -1,5 +1,6 @@
 package kg.gov.mf.loan.output.report.utils;
 
+import jdk.internal.org.objectweb.asm.tree.TryCatchBlockNode;
 import kg.gov.mf.loan.admin.sys.model.User;
 import kg.gov.mf.loan.admin.sys.service.UserService;
 import kg.gov.mf.loan.manage.model.orderterm.OrderTermCurrency;
@@ -17,6 +18,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.internal.CriteriaImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.security.core.Authentication;
@@ -201,38 +203,43 @@ public class ReportTool
 
         for (OrderTermCurrency orderTermCurrency:this.orderTermCurrencyService.list())
         {
-            Date date = new Date();
-            Date date2 = new Date(date.getTime());
-
-            if(reportTemplate.getOnDate()!=null) date= reportTemplate.getOnDate();
-
-            if(reportTemplate.getAdditionalDate()!=null) date2= reportTemplate.getAdditionalDate();
-
-            Double currencyRateValue = this.currencyRateService.findByDateAndType(date, orderTermCurrency ).getRate();
-            Double currencyRateValue2 = this.currencyRateService.findByDateAndType(date2, orderTermCurrency ).getRate();
-
-
-            if(CurrencyRateMap.get(date)==null)
+            if(!orderTermCurrency.getName().equals("тонн"))
             {
-                Map<Long,Double> newMap      = new HashMap<>();
-                newMap.put(orderTermCurrency.getId(),currencyRateValue);
-                CurrencyRateMap.put(date, newMap);
-            }
-            else
-            {
-                CurrencyRateMap.get(date).put(orderTermCurrency.getId(),currencyRateValue);
+                Date date = new Date();
+                Date date2 = new Date(date.getTime());
+
+                if(reportTemplate.getOnDate()!=null) date= reportTemplate.getOnDate();
+
+                if(reportTemplate.getAdditionalDate()!=null) date2= reportTemplate.getAdditionalDate();
+
+                Double currencyRateValue = this.currencyRateService.findByDateAndType(date, orderTermCurrency ).getRate();
+                Double currencyRateValue2 = this.currencyRateService.findByDateAndType(date2, orderTermCurrency ).getRate();
+
+
+                if(CurrencyRateMap.get(date)==null)
+                {
+                    Map<Long,Double> newMap      = new HashMap<>();
+                    newMap.put(orderTermCurrency.getId(),currencyRateValue);
+                    CurrencyRateMap.put(date, newMap);
+                }
+                else
+                {
+                    CurrencyRateMap.get(date).put(orderTermCurrency.getId(),currencyRateValue);
+                }
+
+                if(CurrencyRateMap.get(date2)==null)
+                {
+                    Map<Long,Double> newMap      = new HashMap<>();
+                    newMap.put(orderTermCurrency.getId(),currencyRateValue2);
+                    CurrencyRateMap.put(date2, newMap);
+                }
+                else
+                {
+                    CurrencyRateMap.get(date2).put(orderTermCurrency.getId(),currencyRateValue2);
+                }
             }
 
-            if(CurrencyRateMap.get(date2)==null)
-            {
-                Map<Long,Double> newMap      = new HashMap<>();
-                newMap.put(orderTermCurrency.getId(),currencyRateValue2);
-                CurrencyRateMap.put(date2, newMap);
-            }
-            else
-            {
-                CurrencyRateMap.get(date2).put(orderTermCurrency.getId(),currencyRateValue2);
-            }
+
 
 
 
@@ -1466,6 +1473,35 @@ public class ReportTool
     {
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
+
+        String allFieldNames = "";
+
+        boolean isDocumentClass = false;
+
+        try {
+
+            CriteriaImpl impl = (CriteriaImpl) criteria;
+            String className = impl.getEntityOrClassName();
+
+            for (Method f: Class.forName(className).getMethods())
+            {
+               allFieldNames+=f.getName().toLowerCase().trim();
+            }
+
+            if(className.contains("DocumentView"))
+            {
+                isDocumentClass = true;
+            }
+
+        }
+        catch (Exception ex)
+        {
+
+        }
+
+
+
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         String currentUserName = authentication.getName();
@@ -1488,6 +1524,11 @@ public class ReportTool
                     parameters.putAll(userParameters);
             }
 
+            if(isDocumentClass)
+            {
+                criteria.add(Restrictions.eq("v_doc_document_user_id",currentUser.getId()));
+            }
+
         }
 
 
@@ -1501,6 +1542,8 @@ public class ReportTool
 
             String propertyName = parameterType.substring(4,parameterType.length());
 
+
+            if(allFieldNames.contains(propertyName.toLowerCase().trim()))
             switch (criteriaType)
             {
                 case "r=in" :
@@ -2058,7 +2101,37 @@ public class ReportTool
 
                 String returnText = "";
 
-                if(this.getIdByGroupType(groupType,reportView)>0) returnText = row_name.replace("(="+variableString+"=)",referenceMap.get(mapName).get(this.getIdByGroupType(groupType,reportView)));
+                try
+                {
+
+                    int firstPositionOfSpecialChar2 = variableString.lastIndexOf("(");
+                    int lastPositionOfSpecialChar2 = variableString.lastIndexOf(")");
+
+
+                    String variableString2 = variableString.substring(firstPositionOfSpecialChar2+1,lastPositionOfSpecialChar2);
+
+                    String sMethodName = "get"+variableString2.substring(0, 1).toUpperCase()+variableString2.substring(1, variableString2.length());
+
+                    reportView.getClass().cast(reportView);
+                    object = reportView.getClass().getMethod(sMethodName,null).invoke(reportView);
+
+                }
+                catch (Exception ex)
+                {
+                    System.out.println(ex);
+
+                }
+
+                if(this.getIdByGroupType(groupType,reportView)>0)
+                {
+                    returnText = row_name.replace("(="+variableString+"=)",referenceMap.get(mapName).get(this.getIdByGroupType(groupType,reportView)));
+
+                    if(object!=null)
+                    if(!object.toString().equals(String.valueOf(this.getIdByGroupType(groupType,reportView))))
+                    {
+                        returnText = row_name.replace("(="+variableString+"=)",referenceMap.get(mapName).get(Long.valueOf(object.toString())));
+                    }
+                }
 
                 return returnText;
             }

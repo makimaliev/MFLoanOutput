@@ -2,6 +2,7 @@ package kg.gov.mf.loan.output.report.dao;
 
 import java.util.List;
 
+import kg.gov.mf.loan.admin.sys.model.User;
 import org.springframework.stereotype.Repository;
 
 import kg.gov.mf.loan.output.report.model.*;
@@ -18,5 +19,7 @@ public interface ReportDao {
 	public Report findById (long id);
 	
 	public List<Report> findAll();
+
+	public List<Report> findByUser(User user);
 
 }
