@@ -449,13 +449,13 @@ public class MigrationTool
         boolean goodTypeMigrateDone = light;
         if(!goodTypeMigrateDone) goodTypeMigrateDone = this.goodsTypeMigrate(connection);
 
-        boolean currencyRateMigrateDone = done;
+        boolean currencyRateMigrateDone = light;
         if(!currencyRateMigrateDone) currencyRateMigrateDone = this.currencyRateMigrate(connection);
 
-        boolean floatingRateMigrateDone = done;
+        boolean floatingRateMigrateDone = light;
         if(!floatingRateMigrateDone) floatingRateMigrateDone = this.floatingRateMigrate(connection);
 
-        boolean debtorMigrationDone = done;
+        boolean debtorMigrationDone = light;
         if(!debtorMigrationDone) debtorMigrationDone = this.debtorMigrate(connection);
 
 
@@ -500,7 +500,7 @@ public class MigrationTool
                             "\n" +
                             "      * from person, person_details,address,phone\n" +
                             "where person.id = person_details.person_id AND\n" +
-                            "      address.user_id = person.id AND address.contact_type = 2 AND \n" +
+                            "      address.user_id = person.id AND address.contact_type = 2 AND  \n" +
                             "      phone.user_id = person.id and phone.contact_type = 2 order by person.id ");
                     if(rs != null)
                     {
@@ -1028,6 +1028,28 @@ public class MigrationTool
                                                 }
 
 
+                                                if(details.contains("(=погашен=)")||details.contains("(=банкрот=)"))
+                                                {
+                                                    try
+                                                    {
+                                                        SimpleDateFormat DateFormatShort = new SimpleDateFormat("dd.MM.yyyy");
+
+                                                        Date date = DateFormatShort.parse(details.substring(details.indexOf("дата==")+6,details.length()-2));
+
+                                                        loan.setCloseDate(date);
+
+                                                    }
+                                                    catch(Exception ex)
+                                                    {
+                                                        System.out.println((" close date error")+ " == "+ rsLoan.getInt("credit_id"));
+                                                    }
+
+                                                }
+
+
+
+
+
 
 
 
@@ -1042,6 +1064,8 @@ public class MigrationTool
                                                 loan.setDebtor(debtor);
                                                 loan.setLoanState(loanStateMap.get((long)rsLoan.getInt("status")));
                                                 loan.setFund(fundMap.get(rsLoan.getLong("credit_line")));
+
+                                                loan.setBankDataId(rsLoan.getLong("payment_requsite_id"));
 
                                                 loan.setVersion(Long.valueOf(rsLoan.getInt("credit_id")));
 
@@ -2739,7 +2763,9 @@ public class MigrationTool
 
                                         if(rs.getDate("fin_status_date")!=null)
                                         {
-                                            bankrupt.setFinishedOnDate(rs.getDate("fin_status_date"));
+                                            if(loan.getCloseDate()!=null)
+                                            bankrupt.setFinishedOnDate(loan.getCloseDate());
+
                                             bankrupt.setStartedOnDate(rs.getDate("fin_status_date"));
                                         }
 
@@ -4253,6 +4279,44 @@ public class MigrationTool
                     gaubk.setIdentityDoc(identityDoc);
                     gaubk.setOrgForm(this.orgFormService.findById(1)); // Jur
 
+                    try
+                    {
+
+                        Set<BankData> bankDatas = new HashSet<>();
+
+                        Statement st = connection.createStatement();
+                        rs = st.executeQuery("select * from requisites");
+                        if(rs != null)
+                        {
+                            while (rs.next())
+                            {
+                                BankData bankData = new BankData();
+
+                                bankData.setName(rs.getString("details"));
+                                bankData.setAccount_number(rs.getString("recipient_account"));
+                                bankData.setBik(rs.getString("bik"));
+                                bankData.setDescription(rs.getString("recipient")+" "+rs.getString("recipient_bank"));
+                                bankData.setRecipient(rs.getString("recipient"));
+                                bankData.setRecipient_bank(rs.getString("recipient_bank"));
+                                bankData.setOrganization(gaubk);
+
+                                bankDatas.add(bankData);
+                            }
+
+                            rs.close();
+                            st.close();
+                        }
+
+
+                        if(bankDatas.size()>0)
+                            gaubk.setBankData(bankDatas);
+                    }
+                    catch (SQLException ex)
+                    {
+                        System.out.println(ex);
+                    }
+
+
                     this.organizationService.create(gaubk);
                     migrationSuccess = true;
                 }
@@ -4726,7 +4790,7 @@ public class MigrationTool
         try
         {
             connection = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/migration2", "postgres",
+                    "jdbc:postgresql://localhost:5432/migration23", "postgres",
                     "armad27raptor");
         }
         catch (SQLException e)

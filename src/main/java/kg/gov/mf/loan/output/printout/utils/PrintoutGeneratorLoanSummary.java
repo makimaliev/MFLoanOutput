@@ -104,6 +104,8 @@ public class PrintoutGeneratorLoanSummary {
                     String    CreditID[]  = null;
                     Short     iCreditType = 0;
 
+                    Set<Short> creditLines = new HashSet<>();
+
                     double    Rate=1;
                     int       Thousands = 1000;
                     String    sOrderNumber="";
@@ -407,6 +409,8 @@ int x = 0;
 
 
                             iCreditType = lsv.getV_loan_type_id().shortValue();
+
+                            creditLines.add(iCreditType);
 
                             String sCreditLine ="";
 
@@ -776,48 +780,59 @@ int x = 0;
                         String sResTitle2 = "";
                         String sResName2 = "";
 
-                        sResTitle = "Директор:";
-                        sResName  = "Ж. Торомаматов";
+                        short upravlenie = 1;
+                        short otdel = 1;
 
-                        sResTitle2 = "Заместитель директора:";
-                        sResName2  = "Дж. Сагынов";
+
+                        boolean debtorResponsibleDrawed= false;
+
+
+
+                        if(debtor.getWorkSector().getId()==1 || debtor.getWorkSector().getId()==12)
+                        {
+                            upravlenie =1;
+                            if(iCreditType==5) upravlenie=3;
+
+                            sResTitle = "Директор:";
+                            sResName  = "Ж. Торомаматов";
+
+                            sResTitle2 = "Заместитель директора:";
+                            sResName2  = "Д. Наспеков";
+                        }
+                        else
+                        {
+                            upravlenie = 2;
+                            if(iCreditType==5) upravlenie=3;
+
+                            if(OstAll>1)
+                            {
+                                sResTitle = "Заместитель директора:";
+                                sResName  = "Дж. Сагынов";
+
+                                debtorResponsibleDrawed = true;
+                            }
+                            else
+                            {
+                                sResTitle = "Директор:";
+                                sResName  = "Ж. Торомаматов";
+                            }
+
+                            sResTitle2 = "Заместитель директора:";
+                            sResName2  = "Дж. Сагынов";
+
+                        }
+
+
+
 
 
                         // Директор             ФИО руководителя
-
-                        cell = new PdfPCell (new Paragraph (sResTitle2,TitleFont));
-                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                        cell.setFixedHeight(36);
-                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                        cell.setBorder(FooterColumnBorder);
-                        cell.setPadding(FooterColumnPadding);
-                        table.addCell (cell);
-
-                        cell = new PdfPCell (new Paragraph ("",TitleFont));
-                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                        cell.setBorder(FooterColumnBorder);
-                        cell.setPadding(FooterColumnPadding);
-                        table.addCell (cell);
-
-                        cell = new PdfPCell (new Paragraph (sResName2,TitleFont));
-                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                        cell.setBorder(FooterColumnBorder);
-                        cell.setPadding(FooterColumnPadding);
-                        table.addCell (cell);
 
                         String sResponsible="ФИО руководителя:";
                         if(isBankrot)
                         {
                             sResponsible="Спец. администратор";
                         }
-                        cell = new PdfPCell (new Paragraph (sResponsible,TitleFont));
-                        cell.setHorizontalAlignment (Element.ALIGN_CENTER);
-                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                        cell.setBorder(FooterColumnBorder);
-                        cell.setPadding(FooterColumnPadding);
-                        table.addCell (cell);
 
                         Staff debtorResponsible = null;
                         Staff debtorAccountant  = null;
@@ -829,13 +844,45 @@ int x = 0;
 
                             for (Department department: organization.getDepartment())
                             {
-                                    debtorResponsible = staffService.findAllByDepartment(department).get(0);
-                                    debtorAccountant  = staffService.findAllByDepartment(department).get(1);
-                                    break;
+                                debtorResponsible = staffService.findAllByDepartment(department).get(0);
+                                debtorAccountant  = staffService.findAllByDepartment(department).get(1);
+                                break;
                             }
 
 
                         }
+
+
+                            cell = new PdfPCell (new Paragraph (sResTitle,TitleFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setFixedHeight(36);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            cell.setBorder(FooterColumnBorder);
+                            cell.setPadding(FooterColumnPadding);
+                            table.addCell (cell);
+
+                            cell = new PdfPCell (new Paragraph ("",TitleFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            cell.setBorder(FooterColumnBorder);
+                            cell.setPadding(FooterColumnPadding);
+                            table.addCell (cell);
+
+                            cell = new PdfPCell (new Paragraph (sResName,TitleFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            cell.setBorder(FooterColumnBorder);
+                            cell.setPadding(FooterColumnPadding);
+                            table.addCell (cell);
+
+
+                            cell = new PdfPCell (new Paragraph (sResponsible,TitleFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            cell.setBorder(FooterColumnBorder);
+                            cell.setPadding(FooterColumnPadding);
+                            table.addCell (cell);
+
 
 
                         if(debtorResponsible!=null)
@@ -859,30 +906,63 @@ int x = 0;
                         }
 
 
+
+
+
                         // Зам. директора                   Гдавный бухгалтер
 
-                        cell = new PdfPCell (new Paragraph ("Заведующий отделом бухгалтерского учета (в части погашения денежными средствами):",TitleFont));
-                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                        cell.setFixedHeight(51);
-                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                        cell.setBorder(FooterColumnBorder);
-                        cell.setPadding(FooterColumnPadding);
-                        table.addCell (cell);
 
-                        cell = new PdfPCell (new Paragraph ("",TitleFont));
-                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                        cell.setBorder(FooterColumnBorder);
-                        cell.setPadding(FooterColumnPadding);
-                        table.addCell (cell);
+                        if(!debtorResponsibleDrawed)
+                        {
+                            cell = new PdfPCell (new Paragraph (sResTitle2,TitleFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setFixedHeight(36);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            cell.setBorder(FooterColumnBorder);
+                            cell.setPadding(FooterColumnPadding);
+                            table.addCell (cell);
+
+                            cell = new PdfPCell (new Paragraph ("",TitleFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            cell.setBorder(FooterColumnBorder);
+                            cell.setPadding(FooterColumnPadding);
+                            table.addCell (cell);
+
+                            cell = new PdfPCell (new Paragraph (sResName2,TitleFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            cell.setBorder(FooterColumnBorder);
+                            cell.setPadding(FooterColumnPadding);
+                            table.addCell (cell);
+                        }
+                        else
+                        {
+                            cell = new PdfPCell (new Paragraph ("Заведующий отделом бухгалтерского учета (в части погашения денежными средствами):",TitleFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setFixedHeight(51);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            cell.setBorder(FooterColumnBorder);
+                            cell.setPadding(FooterColumnPadding);
+                            table.addCell (cell);
+
+                            cell = new PdfPCell (new Paragraph ("",TitleFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            cell.setBorder(FooterColumnBorder);
+                            cell.setPadding(FooterColumnPadding);
+                            table.addCell (cell);
 
 
-                        cell = new PdfPCell (new Paragraph ("Г. Болжурова",TitleFont));
-                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                        cell.setBorder(FooterColumnBorder);
-                        cell.setPadding(FooterColumnPadding);
-                        table.addCell (cell);
+                            cell = new PdfPCell (new Paragraph ("Г. Болжурова",TitleFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            cell.setBorder(FooterColumnBorder);
+                            cell.setPadding(FooterColumnPadding);
+                            table.addCell (cell);
+
+                        }
+
 
                         cell = new PdfPCell (new Paragraph ("Главный бухгалтер:",TitleFont));
                         cell.setHorizontalAlignment (Element.ALIGN_CENTER);
@@ -912,19 +992,67 @@ int x = 0;
                         }
 
 
+                        if(!debtorResponsibleDrawed)
+                        {
+                            cell = new PdfPCell (new Paragraph ("Заведующий отделом бухгалтерского учета (в части погашения денежными средствами):",TitleFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setFixedHeight(51);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            cell.setBorder(FooterColumnBorder);
+                            cell.setPadding(FooterColumnPadding);
+                            table.addCell (cell);
 
+                            cell = new PdfPCell (new Paragraph ("",TitleFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            cell.setBorder(FooterColumnBorder);
+                            cell.setPadding(FooterColumnPadding);
+                            table.addCell (cell);
+
+
+                            cell = new PdfPCell (new Paragraph ("Г. Болжурова",TitleFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            cell.setBorder(FooterColumnBorder);
+                            cell.setPadding(FooterColumnPadding);
+                            table.addCell (cell);
+
+                            cell = new PdfPCell (new Paragraph ("",TitleFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            cell.setBorder(FooterColumnBorder);
+                            cell.setPadding(FooterColumnPadding);
+                            table.addCell (cell);
+
+                                cell = new PdfPCell (new Paragraph ("",TitleFont));
+                                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                                cell.setBorder(FooterColumnBorder);
+                                cell.setPadding(FooterColumnPadding);
+                                table.addCell (cell);
+
+
+                        }
 
                         // Нач. управ. ПРОМ
 
 
 
-                        if(debtor.getWorkSector().getId()==1)
+                        if(debtor.getWorkSector().getId()==1 || debtor.getWorkSector().getId()==12)
                         {
                             cell = new PdfPCell (new Paragraph ("Начальник управления кредитов АПК:",TitleFont));
                         }
                         else
                         {
-                            cell = new PdfPCell (new Paragraph ("Начальник управления кредитов промышленности и предпринимательства:",TitleFont));
+                            if(iCreditType==5)
+                            {
+                                cell = new PdfPCell (new Paragraph ("Начальник управления обеспечения кредитов:",TitleFont));
+                            }
+                            else
+                            {
+                                cell = new PdfPCell (new Paragraph ("Начальник управления кредитов промышленности и предпринимательства:",TitleFont));
+                            }
+
                         }
 
 
@@ -944,15 +1072,22 @@ int x = 0;
                         table.addCell (cell);
 
 
-                        if(debtor.getWorkSector().getId()==1)
+                        if(debtor.getWorkSector().getId()==1 || debtor.getWorkSector().getId()==12)
                         {
                             cell = new PdfPCell (new Paragraph ("Б. Туркбаев",TitleFont));
                         }
                         else
                         {
-                            cell = new PdfPCell (new Paragraph ("Э. Доолбеков",TitleFont));
-                        }
+                            if(iCreditType==5)
+                            {
+                                cell = new PdfPCell (new Paragraph ("А. Акымбеков",TitleFont));
+                            }
+                            else
+                            {
+                                cell = new PdfPCell (new Paragraph ("Э. Доолбеков",TitleFont));
+                            }
 
+                        }
 
 
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
@@ -961,6 +1096,37 @@ int x = 0;
                         cell.setPadding(FooterColumnPadding);
                         cell.setColspan(3);
                         table.addCell (cell);
+
+
+
+
+                       if(OstAll<=1)
+                       {
+                           cell.setFixedHeight(36);
+                           cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                           cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                           cell.setBorder(FooterColumnBorder);
+                           cell.setPadding(FooterColumnPadding);
+                           table.addCell (cell);
+
+                           cell = new PdfPCell (new Paragraph ("",TitleFont));
+                           cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                           cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                           cell.setBorder(FooterColumnBorder);
+                           cell.setPadding(FooterColumnPadding);
+                           table.addCell (cell);
+
+
+                           cell = new PdfPCell (new Paragraph ("М. Данилович",TitleFont));
+                           cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                           cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                           cell.setBorder(FooterColumnBorder);
+                           cell.setPadding(FooterColumnPadding);
+                           cell.setColspan(3);
+                           table.addCell (cell);
+                       }
+
+
 
                         // Зав. отделом
 
@@ -987,6 +1153,42 @@ int x = 0;
                                 sNach="Заведующий отделом кредитов промышленности:";
                                 sNachTitle="Ж. Жапаркулова";
                             }
+
+
+                        if(debtor.getWorkSector().getId()==1 || debtor.getWorkSector().getId()==12)
+                        {
+                            if(iCreditType==1||iCreditType==2||iCreditType==9)
+                            {
+                                sNach="Заведующий отделом кредитов АПК:";
+                                sNachTitle="К. Алыбаев";
+                            }
+                            else
+                            {
+                                sNach="Заведующий отделом грантов АПК:";
+                                sNachTitle="А. Сыдыков";
+                            }
+                        }
+                        else
+                        {
+                            if(debtor.getWorkSector().getId()==13 || debtor.getWorkSector().getId()==14)
+                            {
+                                sNach="Заведующий отделом кредитов частного предпринимательства и ф.л.:";
+                                sNachTitle="К. Асеков";
+                            }
+                            else
+                            {
+                                sNach="Заведующий отделом кредитов промышленности:";
+                                sNachTitle="Ж. Жапаркулова";
+                            }
+
+                        }
+
+                        if(iCreditType==5)
+                        {
+                            sNach="Заведующий отделом отчуждения кредитов:";
+                            sNachTitle="И. Джумабаев";
+                        }
+
 
                         cell = new PdfPCell (new Paragraph (sNach,TitleFont));
                         cell.setFixedHeight(36);
