@@ -1236,7 +1236,9 @@ int x = 0;
 
                         if(curatorStaff.getId()>0)
                         {
-                            cell = new PdfPCell (new Paragraph (curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getFirstname().substring(0,1)+" "+curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getLastname(),TitleFont));
+                            String firstname = curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getFirstname();
+                            if(firstname.length()>0) firstname=firstname.substring(0,1);
+                            cell = new PdfPCell (new Paragraph (firstname+" "+curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getLastname(),TitleFont));
                             cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                             cell.setPadding(FooterColumnPadding);

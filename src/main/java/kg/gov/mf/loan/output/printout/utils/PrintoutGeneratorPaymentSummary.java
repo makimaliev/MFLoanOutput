@@ -580,7 +580,11 @@ public class PrintoutGeneratorPaymentSummary {
                         cell.setPadding(FooterColumnPadding);
                         table.addCell (cell);
 
-                        cell = new PdfPCell (new Paragraph (curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getFirstname().substring(0,1)+" "+curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getLastname(),SubTitleFont));
+                        String firstname = curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getFirstname();
+                        if(firstname.length()>0) firstname=firstname.substring(0,1);
+                        cell = new PdfPCell (new Paragraph (firstname+" "+curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getLastname(),SubTitleFont));
+
+
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                         cell.setPadding(FooterColumnPadding);

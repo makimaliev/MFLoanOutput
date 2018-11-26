@@ -500,7 +500,7 @@ public class MigrationTool
                             "\n" +
                             "      * from person, person_details,address,phone\n" +
                             "where person.id = person_details.person_id AND\n" +
-                            "      address.user_id = person.id AND address.contact_type = 2 AND  \n" +
+                            "      address.user_id = person.id AND address.contact_type = 2 AND \n" +
                             "      phone.user_id = person.id and phone.contact_type = 2 order by person.id ");
                     if(rs != null)
                     {
@@ -918,6 +918,7 @@ public class MigrationTool
 
                             debtor.setWorkSector(workSectorMap.get((long)rs.getInt("work_sector")));
 
+                            debtor.setRecord_status(1);
 
                             this.debtorService.add(debtor);
 
@@ -1085,8 +1086,16 @@ public class MigrationTool
 
                                                 Boolean penalyLimit20 = true;
 
-                                                if(rsLoan.getShort("limit_penalty_20")!=20)
+                                                if(rsLoan.getShort("limit_penalty_20")==0)
+                                                {
                                                     penalyLimit20 = false;
+                                                }
+                                                else
+                                                {
+                                                    penalyLimit20 = true;
+                                                }
+
+
 
                                                 // schedule migration
                                                 try
@@ -1115,6 +1124,9 @@ public class MigrationTool
                                                                         paymentSchedule.setExpectedDate(rsSchedule.getDate("date"));
                                                                         paymentSchedule.setInstallmentState(installmentState);
 
+                                                                        if(rsSchedule.getInt("record_status")==2)
+                                                                            paymentSchedule.setRecord_status(rsSchedule.getInt("record_status"));
+
                                                                         this.paymentScheduleService.add(paymentSchedule);
 
                                                                         PaymentSchedule paymentScheduleParent = new PaymentSchedule();
@@ -1129,6 +1141,9 @@ public class MigrationTool
                                                                         paymentScheduleParent.setExpectedDate(rsSchedule.getDate("date"));
                                                                         paymentScheduleParent.setInstallmentState(installmentState);
 
+                                                                        if(rsSchedule.getInt("record_status")==2)
+                                                                            paymentScheduleParent.setRecord_status(rsSchedule.getInt("record_status"));
+
                                                                         this.paymentScheduleService.add(paymentScheduleParent);
 
                                                                     }
@@ -1141,6 +1156,9 @@ public class MigrationTool
                                                                         paymentSchedule.setCollectedPenaltyPayment(rsSchedule.getDouble("collected_debt_penalty"));
                                                                         paymentSchedule.setExpectedDate(rsSchedule.getDate("date"));
                                                                         paymentSchedule.setInstallmentState(installmentState);
+
+                                                                        if(rsSchedule.getInt("record_status")==2)
+                                                                            paymentSchedule.setRecord_status(rsSchedule.getInt("record_status"));
 
                                                                         this.paymentScheduleService.add(paymentSchedule);
 
@@ -1162,6 +1180,9 @@ public class MigrationTool
                                                                             paymentScheduleParent.setCollectedPenaltyPayment(rsSchedule.getDouble("collected_debt_penalty"));
                                                                             paymentScheduleParent.setExpectedDate(rsSchedule.getDate("date"));
                                                                             paymentScheduleParent.setInstallmentState(installmentState);
+
+                                                                            if(rsSchedule.getInt("record_status")==2)
+                                                                                paymentScheduleParent.setRecord_status(rsSchedule.getInt("record_status"));
 
                                                                             this.paymentScheduleService.add(paymentScheduleParent);
 
@@ -1265,6 +1286,9 @@ public class MigrationTool
                                                                             term.setPenaltyLimitPercent((double)20);
                                                                         else term.setPenaltyLimitPercent((double)0);
 
+                                                                        if(rsTerm.getInt("record_status")==2)
+                                                                            term.setRecord_status(rsTerm.getInt("record_status"));
+
                                                                         this.creditTermService.add(term);
 
                                                                         CreditTerm termParent = new CreditTerm();
@@ -1316,6 +1340,9 @@ public class MigrationTool
                                                                         if(penalyLimit20)
                                                                             termParent.setPenaltyLimitPercent((double)20);
                                                                         else termParent.setPenaltyLimitPercent((double)0);
+
+                                                                        if(rsTerm.getInt("record_status")==2)
+                                                                            termParent.setRecord_status(rsTerm.getInt("record_status"));
 
                                                                         this.creditTermService.add(termParent);
 
@@ -1370,6 +1397,9 @@ public class MigrationTool
                                                                         if(penalyLimit20)
                                                                             term.setPenaltyLimitPercent((double)20);
                                                                         else term.setPenaltyLimitPercent((double)0);
+
+                                                                        if(rsTerm.getInt("record_status")==2)
+                                                                            term.setRecord_status(rsTerm.getInt("record_status"));
 
                                                                         this.creditTermService.add(term);
                                                                     }
@@ -1429,6 +1459,9 @@ public class MigrationTool
                                                                             if(penalyLimit20)
                                                                                 termParent.setPenaltyLimitPercent((double)20);
                                                                             else termParent.setPenaltyLimitPercent((double)0);
+
+                                                                            if(rsTerm.getInt("record_status")==2)
+                                                                                termParent.setRecord_status(rsTerm.getInt("record_status"));
 
                                                                             this.creditTermService.add(termParent);
 
@@ -1516,6 +1549,9 @@ public class MigrationTool
                                                                         if(rsPayment.getString("decr_type")!=null)
                                                                             payment.setDetails(rsPayment.getString("decr_type"));
 
+                                                                        if(rsPayment.getInt("record_status")==2)
+                                                                            payment.setRecord_status(rsPayment.getInt("record_status"));
+
                                                                         this.paymentService.add(payment);
 
                                                                         Payment paymentParent = new Payment();
@@ -1553,6 +1589,9 @@ public class MigrationTool
 
                                                                         if(rsPayment.getString("decr_type")!=null)
                                                                             paymentParent.setDetails(rsPayment.getString("decr_type"));
+
+                                                                        if(rsPayment.getInt("record_status")==2)
+                                                                            paymentParent.setRecord_status(rsPayment.getInt("record_status"));
 
                                                                         this.paymentService.add(paymentParent);
 
@@ -1592,6 +1631,9 @@ public class MigrationTool
 
                                                                         if(rsPayment.getString("decr_type")!=null)
                                                                             payment.setDetails(rsPayment.getString("decr_type"));
+
+                                                                        if(rsPayment.getInt("record_status")==2)
+                                                                            payment.setRecord_status(rsPayment.getInt("record_status"));
 
                                                                         this.paymentService.add(payment);
                                                                     }
@@ -1636,6 +1678,9 @@ public class MigrationTool
 
                                                                             if(rsPayment.getString("decr_type")!=null)
                                                                                 paymentParent.setDetails(rsPayment.getString("decr_type"));
+
+                                                                            if(rsPayment.getInt("record_status")==2)
+                                                                                paymentParent.setRecord_status(rsPayment.getInt("record_status"));
 
                                                                             this.paymentService.add(paymentParent);
 
@@ -3487,7 +3532,7 @@ public class MigrationTool
 
                             this.goodTypeService.add(goodType);
 
-                            goodTypeMap.put(rs.getLong("type_id"),goodType);
+                            goodTypeMap.put(rs.getLong("id"),goodType);
 
                         }
 
