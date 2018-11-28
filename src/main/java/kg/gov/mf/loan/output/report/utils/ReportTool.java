@@ -1356,7 +1356,16 @@ public class ReportTool
 
         groupFieldNames.add(reportTemplate.getGroupType1().getField_name());
         groupFieldNames.add(reportTemplate.getGroupType2().getField_name());
-        groupFieldNames.add(reportTemplate.getGroupType3().getField_name());
+
+        if(reportTemplate.getGroupType3().getField_name().contains("debtor_id"))
+        {
+            groupFieldNames.add("v_debtor_name");
+        }
+        else
+        {
+            groupFieldNames.add(reportTemplate.getGroupType3().getField_name());
+        }
+
         groupFieldNames.add(reportTemplate.getGroupType4().getField_name());
 
         if(reportTemplate.getGroupType5()!=null)
@@ -1601,7 +1610,17 @@ public class ReportTool
                     break;
 
                 case "r=ad" :
-                    criteria.add(Restrictions.gt(propertyName, this.StringToDate(ids.get(0))));
+
+                    if(this.StringToDate(ids.get(0))!=null)
+                    {
+                        criteria.add(Restrictions.gt(propertyName, this.StringToDate(ids.get(0))));
+                    }
+                    else
+                    {
+                        criteria.add(Restrictions.gt(propertyName, new Date(Long.parseLong(ids.get(0)))));
+                    }
+
+
                     break;
 
                 case "r=ao" :
@@ -1610,15 +1629,30 @@ public class ReportTool
                     break;
 
                 case "r=bd" :
-                    criteria.add(Restrictions.lt(propertyName, this.StringToDate(ids.get(0))));
+                    if(this.StringToDate(ids.get(0))!=null)
+                    {
+                        criteria.add(Restrictions.lt(propertyName, this.StringToDate(ids.get(0))));
+                    }
+                    else
+                    {
+                        criteria.add(Restrictions.lt(propertyName, new Date(Long.parseLong(ids.get(0)))));
+                    }
                     break;
 
                 case "r=bo" :
+
                     criteria.add(Restrictions.le(propertyName, this.StringToDate(ids.get(0))));
                     break;
 
                 case "r=od" :
-                    criteria.add(Restrictions.eq(propertyName, this.StringToDate(ids.get(0))));
+                    if(this.StringToDate(ids.get(0))!=null)
+                    {
+                        criteria.add(Restrictions.eq(propertyName, this.StringToDate(ids.get(0))));
+                    }
+                    else
+                    {
+                        criteria.add(Restrictions.eq(propertyName, new Date(Long.parseLong(ids.get(0)))));
+                    }
                     break;
             }
 

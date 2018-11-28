@@ -56,7 +56,8 @@ public class LoanSummaryReportDataManager {
                 System.out.println(ex);
             }
 
-            parameterS.put("v_ls_on_date",Ids);
+            parameterS.put("r=odv_ls_on_date",Ids);
+            parameterS.put("r=bdv_loan_reg_date",Ids);
         }
 
         reportData.getLoanSummaryViews().addAll(loanSummaryViewService.findByParameter(parameterS));
@@ -121,6 +122,45 @@ public class LoanSummaryReportDataManager {
 
         for (LoanSummaryView loanSummaryView:reportData.getLoanSummaryViews())
         {
+            double totalOverdue = 0;
+
+            if(loanSummaryView.getV_ls_overdue_principal()>0)
+            {
+                totalOverdue+=loanSummaryView.getV_ls_overdue_principal();
+            }
+            if(loanSummaryView.getV_ls_overdue_interest()>0)
+            {
+                totalOverdue+=loanSummaryView.getV_ls_overdue_interest();
+            }
+
+            if(loanSummaryView.getV_ls_overdue_penalty()>0)
+            {
+                totalOverdue+=loanSummaryView.getV_ls_overdue_penalty();
+            }
+
+            loanSummaryView.setV_ls_total_overdue(totalOverdue);
+
+
+            double totalOutstanding = 0;
+
+            if(loanSummaryView.getV_ls_outstading_principal()>0)
+            {
+                totalOutstanding+=loanSummaryView.getV_ls_outstading_principal();
+            }
+            if(loanSummaryView.getV_ls_outstading_interest()>0)
+            {
+                totalOutstanding+=loanSummaryView.getV_ls_outstading_interest();
+            }
+
+            if(loanSummaryView.getV_ls_outstading_penalty()>0)
+            {
+                totalOutstanding+=loanSummaryView.getV_ls_outstading_penalty();
+            }
+
+            loanSummaryView.setV_ls_total_outstanding(totalOutstanding);
+
+
+
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType1(),loanSummaryView)!=currentgroupAid)
             {
                 childA = reportData.addChild();
@@ -211,7 +251,10 @@ public class LoanSummaryReportDataManager {
 
                 if(loanSummaryView.getV_loan_currency_id()>1)
                 {
+
                     rate = reportTool.getCurrencyRateValueByDateAndCurrencyTypeId(reportTemplate.getOnDate(),loanSummaryView.getV_loan_currency_id());
+
+
 
                     if(reportTemplate.getAdditionalDate()!=null)
                     {
