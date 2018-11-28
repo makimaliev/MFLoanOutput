@@ -39,6 +39,8 @@ import kg.gov.mf.loan.output.report.service.*;
 import kg.gov.mf.loan.output.report.utils.ReportTool;
 import org.apache.commons.lang3.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.awt.*;
@@ -273,9 +275,32 @@ public class PrintoutGeneratorPhaseSummary {
                     sPersonTitle   =  collectionPhaseView.getV_debtor_name();
 
 
-                    sCuratorPhone  =  "0555555555";
+                    try
+                    {
+                        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-                    sCurator       =  "Curator";
+                        String currentUserName = authentication.getName();
+
+                        User currentUser = this.userService.findByUsername(currentUserName);
+
+                        Staff staff = currentUser.getStaff();
+
+                        Person person = staff.getPerson();
+
+                        sCuratorPhone = person.getContact().getName();
+
+                        sCurator = staff.getPerson().getIdentityDoc().getIdentityDocDetails().getFirstname().substring(0,1)+" "+staff.getPerson().getIdentityDoc().getIdentityDocDetails().getLastname();
+
+
+                    }
+                    catch(Exception ex)
+                    {
+                        sCuratorPhone  =  "";
+                        sCurator       =  "_________________________";
+                    }
+
+
+
 
                     iDistrict      =  collectionPhaseView.getV_debtor_region_id().shortValue();
 
@@ -295,7 +320,7 @@ public class PrintoutGeneratorPhaseSummary {
 
                     sAdres         =  "";
 
-                    if(collectionPhaseView.getV_debtor_owner_type().toString()=="PERSON")
+                    if(collectionPhaseView.getV_debtor_owner_type().contains("PERSON"))
                     {
                         address = this.personService.findById(collectionPhaseView.getV_debtor_owner_id()).getAddress();
                         sAdres         =  address.getLine();
@@ -444,21 +469,13 @@ public class PrintoutGeneratorPhaseSummary {
 
                         iCreditType = loanView.getV_loan_type_id().shortValue();
 
-                        if(loanView.getV_debtor_work_sector_id()==1)
+                        if(loanView.getV_debtor_work_sector_id()==1 || loanView.getV_debtor_work_sector_id()==12)
                         {
                             iResDepartment = 1;
                         }
                         else
                         {
                             iResDepartment = 2;
-                        }
-
-
-                        if(loanView.getV_loan_supervisor_id()>0)
-                        {
-                            if(userService.findById(loanView.getV_loan_supervisor_id()).getStaff()!=null)
-//                                curatorStaff = staffService.findById(userService.findById(loanView.getV_loan_supervisor_id()).getStaff().getId());
-                                curatorStaff = userService.findById(loanView.getV_loan_supervisor_id()).getStaff();
                         }
 
 
@@ -688,13 +705,8 @@ public class PrintoutGeneratorPhaseSummary {
                     }
 
 
-                    if(curatorStaff.getId()>0)
+                    if(sCurator!=null)
                     {
-                        sCurator = curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getFirstname().substring(0,1)+" "+curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getLastname();
-
-                        if(curatorStaff.getPerson().getContact().getName()!=null)
-                        sCuratorPhone = curatorStaff.getPerson().getContact().getName();
-
                         HeaderFooter footer = new HeaderFooter(new Paragraph("Исп.: "+sCurator+"  тел: "+sCuratorPhone,PerformerFont),false);
                         document.setFooter(footer);
                     }

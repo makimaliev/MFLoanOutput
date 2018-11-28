@@ -42,6 +42,23 @@ public class LoanSummaryReportDataManager {
 
         parameterS.putAll(reportTool.getParametersByTemplate(reportTemplate));
 
+
+        if(reportTemplate.getOnDate()!=null)
+        {
+            List<String> Ids = new ArrayList<>();
+
+            try
+            {
+                Ids.add(String.valueOf(reportTemplate.getOnDate().getTime()));
+            }
+            catch ( Exception ex )
+            {
+                System.out.println(ex);
+            }
+
+            parameterS.put("v_ls_on_date",Ids);
+        }
+
         reportData.getLoanSummaryViews().addAll(loanSummaryViewService.findByParameter(parameterS));
 
         for (LoanSummaryView loanSummaryView: reportData.getLoanSummaryViews())
