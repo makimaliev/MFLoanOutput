@@ -122,43 +122,43 @@ public class LoanSummaryReportDataManager {
 
         for (LoanSummaryView loanSummaryView:reportData.getLoanSummaryViews())
         {
-            double totalOverdue = 0;
-
-            if(loanSummaryView.getV_ls_overdue_principal()>0)
-            {
-                totalOverdue+=loanSummaryView.getV_ls_overdue_principal();
-            }
-            if(loanSummaryView.getV_ls_overdue_interest()>0)
-            {
-                totalOverdue+=loanSummaryView.getV_ls_overdue_interest();
-            }
-
-            if(loanSummaryView.getV_ls_overdue_penalty()>0)
-            {
-                totalOverdue+=loanSummaryView.getV_ls_overdue_penalty();
-            }
-
-            loanSummaryView.setV_ls_total_overdue(totalOverdue);
-
-
-            double totalOutstanding = 0;
-
-            if(loanSummaryView.getV_ls_outstading_principal()>0)
-            {
-                totalOutstanding+=loanSummaryView.getV_ls_outstading_principal();
-            }
-            if(loanSummaryView.getV_ls_outstading_interest()>0)
-            {
-                totalOutstanding+=loanSummaryView.getV_ls_outstading_interest();
-            }
-
-            if(loanSummaryView.getV_ls_outstading_penalty()>0)
-            {
-                totalOutstanding+=loanSummaryView.getV_ls_outstading_penalty();
-            }
-
-            loanSummaryView.setV_ls_total_outstanding(totalOutstanding);
-
+//            double totalOverdue = 0;
+//
+//            if(loanSummaryView.getV_ls_overdue_principal()>0)
+//            {
+//                totalOverdue+=loanSummaryView.getV_ls_overdue_principal();
+//            }
+//            if(loanSummaryView.getV_ls_overdue_interest()>0)
+//            {
+//                totalOverdue+=loanSummaryView.getV_ls_overdue_interest();
+//            }
+//
+//            if(loanSummaryView.getV_ls_overdue_penalty()>0)
+//            {
+//                totalOverdue+=loanSummaryView.getV_ls_overdue_penalty();
+//            }
+//
+//            loanSummaryView.setV_ls_total_overdue(totalOverdue);
+//
+//
+//            double totalOutstanding = 0;
+//
+//            if(loanSummaryView.getV_ls_outstading_principal()>0)
+//            {
+//                totalOutstanding+=loanSummaryView.getV_ls_outstading_principal();
+//            }
+//            if(loanSummaryView.getV_ls_outstading_interest()>0)
+//            {
+//                totalOutstanding+=loanSummaryView.getV_ls_outstading_interest();
+//            }
+//
+//            if(loanSummaryView.getV_ls_outstading_penalty()>0)
+//            {
+//                totalOutstanding+=loanSummaryView.getV_ls_outstading_penalty();
+//            }
+//
+//            loanSummaryView.setV_ls_total_outstanding(totalOutstanding);
+//
 
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType1(),loanSummaryView)!=currentgroupAid)
@@ -255,11 +255,17 @@ public class LoanSummaryReportDataManager {
                     rate = reportTool.getCurrencyRateValueByDateAndCurrencyTypeId(reportTemplate.getOnDate(),loanSummaryView.getV_loan_currency_id());
 
 
-
                     if(reportTemplate.getAdditionalDate()!=null)
                     {
                         rate2 = reportTool.getCurrencyRateValueByDateAndCurrencyTypeId(reportTemplate.getAdditionalDate(),loanSummaryView.getV_loan_currency_id());
                     }
+
+                    if(loanSummaryView.getV_loan_close_rate()!=null )
+                    {
+                        rate = loanSummaryView.getV_loan_close_rate();
+                        rate2= loanSummaryView.getV_loan_close_rate();
+                    }
+
 
                 }
                 childD.getChildDataList().removeAll(childD.getChildDataList());

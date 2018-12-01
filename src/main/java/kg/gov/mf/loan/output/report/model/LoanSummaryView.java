@@ -122,6 +122,14 @@ public class LoanSummaryView extends DebtorView
 	@Column
 	private  double v_ls_total_paid_kgs;
 
+	@DateTimeFormat(pattern = "dd.mm.yyyy")
+	@Temporal(TemporalType.DATE)
+	private Date v_loan_close_date;
+
+	@Column
+	private  Double v_loan_close_rate;
+
+
 
 
 	public Long getV_loan_id() {
@@ -378,5 +386,21 @@ public class LoanSummaryView extends DebtorView
 
 	public void setV_ls_total_paid_kgs(double v_ls_total_paid_kgs) {
 		this.v_ls_total_paid_kgs = v_ls_total_paid_kgs;
+	}
+
+	public Date getV_loan_close_date() {
+		return v_loan_close_date;
+	}
+
+	public void setV_loan_close_date(Date v_loan_close_date) {
+		this.v_loan_close_date = v_loan_close_date;
+	}
+
+	public Double getV_loan_close_rate() {
+		return v_loan_close_rate;
+	}
+
+	public void setV_loan_close_rate(Double v_loan_close_rate) {
+		this.v_loan_close_rate = v_loan_close_rate;
 	}
 }

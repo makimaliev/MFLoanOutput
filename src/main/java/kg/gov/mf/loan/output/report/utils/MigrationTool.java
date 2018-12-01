@@ -994,7 +994,7 @@ public class MigrationTool
 
 
                                                 }
-                                                else if(details.contains("(id="))
+                                                else if(details.contains("id="))
                                                 {
                                                     tranchee = true;
                                                     debtorHasSubloan = true;

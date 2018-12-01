@@ -73,6 +73,10 @@ public class LoanSummaryReportData extends ReportData
 	private double OverdueDiff      	= 0;
 	private double RemainingDiff   		= 0;
 
+	private Date   loanCloseDate        = null;
+	private Double loanCloseRate   		= 1.0;
+
+
 	public LoanSummaryReportData()
 	{
 		ChildDataList = new LinkedList<LoanSummaryReportData>();
@@ -461,5 +465,21 @@ public class LoanSummaryReportData extends ReportData
 
 	public void setRemainingDiff(double remainingDiff) {
 		RemainingDiff = remainingDiff;
+	}
+
+	public Date getLoanCloseDate() {
+		return loanCloseDate;
+	}
+
+	public void setLoanCloseDate(Date loanCloseDate) {
+		this.loanCloseDate = loanCloseDate;
+	}
+
+	public Double getLoanCloseRate() {
+		return loanCloseRate;
+	}
+
+	public void setLoanCloseRate(Double loanCloseRate) {
+		this.loanCloseRate = loanCloseRate;
 	}
 }
