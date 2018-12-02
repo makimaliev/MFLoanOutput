@@ -44,6 +44,9 @@ public class MigrationTool
     @Autowired
     PhaseDetailsService phaseDetailsService;
 
+    @Autowired
+    WriteOffService writeOffService;
+
 
     @Autowired
     CollateralItemInspectionResultService collateralItemInspectionResultService;
@@ -1047,6 +1050,30 @@ public class MigrationTool
 
                                                 }
 
+                                                if(details.contains("(=списание=)"))
+                                                {
+                                                    try {
+                                                        WriteOff writeOff = new WriteOff();
+
+                                                        SimpleDateFormat DateFormatShort = new SimpleDateFormat("dd.MM.yyyy");
+
+                                                        Date date = DateFormatShort.parse(details.substring(details.indexOf("дата==")+6,details.indexOf("(дата)")));
+
+                                                        writeOff.setDate(date);
+                                                        writeOff.setPrincipal(Double.parseDouble(details.substring(details.indexOf("сумма==")+7,details.indexOf("(сумма)"))));
+                                                        writeOff.setLoan(loan);
+
+                                                        this.writeOffService.add(writeOff);
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        errorList.add(" write off error == "+ex);
+                                                    }
+
+
+
+                                                }
+
 
 
 
@@ -1247,6 +1274,9 @@ public class MigrationTool
                                                                         term.setPenaltyOnPrincipleOverdueRateValue(rsTerm.getDouble("penalty_main_debt"));
 
                                                                         term.setPenaltyOnInterestOverdueRateValue(rsTerm.getDouble("penalty_percent"));
+
+                                                                        term.setGraceDaysPrincipal(rsTerm.getInt("expiry_main"));
+                                                                        term.setGraceDaysInterest(rsTerm.getInt("expiry_percent"));
 
                                                                         if(rsTerm.getInt("method_days_period")<3)
                                                                             term.setDaysInMonthMethod((OrderTermDaysMethod)daysMethodMap.get((long)rsTerm.getInt("method_days_period")));
@@ -4835,7 +4865,7 @@ public class MigrationTool
         try
         {
             connection = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/migration23", "postgres",
+                    "jdbc:postgresql://localhost:5432/migration99", "postgres",
                     "armad27raptor");
         }
         catch (SQLException e)
