@@ -2,13 +2,8 @@ package kg.gov.mf.loan.output.printout.utils;
 
 
 import com.lowagie.text.*;
-import kg.gov.mf.loan.admin.org.model.Department;
-import kg.gov.mf.loan.admin.org.model.Organization;
-import kg.gov.mf.loan.admin.org.model.Staff;
-import kg.gov.mf.loan.admin.org.service.DepartmentService;
-import kg.gov.mf.loan.admin.org.service.OrganizationService;
-import kg.gov.mf.loan.admin.org.service.PersonService;
-import kg.gov.mf.loan.admin.org.service.StaffService;
+import kg.gov.mf.loan.admin.org.model.*;
+import kg.gov.mf.loan.admin.org.service.*;
 import kg.gov.mf.loan.admin.sys.model.User;
 import kg.gov.mf.loan.admin.sys.service.UserService;
 import kg.gov.mf.loan.manage.model.debtor.Debtor;
@@ -74,6 +69,9 @@ public class PrintoutGeneratorPaymentSummary {
     @Autowired
     PersonService personService;
 
+    @Autowired
+    IdentityDocService identityDocService;
+
     public void generatePrintoutByTemplate(PrintoutTemplate printoutTemplate, Date onDate, long objectId, Document document){
 
 
@@ -88,9 +86,7 @@ public class PrintoutGeneratorPaymentSummary {
 
             LoanSummary loanSummary = loanSummaryService.getById(objectId);
 
-
-
-            Loan loan = loanSummary.getLoan();
+            Loan loan = this.loanService.getById(loanSummary.getLoan().getId());
 
 
             Date      tRasDate  = loanSummary.getOnDate();
@@ -572,6 +568,12 @@ public class PrintoutGeneratorPaymentSummary {
 
                     if(curatorStaff.getId()>0)
                     {
+
+
+                        Person person = this.personService.findById(curatorStaff.getPerson().getId());
+
+                        IdentityDoc identityDoc = this.identityDocService.findById(person.getIdentityDoc().getId());
+
                         cell = new PdfPCell (new Paragraph ("Куратор:",SubTitleFont));
                         cell.setFixedHeight(35);
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
@@ -580,9 +582,9 @@ public class PrintoutGeneratorPaymentSummary {
                         cell.setPadding(FooterColumnPadding);
                         table.addCell (cell);
 
-                        String firstname = curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getFirstname();
+                        String firstname = identityDoc.getIdentityDocDetails().getFirstname();
                         if(firstname.length()>0) firstname=firstname.substring(0,1);
-                        cell = new PdfPCell (new Paragraph (firstname+" "+curatorStaff.getPerson().getIdentityDoc().getIdentityDocDetails().getLastname(),SubTitleFont));
+                        cell = new PdfPCell (new Paragraph (firstname+" "+identityDoc.getIdentityDocDetails().getLastname(),SubTitleFont));
 
 
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
