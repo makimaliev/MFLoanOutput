@@ -283,9 +283,9 @@ public class PrintoutGeneratorPhaseSummary {
 
                         User currentUser = this.userService.findByUsername(currentUserName);
 
-                        Staff staff = currentUser.getStaff();
+                        Staff staff = this.staffService.findById(currentUser.getStaff().getId());
 
-                        Person person = staff.getPerson();
+                        Person person = this.personService.findById(staff.getPerson().getId());
 
                         sCuratorPhone = person.getContact().getName();
 
@@ -322,13 +322,13 @@ public class PrintoutGeneratorPhaseSummary {
 
                     if(collectionPhaseView.getV_debtor_owner_type().contains("PERSON"))
                     {
-                        address = this.personService.findById(collectionPhaseView.getV_debtor_owner_id()).getAddress();
+                        address = this.personService.findById(collectionPhaseView.getV_debtor_entity_id()).getAddress();
                         sAdres         =  address.getLine();
                         sAokmotu = address.getAokmotu().getName();
                     }
                     else
                     {
-                        address = this.organizationService.findById(collectionPhaseView.getV_debtor_owner_id()).getAddress();
+                        address = this.organizationService.findById(collectionPhaseView.getV_debtor_entity_id()).getAddress();
                         sAdres         =  address.getLine();
                         sAokmotu = address.getAokmotu().getName();
                     }
