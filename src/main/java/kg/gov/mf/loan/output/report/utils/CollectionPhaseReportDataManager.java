@@ -196,14 +196,19 @@ public class CollectionPhaseReportDataManager {
 
                 childE.setCollection_phase_type_name(phaseTypeMap.get(collectionPhaseView.getV_cph_phaseTypeId()).getName());
 
+                if(collectionPhaseView.getV_cph_start_total_amount() != null)
+                {
+                    reportData.setCollection_phase_start_total_amount(reportData.getCollection_phase_start_total_amount()+collectionPhaseView.getV_cph_start_total_amount());
+                    childA.setCollection_phase_start_total_amount(childA.getCollection_phase_start_total_amount()+collectionPhaseView.getV_cph_start_total_amount());
+                    childB.setCollection_phase_start_total_amount(childB.getCollection_phase_start_total_amount()+collectionPhaseView.getV_cph_start_total_amount());
+                    childC.setCollection_phase_start_total_amount(childC.getCollection_phase_start_total_amount()+collectionPhaseView.getV_cph_start_total_amount());
+                    childD.setCollection_phase_start_total_amount(childD.getCollection_phase_start_total_amount()+collectionPhaseView.getV_cph_start_total_amount());
+                    childE.setCollection_phase_start_total_amount(collectionPhaseView.getV_cph_start_total_amount());
 
-                reportData.setCollection_phase_start_total_amount(reportData.getCollection_phase_start_total_amount()+collectionPhaseView.getV_cph_start_total_amount());
-                childA.setCollection_phase_start_total_amount(childA.getCollection_phase_start_total_amount()+collectionPhaseView.getV_cph_start_total_amount());
-                childB.setCollection_phase_start_total_amount(childB.getCollection_phase_start_total_amount()+collectionPhaseView.getV_cph_start_total_amount());
-                childC.setCollection_phase_start_total_amount(childC.getCollection_phase_start_total_amount()+collectionPhaseView.getV_cph_start_total_amount());
-                childD.setCollection_phase_start_total_amount(childD.getCollection_phase_start_total_amount()+collectionPhaseView.getV_cph_start_total_amount());
-                childE.setCollection_phase_start_total_amount(collectionPhaseView.getV_cph_start_total_amount());
+                }
 
+
+                if(collectionPhaseView.getV_cph_close_total_amount() != null)
                 if(collectionPhaseView.getV_cph_close_total_amount()>0)
                 {
                     reportData.setCollection_phase_close_total_amount(reportData.getCollection_phase_close_total_amount()+collectionPhaseView.getV_cph_close_total_amount());
