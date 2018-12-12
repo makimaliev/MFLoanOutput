@@ -102,9 +102,9 @@ public class PrintoutGeneratorLoanDetailedSummary {
 
             Loan loan= this.loanService.getById(loanDetailedSummary.getLoan().getId());
 
-            Debtor debtor=loan.getDebtor();
+            Debtor debtor= this.debtorService.getById(loan.getDebtor().getId());
             Owner owner=debtor.getOwner();
-            Address address=owner.getAddress();
+            Address address= this.addressService.findById(owner.getAddress().getId());
 
             User curator = new User();
 
