@@ -148,6 +148,10 @@ public class MigrationTool
     LoanStateService loanStateService;
 
     @Autowired
+    LoanFinGroupService loanFinGroupService;
+
+
+    @Autowired
     WorkSectorService workSectorService;
 
     @Autowired
@@ -258,6 +262,7 @@ public class MigrationTool
 
     Map<Long,InspectionResultType> inspectionResultTypeMap = new HashMap<Long,InspectionResultType>();
     Map<Long,LoanState> loanStateMap = new HashMap<Long,LoanState>();
+    Map<Long,LoanFinGroup> loanFinGroupMap = new HashMap<Long,LoanFinGroup>();
     Map<Long,WorkSector> workSectorMap = new HashMap<Long,WorkSector>();
 
     Map<Long,CreditOrder> crditOrderMap = new HashMap<Long,CreditOrder>();
@@ -438,6 +443,10 @@ public class MigrationTool
 
         boolean loanStatusMigrationDone = light;
         if(!loanStatusMigrationDone) loanStatusMigrationDone = this.loanStatusMigrate(connection);
+
+        boolean loanFinGroupMigrationDone = light;
+        if(!loanFinGroupMigrationDone) loanFinGroupMigrationDone = this.loanFinGroupMigrate(connection);
+
 
         boolean workSectorMigrationDone = light;
         if(!workSectorMigrationDone) workSectorMigrationDone = this.workSectorMigrate(connection);
@@ -1094,6 +1103,17 @@ public class MigrationTool
                                                 loan.setFund(fundMap.get(rsLoan.getLong("credit_line")));
 
                                                 loan.setBankDataId(rsLoan.getLong("payment_requsite_id"));
+
+                                                try
+                                                {
+                                                    loan.setLoanFinGroup(loanFinGroupMap.get((long)rsLoan.getInt("fin_group")));
+                                                }
+                                                catch(Exception ex)
+                                                {
+                                                    errorList.add(" group error == credit_id == "+rsLoan.getInt("credit_id")+ " error == "+ex);
+                                                }
+
+
 
                                                 loan.setVersion(Long.valueOf(rsLoan.getInt("credit_id")));
 
@@ -3369,6 +3389,61 @@ public class MigrationTool
                         rs.close();
                         st.close();
                     }
+
+
+                }
+                catch (SQLException ex)
+                {
+                    System.out.println("Connection Failed! Check output console");
+                    ex.printStackTrace();
+                    return migrationSuccess;
+                }
+
+            }
+            else
+            {
+                System.out.println("Failed to make connection!");
+            }
+        }
+        catch(Exception ex)
+        {
+            System.out.println(" Error in User migration "+ex);
+        }
+
+        return migrationSuccess;
+    }
+
+    private boolean loanFinGroupMigrate(Connection connection)
+    {
+        boolean migrationSuccess = false;
+
+        try
+        {
+            if (connection != null) {
+                ResultSet rs = null;
+                try
+                {
+                    Statement st = connection.createStatement();
+                    rs = st.executeQuery("select * from system_type where system_type.group_id = 40 order by system_type.type_id");
+                    if(rs != null)
+                    {
+                        while (rs.next())
+                        {
+                            LoanFinGroup newEntity = new LoanFinGroup();
+                            newEntity.setName(rs.getString("type_name"));
+
+                            loanFinGroupService.add(newEntity);
+
+                            loanFinGroupMap.put(rs.getLong("type_id"),newEntity);
+
+                        }
+
+                        migrationSuccess = true;
+                        rs.close();
+                        st.close();
+                    }
+
+
                 }
                 catch (SQLException ex)
                 {
@@ -4865,7 +4940,7 @@ public class MigrationTool
         try
         {
             connection = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/migration99", "postgres",
+                    "jdbc:postgresql://localhost:5432/migration55", "postgres",
                     "armad27raptor");
         }
         catch (SQLException e)
