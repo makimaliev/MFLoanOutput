@@ -1,5 +1,6 @@
 package kg.gov.mf.loan.output.report.dao;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -132,11 +133,21 @@ public class ReportTemplateDaoImpl implements ReportTemplateDao {
 
     	ReportTemplate clonedTemplate = new ReportTemplate();
 
-    	clonedTemplate.setGenerationParameters(reportTemplate.getGenerationParameters());
+    	Set<GenerationParameter> generationParameters = new HashSet<>();
+    	generationParameters.addAll(reportTemplate.getGenerationParameters());
+    	clonedTemplate.setGenerationParameters(generationParameters);
     	clonedTemplate.setName(reportTemplate.getName()+" копия ");
     	clonedTemplate.setReport(reportTemplate.getReport());
-    	clonedTemplate.setContentParameters(reportTemplate.getContentParameters());
-    	clonedTemplate.setFilterParameters(reportTemplate.getFilterParameters());
+
+
+		Set<ContentParameter> contentParameters= new HashSet<>();
+		contentParameters.addAll(reportTemplate.getContentParameters());
+    	clonedTemplate.setContentParameters(contentParameters);
+
+		Set<FilterParameter> filterParameters= new HashSet<>();
+		filterParameters.addAll(reportTemplate.getFilterParameters());
+    	clonedTemplate.setFilterParameters(filterParameters);
+
     	clonedTemplate.setGroupType1(reportTemplate.getGroupType1());
 		clonedTemplate.setGroupType2(reportTemplate.getGroupType2());
 		clonedTemplate.setGroupType3(reportTemplate.getGroupType3());
@@ -150,8 +161,13 @@ public class ReportTemplateDaoImpl implements ReportTemplateDao {
 		if(reportTemplate.getAdditionalDate()!=null)
 			clonedTemplate.setAdditionalDate(reportTemplate.getAdditionalDate());
 
-		clonedTemplate.setOutputParameters(reportTemplate.getOutputParameters());
-		clonedTemplate.setUsers(reportTemplate.getUsers());
+		Set<OutputParameter> outputParameters = new HashSet<>();
+		outputParameters.addAll(reportTemplate.getOutputParameters());
+		clonedTemplate.setOutputParameters(outputParameters);
+
+		Set<User> users = new HashSet<>();
+		users.addAll(reportTemplate.getUsers());
+		clonedTemplate.setUsers(users);
 
 
 
