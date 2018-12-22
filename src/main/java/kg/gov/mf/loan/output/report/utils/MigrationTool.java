@@ -1410,6 +1410,10 @@ public class MigrationTool
 
                                                                         term.setPenaltyOnInterestOverdueRateValue(rsTerm.getDouble("penalty_percent"));
 
+                                                                        term.setGraceDaysPrincipal(rsTerm.getInt("expiry_main"));
+                                                                        term.setGraceDaysInterest(rsTerm.getInt("expiry_percent"));
+
+
                                                                         if(rsTerm.getInt("method_days_period")<3)
                                                                             term.setDaysInMonthMethod((OrderTermDaysMethod)daysMethodMap.get((long)rsTerm.getInt("method_days_period")));
                                                                         else
@@ -1471,6 +1475,10 @@ public class MigrationTool
                                                                             termParent.setPenaltyOnPrincipleOverdueRateValue(rsTerm.getDouble("penalty_main_debt"));
 
                                                                             termParent.setPenaltyOnInterestOverdueRateValue(rsTerm.getDouble("penalty_percent"));
+
+                                                                            termParent.setGraceDaysPrincipal(rsTerm.getInt("expiry_main"));
+                                                                            termParent.setGraceDaysInterest(rsTerm.getInt("expiry_percent"));
+
 
                                                                             if(rsTerm.getInt("method_days_period")<3)
                                                                                 termParent.setDaysInMonthMethod((OrderTermDaysMethod)daysMethodMap.get((long)rsTerm.getInt("method_days_period")));
