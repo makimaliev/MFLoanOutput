@@ -511,7 +511,7 @@ public class MigrationTool
                             "      (select selo.id from selo where selo.region = address.region_code and selo.district = address.district_code limit 1) as selo_id,\n" +
                             "\n" +
                             "      * from person, person_details,address,phone\n" +
-                            "where person.id = person_details.person_id AND\n" +
+                            "where person.id = person_details.person_id AND \n" +
                             "      address.user_id = person.id AND address.contact_type = 2 AND \n" +
                             "      phone.user_id = person.id and phone.contact_type = 2 order by person.id ");
                     if(rs != null)
@@ -632,7 +632,7 @@ public class MigrationTool
 
                             identityDoc.setNumber(rs.getString("of_reg_series")+rs.getString("of_reg_number"));
 
-                            identityDoc.setName(identityDoc.getIdentityDocType().getName() + " "+ identityDoc.getNumber());
+                            identityDoc.setName(identityDoc.getIdentityDocType().getName() + " (" +rs.getString("of_reg_let")+")");
 
                             IdentityDocDetails identityDocDetails = new IdentityDocDetails();
 
@@ -950,7 +950,7 @@ public class MigrationTool
                                     try
                                     {
                                         Statement stLoan = connection.createStatement();
-                                        rsLoan = stLoan.executeQuery("select * from credit,credit_details where credit.id = credit_details.credit_id and credit.person_id = "+rs.getInt("person_id"));
+                                        rsLoan = stLoan.executeQuery("select * from credit,credit_details where credit.id = credit_details.credit_id and credit.person_id = "+rs.getInt("person_id")+ " order by id");
                                         if(rsLoan != null)
                                         {
                                             while (rsLoan.next())
@@ -1059,29 +1059,7 @@ public class MigrationTool
 
                                                 }
 
-                                                if(details.contains("(=списание=)"))
-                                                {
-                                                    try {
-                                                        WriteOff writeOff = new WriteOff();
 
-                                                        SimpleDateFormat DateFormatShort = new SimpleDateFormat("dd.MM.yyyy");
-
-                                                        Date date = DateFormatShort.parse(details.substring(details.indexOf("дата==")+6,details.indexOf("(дата)")));
-
-                                                        writeOff.setDate(date);
-                                                        writeOff.setPrincipal(Double.parseDouble(details.substring(details.indexOf("сумма==")+7,details.indexOf("(сумма)"))));
-                                                        writeOff.setLoan(loan);
-
-                                                        this.writeOffService.add(writeOff);
-                                                    }
-                                                    catch (Exception ex)
-                                                    {
-                                                        errorList.add(" write off error == "+ex);
-                                                    }
-
-
-
-                                                }
 
 
 
@@ -1140,6 +1118,35 @@ public class MigrationTool
                                                 else
                                                 {
                                                     penalyLimit20 = true;
+                                                }
+
+                                                if(details.contains("(=списание=)"))
+                                                {
+                                                    try {
+                                                        WriteOff writeOff = new WriteOff();
+
+                                                        SimpleDateFormat DateFormatShort = new SimpleDateFormat("dd.MM.yyyy");
+
+                                                        Date date = DateFormatShort.parse(details.substring(details.indexOf("дата==")+6,details.indexOf("(дата)")));
+
+                                                        writeOff.setDate(date);
+                                                        writeOff.setPrincipal(Double.parseDouble(details.substring(details.indexOf("сумма==")+7,details.indexOf("(сумма)"))));
+                                                        writeOff.setFee((double)0);
+                                                        writeOff.setInterest((double)0);
+                                                        writeOff.setPenalty((double)0);
+                                                        writeOff.setTotalAmount(Double.parseDouble(details.substring(details.indexOf("сумма==")+7,details.indexOf("(сумма)"))));
+
+                                                        writeOff.setLoan(loan);
+
+                                                        this.writeOffService.add(writeOff);
+                                                    }
+                                                    catch (Exception ex)
+                                                    {
+                                                        errorList.add(" write off error == "+ex);
+                                                    }
+
+
+
                                                 }
 
 
@@ -1604,8 +1611,16 @@ public class MigrationTool
                                                                             else payment.setIn_loan_currency(true);
                                                                         }
 
-                                                                        if(rsPayment.getString("decr_type")!=null)
-                                                                            payment.setDetails(rsPayment.getString("decr_type"));
+                                                                        if(rsPayment.getString("decr_type")!=null) {
+                                                                            if (rsPayment.getString("decr_type").length()<100)
+                                                                                payment.setDetails(rsPayment.getString("decr_type"));
+                                                                            else payment.setDetails(rsPayment.getString("decr_type").substring(0,99));
+                                                                        }
+                                                                        else payment.setDetails("");
+
+
+
+
 
                                                                         if(rsPayment.getInt("record_status")==2)
                                                                             payment.setRecord_status(rsPayment.getInt("record_status"));
@@ -1645,8 +1660,12 @@ public class MigrationTool
                                                                             else paymentParent.setIn_loan_currency(true);
                                                                         }
 
-                                                                        if(rsPayment.getString("decr_type")!=null)
-                                                                            paymentParent.setDetails(rsPayment.getString("decr_type"));
+                                                                        if(rsPayment.getString("decr_type")!=null) {
+                                                                            if (rsPayment.getString("decr_type").length()<100)
+                                                                                paymentParent.setDetails(rsPayment.getString("decr_type"));
+                                                                            else paymentParent.setDetails(rsPayment.getString("decr_type").substring(0,99));
+                                                                        }
+                                                                        else paymentParent.setDetails("");
 
                                                                         if(rsPayment.getInt("record_status")==2)
                                                                             paymentParent.setRecord_status(rsPayment.getInt("record_status"));
@@ -1687,8 +1706,15 @@ public class MigrationTool
                                                                             else payment.setIn_loan_currency(true);
                                                                         }
 
-                                                                        if(rsPayment.getString("decr_type")!=null)
-                                                                            payment.setDetails(rsPayment.getString("decr_type"));
+
+
+                                                                        if(rsPayment.getString("decr_type")!=null) {
+                                                                            if (rsPayment.getString("decr_type").length()<100)
+                                                                                payment.setDetails(rsPayment.getString("decr_type"));
+                                                                            else payment.setDetails(rsPayment.getString("decr_type").substring(0,99));
+                                                                        }
+                                                                        else payment.setDetails("");
+
 
                                                                         if(rsPayment.getInt("record_status")==2)
                                                                             payment.setRecord_status(rsPayment.getInt("record_status"));
@@ -1734,8 +1760,14 @@ public class MigrationTool
                                                                                 else paymentParent.setIn_loan_currency(true);
                                                                             }
 
-                                                                            if(rsPayment.getString("decr_type")!=null)
-                                                                                paymentParent.setDetails(rsPayment.getString("decr_type"));
+                                                                            if(rsPayment.getString("decr_type")!=null) {
+                                                                                if (rsPayment.getString("decr_type").length()<100)
+                                                                                    paymentParent.setDetails(rsPayment.getString("decr_type"));
+                                                                                else paymentParent.setDetails(rsPayment.getString("decr_type").substring(0,99));
+                                                                            }
+                                                                            else paymentParent.setDetails("");
+
+
 
                                                                             if(rsPayment.getInt("record_status")==2)
                                                                                 paymentParent.setRecord_status(rsPayment.getInt("record_status"));
@@ -4948,7 +4980,7 @@ public class MigrationTool
         try
         {
             connection = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/migration55", "postgres",
+                    "jdbc:postgresql://localhost:5432/migration25122018", "postgres",
                     "armad27raptor");
         }
         catch (SQLException e)
