@@ -850,6 +850,49 @@ int x = 0;
                         }
 
 
+                        cell = new PdfPCell (new Paragraph ("",TitleFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                        cell.setFixedHeight(15);
+                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        cell.setBorder(FooterColumnBorder);
+                        cell.setPadding(FooterColumnPadding);
+                        table.addCell (cell);
+
+                        cell = new PdfPCell (new Paragraph ("",TitleFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        cell.setBorder(FooterColumnBorder);
+                        cell.setPadding(FooterColumnPadding);
+                        table.addCell (cell);
+
+                        cell = new PdfPCell (new Paragraph ("",TitleFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        cell.setBorder(FooterColumnBorder);
+                        cell.setPadding(FooterColumnPadding);
+                        table.addCell (cell);
+
+
+                        cell = new PdfPCell (new Paragraph ("",TitleFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        cell.setBorder(FooterColumnBorder);
+                        cell.setPadding(FooterColumnPadding);
+                        table.addCell (cell);
+
+
+
+
+                            cell = new PdfPCell (new Paragraph ("",TitleFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                            cell.setBorder(FooterColumnBorder);
+                            cell.setPadding(FooterColumnPadding);
+                            table.addCell (cell);
+
+
+
+
                             cell = new PdfPCell (new Paragraph (sResTitle,TitleFont));
                             cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                             cell.setFixedHeight(36);
@@ -1099,7 +1142,8 @@ int x = 0;
 
                        if(OstAll<=1)
                        {
-                           cell.setFixedHeight(36);
+                           cell = new PdfPCell (new Paragraph (" Заведующий сектором информационных технологий (в части кредитных условий)",TitleFont));
+                           cell.setFixedHeight(51);
                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                            cell.setBorder(FooterColumnBorder);
