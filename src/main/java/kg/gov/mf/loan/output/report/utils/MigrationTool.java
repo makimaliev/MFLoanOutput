@@ -42,6 +42,9 @@ public class MigrationTool
     GoodTypeService goodTypeService;
 
     @Autowired
+    AdditionalAgreementService additionalAgreementService;
+
+    @Autowired
     PhaseDetailsService phaseDetailsService;
 
     @Autowired
@@ -1134,6 +1137,7 @@ public class MigrationTool
                                                         writeOff.setFee((double)0);
                                                         writeOff.setInterest((double)0);
                                                         writeOff.setPenalty((double)0);
+                                                        writeOff.setDescription("");
                                                         writeOff.setTotalAmount(Double.parseDouble(details.substring(details.indexOf("сумма==")+7,details.indexOf("(сумма)"))));
 
                                                         writeOff.setLoan(loan);
@@ -1313,7 +1317,7 @@ public class MigrationTool
                                                                             errorList.add(" credit term error 1 "+loan.getId());
                                                                         }
 
-                                                                        if(rsTerm.getInt("method_days")<3)
+                                                                        if(rsTerm.getInt("method_days")<4)
                                                                             term.setDaysInYearMethod((OrderTermDaysMethod)daysMethodMap.get((long)rsTerm.getInt("method_days")));
                                                                         else
                                                                         {
@@ -1368,7 +1372,7 @@ public class MigrationTool
                                                                             errorList.add(" credit term error 1 "+loan.getId());
                                                                         }
 
-                                                                        if(rsTerm.getInt("method_days")<3)
+                                                                        if(rsTerm.getInt("method_days")<4)
                                                                             termParent.setDaysInYearMethod((OrderTermDaysMethod)daysMethodMap.get((long)rsTerm.getInt("method_days")));
                                                                         else
                                                                         {
@@ -1429,7 +1433,7 @@ public class MigrationTool
                                                                             errorList.add(" credit term error 1 "+loan.getId());
                                                                         }
 
-                                                                        if(rsTerm.getInt("method_days")<3)
+                                                                        if(rsTerm.getInt("method_days")<4)
                                                                             term.setDaysInYearMethod((OrderTermDaysMethod)daysMethodMap.get((long)rsTerm.getInt("method_days")));
                                                                         else
                                                                         {
@@ -1495,7 +1499,7 @@ public class MigrationTool
                                                                                 errorList.add(" credit term error 1 "+loan.getId());
                                                                             }
 
-                                                                            if(rsTerm.getInt("method_days")<3)
+                                                                            if(rsTerm.getInt("method_days")<4)
                                                                                 termParent.setDaysInYearMethod((OrderTermDaysMethod)daysMethodMap.get((long)rsTerm.getInt("method_days")));
                                                                             else
                                                                             {
@@ -2404,6 +2408,63 @@ public class MigrationTool
                                                     ex.printStackTrace();
                                                     errorList.add(" collateral loan error" + ex + " debtor id = "+debtor.getId());
                                                 }
+
+
+
+                                                try
+                                                {
+                                                    if (connection != null) {
+                                                        ResultSet rsCollateralAgreementLoan = null;
+                                                        try
+                                                        {
+                                                            Statement stCollateralAgreementLoan = connection.createStatement();
+                                                            rsCollateralAgreementLoan = stCollateralAgreementLoan.executeQuery("select * from deposit_contract_editions dce where dce.contract_id ="+rsCollateralAgreement.getInt("id"));
+                                                            if(rsCollateralAgreementLoan != null)
+                                                            {
+                                                                while (rsCollateralAgreementLoan.next())
+                                                                {
+                                                                    AdditionalAgreement additionalAgreement = new AdditionalAgreement();
+
+                                                                    additionalAgreement.setCollateralAgreement(collateralAgreement);
+
+                                                                    if(rsCollateralAgreementLoan.getDate("date")!=null)
+                                                                    additionalAgreement.setDate(rsCollateralAgreementLoan.getDate("date"));
+
+                                                                    if(rsCollateralAgreementLoan.getString("number").length()<150)
+                                                                        additionalAgreement.setNumber(rsCollateralAgreementLoan.getString("number"));
+                                                                    else additionalAgreement.setNumber(rsCollateralAgreementLoan.getString("number").substring(0,149));
+
+                                                                    additionalAgreement.setDescription(rsCollateralAgreementLoan.getString("details"));
+
+                                                                    this.additionalAgreementService.add(additionalAgreement);
+
+
+                                                                }
+
+                                                                stCollateralAgreementLoan.close();
+                                                                rsCollateralAgreementLoan.close();
+                                                            }
+                                                        }
+                                                        catch (SQLException ex)
+                                                        {
+                                                            System.out.println("Connection Failed! Check output console");
+                                                            ex.printStackTrace();
+                                                            errorList.add(" collateral loan error" + ex + " debtor id = "+debtor.getId());
+                                                        }
+
+                                                    }
+                                                    else
+                                                    {
+                                                        System.out.println("Failed to make connection!");
+                                                    }
+                                                }
+                                                catch(Exception ex)
+                                                {
+                                                    System.out.println("Connection Failed! Check output console");
+                                                    ex.printStackTrace();
+                                                    errorList.add(" collateral loan error" + ex + " debtor id = "+debtor.getId());
+                                                }
+
 
 
                                                 // collateral item migration
@@ -3937,6 +3998,16 @@ public class MigrationTool
                         rs.close();
                         st.close();
                     }
+
+                    OrderTermDaysMethod newEntity = new OrderTermDaysMethod();
+
+
+                    newEntity.setName(" Календарный 366");
+
+                    orderTermDaysMethodService.add(newEntity);
+                    daysMethodMap.put(Long.valueOf(3),newEntity);
+
+
                 }
                 catch (SQLException ex)
                 {
@@ -4980,7 +5051,7 @@ public class MigrationTool
         try
         {
             connection = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/migration25122018", "postgres",
+                    "jdbc:postgresql://localhost:5432/migration2019", "postgres",
                     "armad27raptor");
         }
         catch (SQLException e)

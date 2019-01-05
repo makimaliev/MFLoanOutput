@@ -113,7 +113,7 @@ public class PrintoutGeneratorCreditClaim {
         {
             SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
-//            String UPLOADED_FOLDER =  SystemUtils.IS_OS_LINUX ? "/opt/uploads/" : "c://temp//";
+            String UPLOADED_FOLDER =  SystemUtils.IS_OS_LINUX ? "/opt/uploads/" : "c://temp//";
 
             String sTitle1   = "КЫРГЫЗ РЕСПУБЛИКАСЫНЫН ФИНАНСЫ МИНИСТИРЛИГИНЕ КАРАШТУУ БЮДЖЕТТИК НАСЫЯЛАРДЫ БАШКАРУУ БОЮНЧА МАМЛЕКЕТТИК АГЕНТТИГИ \n \n";
             String sTitle2   = "ГОСУДАРСТВЕННОЕ АГЕНТСТВО ПО УПРАВЛЕНИЮ БЮДЖЕТНЫМИ КРЕДИТАМИ ПРИ МИНИСТЕРСТВЕ ФИНАНСОВ КЫРГЫЗСКОЙ РЕСПУБЛИКИ";
@@ -198,15 +198,15 @@ public class PrintoutGeneratorCreditClaim {
             cell.setBorder(TitleColumnBorder);
             table.addCell (cell);
 
-//            String    sFileName   = UPLOADED_FOLDER+"/gaubk.png";
-//            Image image1 = Image.getInstance(sFileName);
-//
-//            image1.scalePercent(70);
-//            cell = new RtfCell (image1);
-//            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
-//            cell.setVerticalAlignment(Element.ALIGN_TOP);
-//            cell.setBorder(TitleColumnBorder);
-//            table.addCell (cell);
+            String    sFileName   = UPLOADED_FOLDER+"/gaubk.png";
+            Image image1 = Image.getInstance(sFileName);
+
+            image1.scalePercent(70);
+            cell = new RtfCell (image1);
+            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_TOP);
+            cell.setBorder(TitleColumnBorder);
+            table.addCell (cell);
 
             cell = new RtfCell (new com.lowagie.text.Paragraph (sTitle2,TitleFont));
             cell.setHorizontalAlignment (Element.ALIGN_CENTER);
@@ -229,31 +229,31 @@ public class PrintoutGeneratorCreditClaim {
             cell.setColspan(3);
             table.addCell (cell);
 
-            cell = new RtfCell (new com.lowagie.text.Paragraph (sAddress1,AddressFont));
-            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-            cell.setVerticalAlignment(Element.ALIGN_TOP);
-            cell.setBorder(TitleColumnBorder);
-            table.addCell (cell);
-
-//                    cell = new RtfCell (new com.lowagie.text.Paragraph (sAddress2,AddressFont));
-            cell = new RtfCell (new com.lowagie.text.Paragraph ("",AddressFont));
-            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
-            cell.setVerticalAlignment(Element.ALIGN_TOP);
-            cell.setBorder(TitleColumnBorder);
-            table.addCell (cell);
-
-            cell = new RtfCell (new com.lowagie.text.Paragraph (sAddress3,AddressFont));
-            cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
-            cell.setVerticalAlignment(Element.ALIGN_TOP);
-            cell.setBorder(TitleColumnBorder);
-            table.addCell (cell);
-
-            cell = new RtfCell (new com.lowagie.text.Paragraph (sNumber,DateFont));
-            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-            cell.setVerticalAlignment(Element.ALIGN_TOP);
-            cell.setBorder(TitleColumnBorder);
-            cell.setColspan(3);
-            table.addCell (cell);
+//            cell = new RtfCell (new com.lowagie.text.Paragraph (sAddress1,AddressFont));
+//            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+//            cell.setVerticalAlignment(Element.ALIGN_TOP);
+//            cell.setBorder(TitleColumnBorder);
+//            table.addCell (cell);
+//
+////                    cell = new RtfCell (new com.lowagie.text.Paragraph (sAddress2,AddressFont));
+//            cell = new RtfCell (new com.lowagie.text.Paragraph ("",AddressFont));
+//            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+//            cell.setVerticalAlignment(Element.ALIGN_TOP);
+//            cell.setBorder(TitleColumnBorder);
+//            table.addCell (cell);
+//
+//            cell = new RtfCell (new com.lowagie.text.Paragraph (sAddress3,AddressFont));
+//            cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+//            cell.setVerticalAlignment(Element.ALIGN_TOP);
+//            cell.setBorder(TitleColumnBorder);
+//            table.addCell (cell);
+//
+//            cell = new RtfCell (new com.lowagie.text.Paragraph (sNumber,DateFont));
+//            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+//            cell.setVerticalAlignment(Element.ALIGN_TOP);
+//            cell.setBorder(TitleColumnBorder);
+//            cell.setColspan(3);
+//            table.addCell (cell);
 
             //document.setHeader(new RtfHeaderFooter(table));
             document.add(table);
@@ -352,11 +352,11 @@ public class PrintoutGeneratorCreditClaim {
 
             String sRecipient="";
 
-            if(!RegionName.contains("ш."))
+            if(!RegionName.contains("г."))
                 RegionName += " облусу ";
 
 
-            if(!DistrictName.contains("ш."))
+            if(!DistrictName.contains("г."))
                 DistrictName += " району, ";
             sRecipient+=RegionName+"\n";
             sRecipient+=DistrictName+"\n";
@@ -387,7 +387,7 @@ public class PrintoutGeneratorCreditClaim {
             cell.setBorder(TitleColumnBorder);
             table.addCell (cell);
 
-            cell = new RtfCell (new Paragraph ("Cом суммага "+reportTool.FormatNumber(SumProsAll)+" с.",TitleFont));
+            cell = new RtfCell (new Paragraph (reportTool.FormatNumber(SumProsAll)+" с.",TitleFont));
             cell.setHorizontalAlignment (Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
 
@@ -407,8 +407,6 @@ public class PrintoutGeneratorCreditClaim {
 
 
 
-
-            sText1+=" по ниже указанным кредитным договорам:";
 
             cell = new RtfCell (new Paragraph ("        Кыргыз Республикасынын Финансы министирлигине караштуу Бюджеттик насыяларды башкаруу боюнча мамлекеттик агенттиги, төмөндө көрсөтүлгөн  "+sText1+" боюнча "+sRasDate+"-ж. карата, Сиздин суммасы "+reportTool.FormatNumber(SumProsAll)+" сом болгон, төлөө мөөнөтү өткөн карызыңыз бар экендигин билдирет:",ColumnFont));
             cell.setHorizontalAlignment (Element.ALIGN_JUSTIFIED);
@@ -546,7 +544,7 @@ public class PrintoutGeneratorCreditClaim {
                 cell.setBorders(TbBorder);
                 table.addCell (cell);
 
-                cell = new RtfCell (new Paragraph (reportTool.FormatNumber(iDebtAll/(Thousands)),HeaderFont));
+                cell = new RtfCell (new Paragraph (reportTool.FormatNumber(iDebtAll/(1)),HeaderFont));
                 cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                 cell.setBorders(TbBorder);
@@ -568,7 +566,7 @@ public class PrintoutGeneratorCreditClaim {
             cell.setBorders(TbBorder);
             table.addCell (cell);
 
-            cell = new RtfCell (new Paragraph (reportTool.FormatNumber(SumProsAll/(Thousands)),TitleFont2));
+            cell = new RtfCell (new Paragraph (reportTool.FormatNumber(SumProsAll/(1)),TitleFont2));
             cell.setHorizontalAlignment (Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell.setBorders(TbBorder);
@@ -594,12 +592,12 @@ public class PrintoutGeneratorCreditClaim {
 
             table.setWidths(iWidth3);
 
-            cell = new RtfCell (new Paragraph ("       Кыргыз Республикасынын Жарандык кодексинин 299-беренесине ылайык Сиз кредитке алган сумманы, келишимдин шарттары боюнча көрсөтүлгөн мөөнөттө кайтарууга милдеттүүсүз. +\n" +
-                    "                                                             Ошол себептен, аталган доо-талапты алган күндөн баштап 15 күндүн ичинде жогоруда көрсөтүлгөн карыздын суммасын толук көлөмдө төлөп кутулууңуз зарыл. +\n" +
-                    "                                                             Көрсөтүлгөн мөөнөттө карыз кайтарылбаса, Бюджеттик кредиттерди башкаруу боюнча мамлекеттик агенттиги, Кыргыз Республикасынын Жарандык-процессуалдык кодексинин 4-беренесин жетекчиликке алып, карызды күрөөгө коюлган мүлктүн эсебинен мажбурлап өндүрүү үчүн, доо арыз менен сотко кайрылууга мажбур болот.+\n" +
-                    "                                                             Бардык соттук чыгымдар төлөмөрдүн эсебинен жүргүзүлөт.+\n" +
-                    "                                                             Маалымат катары, Кыргыз Республикасынын Өкмөтүнүн 2016-жылдын 4-августундагы №355-б буйругу менен бекитилген  убактылуу тартипке ылайык, Агенттик аркылуу таризделген бардык мамлекеттик зайымдык каражаттарды кайтаруунун эсебинен азык-түлүк буудай данын республиканын кайра иштетүү ишканаларына  тапшыруу жагы каралган.+\n" +
-                    "                                                             Ошондуктан, кредит боюнча карызыңызды азык-түлүк буудай даны менен же болбосо акчалай төлөп кутулууңуз талапка ылайык.",ColumnFont));
+            cell = new RtfCell (new Paragraph ("       Кыргыз Республикасынын Жарандык кодексинин 299-беренесине ылайык Сиз кредитке алган сумманы, келишимдин шарттары боюнча көрсөтүлгөн мөөнөттө кайтарууга милдеттүүсүз. \n" +
+                    "       Ошол себептен, аталган доо-талапты алган күндөн баштап 15 күндүн ичинде жогоруда көрсөтүлгөн карыздын суммасын толук көлөмдө төлөп кутулууңуз зарыл. \n" +
+                    "       Көрсөтүлгөн мөөнөттө карыз кайтарылбаса, Бюджеттик кредиттерди башкаруу боюнча мамлекеттик агенттиги, Кыргыз Республикасынын Жарандык-процессуалдык кодексинин 4-беренесин жетекчиликке алып, карызды күрөөгө коюлган мүлктүн эсебинен мажбурлап өндүрүү үчүн, доо арыз менен сотко кайрылууга мажбур болот.\n" +
+                    "       Бардык соттук чыгымдар төлөмөрдүн эсебинен жүргүзүлөт.\n" +
+                    "       Маалымат катары, Кыргыз Республикасынын Өкмөтүнүн 2016-жылдын 4-августундагы №355-б буйругу менен бекитилген  убактылуу тартипке ылайык, Агенттик аркылуу таризделген бардык мамлекеттик зайымдык каражаттарды кайтаруунун эсебинен азык-түлүк буудай данын республиканын кайра иштетүү ишканаларына  тапшыруу жагы каралган.\n" +
+                    "       Ошондуктан, кредит боюнча карызыңызды азык-түлүк буудай даны менен же болбосо акчалай төлөп кутулууңуз талапка ылайык.",ColumnFont));
 
             cell.setHorizontalAlignment (Element.ALIGN_JUSTIFIED);
             cell.setVerticalAlignment(Element.ALIGN_TOP);
@@ -658,10 +656,17 @@ public class PrintoutGeneratorCreditClaim {
             cell.setBorder(TitleColumnBorder);
             table.addCell (cell);
 
+            cell = new RtfCell (new Paragraph ("",TitleFont));
+            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+            cell.setBorder(TitleColumnBorder);
+            table.addCell (cell);
+
 
             cell = new RtfCell (new Paragraph ("\nМакулдашылды",TitleFont));
 
-            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+            cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
             cell.setVerticalAlignment(Element.ALIGN_TOP);
             cell.setBorder(TitleColumnBorder);
             table.addCell (cell);
@@ -689,6 +694,7 @@ public class PrintoutGeneratorCreditClaim {
                 cell = new RtfCell (new Paragraph ("",TitleFont));
                 cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_TOP);
+                cell.setColspan(3);
 
                 cell.setBorder(TitleColumnBorder);
                 table.addCell (cell);
