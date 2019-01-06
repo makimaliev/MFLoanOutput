@@ -21,5 +21,7 @@ public interface ReportTemplateService {
 	public List<ReportTemplate> findByUser(User user);
 
 	public void clone(ReportTemplate reportTemplate);
+
+	public ReportTemplate findByReportId(Long reportId);
 	
 }

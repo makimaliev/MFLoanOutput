@@ -24,4 +24,6 @@ public interface ReportTemplateDao {
 
 	public void clone(ReportTemplate reportTemplate);
 
+	public ReportTemplate findByReportId(Long reportId);
+
 }

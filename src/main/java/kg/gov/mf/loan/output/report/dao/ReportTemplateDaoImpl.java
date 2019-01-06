@@ -177,6 +177,33 @@ public class ReportTemplateDaoImpl implements ReportTemplateDao {
 		logger.info("ReportTemplate cloned == "+reportTemplate);
 
 	}
- 
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public ReportTemplate findByReportId(Long reportId) {
+		Session session = this.sessionFactory.getCurrentSession();
+
+		Criteria criteria = session.createCriteria(ReportTemplate.class);
+
+		criteria.createAlias("report", "reportAlias");
+		criteria.add(Restrictions.eq("reportAlias.id", reportId));
+		ReportTemplate reportTemplate=(ReportTemplate) criteria.setMaxResults(1).list().get(0);
+
+        Hibernate.initialize(reportTemplate.getFilterParameters());
+        Hibernate.initialize(reportTemplate.getGenerationParameters());
+        Hibernate.initialize(reportTemplate.getContentParameters());
+        Hibernate.initialize(reportTemplate.getOutputParameters());
+        Hibernate.initialize(reportTemplate.getGroupType1());
+        Hibernate.initialize(reportTemplate.getGroupType2());
+        Hibernate.initialize(reportTemplate.getGroupType3());
+        Hibernate.initialize(reportTemplate.getGroupType4());
+        Hibernate.initialize(reportTemplate.getGroupType5());
+        Hibernate.initialize(reportTemplate.getGroupType6());
+        Hibernate.initialize(reportTemplate.getReport());
+        Hibernate.initialize(reportTemplate.getUsers());
+
+		return reportTemplate;
+	}
+
 
 }

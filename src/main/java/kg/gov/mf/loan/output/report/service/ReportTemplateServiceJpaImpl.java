@@ -67,4 +67,10 @@ public class ReportTemplateServiceJpaImpl implements ReportTemplateService {
 		this.reportTemplateDao.clone(reportTemplate);
 
 	}
+
+	@Transactional
+	@Override
+	public ReportTemplate findByReportId(Long reportId) {
+		return reportTemplateDao.findByReportId(reportId);
+	}
 }
