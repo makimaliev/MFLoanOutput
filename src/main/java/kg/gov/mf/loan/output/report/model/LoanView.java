@@ -55,6 +55,9 @@ public class LoanView extends DebtorView
 	@Column
 	private String v_credit_order_reg_number;
 
+	@Column
+	private Long v_loan_fin_group_id;
+
 	@DateTimeFormat(pattern = "dd.mm.yyyy")
 	@Temporal(TemporalType.DATE)
 	private Date v_credit_order_reg_date;
@@ -147,4 +150,12 @@ public class LoanView extends DebtorView
 	public void setV_credit_order_reg_date(Date v_credit_order_reg_date) {
 		this.v_credit_order_reg_date = v_credit_order_reg_date;
 	}
+
+    public Long getV_loan_fin_group_id() {
+        return v_loan_fin_group_id;
+    }
+
+    public void setV_loan_fin_group_id(Long v_loan_fin_group_id) {
+        this.v_loan_fin_group_id = v_loan_fin_group_id;
+    }
 }
