@@ -129,7 +129,7 @@ public class FilterParameter {
 			return false;
 		}
 		final FilterParameter other = (FilterParameter) obj;
-		if (!Objects.equals(this.id, other.id)) {
+		if (!(this.getComparator()==other.getComparator() && this.getObjectList()==other.getObjectList() && this.getComparedValue()==other.getComparedValue() && this.getFieldName() ==other.getFieldName())) {
 			return false;
 		}
 		return true;
