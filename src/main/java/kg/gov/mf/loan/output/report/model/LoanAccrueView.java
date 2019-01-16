@@ -28,6 +28,9 @@ public class LoanAccrueView extends DebtorView
 	private Long v_loan_supervisor_id;
 
 	@Column
+	private  Long v_loan_fin_group_id;
+
+	@Column
 	private Long v_loan_currency_id;
 
 	@Column
@@ -236,5 +239,13 @@ public class LoanAccrueView extends DebtorView
 
 	public void setV_acc_lastInstPassed(boolean v_acc_lastInstPassed) {
 		this.v_acc_lastInstPassed = v_acc_lastInstPassed;
+	}
+
+	public Long getV_loan_fin_group_id() {
+		return v_loan_fin_group_id;
+	}
+
+	public void setV_loan_fin_group_id(Long v_loan_fin_group_id) {
+		this.v_loan_fin_group_id = v_loan_fin_group_id;
 	}
 }

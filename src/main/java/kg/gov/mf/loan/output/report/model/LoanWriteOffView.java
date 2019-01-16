@@ -28,6 +28,9 @@ public class LoanWriteOffView extends DebtorView
 	private Long v_loan_supervisor_id;
 
 	@Column
+	private  Long v_loan_fin_group_id;
+
+	@Column
 	private Long v_loan_currency_id;
 
 	@Column
@@ -222,5 +225,13 @@ public class LoanWriteOffView extends DebtorView
 
 	public void setV_wo_totalAmount(double v_wo_totalAmount) {
 		this.v_wo_totalAmount = v_wo_totalAmount;
+	}
+
+	public Long getV_loan_fin_group_id() {
+		return v_loan_fin_group_id;
+	}
+
+	public void setV_loan_fin_group_id(Long v_loan_fin_group_id) {
+		this.v_loan_fin_group_id = v_loan_fin_group_id;
 	}
 }

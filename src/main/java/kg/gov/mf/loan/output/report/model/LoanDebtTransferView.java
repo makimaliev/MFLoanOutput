@@ -28,6 +28,9 @@ public class LoanDebtTransferView extends DebtorView
 	private Long v_loan_supervisor_id;
 
 	@Column
+	private  Long v_loan_fin_group_id;
+
+	@Column
 	private Long v_loan_currency_id;
 
 	@Column
@@ -261,5 +264,13 @@ public class LoanDebtTransferView extends DebtorView
 
 	public void setV_dt_unitTypeId(Long v_dt_unitTypeId) {
 		this.v_dt_unitTypeId = v_dt_unitTypeId;
+	}
+
+	public Long getV_loan_fin_group_id() {
+		return v_loan_fin_group_id;
+	}
+
+	public void setV_loan_fin_group_id(Long v_loan_fin_group_id) {
+		this.v_loan_fin_group_id = v_loan_fin_group_id;
 	}
 }

@@ -168,6 +168,9 @@ public class LoanSummaryReportDataManager {
                 childA.setLevel((short)1);
 
                 currentgroupAid=reportTool.getIdByGroupType(reportTemplate.getGroupType1(),loanSummaryView);
+                currentgroupBid=-1;
+                currentgroupCid=-1;
+                currentgroupDid=-1;
             }
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType2(),loanSummaryView)!=currentgroupBid)
@@ -177,6 +180,9 @@ public class LoanSummaryReportDataManager {
                 childB.setLevel((short)2);
 
                 currentgroupBid=reportTool.getIdByGroupType(reportTemplate.getGroupType2(),loanSummaryView);
+                currentgroupCid=-1;
+                currentgroupDid=-1;
+
             }
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType3(),loanSummaryView)!=currentgroupCid)
@@ -191,6 +197,7 @@ public class LoanSummaryReportDataManager {
                 reportData.setCount(reportData.getCount()+1);
 
                 currentgroupCid=reportTool.getIdByGroupType(reportTemplate.getGroupType3(),loanSummaryView);
+                currentgroupDid=-1;
             }
 
 

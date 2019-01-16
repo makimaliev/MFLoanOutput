@@ -28,6 +28,9 @@ public class PaymentView extends DebtorView
 	private Long v_loan_supervisor_id;
 
 	@Column
+	private  Long v_loan_fin_group_id;
+
+	@Column
 	private Long v_loan_currency_id;
 
 	@Column
@@ -256,5 +259,13 @@ public class PaymentView extends DebtorView
 
 	public void setV_payment_in_loan_currency(boolean v_payment_in_loan_currency) {
 		this.v_payment_in_loan_currency = v_payment_in_loan_currency;
+	}
+
+	public Long getV_loan_fin_group_id() {
+		return v_loan_fin_group_id;
+	}
+
+	public void setV_loan_fin_group_id(Long v_loan_fin_group_id) {
+		this.v_loan_fin_group_id = v_loan_fin_group_id;
 	}
 }

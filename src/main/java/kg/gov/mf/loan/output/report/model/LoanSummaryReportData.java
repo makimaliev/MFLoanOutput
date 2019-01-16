@@ -50,6 +50,8 @@ public class LoanSummaryReportData extends ReportData
 
 	private short  loanType    			= 0;
 
+	private long   loanFinGroup    		= 0;
+
 	private double totalPaidInCurrency    = 0;
 
 	private String details     			= "";
@@ -481,5 +483,13 @@ public class LoanSummaryReportData extends ReportData
 
 	public void setLoanCloseRate(Double loanCloseRate) {
 		this.loanCloseRate = loanCloseRate;
+	}
+
+	public long getLoanFinGroup() {
+		return loanFinGroup;
+	}
+
+	public void setLoanFinGroup(long loanFinGroup) {
+		this.loanFinGroup = loanFinGroup;
 	}
 }

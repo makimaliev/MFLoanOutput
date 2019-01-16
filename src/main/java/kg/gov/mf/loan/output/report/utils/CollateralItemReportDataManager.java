@@ -85,6 +85,10 @@ public class CollateralItemReportDataManager {
                 childA.setLevel((short)1);
 
                 currentgroupAid=reportTool.getIdByGroupType(reportTemplate.getGroupType1(),collateralItemView);
+                currentgroupBid=-1;
+                currentgroupCid=-1;
+                currentgroupDid=-1;
+
             }
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType2(),collateralItemView)!=currentgroupBid)
@@ -94,6 +98,9 @@ public class CollateralItemReportDataManager {
                 childB.setLevel((short)2);
 
                 currentgroupBid=reportTool.getIdByGroupType(reportTemplate.getGroupType2(),collateralItemView);
+                currentgroupCid=-1;
+                currentgroupDid=-1;
+
             }
 
 
@@ -109,6 +116,7 @@ public class CollateralItemReportDataManager {
                 reportData.setCount(reportData.getCount()+1);
 
                 currentgroupCid=reportTool.getIdByGroupType(reportTemplate.getGroupType3(),collateralItemView);
+                currentgroupDid=-1;
             }
 
 

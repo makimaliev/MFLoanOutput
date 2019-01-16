@@ -27,6 +27,10 @@ public class SupervisorPlanView extends DebtorView
 	@Column
 	private Long v_loan_supervisor_id;
 
+
+	@Column
+	private  Long v_loan_fin_group_id;
+
 	@Column
 	private Long v_loan_currency_id;
 
@@ -246,5 +250,13 @@ public class SupervisorPlanView extends DebtorView
 
 	public void setV_sp_amount(double v_sp_amount) {
 		this.v_sp_amount = v_sp_amount;
+	}
+
+	public Long getV_loan_fin_group_id() {
+		return v_loan_fin_group_id;
+	}
+
+	public void setV_loan_fin_group_id(Long v_loan_fin_group_id) {
+		this.v_loan_fin_group_id = v_loan_fin_group_id;
 	}
 }
