@@ -427,7 +427,7 @@ int x = 0;
 
                             sCreditNumber=lsv.getV_loan_reg_number();
                             sCreditDate=lsv.getV_loan_reg_date().toString();
-                            sOrderNumber=lsv.getV_loan_reg_number();
+                            sOrderNumber=lsv.getV_credit_order_reg_number();
                             Short iCurrency= Short.valueOf(lsv.getV_loan_currency_id().toString());
 
 
