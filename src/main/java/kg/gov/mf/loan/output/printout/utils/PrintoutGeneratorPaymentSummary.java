@@ -144,7 +144,7 @@ public class PrintoutGeneratorPaymentSummary {
             //*****************************************************************************************
 
 
-            Set<PaymentView> paymentViews =  new HashSet<PaymentView>();
+            LinkedHashSet<PaymentView> paymentViews = new LinkedHashSet<>(0);
 
             LinkedHashMap<String,List<String>> parameterS = new LinkedHashMap<String,List<String>>();
 
@@ -155,6 +155,15 @@ public class PrintoutGeneratorPaymentSummary {
 
 
             parameterS.put("r=inv_loan_id",Ids);
+
+           List<String> groupFieldNames = new ArrayList<>();
+            groupFieldNames.add("desc_v_payment_date");
+
+            parameterS.put("orderBy",groupFieldNames);
+
+
+
+
 
             paymentViews.addAll(this.paymentViewService.findByParameter(parameterS));
 

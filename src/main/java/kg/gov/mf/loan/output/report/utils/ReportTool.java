@@ -1662,7 +1662,16 @@ public class ReportTool
 
                 for (String fieldName:ids)
                 {
-                    criteria.addOrder(Order.asc(fieldName));
+                    if(fieldName.contains("desc_"))
+                    {
+                        fieldName=fieldName.replace("desc_","");
+                        criteria.addOrder(Order.desc(fieldName));
+                    }
+                    else
+                    {
+                        criteria.addOrder(Order.asc(fieldName));
+                    }
+
                 }
             }
         }
