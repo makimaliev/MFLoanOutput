@@ -161,6 +161,22 @@ public class CollectionPhaseView extends DebtorView
 	@Column
 	private Long v_cph_close_total_amount;
 
+	@Column
+	private String v_cph_doc_number;
+
+	@Column
+	private String v_cph_result_doc_number;
+
+	@Column
+	private Long v_cph_group_id;
+
+	@Column
+	private Long v_cph_index_id;
+
+	@Column
+	private Long v_cph_sub_index_id;
+
+
 	public Long getV_cp_id() {
 		return v_cp_id;
 	}
@@ -517,5 +533,45 @@ public class CollectionPhaseView extends DebtorView
 
 	public void setV_credit_order_reg_date(Date v_credit_order_reg_date) {
 		this.v_credit_order_reg_date = v_credit_order_reg_date;
+	}
+
+	public String getV_cph_doc_number() {
+		return v_cph_doc_number;
+	}
+
+	public void setV_cph_doc_number(String v_cph_doc_number) {
+		this.v_cph_doc_number = v_cph_doc_number;
+	}
+
+	public String getV_cph_result_doc_number() {
+		return v_cph_result_doc_number;
+	}
+
+	public void setV_cph_result_doc_number(String v_cph_result_doc_number) {
+		this.v_cph_result_doc_number = v_cph_result_doc_number;
+	}
+
+	public Long getV_cph_group_id() {
+		return v_cph_group_id;
+	}
+
+	public void setV_cph_group_id(Long v_cph_group_id) {
+		this.v_cph_group_id = v_cph_group_id;
+	}
+
+	public Long getV_cph_index_id() {
+		return v_cph_index_id;
+	}
+
+	public void setV_cph_index_id(Long v_cph_index_id) {
+		this.v_cph_index_id = v_cph_index_id;
+	}
+
+	public Long getV_cph_sub_index_id() {
+		return v_cph_sub_index_id;
+	}
+
+	public void setV_cph_sub_index_id(Long v_cph_sub_index_id) {
+		this.v_cph_sub_index_id = v_cph_sub_index_id;
 	}
 }
