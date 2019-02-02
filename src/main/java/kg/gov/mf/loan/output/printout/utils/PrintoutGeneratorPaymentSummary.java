@@ -32,6 +32,8 @@ import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.pdf.CMYKColor;
 
 import java.io.FileOutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
@@ -153,11 +155,17 @@ public class PrintoutGeneratorPaymentSummary {
 
             Ids.add(String.valueOf(iCreditID));
 
+            List<String> dates = new ArrayList<>();
+            DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+            String strDate = dateFormat.format(loanSummary.getOnDate());
+            dates.add(strDate);
+
 
             parameterS.put("r=inv_loan_id",Ids);
+            parameterS.put("r=bov_payment_date",dates);
 
            List<String> groupFieldNames = new ArrayList<>();
-            groupFieldNames.add("desc_v_payment_date");
+            groupFieldNames.add("v_payment_date");
 
             parameterS.put("orderBy",groupFieldNames);
 

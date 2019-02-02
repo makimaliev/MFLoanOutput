@@ -512,7 +512,7 @@ public class PrintoutGeneratorLoanDetailedSummary {
                 int counter=0;
                 for(LoanDetailedSummary detailedSummary:loanDetailedSummaries)
                 {
-                    if(true)
+                    if(detailedSummary.getOnDate().before(loanDetailedSummary.getOnDate()) || detailedSummary.getOnDate().equals(loanDetailedSummary.getOnDate()))
                     {
                         counter+=1;
                         cell = new PdfPCell(new Paragraph(String.valueOf(counter),ColumnFont));
