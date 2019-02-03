@@ -50,6 +50,17 @@ public class LoanView extends DebtorView
 	private Long v_loan_type_id;
 
 	@Column
+	private Short v_loan_class_id;
+
+
+	@DateTimeFormat(pattern = "dd.mm.yyyy")
+	@Temporal(TemporalType.DATE)
+	private Date v_loan_close_date;
+
+	@Column
+	private Double v_loan_close_rate;
+
+	@Column
 	private Long v_credit_order_type_id;
 
 	@Column
@@ -158,4 +169,28 @@ public class LoanView extends DebtorView
     public void setV_loan_fin_group_id(Long v_loan_fin_group_id) {
         this.v_loan_fin_group_id = v_loan_fin_group_id;
     }
+
+	public Short getV_loan_class_id() {
+		return v_loan_class_id;
+	}
+
+	public void setV_loan_class_id(Short v_loan_class_id) {
+		this.v_loan_class_id = v_loan_class_id;
+	}
+
+	public Date getV_loan_close_date() {
+		return v_loan_close_date;
+	}
+
+	public void setV_loan_close_date(Date v_loan_close_date) {
+		this.v_loan_close_date = v_loan_close_date;
+	}
+
+	public Double getV_loan_close_rate() {
+		return v_loan_close_rate;
+	}
+
+	public void setV_loan_close_rate(Double v_loan_close_rate) {
+		this.v_loan_close_rate = v_loan_close_rate;
+	}
 }
