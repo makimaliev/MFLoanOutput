@@ -1369,7 +1369,18 @@ public class ReportTool
         groupFieldNames.add(reportTemplate.getGroupType4().getField_name());
 
         if(reportTemplate.getGroupType5()!=null)
-        groupFieldNames.add(reportTemplate.getGroupType5().getField_name());
+        if(reportTemplate.getGroupType5().getField_name().contains("v_ls_id"))
+        {
+        }
+        else
+        {
+            groupFieldNames.add(reportTemplate.getGroupType5().getField_name());
+        }
+
+
+
+        if(reportTemplate.getGroupType5()!=null)
+
 
         parameterS.put("orderBy",groupFieldNames);
 

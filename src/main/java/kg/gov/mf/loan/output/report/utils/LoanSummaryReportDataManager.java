@@ -1,5 +1,8 @@
 package kg.gov.mf.loan.output.report.utils;
 
+import kg.gov.mf.loan.manage.model.loan.Loan;
+import kg.gov.mf.loan.manage.model.loan.NormalLoan;
+import kg.gov.mf.loan.manage.model.process.LoanDetailedSummary;
 import kg.gov.mf.loan.manage.model.process.LoanSummary;
 import kg.gov.mf.loan.output.report.model.*;
 import kg.gov.mf.loan.output.report.service.LoanViewService;
@@ -8,7 +11,9 @@ import kg.gov.mf.loan.output.report.service.ReferenceViewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import javax.persistence.Query;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -28,6 +33,14 @@ public class LoanSummaryReportDataManager {
     @Autowired
     ReferenceViewService referenceViewService;
 
+    private LinkedHashSet<LoanSummaryView> calculatedSummaryViews = new LinkedHashSet<LoanSummaryView>(0);
+
+    private LinkedHashSet<LoanView> loanViews = new LinkedHashSet<LoanView>(0);
+
+    private LinkedHashMap<Long,LoanDetailedSummary> loanDetailedSummaryList = new LinkedHashMap<>();
+
+    String errorStringGlobal = "";
+
     public LoanSummaryReportData getReportDataGrouped(LoanSummaryReportData reportData,ReportTemplate reportTemplate)
     {
 
@@ -42,6 +55,18 @@ public class LoanSummaryReportDataManager {
 
         parameterS.putAll(reportTool.getParametersByTemplate(reportTemplate));
 
+        DateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+
+        Date today = new Date();
+
+        Date today2 = null;
+        try
+        {
+            today2 = formatter.parse(formatter.format(today));
+        } catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
 
         if(reportTemplate.getOnDate()!=null)
         {
@@ -59,13 +84,69 @@ public class LoanSummaryReportDataManager {
             parameterS.put("r=odv_ls_on_date",Ids);
             parameterS.put("r=bdv_loan_reg_date",Ids);
         }
-
-        reportData.getLoanSummaryViews().addAll(loanSummaryViewService.findByParameter(parameterS));
-
-        for (LoanSummaryView loanSummaryView: reportData.getLoanSummaryViews())
+        else
         {
-            System.out.println(loanSummaryView.getV_debtor_name());
+            reportTemplate.setOnDate(today2);
         }
+
+
+
+
+        int equals = reportTemplate.getOnDate().compareTo(today2);
+
+
+        if(reportTemplate.getName().contains("фикс")||(equals==0))
+        {
+            reportData.getLoanSummaryViews().addAll(loanSummaryViewService.findByParameter(parameterS));
+
+            return groupifyData(reportData, reportTemplate, reportTool );
+
+        }
+
+
+
+//
+//
+//
+        CalculationTool calculationTool = new CalculationTool();
+//
+//        for (LoanSummaryView loanSummaryView: reportData.getLoanSummaryViews())
+//        {
+//
+//                checkCalculation( loanSummaryView, calculationTool);
+//
+////            System.out.println(loanSummaryView.getV_debtor_name());
+//        }
+//
+//        if(errorStringGlobal.length()>0)
+//        {
+//            System.out.println(errorStringGlobal);
+//        }
+
+
+        loanViews.addAll(loanViewService.findByParameter(parameterS));
+
+        loanDetailedSummaryList.putAll(calculationTool.getAllLoanDetailedSummariesByLoanViewList(loanViews, reportTemplate.getOnDate() ));
+
+        for (LoanView loanView: loanViews)
+        {
+            try
+            {
+                calculatedSummaryViews.add(convertLoanView(loanView, calculationTool.getLoanSummaryCaluculatedByLoanIdAndOnDate(loanView, loanView.getV_loan_id(), reportTemplate.getOnDate(), loanDetailedSummaryList.get(loanView.getV_loan_id()))));
+//                if(loanDetailedSummaryList.get(loanView.getV_loan_id())==null)
+//                {
+//                    System.out.println(loanView.getV_loan_id()+ " == "+loanView.getV_debtor_name());
+//                }
+            }
+            catch (Exception ex)
+            {
+                System.out.println(ex);
+            }
+
+        }
+
+
+        reportData.getLoanSummaryViews().addAll(calculatedSummaryViews);
 
         return groupifyData(reportData, reportTemplate, reportTool );
 
@@ -608,6 +689,155 @@ public class LoanSummaryReportDataManager {
 
         return reportData;
     }
+
+    public void checkCalculation(LoanSummaryView lsv, CalculationTool calculationTool)
+    {
+
+//        LoanSummary lsOrigin = convertLoanSummaryView(lsv);
+//
+//        LoanSummary ls = calculationTool.getLoanSummaryCaluculatedByLoanIdAndOnDate(lsOrigin, lsv.getV_loan_id(), lsv.getV_loan_close_date() );
+//
+//
+//
+//        errorStringGlobal+= compareCalculation(lsOrigin,ls);
+
+
+
+    }
+
+    public LoanSummary convertLoanSummaryView( LoanSummaryView lsv)
+    {
+        LoanSummary convertedLoanSummary = new LoanSummary();
+
+        convertedLoanSummary.setOnDate(lsv.getV_ls_on_date());
+        convertedLoanSummary.setLoanAmount(lsv.getV_loan_amount());
+        convertedLoanSummary.setTotalPaid(lsv.getV_ls_total_paid());
+        convertedLoanSummary.setTotalPaidKGS(lsv.getV_ls_total_paid_kgs());
+        convertedLoanSummary.setTotalDisbursed(lsv.getV_ls_total_disbursed());
+        convertedLoanSummary.setOutstadingPrincipal(lsv.getV_ls_outstading_principal());
+        convertedLoanSummary.setOutstadingInterest(lsv.getV_ls_outstading_interest());
+        convertedLoanSummary.setOutstadingPenalty(lsv.getV_ls_outstading_penalty());
+        convertedLoanSummary.setOverduePrincipal(lsv.getV_ls_overdue_principal());
+        convertedLoanSummary.setOverdueInterest(lsv.getV_ls_overdue_interest());
+        convertedLoanSummary.setOverduePenalty(lsv.getV_ls_overdue_penalty());
+        convertedLoanSummary.setTotalOutstanding(lsv.getV_ls_total_outstanding());
+        convertedLoanSummary.setTotalDisbursed(lsv.getV_ls_total_disbursed());
+        convertedLoanSummary.setTotalOverdue(lsv.getV_ls_total_overdue());
+        convertedLoanSummary.setTotalPaid(lsv.getV_ls_total_paid());
+        convertedLoanSummary.setTotalPaidKGS(lsv.getV_ls_total_paid_kgs());
+
+        NormalLoan loan = new NormalLoan();
+        loan.setId(lsv.getV_loan_id() );
+        convertedLoanSummary.setLoan(loan);
+
+        return convertedLoanSummary;
+    }
+
+    public String compareCalculation(LoanSummary first, LoanSummary second)
+    {
+
+        String errorString = "";
+
+        if(!(Math.round(first.getLoanAmount())==Math.round(second.getLoanAmount())))
+        {
+            errorString+=" amount == loan id == "+first.getLoan().getId().toString()+ " error "+first.getLoanAmount().toString()+ " <> "+second.getLoanAmount().toString()+" \n";
+
+        }
+        if(!(Math.round(first.getTotalDisbursed())==Math.round(second.getTotalDisbursed()))) {
+            errorString+=" disbursement == loan id == "+first.getLoan().getId().toString()+ " error "+first.getTotalDisbursed().toString()+ " <> "+second.getTotalDisbursed().toString()+" \n";
+        }
+        if(!(Math.round(first.getTotalPaid())==Math.round(second.getTotalPaid()))) {
+            errorString+=" total paid == loan id == "+first.getLoan().getId().toString()+ " error "+first.getTotalPaid().toString()+ " <> "+second.getTotalPaid().toString()+" \n";
+        }
+
+//        if(!(first.getTotalPaidKGS().intValue()==second.getTotalPaidKGS().intValue())) {
+//            errorString+=" total paid kgs == loan id == "+first.getLoan().getId().toString()+ " error "+first.getTotalPaidKGS().toString()+ " <> "+second.getTotalPaidKGS().toString()+" \n";
+//
+//        }
+        if(!(Math.round(first.getTotalOutstanding())==Math.round(second.getTotalOutstanding()))) {
+            errorString+=" outstanding == loan id == "+first.getLoan().getId().toString()+ " error "+Math.round(first.getTotalOutstanding())+ " <> "+Math.round(second.getTotalOutstanding())+" \n";
+        }
+
+        if(!(Math.round(first.getOutstadingPrincipal())==Math.round(second.getOutstadingPrincipal()))) {
+            errorString+=" outstanding principal == loan id == "+first.getLoan().getId().toString()+ " error "+Math.round(first.getOutstadingPrincipal())+ " <> "+Math.round(second.getOutstadingPrincipal())+" \n";
+        }
+
+        if(!(Math.round(first.getOutstadingInterest())==Math.round(second.getOutstadingInterest()))) {
+            errorString+=" outstanding interest == loan id == "+first.getLoan().getId().toString()+ " error "+Math.round(first.getOutstadingInterest())+ " <> "+Math.round(second.getOutstadingInterest())+" \n";
+        }
+
+        if(!(Math.round(first.getOutstadingPenalty())==Math.round(second.getOutstadingPenalty()))) {
+            errorString+=" outstanding penalty == loan id == "+first.getLoan().getId().toString()+ " error "+Math.round(first.getOutstadingPenalty())+ " <> "+Math.round(second.getOutstadingPenalty())+" \n";
+        }
+//
+
+          if(!(Math.round(first.getTotalOverdue())==Math.round(second.getTotalOverdue()))) {
+            errorString+=" overdue == loan id == "+first.getLoan().getId().toString()+ " error "+first.getTotalOverdue().toString()+ " <> "+second.getTotalOverdue().toString()+" \n";
+        }
+
+        if(!(Math.round(first.getOverduePrincipal())==Math.round(second.getOverduePrincipal()))) {
+            errorString += " overdue == loan id == " + first.getLoan().getId().toString() + " error " + first.getOverduePrincipal().toString() + " <> " + second.getOverduePrincipal().toString() + " \n";
+        }
+
+        if(!(Math.round(first.getOverdueInterest())==Math.round(second.getOverdueInterest()))) {
+            errorString += " overdue interest == loan id == " + first.getLoan().getId().toString() + " error " + first.getOverdueInterest().toString() + " <> " + second.getOverdueInterest().toString() + " \n";
+        }
+
+        if(!(Math.round(first.getOverduePenalty())==Math.round(second.getOverduePenalty()))) {
+            errorString += " overdue penalty == loan id == " + first.getLoan().getId().toString() + " error " + first.getOverduePenalty().toString() + " <> " + second.getOverduePenalty().toString() + " \n";
+        }
+
+
+        return errorString;
+    }
+
+
+    public LoanSummaryView convertLoanView( LoanView lv, LoanSummary ls)
+    {
+        LoanSummaryView convertedLoanSummaryView = new LoanSummaryView();
+
+        convertedLoanSummaryView.setV_loan_amount(lv.getV_loan_amount());
+        convertedLoanSummaryView.setV_loan_reg_date(lv.getV_loan_reg_date());
+        convertedLoanSummaryView.setV_loan_reg_number(lv.getV_loan_reg_number());
+        convertedLoanSummaryView.setV_loan_type_id(lv.getV_loan_type_id());
+        convertedLoanSummaryView.setV_loan_currency_id(lv.getV_loan_currency_id());
+        convertedLoanSummaryView.setV_loan_fin_group_id(lv.getV_loan_fin_group_id());
+        convertedLoanSummaryView.setV_loan_state_id(lv.getV_loan_state_id());
+        convertedLoanSummaryView.setV_loan_id(lv.getV_loan_id());
+        convertedLoanSummaryView.setV_loan_supervisor_id(lv.getV_loan_supervisor_id());
+        convertedLoanSummaryView.setV_credit_order_reg_date(lv.getV_credit_order_reg_date());
+        convertedLoanSummaryView.setV_credit_order_reg_number(lv.getV_loan_reg_number());
+        convertedLoanSummaryView.setV_credit_order_type_id(lv.getV_credit_order_type_id());
+        convertedLoanSummaryView.setV_loan_close_date(lv.getV_loan_close_date());
+        convertedLoanSummaryView.setV_loan_close_rate(lv.getV_loan_close_rate());
+        convertedLoanSummaryView.setV_debtor_id(lv.getV_debtor_id());
+        convertedLoanSummaryView.setV_debtor_name(lv.getV_debtor_name());
+        convertedLoanSummaryView.setV_debtor_region_id(lv.getV_debtor_region_id());
+        convertedLoanSummaryView.setV_debtor_district_id(lv.getV_debtor_district_id());
+        convertedLoanSummaryView.setV_debtor_aokmotu_id(lv.getV_debtor_aokmotu_id());
+        convertedLoanSummaryView.setV_debtor_village_id(lv.getV_debtor_village_id());
+        convertedLoanSummaryView.setV_debtor_work_sector_id(lv.getV_debtor_work_sector_id());
+        convertedLoanSummaryView.setV_debtor_org_form_id(lv.getV_debtor_org_form_id());
+        convertedLoanSummaryView.setV_debtor_type_id(lv.getV_debtor_type_id());
+        convertedLoanSummaryView.setV_ls_total_disbursed(ls.getTotalDisbursed());
+        convertedLoanSummaryView.setV_ls_id(ls.getId());
+        convertedLoanSummaryView.setV_ls_on_date(ls.getOnDate());
+        convertedLoanSummaryView.setV_ls_total_paid(ls.getTotalPaid());
+        convertedLoanSummaryView.setV_ls_total_paid_kgs(ls.getTotalPaidKGS());
+        convertedLoanSummaryView.setV_ls_total_outstanding(ls.getTotalOutstanding());
+        convertedLoanSummaryView.setV_ls_outstading_principal(ls.getOutstadingPrincipal());
+        convertedLoanSummaryView.setV_ls_outstading_interest(ls.getOutstadingInterest());
+        convertedLoanSummaryView.setV_ls_outstading_penalty(ls.getOutstadingPenalty());
+        convertedLoanSummaryView.setV_ls_total_overdue(ls.getTotalOverdue());
+        convertedLoanSummaryView.setV_ls_overdue_principal(ls.getOverduePrincipal());
+        convertedLoanSummaryView.setV_ls_overdue_interest(ls.getOverdueInterest());
+        convertedLoanSummaryView.setV_ls_overdue_penalty(ls.getOverduePenalty());
+
+
+        return convertedLoanSummaryView;
+    }
+
+
 
 
 
