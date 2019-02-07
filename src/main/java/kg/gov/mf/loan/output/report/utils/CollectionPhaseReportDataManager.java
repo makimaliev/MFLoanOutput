@@ -103,6 +103,10 @@ public class CollectionPhaseReportDataManager {
                 childA.setLevel((short)1);
 
                 currentgroupAid=reportTool.getIdByGroupType(reportTemplate.getGroupType1(),collectionPhaseView);
+                currentgroupBid=-1;
+                currentgroupCid=-1;
+                currentgroupDid=-1;
+
             }
 
 
@@ -113,6 +117,9 @@ public class CollectionPhaseReportDataManager {
                 childB.setLevel((short)2);
 
                 currentgroupBid=reportTool.getIdByGroupType(reportTemplate.getGroupType2(),collectionPhaseView);
+                currentgroupCid=-1;
+                currentgroupDid=-1;
+
             }
 
 
@@ -130,6 +137,8 @@ public class CollectionPhaseReportDataManager {
                 reportData.setCount(reportData.getCount()+1);
 
                 currentgroupCid=reportTool.getIdByGroupType(reportTemplate.getGroupType3(),collectionPhaseView);
+                currentgroupDid=-1;
+
             }
 
 
