@@ -832,7 +832,7 @@ public class LoanSummaryReportDataManager {
         convertedLoanSummaryView.setV_ls_overdue_principal(ls.getOverduePrincipal());
         convertedLoanSummaryView.setV_ls_overdue_interest(ls.getOverdueInterest());
         convertedLoanSummaryView.setV_ls_overdue_penalty(ls.getOverduePenalty());
-
+        convertedLoanSummaryView.setV_last_date(ls.getCreateDate());
 
         return convertedLoanSummaryView;
     }

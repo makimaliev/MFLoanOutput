@@ -149,6 +149,7 @@ public class CalculationTool
 
             returnLoanSummary.setLoanAmount(lv.getV_loan_amount());
             returnLoanSummary.setOnDate(onDate);
+            returnLoanSummary.setCreateDate(lv.getV_last_date());
 
             if(lds==null)
             {

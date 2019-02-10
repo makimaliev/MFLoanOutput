@@ -37,6 +37,11 @@ public class LoanView extends DebtorView
 	@Temporal(TemporalType.DATE)
 	private Date v_loan_reg_date;
 
+	@DateTimeFormat(pattern = "dd.mm.yyyy")
+	@Temporal(TemporalType.DATE)
+	private Date v_last_date;
+
+
 	@Column
 	private Long v_loan_supervisor_id;
 
@@ -192,5 +197,13 @@ public class LoanView extends DebtorView
 
 	public void setV_loan_close_rate(Double v_loan_close_rate) {
 		this.v_loan_close_rate = v_loan_close_rate;
+	}
+
+	public Date getV_last_date() {
+		return v_last_date;
+	}
+
+	public void setV_last_date(Date v_last_date) {
+		this.v_last_date = v_last_date;
 	}
 }
