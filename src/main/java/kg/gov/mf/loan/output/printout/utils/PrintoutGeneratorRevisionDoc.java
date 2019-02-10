@@ -126,6 +126,9 @@ public class PrintoutGeneratorRevisionDoc{
             double SumOstPercent=0;
             double SumOstPenalty=0;
             double SumProsAll=0;
+            double SumProsPrincipal=0;
+            double SumProsInterest=0;
+            double SumProsPenalty=0;
 
             double Cost             = 0;
             double Profit           = 0;
@@ -149,38 +152,29 @@ public class PrintoutGeneratorRevisionDoc{
             ReportTool reportTool = new ReportTool();
             reportTool.initReference();
 
-            LoanSummary loanSummary = loanSummaryService.getById(objectId);
-            Loan loan = this.loanService.getById(loanSummary.getLoan().getId());
 
+            List<LoanSummaryView> loanSummaryViews = new ArrayList<>();
+
+            LoanSummary loanSummary = null;
+
+            String name = printoutTemplate.getName();
+
+            for (String id:name.split("-"))
+            {
+                if(!id.equals(""))
+                {
+                    loanSummary=loanSummaryService.getByOnDateAndLoanId(onDate,Long.valueOf(id));
+                    LoanSummaryView loanSummaryView = loanSummaryViewService.findById(loanSummary.getId());
+                    loanSummaryViews.add(loanSummaryView);
+                }
+
+            }
+
+            Loan loan = this.loanService.getById(loanSummary.getLoan().getId());
 
             iPersonID = loan.getDebtor().getId();
 
             Debtor debtor =  debtorService.getById(iPersonID);
-
-            List<LoanSummaryView> loanSummaryViews = new ArrayList<>();
-
-
-            LinkedHashMap<String,List<String>> parameterS = new LinkedHashMap<String,List<String>>();
-
-            List<String> Ids = new ArrayList<>();
-
-            Ids.add(String.valueOf(iPersonID));
-
-//                    List<String> dates = new ArrayList<>();
-//
-////                    long    iOneDay        = 1 * 24 * 60 * 60 * 1000;
-//
-//                    dates.add(String.valueOf(loanSummary.getOnDate().getTime()));
-//                    dates.add(String.valueOf(loanSummary.getOnDate().getTime()));
-
-            List<String> dates = new ArrayList<>();
-
-            dates.add(String.valueOf(new SimpleDateFormat("dd.MM.yyyy").format(loanSummary.getOnDate())));
-
-            parameterS.put("r=inv_debtor_id",Ids);
-            parameterS.put("r=odv_ls_on_date",dates);
-
-            loanSummaryViews.addAll(this.loanSummaryViewService.findByParameter(parameterS));
 
             List<String> loanIds = new ArrayList<>();
 
@@ -496,37 +490,57 @@ public class PrintoutGeneratorRevisionDoc{
 
                     ProsAll         = ProsMain+ProsPercent+ProsPenalty;
 
+                    if(iCurrency==1) Rate =1;
+
+
                     if(Cost<0) Cost=0;
                     else
                     {
-                        SumCost+=Cost;
+                        SumCost+=Cost*Rate;
                     }
                     if(OstAll<0) OstAll=0;
                     else
                     {
-                        SumOstAll+=OstAll;
+                        SumOstAll+=OstAll*Rate;
                     }
                     if(OstMain<0) OstMain=0;
                     else
                     {
-                        SumOstMain+=OstMain;
+                        SumOstMain+=OstMain*Rate;
                     }
                     if(OstPercent<0) OstPercent=0;
                     else
                     {
-                        SumOstPercent+=OstPercent;
+                        SumOstPercent+=OstPercent*Rate;
                     }
                     if(OstPenalty<0) OstPenalty=0;
                     else
                     {
-                        SumOstPenalty+=OstPenalty;
+                        SumOstPenalty+=OstPenalty*Rate;
                     }
                     if(ProsAll<0) ProsAll=0;
                     else
                     {
-                        SumProsAll+=ProsAll;
+                        SumProsAll+=ProsAll*Rate;
                     }
-                    SumProfit+=Profit;
+                    if(ProsMain<0) ProsMain=0;
+                    else
+                    {
+                        SumProsPrincipal+=ProsMain*Rate;
+                    }
+                    if(ProsPercent<0) ProsPercent=0;
+                    else
+                    {
+                        SumProsInterest+=ProsPercent*Rate;
+                    }
+                    if(ProsPenalty<0) ProsPenalty=0;
+                    else
+                    {
+                        SumProsPenalty+=ProsPenalty*Rate;
+                    }
+
+
+                    SumProfit+=Profit*Rate;
                     SumPayments+=PaymentsSom;
 
 
@@ -775,13 +789,13 @@ public class PrintoutGeneratorRevisionDoc{
                 table.addCell (cell);
 
 
-                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumCost*Rate/(Thousands)),FooterFont));
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumCost*1/(Thousands)),FooterFont));
                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                 cell.setBackgroundColor (FooterColor);
                 table.addCell (cell);
 
-                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumProfit*Rate/(Thousands)),FooterFont));
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumProfit*1/(Thousands)),FooterFont));
                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                 cell.setBackgroundColor (FooterColor);
@@ -793,41 +807,62 @@ public class PrintoutGeneratorRevisionDoc{
                 cell.setBackgroundColor (FooterColor);
                 table.addCell (cell);
 
-                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumPayments*Rate/(Thousands)),FooterFont));
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumPayments*1/(Thousands)),FooterFont));
                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                 cell.setBackgroundColor (FooterColor);
                 table.addCell (cell);
 
-                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumOstAll*Rate/(Thousands)),FooterFont));
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumOstAll*1/(Thousands)),FooterFont));
                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                 cell.setBackgroundColor (FooterColor);
                 table.addCell (cell);
 
-                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumOstMain*Rate/(Thousands)),FooterFont));
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumOstMain*1/(Thousands)),FooterFont));
                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                 cell.setBackgroundColor (FooterColor);
                 table.addCell (cell);
 
-                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumOstPercent*Rate/(Thousands)),FooterFont));
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumOstPercent*1/(Thousands)),FooterFont));
                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                 cell.setBackgroundColor (FooterColor);
                 table.addCell (cell);
 
-                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumOstPenalty*Rate/(Thousands)),FooterFont));
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumOstPenalty*1/(Thousands)),FooterFont));
                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                 cell.setBackgroundColor (FooterColor);
                 table.addCell (cell);
 
-                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumProsAll*Rate/(Thousands)),FooterFont));
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumProsAll*1/(Thousands)),FooterFont));
                 cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
                 cell.setVerticalAlignment(Element.ALIGN_CENTER);
                 cell.setBackgroundColor (FooterColor);
                 table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumProsPrincipal*1/(Thousands)),FooterFont));
+                cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
+
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumProsInterest*1/(Thousands)),FooterFont));
+                cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
+
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumProsPenalty*1/(Thousands)),FooterFont));
+                cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
 
                 document.add(table);
 

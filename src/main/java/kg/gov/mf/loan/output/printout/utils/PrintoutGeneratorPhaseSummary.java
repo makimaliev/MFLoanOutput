@@ -43,6 +43,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,6 +57,9 @@ public class PrintoutGeneratorPhaseSummary {
 	/**
      * Printout GENERATION TOOL
      */
+
+	@Autowired
+    EntityManager entityManager;
 
 	@Autowired
     PaymentViewService paymentViewService;
@@ -487,10 +492,32 @@ public class PrintoutGeneratorPhaseSummary {
 
                         iDebtAll = phaseDetails.getStartTotalAmount();
 
-                        sPaymentRequsites  = "Центральное казначейство МФ КР"+" ";
-                        sPaymentRequsites += "Национальный банк КР"+" ";
-                        sPaymentRequsites += "\nБик: 101001"+" ";
-                        sPaymentRequsites += "\nРасчетный счет: 1013710000000102";
+
+
+                        String baseQuery="select bank_data.* from bank_data,loan where bank_data.organization_id = 1 and loan.bankDataId = bank_data.id and loan.id = "+String.valueOf(phaseDetails.getLoan_id());
+
+                        Query query=entityManager.createNativeQuery(baseQuery, BankData.class);
+
+                        BankData bankData =(BankData) query.getSingleResult();
+
+
+                        if(bankData!=null)
+                        {
+                            sPaymentRequsites  = bankData.getRecipient();
+                            sPaymentRequsites += bankData.getRecipient_bank()+" ";
+                            sPaymentRequsites += "\nБик: "+bankData.getBik()+" ";
+                            sPaymentRequsites += "\nРасчетный счет: "+bankData.getAccount_number();
+
+                        }
+                        else
+                        {
+                            sPaymentRequsites  = "Центральное казначейство МФ КР"+" ";
+                            sPaymentRequsites += "Национальный банк КР"+" ";
+                            sPaymentRequsites += "\nБик: 101001"+" ";
+                            sPaymentRequsites += "\nРасчетный счет: 1013710000000102";
+                        }
+
+
 
                         cell = new RtfCell (new Paragraph (Integer.toString(x),HeaderFont));
                         cell.setHorizontalAlignment (Element.ALIGN_CENTER);
