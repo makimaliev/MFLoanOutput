@@ -1506,7 +1506,7 @@ public class ReportTool
                allFieldNames+=f.getName().toLowerCase().trim();
             }
 
-            if(className.contains("DocumentView"))
+            if(className.contains("DocumentView")&&(!className.contains("Entity")))
             {
                 isDocumentClass = true;
             }

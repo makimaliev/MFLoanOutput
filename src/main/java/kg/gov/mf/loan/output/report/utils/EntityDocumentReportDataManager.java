@@ -75,6 +75,10 @@ public class EntityDocumentReportDataManager {
                 childA.setLevel((short)1);
 
                 currentgroupAid=reportTool.getIdByGroupType(reportTemplate.getGroupType1(),entityDocumentView);
+                currentgroupBid=-1;
+                currentgroupCid=-1;
+                currentgroupDid=-1;
+
             }
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType2(),entityDocumentView)!=currentgroupBid)
@@ -84,6 +88,9 @@ public class EntityDocumentReportDataManager {
                 childB.setLevel((short)2);
 
                 currentgroupBid=reportTool.getIdByGroupType(reportTemplate.getGroupType2(),entityDocumentView);
+                currentgroupCid=-1;
+                currentgroupDid=-1;
+
             }
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType3(),entityDocumentView)!=currentgroupCid)
@@ -94,12 +101,9 @@ public class EntityDocumentReportDataManager {
 
                 childC.setV_applied_entity_appliedEntityStateId(entityDocumentView.getV_applied_entity_appliedEntityStateId());
 
-                childC.setEntityCount(1);
-                childB.setEntityCount(childB.getEntityCount()+1);
-                childA.setEntityCount(childA.getEntityCount()+1);
-                reportData.setEntityCount(reportData.getEntityCount()+1);
-
                 currentgroupCid=reportTool.getIdByGroupType(reportTemplate.getGroupType3(),entityDocumentView);
+                currentgroupDid=-1;
+
             }
 
 
@@ -113,6 +117,13 @@ public class EntityDocumentReportDataManager {
                 childD.setLevel((short)4);
 
                 childD.setV_document_package_documentPackageStateId(entityDocumentView.getV_document_package_documentPackageStateId());
+
+                childD.setEntityCount(1);
+                childC.setEntityCount(childC.getEntityCount()+1);
+                childB.setEntityCount(childB.getEntityCount()+1);
+                childA.setEntityCount(childA.getEntityCount()+1);
+                reportData.setEntityCount(reportData.getEntityCount()+1);
+
 
                 currentgroupDid=reportTool.getIdByGroupType(reportTemplate.getGroupType4(),entityDocumentView);
             }
