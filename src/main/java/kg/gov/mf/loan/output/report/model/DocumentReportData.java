@@ -24,7 +24,7 @@ public class DocumentReportData extends ReportData
 	private long   documentID            = 0;
 	private String documentDescription   = "";
 	private Date   documentDueDate       = null;
-	private long   documentStateID       = 0;
+	private String   documentStateID       = "";
 	private String documentIndexNumber   = "";
 	private long   documentOwnerID       = 0;
 
@@ -167,11 +167,11 @@ public class DocumentReportData extends ReportData
 		this.documentDueDate = documentDueDate;
 	}
 
-	public long getDocumentStateID() {
+	public String getDocumentStateID() {
 		return documentStateID;
 	}
 
-	public void setDocumentStateID(long documentStateID) {
+	public void setDocumentStateID(String documentStateID) {
 		this.documentStateID = documentStateID;
 	}
 

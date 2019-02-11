@@ -83,6 +83,10 @@ public class DocumentReportDataManager {
                 childA.setLevel((short)1);
 
                 currentgroupAid=reportTool.getIdByGroupType(reportTemplate.getGroupType1(),documentView);
+                currentgroupBid=-1;
+                currentgroupCid=-1;
+                currentgroupDid=-1;
+
             }
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType2(),documentView)!=currentgroupBid)
@@ -96,6 +100,9 @@ public class DocumentReportDataManager {
                 reportData.setCount(reportData.getCount()+1);
 
                 currentgroupBid=reportTool.getIdByGroupType(reportTemplate.getGroupType2(),documentView);
+                currentgroupCid=-1;
+                currentgroupDid=-1;
+
             }
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType3(),documentView)!=currentgroupCid)
@@ -142,6 +149,8 @@ public class DocumentReportDataManager {
                 childC.setDocumentDepartmentID(lv.getV_doc_document_department_id());
 
                 currentgroupCid=reportTool.getIdByGroupType(reportTemplate.getGroupType3(),documentView);
+                currentgroupDid=-1;
+
             }
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType4(),documentView)!=currentgroupDid)

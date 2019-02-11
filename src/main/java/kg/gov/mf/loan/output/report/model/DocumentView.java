@@ -51,7 +51,7 @@ public class DocumentView extends ReportView
 	private Date v_doc_documentDueDate;
 
 	@Column
-	private Long v_doc_documentState;
+	private String v_doc_documentState;
 
 	@Column
 	private String v_doc_indexNo;
@@ -141,11 +141,11 @@ public class DocumentView extends ReportView
 		this.v_doc_documentDueDate = v_doc_documentDueDate;
 	}
 
-	public Long getV_doc_documentState() {
+	public String getV_doc_documentState() {
 		return v_doc_documentState;
 	}
 
-	public void setV_doc_documentState(Long v_doc_documentState) {
+	public void setV_doc_documentState(String v_doc_documentState) {
 		this.v_doc_documentState = v_doc_documentState;
 	}
 

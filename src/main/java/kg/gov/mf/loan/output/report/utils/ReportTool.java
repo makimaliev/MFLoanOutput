@@ -1379,7 +1379,7 @@ public class ReportTool
 
 
 
-        if(reportTemplate.getGroupType5()!=null)
+//        if(reportTemplate.getGroupType5()!=null)
 
 
         parameterS.put("orderBy",groupFieldNames);
@@ -1542,7 +1542,7 @@ public class ReportTool
                     parameters.putAll(userParameters);
             }
 
-            if(isDocumentClass)
+            if(isDocumentClass && currentUser.getId()>1)
             {
                 criteria.add(Restrictions.eq("v_doc_document_user_id",currentUser.getId()));
             }
@@ -2176,13 +2176,24 @@ public class ReportTool
 
                 if(this.getIdByGroupType(groupType,reportView)>0)
                 {
-                    returnText = row_name.replace("(="+variableString+"=)",referenceMap.get(mapName).get(this.getIdByGroupType(groupType,reportView)));
+
+                    try
+                    {
+                        returnText = row_name.replace("(="+variableString+"=)",referenceMap.get(mapName).get(this.getIdByGroupType(groupType,reportView)));
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
 
                     if(object!=null)
-                    if(!object.toString().equals(String.valueOf(this.getIdByGroupType(groupType,reportView))))
                     {
-                        returnText = row_name.replace("(="+variableString+"=)",referenceMap.get(mapName).get(Long.valueOf(object.toString())));
+                        if(!object.toString().equals(String.valueOf(this.getIdByGroupType(groupType,reportView))))
+                        {
+                            returnText = row_name.replace("(="+variableString+"=)",referenceMap.get(mapName).get(Long.valueOf(object.toString())));
+                        }
                     }
+
                 }
 
                 return returnText;

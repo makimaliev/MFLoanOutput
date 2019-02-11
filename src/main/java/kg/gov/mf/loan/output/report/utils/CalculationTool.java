@@ -237,10 +237,48 @@ public class CalculationTool
                             returnLoanSummary.setOutstadingInterest(childrenLoanSummary.getOutstadingInterest());
                             returnLoanSummary.setOutstadingPenalty(childrenLoanSummary.getOutstadingPenalty());
 
+                            returnLoanSummary.setTotalOutstanding(returnLoanSummary.getOutstadingPrincipal()+returnLoanSummary.getOutstadingInterest()+returnLoanSummary.getOutstadingPenalty());
+
                             returnLoanSummary.setTotalOverdue(childrenLoanSummary.getTotalOverdue());
                             returnLoanSummary.setOverduePrincipal(childrenLoanSummary.getOverduePrincipal());
                             returnLoanSummary.setOverdueInterest(childrenLoanSummary.getOverdueInterest());
                             returnLoanSummary.setOverduePenalty(childrenLoanSummary.getOverduePenalty());
+
+
+                            double total_outstanding= 0;
+
+                            if(returnLoanSummary.getOutstadingPrincipal()>0)
+                                total_outstanding+=returnLoanSummary.getOutstadingPrincipal();
+
+                            if(returnLoanSummary.getOutstadingInterest()>0)
+                                total_outstanding+=returnLoanSummary.getOutstadingInterest();
+
+                            if(returnLoanSummary.getOutstadingPenalty()>0)
+                                total_outstanding+=returnLoanSummary.getOutstadingPenalty();
+
+
+                            double total_overdue = 0;
+
+                            if(returnLoanSummary.getOverduePrincipal()>0)
+                                total_overdue+=returnLoanSummary.getOverduePrincipal();
+
+                            if(returnLoanSummary.getOverdueInterest()>0)
+                                total_overdue+=returnLoanSummary.getOverdueInterest();
+
+                            if(returnLoanSummary.getOverduePenalty()>0)
+                                total_overdue+=returnLoanSummary.getOverduePenalty();
+
+                            if(total_outstanding<0) total_outstanding = 0;
+                            if(total_overdue < 0) total_overdue = 0;
+
+
+                            returnLoanSummary.setTotalOutstanding(total_outstanding);
+                            returnLoanSummary.setTotalOverdue(total_overdue);
+
+
+                            returnLoanSummary.setTotalOverdue(returnLoanSummary.getOverduePrincipal()+returnLoanSummary.getOverdueInterest()+returnLoanSummary.getOverduePenalty());
+
+
                         }
                         else
                         {
@@ -258,6 +296,40 @@ public class CalculationTool
                             returnLoanSummary.setOverduePrincipal(returnLoanSummary.getOverduePrincipal()+childrenLoanSummary.getOverduePrincipal());
                             returnLoanSummary.setOverdueInterest(returnLoanSummary.getOverdueInterest()+childrenLoanSummary.getOverdueInterest());
                             returnLoanSummary.setOverduePenalty(returnLoanSummary.getOverduePenalty()+childrenLoanSummary.getOverduePenalty());
+
+                            returnLoanSummary.setTotalOutstanding(returnLoanSummary.getOutstadingPrincipal()+returnLoanSummary.getOutstadingInterest()+returnLoanSummary.getOutstadingPenalty());
+                            returnLoanSummary.setTotalOverdue(returnLoanSummary.getOverduePrincipal()+returnLoanSummary.getOverdueInterest()+returnLoanSummary.getOverduePenalty());
+
+                            double total_outstanding= 0;
+
+                            if(returnLoanSummary.getOutstadingPrincipal()>0)
+                                total_outstanding+=returnLoanSummary.getOutstadingPrincipal();
+
+                            if(returnLoanSummary.getOutstadingInterest()>0)
+                                total_outstanding+=returnLoanSummary.getOutstadingInterest();
+
+                            if(returnLoanSummary.getOutstadingPenalty()>0)
+                                total_outstanding+=returnLoanSummary.getOutstadingPenalty();
+
+
+                            double total_overdue = 0;
+
+                            if(returnLoanSummary.getOverduePrincipal()>0)
+                                total_overdue+=returnLoanSummary.getOverduePrincipal();
+
+                            if(returnLoanSummary.getOverdueInterest()>0)
+                                total_overdue+=returnLoanSummary.getOverdueInterest();
+
+                            if(returnLoanSummary.getOverduePenalty()>0)
+                                total_overdue+=returnLoanSummary.getOverduePenalty();
+
+                            if(total_outstanding<0) total_outstanding = 0;
+                            if(total_overdue < 0) total_overdue = 0;
+
+
+                            returnLoanSummary.setTotalOutstanding(total_outstanding);
+                            returnLoanSummary.setTotalOverdue(total_overdue);
+
 
                         }
 
