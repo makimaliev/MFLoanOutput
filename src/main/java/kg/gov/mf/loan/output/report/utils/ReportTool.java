@@ -1539,7 +1539,63 @@ public class ReportTool
                 }
 
                 if(userParameters.size()>0)
-                    parameters.putAll(userParameters);
+                {
+                    if(parameters.size()>0)
+                    {
+                        for (Map.Entry<String, List<String>> parameterInLoop : parameters.entrySet())
+                        {
+                            String parameterType = parameterInLoop.getKey();
+
+                            List<String> ids = parameterInLoop.getValue();
+
+
+
+                            for(Iterator<Map.Entry<String, List<String>>> it = userParameters.entrySet().iterator(); it.hasNext(); )
+                            {
+                                Map.Entry<String, List<String>> parameterInLoopUser = it.next();
+
+                                if(parameterInLoopUser.getKey().equals(parameterType))
+                                {
+                                    List<String> newIds = this.intersection(parameterInLoopUser.getValue(),ids);
+
+                                    parameterInLoop.setValue(newIds);
+
+                                    if(newIds.size()>0) it.remove();
+                                }
+                            }
+
+
+
+//                            for (Map.Entry<String, List<String>> parameterInLoopUser : userParameters.entrySet())
+//                            {
+//                                String parameterTypeUser = parameterInLoopUser.getKey();
+//
+//                                List<String> idsUser = parameterInLoopUser.getValue();
+//
+//                                if(parameterType.equals(parameterTypeUser))
+//                                {
+//
+//
+//                                    userParameters.remove(parameterInLoopUser);
+//
+//                                    System.out.println(parameterType+ "=="+ newIds.toString() );
+//
+//                                }
+//
+//
+//
+//
+//
+//                            }
+
+
+
+                        }
+                    }
+
+                        parameters.putAll(userParameters);
+                }
+
             }
 
             if(isDocumentClass && currentUser.getId()>1)
@@ -2244,6 +2300,19 @@ public class ReportTool
         }
 
         return "";
+    }
+
+
+    public <T> List<T> intersection(List<T> list1, List<T> list2) {
+        List<T> list = new ArrayList<T>();
+
+        for (T t : list1) {
+            if(list2.contains(t)) {
+                list.add(t);
+            }
+        }
+
+        return list;
     }
 
 }
