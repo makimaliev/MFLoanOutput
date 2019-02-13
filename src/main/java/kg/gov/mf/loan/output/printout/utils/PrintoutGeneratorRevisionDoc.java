@@ -1112,7 +1112,7 @@ public class PrintoutGeneratorRevisionDoc{
         convertedLoanSummaryView.setV_loan_id(lv.getV_loan_id());
         convertedLoanSummaryView.setV_loan_supervisor_id(lv.getV_loan_supervisor_id());
         convertedLoanSummaryView.setV_credit_order_reg_date(lv.getV_credit_order_reg_date());
-        convertedLoanSummaryView.setV_credit_order_reg_number(lv.getV_loan_reg_number());
+        convertedLoanSummaryView.setV_credit_order_reg_number(lv.getV_credit_order_reg_number());
         convertedLoanSummaryView.setV_credit_order_type_id(lv.getV_credit_order_type_id());
         convertedLoanSummaryView.setV_loan_close_date(lv.getV_loan_close_date());
         convertedLoanSummaryView.setV_loan_close_rate(lv.getV_loan_close_rate());
