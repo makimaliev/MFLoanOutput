@@ -534,13 +534,20 @@ public class PrintoutGeneratorCreditClaim {
 //                sPaymentRequsites += "\nБик: 101001"+" ";
 //                sPaymentRequsites += "\nРасчетный счет: 1013710000000102";
 
+                BankData bankData =null;
 
-                String baseQuery="select bank_data.* from bank_data,loan where bank_data.organization_id = 1 and loan.bankDataId = bank_data.id and loan.id = "+String.valueOf(phaseDetails.getLoan_id());
+                try {
+                    String baseQuery="select bank_data.* from bank_data,loan where bank_data.organization_id = 1 and loan.bankDataId = bank_data.id and loan.id = "+String.valueOf(phaseDetails.getLoan_id());
 
-                Query query=entityManager.createNativeQuery(baseQuery, BankData.class);
+                    Query query=entityManager.createNativeQuery(baseQuery, BankData.class);
 
-                BankData bankData =(BankData) query.getSingleResult();
+                    bankData =(BankData) query.getSingleResult();
 
+                }
+                catch (Exception ex)
+                {
+
+                }
 
                 if(bankData!=null)
                 {
