@@ -13,10 +13,7 @@ import com.lowagie.text.rtf.table.RtfBorder;
 import com.lowagie.text.rtf.table.RtfBorderGroup;
 import com.lowagie.text.rtf.table.RtfCell;
 import kg.gov.mf.loan.admin.org.model.*;
-import kg.gov.mf.loan.admin.org.service.DepartmentService;
-import kg.gov.mf.loan.admin.org.service.OrganizationService;
-import kg.gov.mf.loan.admin.org.service.PersonService;
-import kg.gov.mf.loan.admin.org.service.StaffService;
+import kg.gov.mf.loan.admin.org.service.*;
 import kg.gov.mf.loan.admin.sys.model.User;
 import kg.gov.mf.loan.admin.sys.service.UserService;
 import kg.gov.mf.loan.manage.model.collection.CollectionPhase;
@@ -60,6 +57,9 @@ public class PrintoutGeneratorPhaseSummary {
 
 	@Autowired
     EntityManager entityManager;
+
+	@Autowired
+    AddressService addressService;
 
 	@Autowired
     PaymentViewService paymentViewService;
@@ -325,17 +325,29 @@ public class PrintoutGeneratorPhaseSummary {
 
                     sAdres         =  "";
 
-                    if(collectionPhaseView.getV_debtor_owner_type().contains("PERSON"))
+//                    if(collectionPhaseView.getV_debtor_owner_type().contains("PERSON"))
+//                    {
+//                        address = this.personService.findById(collectionPhaseView.getV_debtor_entity_id()).getAddress();
+//                        sAdres         =  address.getLine();
+//                        sAokmotu = address.getAokmotu().getName();
+//                    }
+//                    else
+//                    {
+//                        address = this.organizationService.findById(collectionPhaseView.getV_debtor_entity_id()).getAddress();
+//                        sAdres         =  address.getLine();
+//                        sAokmotu = address.getAokmotu().getName();
+//                    }
+
+
+                    try
                     {
-                        address = this.personService.findById(collectionPhaseView.getV_debtor_entity_id()).getAddress();
+                        address = addressService.findById(collectionPhaseView.getV_debtor_address_id());
                         sAdres         =  address.getLine();
                         sAokmotu = address.getAokmotu().getName();
+
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        address = this.organizationService.findById(collectionPhaseView.getV_debtor_entity_id()).getAddress();
-                        sAdres         =  address.getLine();
-                        sAokmotu = address.getAokmotu().getName();
                     }
 
 
