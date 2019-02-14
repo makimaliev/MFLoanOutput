@@ -273,11 +273,18 @@ public class PrintoutGeneratorCreditClaim {
 
             parameterS.put("r=inv_cph_id",Ids);
 
-            CollectionPhaseView collectionPhaseView = this.collectionPhaseViewService.findByParameter(parameterS).get(0);
+            CollectionPhaseView collectionPhaseView = this.collectionPhaseViewService.findById(objectId);
 
             SumProsAll     = collectionPhaseView.getV_cph_start_total_amount();
 
             sPersonTitle   =  collectionPhaseView.getV_debtor_name();
+
+            long workSector = 1;
+
+            if(collectionPhaseView.getV_debtor_work_sector_id()>0)
+            {
+                workSector = collectionPhaseView.getV_debtor_work_sector_id();
+            }
 
 
             try
@@ -684,7 +691,7 @@ public class PrintoutGeneratorCreditClaim {
 
             if(iResDepartment == 2)
             {
-                cell = new RtfCell (new Paragraph ("\nД. Наспеков",TitleFont));
+                cell = new RtfCell (new Paragraph ("\nДж. Сагынов",TitleFont));
                 sNachOtdela = "Доолбеков Э.Б.";
             }
             else
@@ -721,7 +728,7 @@ public class PrintoutGeneratorCreditClaim {
 
 
 
-            if( iResDepartment==2)
+            if(iResDepartment==2)
             {
                 cell = new RtfCell (new Paragraph ("",TitleFont));
                 cell.setHorizontalAlignment (Element.ALIGN_CENTER);
