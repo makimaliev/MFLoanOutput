@@ -46,7 +46,7 @@ public class CollateralItemView extends DebtorView
 
 
 
-
+	@Id
 	@Column
 	private Long v_loan_id;
 
