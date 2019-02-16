@@ -13,10 +13,7 @@ import com.lowagie.text.rtf.table.RtfBorder;
 import com.lowagie.text.rtf.table.RtfBorderGroup;
 import com.lowagie.text.rtf.table.RtfCell;
 import kg.gov.mf.loan.admin.org.model.*;
-import kg.gov.mf.loan.admin.org.service.DepartmentService;
-import kg.gov.mf.loan.admin.org.service.OrganizationService;
-import kg.gov.mf.loan.admin.org.service.PersonService;
-import kg.gov.mf.loan.admin.org.service.StaffService;
+import kg.gov.mf.loan.admin.org.service.*;
 import kg.gov.mf.loan.admin.sys.model.User;
 import kg.gov.mf.loan.admin.sys.service.UserService;
 import kg.gov.mf.loan.manage.model.collection.CollectionPhase;
@@ -60,6 +57,9 @@ public class PrintoutGeneratorPhaseSummary {
 
 	@Autowired
     EntityManager entityManager;
+
+	@Autowired
+    AddressService addressService;
 
 	@Autowired
     PaymentViewService paymentViewService;
@@ -273,36 +273,52 @@ public class PrintoutGeneratorPhaseSummary {
 
                     parameterS.put("r=inv_cph_id",Ids);
 
-                    CollectionPhaseView collectionPhaseView = this.collectionPhaseViewService.findByParameter(parameterS).get(0);
+//                    CollectionPhaseView collectionPhaseView = this.collectionPhaseViewService.findByParameter(parameterS).get(0);
+
+                    CollectionPhaseView collectionPhaseView = this.collectionPhaseViewService.findById(objectId);
+
 
                     SumProsAll     = collectionPhaseView.getV_cph_start_total_amount();
 
                     sPersonTitle   =  collectionPhaseView.getV_debtor_name();
 
+                    long workSector = 1;
 
-                    try
+                    if(collectionPhaseView.getV_debtor_work_sector_id()>0)
                     {
-                        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-                        String currentUserName = authentication.getName();
-
-                        User currentUser = this.userService.findByUsername(currentUserName);
-
-                        Staff staff = this.staffService.findById(currentUser.getStaff().getId());
-
-                        Person person = this.personService.findById(staff.getPerson().getId());
-
-                        sCuratorPhone = person.getContact().getName();
-
-                        sCurator = staff.getPerson().getIdentityDoc().getIdentityDocDetails().getFirstname().substring(0,1)+" "+staff.getPerson().getIdentityDoc().getIdentityDocDetails().getLastname();
-
-
+                        workSector = collectionPhaseView.getV_debtor_work_sector_id();
                     }
-                    catch(Exception ex)
-                    {
-                        sCuratorPhone  =  "";
-                        sCurator       =  "_________________________";
-                    }
+
+
+
+                    sCuratorPhone  =  "";
+                    sCurator       =  "_________________________";
+
+//                    try
+//                    {
+//                        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//                        String currentUserName = authentication.getName();
+//
+//                        User currentUser = this.userService.findByUsername(currentUserName);
+//
+//                        Staff staff = this.staffService.findById(currentUser.getStaff().getId());
+//
+////                        Person person = this.personService.findById(staff.getPerson().getId());
+//
+////                        Person person = staff.getPerson();
+////
+////                        sCuratorPhone = person.getContact().getName();
+////
+////                        sCurator = staff.getPerson().getIdentityDoc().getIdentityDocDetails().getFirstname().substring(0,1)+" "+staff.getPerson().getIdentityDoc().getIdentityDocDetails().getLastname();
+//
+//
+//                    }
+//                    catch(Exception ex)
+//                    {
+//                        sCuratorPhone  =  "";
+//                        sCurator       =  "_________________________";
+//                    }
 
 
 
@@ -312,30 +328,47 @@ public class PrintoutGeneratorPhaseSummary {
                     iRegion        =  collectionPhaseView.getV_debtor_district_id().shortValue();
 
                     ReportTool reportTool = new ReportTool();
-                    reportTool.initReference();
 
-                    String RegionName = reportTool.getNameByMapName("region",collectionPhaseView.getV_debtor_region_id());
+                    String RegionName = "";
 
 
-                    String DistrictName = reportTool.getNameByMapName("district",collectionPhaseView.getV_debtor_district_id());
+                    String DistrictName = "";
 
                     Address address = new Address();
+
                     sRasDate = reportTool.DateToString(collectionPhaseView.getV_cph_startDate());
 
 
                     sAdres         =  "";
 
-                    if(collectionPhaseView.getV_debtor_owner_type().contains("PERSON"))
+//                    if(collectionPhaseView.getV_debtor_owner_type().contains("PERSON"))
+//                    {
+//                        address = this.personService.findById(collectionPhaseView.getV_debtor_entity_id()).getAddress();
+//                        sAdres         =  address.getLine();
+//                        sAokmotu = address.getAokmotu().getName();
+//                    }
+//                    else
+//                    {
+//                        address = this.organizationService.findById(collectionPhaseView.getV_debtor_entity_id()).getAddress();
+//                        sAdres         =  address.getLine();
+//                        sAokmotu = address.getAokmotu().getName();
+//                    }
+
+
+                    try
                     {
-                        address = this.personService.findById(collectionPhaseView.getV_debtor_entity_id()).getAddress();
+                        address = addressService.findById(collectionPhaseView.getV_debtor_address_id());
                         sAdres         =  address.getLine();
-                        sAokmotu = address.getAokmotu().getName();
+//                        sAokmotu = address.getAokmotu().getName();
+                        RegionName = address.getRegion().getName();
+                        DistrictName = address.getDistrict().getName();
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        address = this.organizationService.findById(collectionPhaseView.getV_debtor_entity_id()).getAddress();
-                        sAdres         =  address.getLine();
-                        sAokmotu = address.getAokmotu().getName();
+                        reportTool.initReference();
+
+                        RegionName = reportTool.getNameByMapName("region",collectionPhaseView.getV_debtor_region_id());
+                        DistrictName = reportTool.getNameByMapName("district",collectionPhaseView.getV_debtor_district_id());
                     }
 
 
@@ -513,7 +546,7 @@ public class PrintoutGeneratorPhaseSummary {
 
                         if(bankData!=null)
                         {
-                            sPaymentRequsites  = bankData.getRecipient();
+                            sPaymentRequsites  = bankData.getRecipient()+" ";
                             sPaymentRequsites += bankData.getRecipient_bank()+" ";
                             sPaymentRequsites += "\nБик: "+bankData.getBik()+" ";
                             sPaymentRequsites += "\nРасчетный счет: "+bankData.getAccount_number();
@@ -594,7 +627,7 @@ public class PrintoutGeneratorPhaseSummary {
                     table.setWidths(iWidth3);
 
                     cell = new RtfCell (new Paragraph ("       В соответствии со статьей 299 Гражданского кодекса Кыргызской Республики Вы обязаны возвратить Государственному агентству по управлению бюджетными кредитами при Министерстве финансов Кыргызской Республики полученную по кредиту сумму в срок и в порядке предусмотренными условиями договора." +
-                            "\n       На основании изложенного, просим погасить вышеуказанную задолженность в полном объеме в течении 10 дней со дня получения настоящей претензии." +
+                            "\n       На основании изложенного, просим погасить вышеуказанную задолженность в полном объеме в течении 15 дней со дня получения настоящей претензии." +
                             "\n       В cлучае не погашения задолженности в указанный срок Государственное агентство по управлению бюджетными кредитами при Министерстве финансов Кыргызской Республики, руководствуясь ст. 4 Гражданского процессуального кодекса Кыргызской Республики, будет вынуждено обратиться с иском в суд для принудительного взыскания задолженности путем обращения взыскания на заложенное имущество."+
                             "\n       Все судебные расходы относятся на Должника.",ColumnFont));
 
@@ -635,7 +668,15 @@ public class PrintoutGeneratorPhaseSummary {
                     table.addCell (cell);
 
 
-                    cell = new RtfCell (new Paragraph ("Дж. Сагынов",TitleFont));
+                    if( iResDepartment==2)
+                    {
+                        cell = new RtfCell (new Paragraph ("Дж. Сагынов",TitleFont));
+                    }
+                    else
+                    {
+                        cell = new RtfCell (new Paragraph ("Д. Наспеков",TitleFont));
+                    }
+
 
                     cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                     cell.setVerticalAlignment(Element.ALIGN_TOP);
@@ -676,7 +717,7 @@ public class PrintoutGeneratorPhaseSummary {
                         table.addCell (cell);
 
                     }
-                    else if (iResDepartment==1 && (iCreditType==3||iCreditType==6||iCreditType==7||iCreditType==8))
+                    else if (iResDepartment==1 && (workSector==12||iCreditType==3||iCreditType==6||iCreditType==7||iCreditType==8))
                     {
                         cell = new RtfCell (new Paragraph ("",TitleFont));
                         cell.setHorizontalAlignment (Element.ALIGN_CENTER);
