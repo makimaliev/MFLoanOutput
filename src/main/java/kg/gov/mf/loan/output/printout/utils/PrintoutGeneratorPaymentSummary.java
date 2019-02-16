@@ -74,7 +74,7 @@ public class PrintoutGeneratorPaymentSummary {
     @Autowired
     IdentityDocService identityDocService;
 
-    public void generatePrintoutByTemplate(PrintoutTemplate printoutTemplate, Date onDate, long objectId, Document document){
+    public void generatePrintoutByTemplate(PrintoutTemplate printoutTemplate, Date onDate, long objectId, Document document,String fromLoan){
 
 
         try
@@ -86,12 +86,18 @@ public class PrintoutGeneratorPaymentSummary {
 
 
 
-            LoanSummary loanSummary = loanSummaryService.getById(objectId);
+            Loan loan;
+            Date tRasDate;
+            if(fromLoan=="true"){
+                loan=this.loanService.getById(objectId);
+                tRasDate=onDate;
+            }
 
-            Loan loan = this.loanService.getById(loanSummary.getLoan().getId());
-
-
-            Date      tRasDate  = loanSummary.getOnDate();
+            else{
+                LoanSummary loanSummary = loanSummaryService.getById(objectId);
+                loan = this.loanService.getById(loanSummary.getLoan().getId());
+                tRasDate  = loanSummary.getOnDate();
+            }
             long      iCreditID = loan.getId();
 
             long        iPersonID = loan.getDebtor().getId();
@@ -157,8 +163,14 @@ public class PrintoutGeneratorPaymentSummary {
 
             List<String> dates = new ArrayList<>();
             DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-            String strDate = dateFormat.format(loanSummary.getOnDate());
-            dates.add(strDate);
+            if(onDate!=null){
+                dates.add(dateFormat.format(onDate));
+            }
+            else{
+                LoanSummary loanSummary = loanSummaryService.getById(objectId);
+                String strDate = dateFormat.format(loanSummary.getOnDate());
+                dates.add(strDate);
+            }
 
 
             parameterS.put("r=inv_loan_id",Ids);
