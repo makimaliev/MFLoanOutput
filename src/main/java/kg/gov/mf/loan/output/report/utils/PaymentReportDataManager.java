@@ -221,11 +221,11 @@ public class PaymentReportDataManager {
                 if(pv.getV_payment_penalty()>0)
                 {
                     childE.setPaymentPenalty(pv.getV_payment_penalty());
-                    childD.setPaymentPenalty(childD. getPaymentInterest()+pv.getV_payment_penalty());
-                    childC.setPaymentPenalty(childC. getPaymentInterest()+pv.getV_payment_penalty());
-                    childB.setPaymentPenalty(childB. getPaymentInterest()+pv.getV_payment_penalty());
-                    childA.setPaymentPenalty(childA. getPaymentInterest()+pv.getV_payment_penalty());
-                    reportData.setPaymentPenalty(reportData. getPaymentInterest()+pv.getV_payment_penalty());
+                    childD.setPaymentPenalty(childD. getPaymentPenalty()+pv.getV_payment_penalty());
+                    childC.setPaymentPenalty(childC. getPaymentPenalty()+pv.getV_payment_penalty());
+                    childB.setPaymentPenalty(childB. getPaymentPenalty()+pv.getV_payment_penalty());
+                    childA.setPaymentPenalty(childA. getPaymentPenalty()+pv.getV_payment_penalty());
+                    reportData.setPaymentPenalty(reportData.getPaymentPenalty()+pv.getV_payment_penalty());
                 }
 
                 currentgroupEid=reportTool.getIdByGroupType(reportTemplate.getGroupType5(),paymentView);

@@ -9,8 +9,7 @@ import kg.gov.mf.loan.manage.service.loan.CreditTermService;
 import kg.gov.mf.loan.manage.service.loan.LoanService;
 import kg.gov.mf.loan.manage.service.process.LoanDetailedSummaryService;
 import kg.gov.mf.loan.manage.util.DateUtils;
-import kg.gov.mf.loan.output.report.model.LoanDetailedSummaryTempModel;
-import kg.gov.mf.loan.output.report.model.LoanView;
+import kg.gov.mf.loan.output.report.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -685,9 +684,15 @@ public class CalculationTool
 
     public LinkedHashMap<Long, LoanDetailedSummary> getAllLoanDetailedSummariesByLoanViewList(LinkedHashSet<LoanView> loanViews, Date onDate)
     {
+
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
         LinkedHashMap<Long, LoanDetailedSummary> ldsMap = new LinkedHashMap<>();
+
+        if(loanViews.size()==0)
+        {
+            return ldsMap;
+        }
 
         List<Long> loanIdList = new ArrayList<>();
 
@@ -700,7 +705,7 @@ public class CalculationTool
 
         String baseQuery="select l.id as loan_id, 0 as parent_id, l.amount as loanAmount,  l.loanStateId as state_id, ld.id,  ld.onDate,  ld.version,  ld.totalDisbursement,  ld.totalPrincipalPaid,  ld.totalInterestPaid,  ld.totalPenaltyPaid,  ld.principalOutstanding,  ld.interestOutstanding,  ld.penaltyOutstanding,  ld.totalPrincipalWriteOff,  ld.totalInterestAccruedOnInterestPayment, ld.principalOverdue, ld.interestOverdue, ld.penaltyOverdue " +
                 "from loan l,loanDetailedSummary ld where l.id = ld.loanId AND ld.id =" +
-                "( select lds.id from loanDetailedSummary lds where lds.loanId = l.id AND lds.onDate < :onDate AND lds.loanId in ("+ idList+") order by lds.onDate DESC limit 1 ) order by l.id";
+                "( select lds.id from loanDetailedSummary lds where lds.loanId = l.id AND lds.onDate < :onDate AND lds.loanId in ("+ idList+") order by lds.onDate DESC, lds.id desc limit 1 ) order by l.id";
 
         Query query=entityManager.createNativeQuery(baseQuery, LoanDetailedSummaryTempModel.class);
         query.setParameter("onDate", onDate);
@@ -838,6 +843,160 @@ public class CalculationTool
 
         return ldsMap;
     }
+
+    public Boolean checkFilterOptions(LoanSummary loanSummary, ReportTemplate reportTemplate)
+    {
+        boolean filtered = true;
+
+        try
+        {
+            for ( FilterParameter filterParameter: reportTemplate.getFilterParameters())
+            {
+                if(filterParameter.getFilterParameterType().name().contains("COMPARE"))
+                {
+                    if(filterParameter.getFieldName().contains("v_ls"))
+                    {
+
+                        LoanSummaryView lsv = null;
+
+                        lsv = this.convertLoanView(new LoanView(), loanSummary);
+
+                        Object object = null;
+
+                        try
+                        {
+
+                            String sMethodName = "get"+filterParameter.getFieldName().substring(0, 1).toUpperCase()+filterParameter.getFieldName().substring(1, filterParameter.getFieldName().length());
+
+                            object = LoanSummaryView.class.getMethod(sMethodName,null).invoke(lsv);
+
+                        }
+                        catch (Exception ex)
+                        {
+
+                        }
+
+
+                        if(object!=null)
+                            switch (filterParameter.getComparator().name())
+                            {
+                                case "GREATER_THEN" :
+
+                                    double comparedDoubleValue = 0;
+                                    comparedDoubleValue = Double.parseDouble(filterParameter.getComparedValue());
+
+                                    double doubleValue = 0;
+                                    doubleValue = Double.parseDouble(object.toString());
+
+                                    filtered=false;
+
+                                    if(doubleValue>comparedDoubleValue)
+                                    {
+                                        filtered=true;
+                                    }
+
+                                    break;
+
+                                case "GREATER_THEN_OR_EQUALS" :
+
+                                    comparedDoubleValue = Double.parseDouble(filterParameter.getComparedValue());
+
+                                    doubleValue = Double.parseDouble(object.toString());
+
+                                    filtered=false;
+
+                                    if(doubleValue>=comparedDoubleValue)
+                                    {
+                                        filtered=true;
+                                    }
+
+                                    break;
+
+                                case "LESS_THEN" :
+
+                                    comparedDoubleValue = Double.parseDouble(filterParameter.getComparedValue());
+
+                                    doubleValue = Double.parseDouble(object.toString());
+
+                                    if(doubleValue<comparedDoubleValue)
+                                    {
+                                        filtered=true;
+                                    }
+                                    break;
+
+                                case "LESS_THEN_OR_EQUALS" :
+
+                                    comparedDoubleValue = Double.parseDouble(filterParameter.getComparedValue());
+
+                                    doubleValue = Double.parseDouble(object.toString());
+
+                                    if(doubleValue<=comparedDoubleValue)
+                                    {
+                                        filtered=true;
+                                    }
+
+                                    break;
+                            }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            return true;
+        }
+
+
+
+
+        return filtered;
+    }
+
+    public LoanSummaryView convertLoanView( LoanView lv, LoanSummary ls)
+    {
+        LoanSummaryView convertedLoanSummaryView = new LoanSummaryView();
+
+        convertedLoanSummaryView.setV_loan_amount(lv.getV_loan_amount());
+        convertedLoanSummaryView.setV_loan_reg_date(lv.getV_loan_reg_date());
+        convertedLoanSummaryView.setV_loan_reg_number(lv.getV_loan_reg_number());
+        convertedLoanSummaryView.setV_loan_type_id(lv.getV_loan_type_id());
+        convertedLoanSummaryView.setV_loan_currency_id(lv.getV_loan_currency_id());
+        convertedLoanSummaryView.setV_loan_fin_group_id(lv.getV_loan_fin_group_id());
+        convertedLoanSummaryView.setV_loan_state_id(lv.getV_loan_state_id());
+        convertedLoanSummaryView.setV_loan_id(lv.getV_loan_id());
+        convertedLoanSummaryView.setV_loan_supervisor_id(lv.getV_loan_supervisor_id());
+        convertedLoanSummaryView.setV_credit_order_reg_date(lv.getV_credit_order_reg_date());
+        convertedLoanSummaryView.setV_credit_order_reg_number(lv.getV_credit_order_reg_number());
+        convertedLoanSummaryView.setV_credit_order_type_id(lv.getV_credit_order_type_id());
+        convertedLoanSummaryView.setV_loan_close_date(lv.getV_loan_close_date());
+        convertedLoanSummaryView.setV_loan_close_rate(lv.getV_loan_close_rate());
+        convertedLoanSummaryView.setV_debtor_id(lv.getV_debtor_id());
+        convertedLoanSummaryView.setV_debtor_name(lv.getV_debtor_name());
+        convertedLoanSummaryView.setV_debtor_region_id(lv.getV_debtor_region_id());
+        convertedLoanSummaryView.setV_debtor_district_id(lv.getV_debtor_district_id());
+        convertedLoanSummaryView.setV_debtor_aokmotu_id(lv.getV_debtor_aokmotu_id());
+        convertedLoanSummaryView.setV_debtor_village_id(lv.getV_debtor_village_id());
+        convertedLoanSummaryView.setV_debtor_work_sector_id(lv.getV_debtor_work_sector_id());
+        convertedLoanSummaryView.setV_debtor_org_form_id(lv.getV_debtor_org_form_id());
+        convertedLoanSummaryView.setV_debtor_type_id(lv.getV_debtor_type_id());
+        convertedLoanSummaryView.setV_ls_total_disbursed(ls.getTotalDisbursed());
+        convertedLoanSummaryView.setV_ls_id(ls.getId());
+        convertedLoanSummaryView.setV_ls_on_date(ls.getOnDate());
+        convertedLoanSummaryView.setV_ls_total_paid(ls.getTotalPaid());
+        convertedLoanSummaryView.setV_ls_total_paid_kgs(ls.getTotalPaidKGS());
+        convertedLoanSummaryView.setV_ls_total_outstanding(ls.getTotalOutstanding());
+        convertedLoanSummaryView.setV_ls_outstading_principal(ls.getOutstadingPrincipal());
+        convertedLoanSummaryView.setV_ls_outstading_interest(ls.getOutstadingInterest());
+        convertedLoanSummaryView.setV_ls_outstading_penalty(ls.getOutstadingPenalty());
+        convertedLoanSummaryView.setV_ls_total_overdue(ls.getTotalOverdue());
+        convertedLoanSummaryView.setV_ls_overdue_principal(ls.getOverduePrincipal());
+        convertedLoanSummaryView.setV_ls_overdue_interest(ls.getOverdueInterest());
+        convertedLoanSummaryView.setV_ls_overdue_penalty(ls.getOverduePenalty());
+        convertedLoanSummaryView.setV_last_date(ls.getCreateDate());
+
+        return convertedLoanSummaryView;
+    }
+
 
 }
 

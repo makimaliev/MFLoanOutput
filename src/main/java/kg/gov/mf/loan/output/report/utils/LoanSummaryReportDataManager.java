@@ -132,11 +132,25 @@ public class LoanSummaryReportDataManager {
         {
             try
             {
-                calculatedSummaryViews.add(convertLoanView(loanView, calculationTool.getLoanSummaryCaluculatedByLoanIdAndOnDate(loanView, loanView.getV_loan_id(), reportTemplate.getOnDate(), loanDetailedSummaryList.get(loanView.getV_loan_id()))));
-//                if(loanDetailedSummaryList.get(loanView.getV_loan_id())==null)
-//                {
-//                    System.out.println(loanView.getV_loan_id()+ " == "+loanView.getV_debtor_name());
-//                }
+                LoanSummaryView lsv = new LoanSummaryView();
+
+                LoanSummary ls = new LoanSummary();
+
+                ls = calculationTool.getLoanSummaryCaluculatedByLoanIdAndOnDate(loanView, loanView.getV_loan_id(), reportTemplate.getOnDate(), loanDetailedSummaryList.get(loanView.getV_loan_id()));
+
+                if(ls!=null)
+                {
+
+                    if(calculationTool.checkFilterOptions(ls,reportTemplate))
+                    {
+                        lsv = convertLoanView(loanView, ls);
+
+                        if(lsv!=null)
+                        {
+                            calculatedSummaryViews.add(lsv);
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {

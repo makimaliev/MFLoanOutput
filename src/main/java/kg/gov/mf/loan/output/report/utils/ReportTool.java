@@ -1729,14 +1729,18 @@ public class ReportTool
 
                 for (String fieldName:ids)
                 {
-                    if(fieldName.contains("desc_"))
+                    if(allFieldNames.contains(fieldName.toLowerCase().trim()))
                     {
-                        fieldName=fieldName.replace("desc_","");
-                        criteria.addOrder(Order.desc(fieldName));
-                    }
-                    else
-                    {
-                        criteria.addOrder(Order.asc(fieldName));
+                        if(fieldName.contains("desc_"))
+                        {
+                            fieldName=fieldName.replace("desc_","");
+                            criteria.addOrder(Order.desc(fieldName));
+                        }
+                        else
+                        {
+                            criteria.addOrder(Order.asc(fieldName));
+                        }
+
                     }
 
                 }
