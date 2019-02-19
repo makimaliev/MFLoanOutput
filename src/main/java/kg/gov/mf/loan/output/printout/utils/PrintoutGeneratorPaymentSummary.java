@@ -189,9 +189,6 @@ public class PrintoutGeneratorPaymentSummary {
 
 
 
-            if(paymentViews.size()>0)
-            {
-
                 String debtorName = "";
                 String loanNumber = "";
                 Date loanDate = null;
@@ -211,6 +208,12 @@ public class PrintoutGeneratorPaymentSummary {
                     loanNumber = paymentViewInLoop.getV_loan_reg_number();
                     loanDate = paymentViewInLoop.getV_loan_reg_date();
                     loanType = reportTool.FormatNumber(paymentViewInLoop.getV_loan_type_id());
+                }
+                if(paymentViews.size()==0){
+                    debtorName=debtor.getName();
+                    loanNumber=loan.getRegNumber();
+                    loanDate=loan.getRegDate();
+                    loanType=loan.getLoanType().getName();
                 }
 
 
@@ -367,70 +370,69 @@ public class PrintoutGeneratorPaymentSummary {
                 //************** Column **************************************************************************
                 //****************************************************************************************
 
+            if(paymentViews.size()>0) {
 
-                for (PaymentView pv: paymentViews)
-                {
-                    if(true)
-                    {
-                        cell = new PdfPCell(new Paragraph(pv.getV_payment_number(),ColumnFont));
-                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                for (PaymentView pv : paymentViews) {
+                    if (true) {
+                        cell = new PdfPCell(new Paragraph(pv.getV_payment_number(), ColumnFont));
+                        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                        cell.setBackgroundColor (ColumnColor);
-                        table.addCell (cell);
+                        cell.setBackgroundColor(ColumnColor);
+                        table.addCell(cell);
 
-                        cell = new PdfPCell(new Paragraph(reportTool.DateToString(pv.getV_payment_date()),ColumnFont));
-                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell = new PdfPCell(new Paragraph(reportTool.DateToString(pv.getV_payment_date()), ColumnFont));
+                        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                        cell.setBackgroundColor (ColumnColor);
-                        table.addCell (cell);
+                        cell.setBackgroundColor(ColumnColor);
+                        table.addCell(cell);
 
-                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_total_amount()),ColumnFont));
-                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_total_amount()), ColumnFont));
+                        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                        cell.setBackgroundColor (ColumnColor);
-                        table.addCell (cell);
+                        cell.setBackgroundColor(ColumnColor);
+                        table.addCell(cell);
 
-                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_exchange_rate()),ColumnFont));
-                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_exchange_rate()), ColumnFont));
+                        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                        cell.setBackgroundColor (ColumnColor);
-                        table.addCell (cell);
+                        cell.setBackgroundColor(ColumnColor);
+                        table.addCell(cell);
 
-                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_total_amount()/pv.getV_payment_exchange_rate()),ColumnFont));
-                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_total_amount() / pv.getV_payment_exchange_rate()), ColumnFont));
+                        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                        cell.setBackgroundColor (ColumnColor);
-                        table.addCell (cell);
+                        cell.setBackgroundColor(ColumnColor);
+                        table.addCell(cell);
 
-                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_principal()/pv.getV_payment_exchange_rate()),ColumnFont));
-                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_principal() / pv.getV_payment_exchange_rate()), ColumnFont));
+                        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                        cell.setBackgroundColor (ColumnColor);
-                        table.addCell (cell);
+                        cell.setBackgroundColor(ColumnColor);
+                        table.addCell(cell);
 
-                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_interest()/pv.getV_payment_exchange_rate()),ColumnFont));
-                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_interest() / pv.getV_payment_exchange_rate()), ColumnFont));
+                        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                        cell.setBackgroundColor (ColumnColor);
-                        table.addCell (cell);
+                        cell.setBackgroundColor(ColumnColor);
+                        table.addCell(cell);
 
-                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_penalty()/pv.getV_payment_exchange_rate()),ColumnFont));
-                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(pv.getV_payment_penalty() / pv.getV_payment_exchange_rate()), ColumnFont));
+                        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                        cell.setBackgroundColor (ColumnColor);
-                        table.addCell (cell);
+                        cell.setBackgroundColor(ColumnColor);
+                        table.addCell(cell);
 
                         paymentsSum += pv.getV_payment_total_amount();
-                        paymentsSumInCurrency += pv.getV_payment_total_amount()/pv.getV_payment_exchange_rate();
-                        paymentsPrincipalInCurrency +=pv.getV_payment_principal()/pv.getV_payment_exchange_rate();
-                        paymentsInterestInCurrency +=pv.getV_payment_interest()/pv.getV_payment_exchange_rate();
-                        paymentsPenaltyInCurrency +=pv.getV_payment_penalty()/pv.getV_payment_exchange_rate();
-
+                        paymentsSumInCurrency += pv.getV_payment_total_amount() / pv.getV_payment_exchange_rate();
+                        paymentsPrincipalInCurrency += pv.getV_payment_principal() / pv.getV_payment_exchange_rate();
+                        paymentsInterestInCurrency += pv.getV_payment_interest() / pv.getV_payment_exchange_rate();
+                        paymentsPenaltyInCurrency += pv.getV_payment_penalty() / pv.getV_payment_exchange_rate();
 
 
                     }
 
                 }
+            }
                 //************************************************************************
                 //************************************************************************
 
@@ -626,7 +628,7 @@ public class PrintoutGeneratorPaymentSummary {
                     document.add(table);
                 }
 
-            }
+
             //****************************************************************************************
             //****************************************************************************************
             //**************************************************************************
