@@ -234,76 +234,105 @@ public class PrintoutGeneratorCreditClaim {
             cell.setColspan(3);
             table.addCell (cell);
 
-//            cell = new RtfCell (new com.lowagie.text.Paragraph (sAddress1,AddressFont));
-//            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-//            cell.setVerticalAlignment(Element.ALIGN_TOP);
-//            cell.setBorder(TitleColumnBorder);
-//            table.addCell (cell);
-//
-////                    cell = new RtfCell (new com.lowagie.text.Paragraph (sAddress2,AddressFont));
-//            cell = new RtfCell (new com.lowagie.text.Paragraph ("",AddressFont));
-//            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
-//            cell.setVerticalAlignment(Element.ALIGN_TOP);
-//            cell.setBorder(TitleColumnBorder);
-//            table.addCell (cell);
-//
-//            cell = new RtfCell (new com.lowagie.text.Paragraph (sAddress3,AddressFont));
-//            cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
-//            cell.setVerticalAlignment(Element.ALIGN_TOP);
-//            cell.setBorder(TitleColumnBorder);
-//            table.addCell (cell);
-//
-//            cell = new RtfCell (new com.lowagie.text.Paragraph (sNumber,DateFont));
-//            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-//            cell.setVerticalAlignment(Element.ALIGN_TOP);
-//            cell.setBorder(TitleColumnBorder);
-//            cell.setColspan(3);
-//            table.addCell (cell);
+            cell = new RtfCell (new com.lowagie.text.Paragraph (sAddress1,AddressFont));
+            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+            cell.setVerticalAlignment(Element.ALIGN_TOP);
+            cell.setBorder(TitleColumnBorder);
+            table.addCell (cell);
+
+//                    cell = new RtfCell (new com.lowagie.text.Paragraph (sAddress2,AddressFont));
+            cell = new RtfCell (new com.lowagie.text.Paragraph ("",AddressFont));
+            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_TOP);
+            cell.setBorder(TitleColumnBorder);
+            table.addCell (cell);
+
+            cell = new RtfCell (new com.lowagie.text.Paragraph (sAddress3,AddressFont));
+            cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+            cell.setVerticalAlignment(Element.ALIGN_TOP);
+            cell.setBorder(TitleColumnBorder);
+            table.addCell (cell);
+
+            cell = new RtfCell (new com.lowagie.text.Paragraph (sNumber,DateFont));
+            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+            cell.setVerticalAlignment(Element.ALIGN_TOP);
+            cell.setBorder(TitleColumnBorder);
+            cell.setColspan(3);
+            table.addCell (cell);
 
             //document.setHeader(new RtfHeaderFooter(table));
             document.add(table);
 
 // part1
-            LinkedHashMap<String,List<String>> parameterS = new LinkedHashMap<String,List<String>>();
+//            LinkedHashMap<String,List<String>> parameterS = new LinkedHashMap<String,List<String>>();
+//
+//            List<String> Ids = new ArrayList<>();
+//
+//
+//            Ids.add(String.valueOf(objectId));
+//
+//            parameterS.put("r=inv_cph_id",Ids);
+//
+//            CollectionPhaseView collectionPhaseView = this.collectionPhaseViewService.findById(objectId);
+//
+//            SumProsAll     = collectionPhaseView.getV_cph_start_total_amount();
+//
+//            sPersonTitle   =  collectionPhaseView.getV_debtor_name();
+//
+//            long workSector = 1;
+//
+//            if(collectionPhaseView.getV_debtor_work_sector_id()>0)
+//            {
+//                workSector = collectionPhaseView.getV_debtor_work_sector_id();
+//            }
 
-            List<String> Ids = new ArrayList<>();
 
+            CollectionPhase collectionPhase = collectionPhaseService.getById(objectId);
 
-            Ids.add(String.valueOf(objectId));
+            Long debtorId = 1L;
 
-            parameterS.put("r=inv_cph_id",Ids);
+            Loan loanTemp = null;
 
-            CollectionPhaseView collectionPhaseView = this.collectionPhaseViewService.findById(objectId);
+            for (Loan loan :collectionPhase.getLoans())
+            {
+                loanTemp = loan;
+            }
 
-            SumProsAll     = collectionPhaseView.getV_cph_start_total_amount();
+            loanTemp = loanService.getById(loanTemp.getId());
 
-            sPersonTitle   =  collectionPhaseView.getV_debtor_name();
+            Debtor debtor = debtorService.getById(loanTemp.getDebtor().getId());
+
+            SumProsAll     = collectionPhase.getStart_amount();
+
+            sPersonTitle   =  debtor.getName();
 
             long workSector = 1;
 
-            if(collectionPhaseView.getV_debtor_work_sector_id()>0)
+            if(debtor.getWorkSector().getId()>0)
             {
-                workSector = collectionPhaseView.getV_debtor_work_sector_id();
+                workSector = debtor.getWorkSector().getId();
             }
 
+
+
+
+
+
+
+            sCuratorPhone  =  "";
+            sCurator       =  "_________________________";
 
             try
             {
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
                 String currentUserName = authentication.getName();
-
                 User currentUser = this.userService.findByUsername(currentUserName);
-
-                Staff staff = currentUser.getStaff();
-
-                Person person = staff.getPerson();
+                Staff staff = this.staffService.findById(currentUser.getStaff().getId());
+                Person person = this.personService.findById(staff.getPerson().getId());
 
                 sCuratorPhone = person.getContact().getName();
-
-                sCurator = staff.getPerson().getIdentityDoc().getIdentityDocDetails().getFirstname().substring(0,1)+" "+staff.getPerson().getIdentityDoc().getIdentityDocDetails().getLastname();
-
-
+                sCurator = person.getIdentityDoc().getIdentityDocDetails().getFirstname().substring(0,1)+" "+person.getIdentityDoc().getIdentityDocDetails().getLastname();
             }
             catch(Exception ex)
             {
@@ -313,49 +342,38 @@ public class PrintoutGeneratorCreditClaim {
 
 
 
-
-            iDistrict      =  collectionPhaseView.getV_debtor_region_id().shortValue();
-
-            iRegion        =  collectionPhaseView.getV_debtor_district_id().shortValue();
-
             ReportTool reportTool = new ReportTool();
-            reportTool.initReference();
-
-            String RegionName = reportTool.getNameByMapName("region",collectionPhaseView.getV_debtor_region_id());
-
-
-            String DistrictName = reportTool.getNameByMapName("district",collectionPhaseView.getV_debtor_district_id());
-
+            String RegionName = "";
+            String DistrictName = "";
             Address address = new Address();
-            sRasDate = reportTool.DateToString(collectionPhaseView.getV_cph_startDate());
+
+            sRasDate = reportTool.DateToString(collectionPhase.getStartDate());
+
+
 
 
             sAdres         =  "";
 
-//            if(collectionPhaseView.getV_debtor_owner_type().contains("PERSON"))
-//            {
-//                address = this.personService.findById(collectionPhaseView.getV_debtor_owner_id()).getAddress();
-//                sAdres         =  address.getLine();
-//                sAokmotu = address.getAokmotu().getName();
-//            }
-//            else
-//            {
-//                address = this.organizationService.findById(collectionPhaseView.getV_debtor_owner_id()).getAddress();
-//                sAdres         =  address.getLine();
-//                sAokmotu = address.getAokmotu().getName();
-//            }
-
-
             try
             {
+
+                address = addressService.findById(debtor.getAddress_id());
+
+                sAdres         =  address.getLine();
+                sAokmotu = address.getAokmotu().getName();
+                RegionName = address.getRegion().getName();
+                DistrictName = address.getDistrict().getName();
+
 
             }
             catch (Exception ex)
             {
-                address = addressService.findById(collectionPhaseView.getV_debtor_address_id());
-                sAdres         =  address.getLine();
-                sAokmotu = address.getAokmotu().getName();
             }
+
+
+
+
+
 
             table=new Table(2);
             table.setWidth(100);
@@ -491,7 +509,6 @@ public class PrintoutGeneratorCreditClaim {
 
             int x=0;
 
-            CollectionPhase collectionPhase = collectionPhaseService.getById(objectId);
 
             for (PhaseDetails phaseDetails:collectionPhase.getPhaseDetails())
             {
@@ -511,9 +528,29 @@ public class PrintoutGeneratorCreditClaim {
 
                 parameterL.put("r=inv_loan_id",loanIds);
 
-                LoanView loanView = loanViewService.findByParameter(parameterL).get(0);
+                Loan loan = loanService.getById(iCreditID);
 
-                iCreditType = loanView.getV_loan_type_id().shortValue();
+                iCreditType = (short)loan.getLoanType().getId();
+
+                if(workSector==1 || workSector==12)
+                {
+                    iResDepartment = 1;
+                }
+                else
+                {
+                    iResDepartment = 2;
+                }
+
+                sCreditNumber=loan.getRegNumber();
+
+                sCreditDate=loan.getRegDate().toString();
+
+                sOrderNumber=loan.getCreditOrder().getRegNumber();
+
+                iDebtAll = phaseDetails.getStartTotalAmount();
+
+                BankData bankData =null;
+
                 switch (iCreditType)
                 {
                     case 1: sNachOtdela="Туркбаев Б.К.";      break;
@@ -527,31 +564,6 @@ public class PrintoutGeneratorCreditClaim {
                     case 9: sNachOtdela="Туркбаев Б.К.";      break;
 
                 }
-
-                if(loanView.getV_debtor_work_sector_id()==1 || loanView.getV_debtor_work_sector_id()==12)
-                {
-                    iResDepartment = 1;
-                }
-                else
-                {
-                    iResDepartment = 2;
-                }
-
-
-                sCreditNumber=loanView.getV_loan_reg_number();
-
-                sCreditDate=loanView.getV_loan_reg_date().toString();
-
-                sOrderNumber=loanView.getV_credit_order_reg_number();
-
-                iDebtAll = phaseDetails.getStartTotalAmount();
-
-//                sPaymentRequsites  = "Центральное казначейство МФ КР"+" ";
-//                sPaymentRequsites += "Национальный банк КР"+" ";
-//                sPaymentRequsites += "\nБик: 101001"+" ";
-//                sPaymentRequsites += "\nРасчетный счет: 1013710000000102";
-
-                BankData bankData =null;
 
                 try {
                     String baseQuery="select bank_data.* from bank_data,loan where bank_data.organization_id = 1 and loan.bankDataId = bank_data.id and loan.id = "+String.valueOf(phaseDetails.getLoan_id());
@@ -650,9 +662,7 @@ public class PrintoutGeneratorCreditClaim {
             cell = new RtfCell (new Paragraph ("       Кыргыз Республикасынын Жарандык кодексинин 299-беренесине ылайык Сиз кредитке алган сумманы, келишимдин шарттары боюнча көрсөтүлгөн мөөнөттө кайтарууга милдеттүүсүз. \n" +
                     "       Ошол себептен, аталган доо-талапты алган күндөн баштап 15 күндүн ичинде жогоруда көрсөтүлгөн карыздын суммасын толук көлөмдө төлөп кутулууңуз зарыл. \n" +
                     "       Көрсөтүлгөн мөөнөттө карыз кайтарылбаса, Бюджеттик кредиттерди башкаруу боюнча мамлекеттик агенттиги, Кыргыз Республикасынын Жарандык-процессуалдык кодексинин 4-беренесин жетекчиликке алып, карызды күрөөгө коюлган мүлктүн эсебинен мажбурлап өндүрүү үчүн, доо арыз менен сотко кайрылууга мажбур болот.\n" +
-                    "       Бардык соттук чыгымдар төлөмөрдүн эсебинен жүргүзүлөт.\n" +
-                    "       Маалымат катары, Кыргыз Республикасынын Өкмөтүнүн 2016-жылдын 4-августундагы №355-б буйругу менен бекитилген  убактылуу тартипке ылайык, Агенттик аркылуу таризделген бардык мамлекеттик зайымдык каражаттарды кайтаруунун эсебинен азык-түлүк буудай данын республиканын кайра иштетүү ишканаларына  тапшыруу жагы каралган.\n" +
-                    "       Ошондуктан, кредит боюнча карызыңызды азык-түлүк буудай даны менен же болбосо акчалай төлөп кутулууңуз талапка ылайык.",ColumnFont));
+                    "       Бардык соттук чыгымдар төлөмөрдүн эсебинен жүргүзүлөт.",ColumnFont));
 
             cell.setHorizontalAlignment (Element.ALIGN_JUSTIFIED);
             cell.setVerticalAlignment(Element.ALIGN_TOP);
@@ -689,16 +699,82 @@ public class PrintoutGeneratorCreditClaim {
             cell.setBorder(TitleColumnBorder);
             table.addCell (cell);
 
-            if(iResDepartment == 2)
+            cell = new RtfCell (new Paragraph ("",TitleFont));
+            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+            cell.setBorder(TitleColumnBorder);
+            table.addCell (cell);
+
+
+            if( iResDepartment==2)
             {
                 cell = new RtfCell (new Paragraph ("\nДж. Сагынов",TitleFont));
-                sNachOtdela = "Доолбеков Э.Б.";
             }
             else
             {
                 cell = new RtfCell (new Paragraph ("\nД. Наспеков",TitleFont));
             }
+
+
+            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+            cell.setVerticalAlignment(Element.ALIGN_TOP);
+            cell.setBorder(TitleColumnBorder);
+            table.addCell (cell);
+
+
+
+
+            // Согласовано
+
+            cell = new RtfCell (new Paragraph ("",TitleFont));
             cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+            cell.setBorder(TitleColumnBorder);
+            table.addCell (cell);
+
+            cell = new RtfCell (new Paragraph ("",TitleFont));
+            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+            cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+            cell.setBorder(TitleColumnBorder);
+            table.addCell (cell);
+
+            if( iResDepartment==2)
+            {
+                cell = new RtfCell (new Paragraph ("\nМакулдашылды:",HeaderFont));
+            }
+            else
+            {
+                cell = new RtfCell (new Paragraph ("\nМакулдашылды:",HeaderFont));
+            }
+
+
+            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+            cell.setVerticalAlignment(Element.ALIGN_TOP);
+            cell.setBorder(TitleColumnBorder);
+            table.addCell (cell);
+
+            cell = new RtfCell (new Paragraph ("",TitleFont));
+            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+            cell.setBorder(TitleColumnBorder);
+            table.addCell (cell);
+
+
+            // Согласовано
+
+            cell = new RtfCell (new Paragraph ("",TitleFont));
+            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+            cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+            cell.setBorder(TitleColumnBorder);
+            table.addCell (cell);
+
+            cell = new RtfCell (new Paragraph ("",TitleFont));
+            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
             cell.setVerticalAlignment(Element.ALIGN_TOP);
 
             cell.setBorder(TitleColumnBorder);
@@ -711,24 +787,26 @@ public class PrintoutGeneratorCreditClaim {
             cell.setBorder(TitleColumnBorder);
             table.addCell (cell);
 
-            cell = new RtfCell (new Paragraph ("",TitleFont));
-            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
-            cell.setVerticalAlignment(Element.ALIGN_TOP);
 
+            if( iResDepartment==2)
+            {
+                cell = new RtfCell (new Paragraph ("\nДоолбеков Э.",HeaderFont));
+            }
+            else
+            {
+                cell = new RtfCell (new Paragraph ("\nТуркбаев Б.",HeaderFont));
+            }
+
+
+            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+            cell.setVerticalAlignment(Element.ALIGN_TOP);
             cell.setBorder(TitleColumnBorder);
             table.addCell (cell);
 
 
-            cell = new RtfCell (new Paragraph ("\nМакулдашылды",TitleFont));
-
-            cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
-            cell.setVerticalAlignment(Element.ALIGN_TOP);
-            cell.setBorder(TitleColumnBorder);
-            table.addCell (cell);
 
 
-
-            if(iResDepartment==2)
+            if(iResDepartment==2 && (workSector==13||workSector==134|iCreditType==10||iCreditType==11||iCreditType==12))
             {
                 cell = new RtfCell (new Paragraph ("",TitleFont));
                 cell.setHorizontalAlignment (Element.ALIGN_CENTER);
@@ -737,30 +815,126 @@ public class PrintoutGeneratorCreditClaim {
                 cell.setBorder(TitleColumnBorder);
                 table.addCell (cell);
 
-                cell = new RtfCell (new Paragraph ("\nД. Наспеков",TitleFont2));
+//                        cell = new RtfCell (new Paragraph ("\nЗаведующий отделом кредитов предпринимательства и ф.л.",TitleFont2));
+                cell = new RtfCell (new Paragraph ("\n",HeaderFont));
                 cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                 cell.setVerticalAlignment(Element.ALIGN_TOP);
 
                 cell.setBorder(TitleColumnBorder);
                 table.addCell (cell);
-
-            }
 
                 cell = new RtfCell (new Paragraph ("",TitleFont));
                 cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_TOP);
-                cell.setColspan(3);
 
                 cell.setBorder(TitleColumnBorder);
                 table.addCell (cell);
 
-                cell = new RtfCell (new Paragraph (sNachOtdela,TitleFont2));
+
+                cell = new RtfCell (new Paragraph ("\nАсеков К.",HeaderFont));
+
+                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                cell.setVerticalAlignment(Element.ALIGN_TOP);
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+            }
+            else if (iResDepartment==2)
+            {
+                cell = new RtfCell (new Paragraph ("",TitleFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+                cell = new RtfCell (new Paragraph ("\n",HeaderFont));
+//                        cell = new RtfCell (new Paragraph ("\nЗаведующий отделом кредитов промышленности",HeaderFont));
                 cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                 cell.setVerticalAlignment(Element.ALIGN_TOP);
 
                 cell.setBorder(TitleColumnBorder);
                 table.addCell (cell);
 
+                cell = new RtfCell (new Paragraph ("",TitleFont));
+                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+
+                cell = new RtfCell (new Paragraph ("\nЖапаркулова Ж.",HeaderFont));
+
+                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                cell.setVerticalAlignment(Element.ALIGN_TOP);
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+            }
+            else if (iResDepartment==1 && (workSector==12||iCreditType==3||iCreditType==6||iCreditType==7||iCreditType==8))
+            {
+                cell = new RtfCell (new Paragraph ("",TitleFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+                cell = new RtfCell (new Paragraph ("\n",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+                cell = new RtfCell (new Paragraph ("",TitleFont));
+                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+
+                cell = new RtfCell (new Paragraph ("\nСыдыков А.А.",HeaderFont));
+
+                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                cell.setVerticalAlignment(Element.ALIGN_TOP);
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+            }
+            else
+            {
+                cell = new RtfCell (new Paragraph ("",TitleFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+                cell = new RtfCell (new Paragraph ("\n",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+                cell = new RtfCell (new Paragraph ("",TitleFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+
+                cell = new RtfCell (new Paragraph ("\nАлыбаев К.",HeaderFont));
+
+                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                cell.setVerticalAlignment(Element.ALIGN_TOP);
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+
+            }
 
 
             if(sCurator!=null)

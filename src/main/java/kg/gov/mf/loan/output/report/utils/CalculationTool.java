@@ -888,12 +888,11 @@ public class CalculationTool
                                     double doubleValue = 0;
                                     doubleValue = Double.parseDouble(object.toString());
 
-                                    filtered=false;
-
-                                    if(doubleValue>comparedDoubleValue)
+                                    if(doubleValue>comparedDoubleValue || comparedDoubleValue<0)
                                     {
                                         filtered=true;
                                     }
+                                    else return false;
 
                                     break;
 
@@ -903,12 +902,11 @@ public class CalculationTool
 
                                     doubleValue = Double.parseDouble(object.toString());
 
-                                    filtered=false;
-
-                                    if(doubleValue>=comparedDoubleValue)
+                                    if(doubleValue>=comparedDoubleValue ||comparedDoubleValue<0)
                                     {
                                         filtered=true;
                                     }
+                                    else return false;
 
                                     break;
 
@@ -918,10 +916,12 @@ public class CalculationTool
 
                                     doubleValue = Double.parseDouble(object.toString());
 
-                                    if(doubleValue<comparedDoubleValue)
+                                    if(doubleValue<comparedDoubleValue ||comparedDoubleValue<0)
                                     {
                                         filtered=true;
                                     }
+                                    else return false;
+
                                     break;
 
                                 case "LESS_THEN_OR_EQUALS" :
@@ -930,10 +930,11 @@ public class CalculationTool
 
                                     doubleValue = Double.parseDouble(object.toString());
 
-                                    if(doubleValue<=comparedDoubleValue)
+                                    if(doubleValue<=comparedDoubleValue ||comparedDoubleValue<0)
                                     {
                                         filtered=true;
                                     }
+                                    else return false;
 
                                     break;
                             }

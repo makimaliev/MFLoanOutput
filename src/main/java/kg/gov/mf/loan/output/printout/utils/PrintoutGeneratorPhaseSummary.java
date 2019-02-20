@@ -43,9 +43,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
+import java.util.*;
 import java.util.List;
 
 
@@ -111,12 +109,15 @@ public class PrintoutGeneratorPhaseSummary {
 
     public void generatePrintoutByTemplate(PrintoutTemplate printoutTemplate, Date onDate, long objectId, Document document){
 
-
-
-
                 try
                 {
                     SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+
+
+                    Boolean showLog = false;
+                    Date startDate = new Date();
+                    Date finishDate = new Date();
+                    int step = 0;
 
                     String UPLOADED_FOLDER =  SystemUtils.IS_OS_LINUX ? "/opt/uploads/" : "c://temp//";
 
@@ -161,6 +162,8 @@ public class PrintoutGeneratorPhaseSummary {
                     sRasDate = "datexxx";
 
                     Staff curatorStaff = null;
+
+                    HashMap<Long, Loan> loanMap = new HashMap<>();
 
 
                     Table table = null;
@@ -264,111 +267,119 @@ public class PrintoutGeneratorPhaseSummary {
                     document.add(table);
 
 // part1
-                    LinkedHashMap<String,List<String>> parameterS = new LinkedHashMap<String,List<String>>();
 
-                    List<String> Ids = new ArrayList<>();
-
-
-                    Ids.add(String.valueOf(objectId));
-
-                    parameterS.put("r=inv_cph_id",Ids);
+//                    LinkedHashMap<String,List<String>> parameterS = new LinkedHashMap<String,List<String>>();
+//
+//                    List<String> Ids = new ArrayList<>();
+//
+//
+//                    Ids.add(String.valueOf(objectId));
+//
+//                    parameterS.put("r=inv_cph_id",Ids);
 
 //                    CollectionPhaseView collectionPhaseView = this.collectionPhaseViewService.findByParameter(parameterS).get(0);
 
-                    CollectionPhaseView collectionPhaseView = this.collectionPhaseViewService.findById(objectId);
+//                    CollectionPhaseView collectionPhaseView = this.collectionPhaseViewService.findById(objectId);
 
 
-                    SumProsAll     = collectionPhaseView.getV_cph_start_total_amount();
 
-                    sPersonTitle   =  collectionPhaseView.getV_debtor_name();
 
-                    long workSector = 1;
 
-                    if(collectionPhaseView.getV_debtor_work_sector_id()>0)
+
+
+                    CollectionPhase collectionPhase = collectionPhaseService.getById(objectId);
+
+                    Long debtorId = 1L;
+
+                    Loan loanTemp = null;
+
+                    for (Loan loan :collectionPhase.getLoans())
                     {
-                        workSector = collectionPhaseView.getV_debtor_work_sector_id();
+                        loanMap.put(loan.getId(),loan);
+                        loanTemp = loan;
+                    }
+
+                    loanTemp = loanService.getById(loanTemp.getId());
+
+                    Debtor debtor = debtorService.getById(loanTemp.getDebtor().getId());
+
+
+                    if(showLog)
+                    {
+                        step++;
+                        finishDate=new Date();
+                        System.out.println(step + " == "+startDate.getTime()+ " === "+ (startDate.getTime()-finishDate.getTime()));
+                        startDate = new Date();
                     }
 
 
+//                    SumProsAll     = collectionPhaseView.getV_cph_start_total_amount();
+
+                    SumProsAll     = collectionPhase.getStart_amount();
+
+//                    sPersonTitle   =  collectionPhaseView.getV_debtor_name();
+
+                    sPersonTitle   =  debtor.getName();
+
+                    long workSector = 1;
+
+                    if(debtor.getWorkSector().getId()>0)
+                    {
+                        workSector = debtor.getWorkSector().getId();
+                    }
 
                     sCuratorPhone  =  "";
                     sCurator       =  "_________________________";
 
-//                    try
-//                    {
-//                        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//
-//                        String currentUserName = authentication.getName();
-//
-//                        User currentUser = this.userService.findByUsername(currentUserName);
-//
-//                        Staff staff = this.staffService.findById(currentUser.getStaff().getId());
-//
-////                        Person person = this.personService.findById(staff.getPerson().getId());
-//
-////                        Person person = staff.getPerson();
-////
-////                        sCuratorPhone = person.getContact().getName();
-////
-////                        sCurator = staff.getPerson().getIdentityDoc().getIdentityDocDetails().getFirstname().substring(0,1)+" "+staff.getPerson().getIdentityDoc().getIdentityDocDetails().getLastname();
-//
-//
-//                    }
-//                    catch(Exception ex)
-//                    {
-//                        sCuratorPhone  =  "";
-//                        sCurator       =  "_________________________";
-//                    }
+                    try
+                    {
+                        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+                        String currentUserName = authentication.getName();
+                        User currentUser = this.userService.findByUsername(currentUserName);
+                        Staff staff = this.staffService.findById(currentUser.getStaff().getId());
+                        Person person = this.personService.findById(staff.getPerson().getId());
+
+                        sCuratorPhone = person.getContact().getName();
+                        sCurator = person.getIdentityDoc().getIdentityDocDetails().getFirstname().substring(0,1)+" "+person.getIdentityDoc().getIdentityDocDetails().getLastname();
+                    }
+                    catch(Exception ex)
+                    {
+                        sCuratorPhone  =  "";
+                        sCurator       =  "_________________________";
+                    }
 
 
-
-
-                    iDistrict      =  collectionPhaseView.getV_debtor_region_id().shortValue();
-
-                    iRegion        =  collectionPhaseView.getV_debtor_district_id().shortValue();
 
                     ReportTool reportTool = new ReportTool();
-
                     String RegionName = "";
-
-
                     String DistrictName = "";
-
                     Address address = new Address();
 
-                    sRasDate = reportTool.DateToString(collectionPhaseView.getV_cph_startDate());
+//                    sRasDate = reportTool.DateToString(collectionPhaseView.getV_cph_startDate());
+
+                    sRasDate = reportTool.DateToString(collectionPhase.getStartDate());
+
+
 
 
                     sAdres         =  "";
 
-//                    if(collectionPhaseView.getV_debtor_owner_type().contains("PERSON"))
-//                    {
-//                        address = this.personService.findById(collectionPhaseView.getV_debtor_entity_id()).getAddress();
-//                        sAdres         =  address.getLine();
-//                        sAokmotu = address.getAokmotu().getName();
-//                    }
-//                    else
-//                    {
-//                        address = this.organizationService.findById(collectionPhaseView.getV_debtor_entity_id()).getAddress();
-//                        sAdres         =  address.getLine();
-//                        sAokmotu = address.getAokmotu().getName();
-//                    }
-
-
                     try
                     {
-                        address = addressService.findById(collectionPhaseView.getV_debtor_address_id());
+//                        address = addressService.findById(collectionPhaseView.getV_debtor_address_id());
+
+                        address = addressService.findById(debtor.getAddress_id());
+
                         sAdres         =  address.getLine();
-//                        sAokmotu = address.getAokmotu().getName();
+                        sAokmotu = address.getAokmotu().getName();
                         RegionName = address.getRegion().getName();
                         DistrictName = address.getDistrict().getName();
+
+
                     }
                     catch (Exception ex)
                     {
-                        reportTool.initReference();
-
-                        RegionName = reportTool.getNameByMapName("region",collectionPhaseView.getV_debtor_region_id());
-                        DistrictName = reportTool.getNameByMapName("district",collectionPhaseView.getV_debtor_district_id());
                     }
 
 
@@ -481,9 +492,10 @@ public class PrintoutGeneratorPhaseSummary {
                     cell.setBorders(TbBorder);
                     table.addCell (cell);
 
+
+
                     int x=0;
 
-                    CollectionPhase collectionPhase = collectionPhaseService.getById(objectId);
 
                     for (PhaseDetails phaseDetails:collectionPhase.getPhaseDetails())
                     {
@@ -503,11 +515,22 @@ public class PrintoutGeneratorPhaseSummary {
 
                         parameterL.put("r=inv_loan_id",loanIds);
 
-                        LoanView loanView = loanViewService.findByParameter(parameterL).get(0);
+                        Loan loan = loanService.getById(iCreditID);
 
-                        iCreditType = loanView.getV_loan_type_id().shortValue();
+//                        LoanView loanView = loanViewService.findByParameter(parameterL).get(0);
 
-                        if(loanView.getV_debtor_work_sector_id()==1 || loanView.getV_debtor_work_sector_id()==12)
+                        if(showLog)
+                        {
+                            step++;
+                            finishDate=new Date();
+                            System.out.println(step + " == "+startDate.getTime()+ " === "+ (startDate.getTime()-finishDate.getTime()));
+                            startDate = new Date();
+                        }
+
+//                        iCreditType = loanView.getV_loan_type_id().shortValue();
+                        iCreditType = (short)loan.getLoanType().getId();
+
+                        if(workSector==1 || workSector==12)
                         {
                             iResDepartment = 1;
                         }
@@ -517,14 +540,20 @@ public class PrintoutGeneratorPhaseSummary {
                         }
 
 
-                        sCreditNumber=loanView.getV_loan_reg_number();
+//                        sCreditNumber=loanView.getV_loan_reg_number();
+//
+//                        sCreditDate=loanView.getV_loan_reg_date().toString();
+//
+//                        sOrderNumber=loanView.getV_credit_order_reg_number();
 
-                        sCreditDate=loanView.getV_loan_reg_date().toString();
 
-                        sOrderNumber=loanView.getV_credit_order_reg_number();
+                        sCreditNumber=loan.getRegNumber();
+
+                        sCreditDate=loan.getRegDate().toString();
+
+                        sOrderNumber=loan.getCreditOrder().getRegNumber();
 
                         iDebtAll = phaseDetails.getStartTotalAmount();
-
 
                         BankData bankData =null;
 
@@ -685,7 +714,89 @@ public class PrintoutGeneratorPhaseSummary {
 
 
 
+
+                    // Согласовано
+
+                    cell = new RtfCell (new Paragraph ("",TitleFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                    cell.setBorder(TitleColumnBorder);
+                    table.addCell (cell);
+
+                    cell = new RtfCell (new Paragraph ("",TitleFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                    cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                    cell.setBorder(TitleColumnBorder);
+                    table.addCell (cell);
+
                     if( iResDepartment==2)
+                    {
+                        cell = new RtfCell (new Paragraph ("\nСогласовано:",HeaderFont));
+                    }
+                    else
+                    {
+                        cell = new RtfCell (new Paragraph ("\nСогласовано:",HeaderFont));
+                    }
+
+
+                    cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                    cell.setVerticalAlignment(Element.ALIGN_TOP);
+                    cell.setBorder(TitleColumnBorder);
+                    table.addCell (cell);
+
+                    cell = new RtfCell (new Paragraph ("",TitleFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                    cell.setBorder(TitleColumnBorder);
+                    table.addCell (cell);
+
+
+                    // Согласовано
+
+                    cell = new RtfCell (new Paragraph ("",TitleFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                    cell.setBorder(TitleColumnBorder);
+                    table.addCell (cell);
+
+                    cell = new RtfCell (new Paragraph ("",TitleFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                    cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                    cell.setBorder(TitleColumnBorder);
+                    table.addCell (cell);
+
+                    cell = new RtfCell (new Paragraph ("",TitleFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                    cell.setBorder(TitleColumnBorder);
+                    table.addCell (cell);
+
+
+                    if( iResDepartment==2)
+                    {
+                        cell = new RtfCell (new Paragraph ("\nДоолбеков Э.",HeaderFont));
+                    }
+                    else
+                    {
+                        cell = new RtfCell (new Paragraph ("\nТуркбаев Б.",HeaderFont));
+                    }
+
+
+                    cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                    cell.setVerticalAlignment(Element.ALIGN_TOP);
+                    cell.setBorder(TitleColumnBorder);
+                    table.addCell (cell);
+
+
+
+
+                    if(iResDepartment==2 && (workSector==13||workSector==134|iCreditType==10||iCreditType==11||iCreditType==12))
                     {
                         cell = new RtfCell (new Paragraph ("",TitleFont));
                         cell.setHorizontalAlignment (Element.ALIGN_CENTER);
@@ -694,7 +805,8 @@ public class PrintoutGeneratorPhaseSummary {
                         cell.setBorder(TitleColumnBorder);
                         table.addCell (cell);
 
-                        cell = new RtfCell (new Paragraph ("\nЗаведующий отделом кредитов промышленности",TitleFont2));
+//                        cell = new RtfCell (new Paragraph ("\nЗаведующий отделом кредитов предпринимательства и ф.л.",TitleFont2));
+                        cell = new RtfCell (new Paragraph ("\n",HeaderFont));
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                         cell.setVerticalAlignment(Element.ALIGN_TOP);
 
@@ -709,13 +821,45 @@ public class PrintoutGeneratorPhaseSummary {
                         table.addCell (cell);
 
 
-                        cell = new RtfCell (new Paragraph ("\nЖапаркулова Ж.",TitleFont2));
+                        cell = new RtfCell (new Paragraph ("\nАсеков К.",HeaderFont));
 
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                         cell.setVerticalAlignment(Element.ALIGN_TOP);
                         cell.setBorder(TitleColumnBorder);
                         table.addCell (cell);
 
+                    }
+                    else if (iResDepartment==2)
+                    {
+                        cell = new RtfCell (new Paragraph ("",TitleFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                        cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                        cell.setBorder(TitleColumnBorder);
+                        table.addCell (cell);
+
+                        cell = new RtfCell (new Paragraph ("\n",HeaderFont));
+//                        cell = new RtfCell (new Paragraph ("\nЗаведующий отделом кредитов промышленности",HeaderFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                        cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                        cell.setBorder(TitleColumnBorder);
+                        table.addCell (cell);
+
+                        cell = new RtfCell (new Paragraph ("",TitleFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                        cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                        cell.setBorder(TitleColumnBorder);
+                        table.addCell (cell);
+
+
+                        cell = new RtfCell (new Paragraph ("\nЖапаркулова Ж.",HeaderFont));
+
+                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                        cell.setVerticalAlignment(Element.ALIGN_TOP);
+                        cell.setBorder(TitleColumnBorder);
+                        table.addCell (cell);
                     }
                     else if (iResDepartment==1 && (workSector==12||iCreditType==3||iCreditType==6||iCreditType==7||iCreditType==8))
                     {
@@ -726,7 +870,7 @@ public class PrintoutGeneratorPhaseSummary {
                         cell.setBorder(TitleColumnBorder);
                         table.addCell (cell);
 
-                        cell = new RtfCell (new Paragraph ("\nЗаведующий отдела грантов АПК",TitleFont2));
+                        cell = new RtfCell (new Paragraph ("\n",HeaderFont));
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                         cell.setVerticalAlignment(Element.ALIGN_TOP);
 
@@ -741,7 +885,7 @@ public class PrintoutGeneratorPhaseSummary {
                         table.addCell (cell);
 
 
-                        cell = new RtfCell (new Paragraph ("\nСыдыков А.А.",TitleFont2));
+                        cell = new RtfCell (new Paragraph ("\nСыдыков А.А.",HeaderFont));
 
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                         cell.setVerticalAlignment(Element.ALIGN_TOP);
@@ -757,7 +901,7 @@ public class PrintoutGeneratorPhaseSummary {
                         cell.setBorder(TitleColumnBorder);
                         table.addCell (cell);
 
-                        cell = new RtfCell (new Paragraph ("\nЗаведующий отдела кредитов АПК",TitleFont2));
+                        cell = new RtfCell (new Paragraph ("\n",HeaderFont));
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                         cell.setVerticalAlignment(Element.ALIGN_TOP);
 
@@ -772,7 +916,7 @@ public class PrintoutGeneratorPhaseSummary {
                         table.addCell (cell);
 
 
-                        cell = new RtfCell (new Paragraph ("\nАлыбаев К.",TitleFont2));
+                        cell = new RtfCell (new Paragraph ("\nАлыбаев К.",HeaderFont));
 
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                         cell.setVerticalAlignment(Element.ALIGN_TOP);
