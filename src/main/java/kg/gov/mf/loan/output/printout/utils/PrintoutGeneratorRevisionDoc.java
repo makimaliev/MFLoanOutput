@@ -538,7 +538,7 @@ public class PrintoutGeneratorRevisionDoc{
 //                                Srok = ps.getExpectedDate();
 //                            }
 //
-                    Srok = lv.getV_last_date();
+                    Srok = lsv.getV_last_date();
 
                     if(loan.getSupervisorId()>0) curator = userService.findById(loan.getSupervisorId());
 
