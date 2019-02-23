@@ -1201,7 +1201,7 @@ int x = 0;
 
                         if(debtor.getWorkSector().getId()==1 || debtor.getWorkSector().getId()==12)
                         {
-                            if(iCreditType==1||iCreditType==2||iCreditType==9|| debtor.getWorkSector().getId()!=12)
+                            if((iCreditType==1||iCreditType==2||iCreditType==9) && debtor.getWorkSector().getId()!=12)
                             {
                                 sNach="Заведующий отделом кредитов АПК:";
                                 sNachTitle="К. Алыбаев";
