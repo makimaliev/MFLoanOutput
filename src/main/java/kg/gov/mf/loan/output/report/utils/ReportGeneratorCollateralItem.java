@@ -46,7 +46,9 @@ public class ReportGeneratorCollateralItem extends ReportGenerator{
         ReportTool reportTool = new ReportTool();
         reportTool.initReference();
 
-        collectionPhaseReportData = new CollateralItemReportDataManager().getReportDataGrouped(collectionPhaseReportData,reportTemplate);
+//        collectionPhaseReportData = new CollateralItemReportDataManager().getReportDataGrouped(collectionPhaseReportData,reportTemplate);
+
+        collectionPhaseReportData = new CollateralItemAndLoanSummaryReportDataManager().getReportDataGrouped(collectionPhaseReportData,reportTemplate);
 
         HSSFWorkbook     WorkBook       = new HSSFWorkbook();
 

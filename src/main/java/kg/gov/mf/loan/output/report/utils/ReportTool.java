@@ -1360,6 +1360,7 @@ public class ReportTool
         if(reportTemplate.getGroupType3().getField_name().contains("debtor_id"))
         {
             groupFieldNames.add("v_debtor_name");
+            groupFieldNames.add(reportTemplate.getGroupType3().getField_name());
         }
         else
         {
@@ -1376,6 +1377,10 @@ public class ReportTool
         {
             groupFieldNames.add(reportTemplate.getGroupType5().getField_name());
         }
+
+        if(reportTemplate.getGroupType6()!=null)
+            groupFieldNames.add(reportTemplate.getGroupType6().getField_name());
+
 
 
 
