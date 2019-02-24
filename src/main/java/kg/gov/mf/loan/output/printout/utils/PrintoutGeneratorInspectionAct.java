@@ -212,6 +212,9 @@ public class PrintoutGeneratorInspectionAct {
                             Details5 = details.getDetails5();
                             Details6 = details.getDetails6();
                             GoodsType = details.getGoods_type();
+                            GoodsId = details.getGoods_id();
+
+                            String Document = details.getDocument();
 
                             depList += "\n";
 
@@ -223,23 +226,9 @@ public class PrintoutGeneratorInspectionAct {
                                 depList += " " + quantity_type + " )," + "\n";
                             if (!(Zalogodatel == null || Zalogodatel == ""))
                                 depList += " Залогодатель  - " + Zalogodatel + "\n";
-                            if (!(GoodsAddress == null || GoodsAddress == "")) {
-                                if (GoodsAddress == null) {
-                                    System.out.println("  111111111 ");
-                                }
-                                if (GoodsAddress == "") {
-                                    System.out.println(" 22222222222 ");
-                                }
 
-                                if ((GoodsAddress == null || GoodsAddress == "")) {
-                                    System.out.println(" 33333333 ");
-                                } else {
-                                    System.out.println(" 4444444444444 ");
-                                }
-
-
-                                depList += " Адрес  - " + GoodsAddress + "\n";
-                            }
+                            if (!(Document == null || Document == ""))
+                                depList += " Правоуст. документ    - " + Document + "\n";
                             if (GoodsDate != null)
                                 depList += " Дата выпуска  - " + reportTool.DateToString(details.getDetailsDate()) + "\n";
                             if (!(Details1 == null || Details1 == "")) depList += " Зав. номер  - " + Details1 + "\n";
@@ -323,8 +312,8 @@ public class PrintoutGeneratorInspectionAct {
                                 depList += " Площадь застройки (кв.м.)  - " + Details3 + "\n";
                             if (!(Details4 == null || Details4 == ""))
                                 depList += " Зем.участок мерою (кв.м.)  - " + Details4 + "\n";
-                            if (!(InCompleteReason == null || InCompleteReason == ""))
-                                depList += " Причина  - " + InCompleteReason + "\n";
+//                            if (!(InCompleteReason == null || InCompleteReason == ""))
+//                                depList += " Причина  - " + InCompleteReason + "\n";
                             if (DepositName != null || DepositName != "")
                                 depList += " Состояние: ______________________________________________ " + "\n";
                         } else {
@@ -352,13 +341,13 @@ public class PrintoutGeneratorInspectionAct {
                             depList += " (" + quantity + " " + quantity_type + ")";
                             if (!(Document == null || Document == ""))
                                 depList += " Правоуст. документ    - " + Document + "\n";
-                            if (!(Details1 == null || Details1 == "")) depList += " КРС   - " + Details1 + "\n";
-                            if (!(Details2 == null || Details2 == "")) depList += " МРС  - " + Details2 + "\n";
-                            if (!(Details3 == null || Details3 == "")) depList += " Лошади  - " + Details3 + "\n";
-                            if (!(Details4 == null || Details4 == "")) depList += " Яки  - " + Details4 + "\n";
-                            if (!(Details5 == null || Details5 == "")) depList += " Свиньи  - " + Details5 + "\n";
-                            if (!(InCompleteReason == null || InCompleteReason == ""))
-                                depList += " Причина  - " + InCompleteReason + "\n";
+//                            if (!(Details1 == null || Details1 == "")) depList += " КРС   - " + Details1 + "\n";
+//                            if (!(Details2 == null || Details2 == "")) depList += " МРС  - " + Details2 + "\n";
+//                            if (!(Details3 == null || Details3 == "")) depList += " Лошади  - " + Details3 + "\n";
+//                            if (!(Details4 == null || Details4 == "")) depList += " Яки  - " + Details4 + "\n";
+//                            if (!(Details5 == null || Details5 == "")) depList += " Свиньи  - " + Details5 + "\n";
+//                            if (!(InCompleteReason == null || InCompleteReason == ""))
+//                                depList += " Причина  - " + InCompleteReason + "\n";
                             if (DepositName != null || DepositName != "")
                                 depList += " Состояние: ______________________________________________ " + "\n";
 
