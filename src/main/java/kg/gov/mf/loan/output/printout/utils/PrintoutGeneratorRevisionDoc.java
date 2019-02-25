@@ -978,14 +978,14 @@ public class PrintoutGeneratorRevisionDoc{
 
                 if(debtor.getWorkSector().getId()==1 || debtor.getWorkSector().getId()==12)
                 {
-                    if(iCreditType==1||iCreditType==2||iCreditType==9)
+                    if((iCreditType==1||iCreditType==2||iCreditType==9) && debtor.getWorkSector().getId()!=12)
                     {
-//                        sNach="Заведующий отделом кредитов АПК:";
+                        sNach="Заведующий отделом кредитов АПК:";
                         sNachTitle="К. Алыбаев";
                     }
                     else
                     {
-//                        sNach="Заведующий отделом грантов АПК:";
+                        sNach="Заведующий отделом грантов АПК:";
                         sNachTitle="А. Сыдыков";
                     }
                 }
@@ -993,12 +993,12 @@ public class PrintoutGeneratorRevisionDoc{
                 {
                     if(debtor.getWorkSector().getId()==13 || debtor.getWorkSector().getId()==14)
                     {
-//                        sNach="Заведующий отделом кредитов частного предпринимательства и ф.л.:";
+                        sNach="Заведующий отделом кредитов частного предпринимательства и ф.л.:";
                         sNachTitle="К. Асеков";
                     }
                     else
                     {
-//                        sNach="Заведующий отделом кредитов промышленности:";
+                        sNach="Заведующий отделом кредитов промышленности:";
                         sNachTitle="Ж. Жапаркулова";
                     }
 
@@ -1006,7 +1006,7 @@ public class PrintoutGeneratorRevisionDoc{
 
                 if(iCreditType==5)
                 {
-//                    sNach="Заведующий отделом отчуждения кредитов:";
+                    sNach="Заведующий отделом отчуждения кредитов:";
                     sNachTitle="И. Джумабаев";
                 }
 
