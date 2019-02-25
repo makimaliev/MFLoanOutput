@@ -372,7 +372,25 @@ public class PrintoutGeneratorPaymentSummary {
 
             if(paymentViews.size()>0) {
 
-                for (PaymentView pv : paymentViews) {
+                for (PaymentView pv : paymentViews)
+                {
+                    if (pv.isV_payment_in_loan_currency())
+                    {
+                        if(pv.getV_loan_currency_id()>1)
+                        {
+                            double rate = pv.getV_payment_exchange_rate();
+
+                            if(rate==0) rate = 1;
+
+                            pv.setV_payment_total_amount(pv.getV_payment_total_amount()*rate);
+                            pv.setV_payment_principal(pv.getV_payment_principal()*rate);
+                            pv.setV_payment_interest(pv.getV_payment_interest()*rate);
+                            pv.setV_payment_penalty(pv.getV_payment_penalty()*rate);
+
+
+                        }
+                    }
+
                     if (true) {
                         cell = new PdfPCell(new Paragraph(pv.getV_payment_number(), ColumnFont));
                         cell.setHorizontalAlignment(Element.ALIGN_RIGHT);

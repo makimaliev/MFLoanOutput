@@ -187,6 +187,23 @@ public class PaymentReportDataManager {
                     }
                 }
 
+                if (pv.isV_payment_in_loan_currency())
+                {
+                    if(pv.getV_loan_currency_id()>1)
+                    {
+                        double rate = pv.getV_payment_exchange_rate();
+
+                        if(rate==0) rate = 1;
+
+                        pv.setV_payment_total_amount(pv.getV_payment_total_amount()*rate);
+                        pv.setV_payment_principal(pv.getV_payment_principal()*rate);
+                        pv.setV_payment_interest(pv.getV_payment_interest()*rate);
+                        pv.setV_payment_penalty(pv.getV_payment_penalty()*rate);
+
+
+                    }
+                }
+
 
                 if(pv.getV_payment_total_amount()>0)
                 {
