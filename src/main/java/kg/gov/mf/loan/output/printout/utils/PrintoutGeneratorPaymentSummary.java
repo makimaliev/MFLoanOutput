@@ -125,7 +125,7 @@ public class PrintoutGeneratorPaymentSummary {
             float FooterColumnPadding = 3;
             int   FooterColumnBorder  = 0;
 
-            BaseFont myfont        = BaseFont.createFont("//ArialCyr.ttf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            BaseFont myfont        = BaseFont.createFont("//timesNewRoman.ttf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
 
 //            BaseFont myfont = BaseFont.createFont("//ARIAL.TTF","UTF-8", BaseFont.EMBEDDED);

@@ -271,7 +271,7 @@ public class PrintoutGeneratorRevisionDoc{
             float FooterColumnPadding = 3;
             int   FooterColumnBorder  = 0;
 
-            BaseFont myfont        = BaseFont.createFont("//ArialCyr.ttf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            BaseFont myfont        = BaseFont.createFont("//timesNewRoman.ttf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             Font      HeaderFont   = new  Font(myfont,8,Font.NORMAL,CMYKColor.BLACK);
             Font      ColumnFont   = new  Font(myfont,8,Font.NORMAL,CMYKColor.BLACK);

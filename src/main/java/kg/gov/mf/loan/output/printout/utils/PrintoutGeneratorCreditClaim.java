@@ -169,7 +169,7 @@ public class PrintoutGeneratorCreditClaim {
             int   TitleColumnBorder   = 0;
 
 
-            BaseFont   myfont        = BaseFont.createFont("//ArialCyr.ttf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            BaseFont   myfont        = BaseFont.createFont("//timesNewRoman.ttf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
 
             Font       HeaderFont    = new  Font(myfont,11,Font.NORMAL);
             Font       ColumnFont    = new  Font(myfont,12,Font.NORMAL);
