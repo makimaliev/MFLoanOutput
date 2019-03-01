@@ -95,7 +95,7 @@ public class LoanSummaryReportDataManager {
         int equals = reportTemplate.getOnDate().compareTo(today2);
 
 
-        if(reportTemplate.getName().contains("фикс")||(equals==0))
+        if(reportTemplate.getName().contains("фикс"))
         {
             reportData.getLoanSummaryViews().addAll(loanSummaryViewService.findByParameter(parameterS));
 
