@@ -554,14 +554,24 @@ public class PrintoutGeneratorRevisionDoc{
                     OstMain         = lsv.getV_ls_outstading_principal();
                     OstPercent      = lsv.getV_ls_outstading_interest();
                     OstPenalty      = lsv.getV_ls_outstading_penalty();
-                    OstAll          = OstMain+OstPercent+OstPenalty;
+
+
+                    OstAll = 0;
+
+                    if(OstMain>0) OstAll+=OstMain;
+                    if(OstPercent>0) OstAll+=OstPercent;
+                    if(OstPenalty>0) OstAll+=OstPenalty;
 
 
                     ProsMain        = lsv.getV_ls_overdue_principal();
                     ProsPercent     = lsv.getV_ls_overdue_interest();
                     ProsPenalty     = lsv.getV_ls_overdue_penalty();
 
-                    ProsAll         = ProsMain+ProsPercent+ProsPenalty;
+                    ProsAll = 0;
+
+                    if(ProsMain>0) ProsAll+=ProsMain;
+                    if(ProsPercent>0) ProsAll+=ProsPercent;
+                    if(ProsPenalty>0) ProsAll+=ProsPenalty;
 
                     if(iCurrency==1) Rate =1;
 
