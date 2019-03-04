@@ -926,7 +926,7 @@ public class PrintoutGeneratorCreditClaim {
                 table.addCell (cell);
 
 
-                cell = new RtfCell (new Paragraph ("\nАлыбаев К.",HeaderFont));
+                cell = new RtfCell (new Paragraph ("\nАзимов А.",HeaderFont));
 
                 cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                 cell.setVerticalAlignment(Element.ALIGN_TOP);

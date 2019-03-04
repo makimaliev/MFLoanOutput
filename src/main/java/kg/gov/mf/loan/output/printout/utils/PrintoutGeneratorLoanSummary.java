@@ -1192,7 +1192,7 @@ int x = 0;
                             if(iCreditType==1||iCreditType==2||iCreditType==5||iCreditType==9)
                             {
                                 sNach="Заведующий отделом кредитов АПК:";
-                                sNachTitle="К. Алыбаев";
+                                sNachTitle="А. Азимов";
                             }
                             else
                                 {
@@ -1212,7 +1212,7 @@ int x = 0;
                             if((iCreditType==1||iCreditType==2||iCreditType==9) && debtor.getWorkSector().getId()!=12)
                             {
                                 sNach="Заведующий отделом кредитов АПК:";
-                                sNachTitle="К. Алыбаев";
+                                sNachTitle="А. Азимов";
                             }
                             else
                             {
