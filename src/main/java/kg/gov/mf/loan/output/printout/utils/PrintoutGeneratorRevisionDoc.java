@@ -97,7 +97,6 @@ public class PrintoutGeneratorRevisionDoc{
 
     public void generatePrintoutByTemplate(PrintoutTemplate printoutTemplate, Date onDate, long objectId, Document document){
 
-
         try
         {
             SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
@@ -153,7 +152,6 @@ public class PrintoutGeneratorRevisionDoc{
 
             boolean isBankrot=false;
 
-
             double SumSpisano=0;
 
 
@@ -167,26 +165,6 @@ public class PrintoutGeneratorRevisionDoc{
 
             String name = printoutTemplate.getName();
 
-            for (String id:name.split("-"))
-            {
-                if(!id.equals(""))
-                {
-                    try {
-                        loanSummary=loanSummaryService.getByOnDateAndLoanId(onDate,Long.valueOf(id));
-                        LoanSummaryView loanSummaryView = loanSummaryViewService.findById(loanSummary.getId());
-                        loanSummaryViews.add(loanSummaryView);
-
-                    }
-                    catch (Exception ex)
-                    {
-
-
-                    }
-
-                }
-
-            }
-
             if(loanSummaryViews.size()==0)
             {
                 CalculationTool calculationTool=new CalculationTool();
@@ -196,7 +174,8 @@ public class PrintoutGeneratorRevisionDoc{
 
                 LinkedHashMap<Long, LoanDetailedSummary> loanDetailedSummaryList = new LinkedHashMap<>();
 
-                for (String id:name.split("-")){
+                for (String id:name.split("-"))
+                {
                     if(!id.equals("")) {
                         String baseQuery="select * from loan_view where v_loan_id="+id;
                         Query query=entityManager.createNativeQuery(baseQuery,LoanView.class);
@@ -207,45 +186,18 @@ public class PrintoutGeneratorRevisionDoc{
                 loanDetailedSummaryList.putAll(calculationTool.getAllLoanDetailedSummariesByLoanViewList(loanViews, onDate ));
                 for (LoanView loanView:loanViews)
                 {
-
-                    Loan loan = loanService.getById(Long.valueOf(loanView.getV_loan_id()));
-
                     Date srokDate = null;
 
-                    for (PaymentSchedule schedule: loan.getPaymentSchedules())
-                    {
-                        if(schedule.getPrincipalPayment()>0)
-                        {
-                            if(srokDate==null)
-                            {
-                                srokDate=schedule.getExpectedDate();
-                            }
-                            else
-                            {
-                                if(schedule.getExpectedDate()!=null)
-                                    if(schedule.getExpectedDate().after(srokDate));
-                                {
-                                    srokDate = schedule.getExpectedDate();
-                                }
-                            }
+                    if(loanView.getV_last_date()!=null) srokDate = loanView.getV_last_date();
 
-                        }
-
-                    }
-
-                    if(srokDate==null) srokDate = loan.getRegDate();
+                    if(srokDate==null) srokDate = loanView.getV_loan_reg_date();
 
                     loanSummary=calculationTool.getLoanSummaryCaluculatedByLoanIdAndOnDate(loanView,loanView.getV_loan_id(),onDate,null);
-                    loanSummary.setLoan(loan);
-
                     loanSummaryViews.add(convertLoanView(loanView, loanSummary));
 
+                    iPersonID = loanView.getV_debtor_id();
                 }
             }
-
-            Loan loan = this.loanService.getById(loanSummary.getLoan().getId());
-
-            iPersonID = loan.getDebtor().getId();
 
             Debtor debtor =  debtorService.getById(iPersonID);
 
@@ -523,24 +475,23 @@ public class PrintoutGeneratorRevisionDoc{
 
 
 
-                    Rate=this.currencyRateService.findByDateAndType(tRasDate,this.currencyService.getById(lsv.getV_loan_currency_id())).getRate();
+
+
+                    if(iCurrency>1)
+                    {
+                        Rate = this.currencyRateService.findByDateAndType(tRasDate,this.currencyService.getById(lsv.getV_loan_currency_id())).getRate();
+                    }
+                    else
+                    {
+                        Rate=1;
+                    }
+
 
                     Thousands = 1000;
 
-
-
-
-
-//                            Loan currentLoan = loanService.getById(lsv.getV_loan_id());
-//
-//                            for (PaymentSchedule ps: loan.getPaymentSchedules())
-//                            {
-//                                Srok = ps.getExpectedDate();
-//                            }
-//
                     Srok = lsv.getV_last_date();
 
-                    if(loan.getSupervisorId()>0) curator = userService.findById(loan.getSupervisorId());
+                    if(lsv.getV_loan_supervisor_id()>0) curator = userService.findById(lsv.getV_loan_supervisor_id());
 
                     if(curator.getStaff()!=null)
                         curatorStaff = staffService.findById(curator.getStaff().getId());
@@ -1003,7 +954,7 @@ public class PrintoutGeneratorRevisionDoc{
                 {
                     if(debtor.getWorkSector().getId()==13 || debtor.getWorkSector().getId()==14)
                     {
-                        sNach="Заведующий отделом кредитов частного предпринимательства и ф.л.:";
+                        sNach="Заведующий отделом кредитов предпринимательства и ф.л.:";
                         sNachTitle="К. Асеков";
                     }
                     else
