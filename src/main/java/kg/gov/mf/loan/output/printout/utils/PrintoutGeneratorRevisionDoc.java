@@ -469,7 +469,7 @@ public class PrintoutGeneratorRevisionDoc{
                     }
 
                     sCreditNumber=lsv.getV_loan_reg_number();
-                    sCreditDate=lsv.getV_loan_reg_date().toString();
+                    sCreditDate=reportTool.DateToString(lsv.getV_loan_reg_date());
                     sOrderNumber=lsv.getV_credit_order_reg_number();
                     Short iCurrency= Short.valueOf(lsv.getV_loan_currency_id().toString());
 
@@ -588,6 +588,9 @@ public class PrintoutGeneratorRevisionDoc{
                     String Det1=sOrderNumber +
                             " №" + sCreditNumber +
                             " от " + (sCreditDate) +"г.";
+
+
+
 
                     if(iCurrency!=17)
                     {
@@ -1014,7 +1017,7 @@ public class PrintoutGeneratorRevisionDoc{
                     String firstname = identityDoc.getIdentityDocDetails().getFirstname();
 
                     if(firstname.length()>0) firstname=firstname.substring(0,1);
-                    cell = new PdfPCell (new Paragraph (firstname+" "+identityDoc.getIdentityDocDetails().getLastname(),TitleFont));
+                    cell = new PdfPCell (new Paragraph (firstname+". "+identityDoc.getIdentityDocDetails().getLastname(),TitleFont));
                     cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                     cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                     cell.setPadding(FooterColumnPadding);
@@ -1099,7 +1102,7 @@ public class PrintoutGeneratorRevisionDoc{
         convertedLoanSummaryView.setV_ls_overdue_principal(ls.getOverduePrincipal());
         convertedLoanSummaryView.setV_ls_overdue_interest(ls.getOverdueInterest());
         convertedLoanSummaryView.setV_ls_overdue_penalty(ls.getOverduePenalty());
-        convertedLoanSummaryView.setV_last_date(ls.getCreateDate());
+        convertedLoanSummaryView.setV_last_date(lv.getV_last_date());
 
         return convertedLoanSummaryView;
     }

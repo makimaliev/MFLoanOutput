@@ -32,6 +32,7 @@ import kg.gov.mf.loan.output.report.model.PaymentView;
 import kg.gov.mf.loan.output.report.service.LoanSummaryViewService;
 import kg.gov.mf.loan.output.report.service.PaymentScheduleViewService;
 import kg.gov.mf.loan.output.report.service.PaymentViewService;
+import kg.gov.mf.loan.output.report.utils.CalculationTool;
 import kg.gov.mf.loan.output.report.utils.ReportTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
@@ -156,24 +157,34 @@ public class PrintoutGeneratorLoanSummary {
 
                     List<LoanSummaryView> loanSummaryViews = new ArrayList<>();
 
+                    CalculationTool calculationTool=new CalculationTool();
+
+                    LinkedHashSet<LoanView> loanViews = new LinkedHashSet<LoanView>(0);
+
+
                     LoanSummary loanSummary = null;
 
                     String name = printoutTemplate.getName();
 
                     for (String id:name.split("-"))
                     {
-                        if(!id.equals(""))
-                        {
-                            loanSummary=loanSummaryService.getByOnDateAndLoanId(onDate,Long.valueOf(id));
-                            LoanSummaryView loanSummaryView = loanSummaryViewService.findById(loanSummary.getId());
-                            loanSummaryViews.add(loanSummaryView);
+                        if(!id.equals("")) {
+                            String baseQuery="select * from loan_view where v_loan_id="+id;
+                            Query query=entityManager.createNativeQuery(baseQuery,LoanView.class);
+                            LoanView loanView= (LoanView) query.getSingleResult();
+                            loanViews.add(loanView);
                         }
-
                     }
 
-                    Loan loan = this.loanService.getById(loanSummary.getLoan().getId());
+                    for (LoanView loanView:loanViews)
+                    {
 
-                    iPersonID = loan.getDebtor().getId();
+                        loanSummary=loanSummaryService.getByOnDateAndLoanId(onDate,Long.valueOf(loanView.getV_loan_id()));
+
+                        loanSummaryViews.add(convertLoanView(loanView, loanSummary));
+
+                        iPersonID = loanView.getV_debtor_id();
+                    }
 
                     Debtor debtor =  debtorService.getById(iPersonID);
 
@@ -183,8 +194,6 @@ public class PrintoutGeneratorLoanSummary {
                     {
                            loanIds.add(reportTool.FormatNumber(loanSummaryView.getV_loan_id()));
                     }
-
-
 
                     tRasDate  = onDate;
 
@@ -215,10 +224,13 @@ public class PrintoutGeneratorLoanSummary {
 
                     document.open();
 
-
+int counter= 0;
 
                     if(loanSummaryViews.size()>0)
                     {
+                        counter++;
+                        System.out.println(counter);
+
                         sPersonDetails = "details";
                         iResDepartment = 1;
 
@@ -270,19 +282,6 @@ public class PrintoutGeneratorLoanSummary {
                         table.addCell (cell);
 
                         document.add(table);
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                         //*******************************************************************************************
@@ -394,6 +393,8 @@ public class PrintoutGeneratorLoanSummary {
 
                         Staff curatorStaff = new Staff();
 
+                        long supervisorId = 0;
+
 int x = 0;
                         for (LoanSummaryView lsv :loanSummaryViews)
                         {
@@ -428,29 +429,21 @@ int x = 0;
                             sOrderNumber=lsv.getV_credit_order_reg_number();
                             Short iCurrency= Short.valueOf(lsv.getV_loan_currency_id().toString());
 
-
-
-                            Rate=this.currencyRateService.findByDateAndType(tRasDate,this.currencyService.getById(lsv.getV_loan_currency_id())).getRate();
+                            if(iCurrency>1)
+                            {
+                                Rate=this.currencyRateService.findByDateAndType(tRasDate,this.currencyService.getById(lsv.getV_loan_currency_id())).getRate();
+                            }
+                            else
+                            {
+                                Rate=1;
+                            }
 
                             Thousands = 1000;
 
-
-
-
-
-//                            Loan currentLoan = loanService.getById(lsv.getV_loan_id());
-//
-//                            for (PaymentSchedule ps: loan.getPaymentSchedules())
-//                            {
-//                                Srok = ps.getExpectedDate();
-//                            }
-//
                             Srok = lsv.getV_last_date();
+                            supervisorId = lsv.getV_loan_supervisor_id();
 
-                            if(loan.getSupervisorId()>0) curator = userService.findById(loan.getSupervisorId());
 
-                            if(curator.getStaff()!=null)
-                            curatorStaff = staffService.findById(curator.getStaff().getId());
 
 
                             Cost            = lsv.getV_loan_amount();
@@ -530,7 +523,8 @@ int x = 0;
 
                             if(iCurrency!=17)
                             {
-                                Det1+=" в тыс. "+this.currencyService.getById(lsv.getV_loan_currency_id()).getName();
+                                Det1+=" в тыс. "+reportTool.getNameByMapName("currency_type",lsv.getV_loan_currency_id());
+//                                this.currencyService.getById(lsv.getV_loan_currency_id()).getName();
                             }
                             else
                             {
@@ -770,6 +764,10 @@ int x = 0;
 
                         document.add(table);
 
+                        if(supervisorId>0) curator = userService.findById(supervisorId);
+
+                        if(curator.getStaff()!=null)
+                            curatorStaff = staffService.findById(curator.getStaff().getId());
 
                         table=new PdfPTable(5);
                         table.setWidthPercentage(100);
@@ -1088,6 +1086,7 @@ int x = 0;
                         // Нач. управ. ПРОМ
 
 
+                        float f1 = 36;
 
                         if(debtor.getWorkSector().getId()==1 || debtor.getWorkSector().getId()==12)
                         {
@@ -1102,13 +1101,14 @@ int x = 0;
                             else
                             {
                                 cell = new PdfPCell (new Paragraph ("Начальник управления кредитов промышленности и предпринимательства:",TitleFont));
+                                f1=51;
                             }
 
                         }
 
 
 
-                        cell.setFixedHeight(36);
+                        cell.setFixedHeight(f1);
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                         cell.setBorder(FooterColumnBorder);
@@ -1186,6 +1186,8 @@ int x = 0;
                         String sNachTitle="";
 
 
+                        float f2=36;
+
 
                         if(debtor.getWorkSector().getId()==1)
                         {
@@ -1226,6 +1228,8 @@ int x = 0;
                             {
                                 sNach="Заведующий отделом кредитов предпринимательства и ф.л.:";
                                 sNachTitle="К. Асеков";
+
+                                f2=51;
                             }
                             else
                             {
@@ -1243,7 +1247,7 @@ int x = 0;
 
 
                         cell = new PdfPCell (new Paragraph (sNach,TitleFont));
-                        cell.setFixedHeight(36);
+                        cell.setFixedHeight(f2);
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                         cell.setBorder(FooterColumnBorder);
@@ -1299,7 +1303,7 @@ int x = 0;
                             String firstname = identityDoc.getIdentityDocDetails().getFirstname();
 
                             if(firstname.length()>0) firstname=firstname.substring(0,1);
-                            cell = new PdfPCell (new Paragraph (firstname+" "+identityDoc.getIdentityDocDetails().getLastname(),TitleFont));
+                            cell = new PdfPCell (new Paragraph (firstname+". "+identityDoc.getIdentityDocDetails().getLastname(),TitleFont));
                             cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                             cell.setPadding(FooterColumnPadding);
@@ -1341,6 +1345,52 @@ int x = 0;
                 }
 
 
+    }
+
+
+    public LoanSummaryView convertLoanView( LoanView lv, LoanSummary ls)
+    {
+        LoanSummaryView convertedLoanSummaryView = new LoanSummaryView();
+
+        convertedLoanSummaryView.setV_loan_amount(lv.getV_loan_amount());
+        convertedLoanSummaryView.setV_loan_reg_date(lv.getV_loan_reg_date());
+        convertedLoanSummaryView.setV_loan_reg_number(lv.getV_loan_reg_number());
+        convertedLoanSummaryView.setV_loan_type_id(lv.getV_loan_type_id());
+        convertedLoanSummaryView.setV_loan_currency_id(lv.getV_loan_currency_id());
+        convertedLoanSummaryView.setV_loan_fin_group_id(lv.getV_loan_fin_group_id());
+        convertedLoanSummaryView.setV_loan_state_id(lv.getV_loan_state_id());
+        convertedLoanSummaryView.setV_loan_id(lv.getV_loan_id());
+        convertedLoanSummaryView.setV_loan_supervisor_id(lv.getV_loan_supervisor_id());
+        convertedLoanSummaryView.setV_credit_order_reg_date(lv.getV_credit_order_reg_date());
+        convertedLoanSummaryView.setV_credit_order_reg_number(lv.getV_credit_order_reg_number());
+        convertedLoanSummaryView.setV_credit_order_type_id(lv.getV_credit_order_type_id());
+        convertedLoanSummaryView.setV_loan_close_date(lv.getV_loan_close_date());
+        convertedLoanSummaryView.setV_loan_close_rate(lv.getV_loan_close_rate());
+        convertedLoanSummaryView.setV_debtor_id(lv.getV_debtor_id());
+        convertedLoanSummaryView.setV_debtor_name(lv.getV_debtor_name());
+        convertedLoanSummaryView.setV_debtor_region_id(lv.getV_debtor_region_id());
+        convertedLoanSummaryView.setV_debtor_district_id(lv.getV_debtor_district_id());
+        convertedLoanSummaryView.setV_debtor_aokmotu_id(lv.getV_debtor_aokmotu_id());
+        convertedLoanSummaryView.setV_debtor_village_id(lv.getV_debtor_village_id());
+        convertedLoanSummaryView.setV_debtor_work_sector_id(lv.getV_debtor_work_sector_id());
+        convertedLoanSummaryView.setV_debtor_org_form_id(lv.getV_debtor_org_form_id());
+        convertedLoanSummaryView.setV_debtor_type_id(lv.getV_debtor_type_id());
+        convertedLoanSummaryView.setV_ls_total_disbursed(ls.getTotalDisbursed());
+        convertedLoanSummaryView.setV_ls_id(ls.getId());
+        convertedLoanSummaryView.setV_ls_on_date(ls.getOnDate());
+        convertedLoanSummaryView.setV_ls_total_paid(ls.getTotalPaid());
+        convertedLoanSummaryView.setV_ls_total_paid_kgs(ls.getTotalPaidKGS());
+        convertedLoanSummaryView.setV_ls_total_outstanding(ls.getTotalOutstanding());
+        convertedLoanSummaryView.setV_ls_outstading_principal(ls.getOutstadingPrincipal());
+        convertedLoanSummaryView.setV_ls_outstading_interest(ls.getOutstadingInterest());
+        convertedLoanSummaryView.setV_ls_outstading_penalty(ls.getOutstadingPenalty());
+        convertedLoanSummaryView.setV_ls_total_overdue(ls.getTotalOverdue());
+        convertedLoanSummaryView.setV_ls_overdue_principal(ls.getOverduePrincipal());
+        convertedLoanSummaryView.setV_ls_overdue_interest(ls.getOverdueInterest());
+        convertedLoanSummaryView.setV_ls_overdue_penalty(ls.getOverduePenalty());
+        convertedLoanSummaryView.setV_last_date(lv.getV_last_date());
+
+        return convertedLoanSummaryView;
     }
 
 
