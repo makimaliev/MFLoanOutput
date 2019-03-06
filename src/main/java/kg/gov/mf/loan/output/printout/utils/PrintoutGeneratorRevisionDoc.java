@@ -15,12 +15,14 @@ import kg.gov.mf.loan.admin.sys.model.User;
 import kg.gov.mf.loan.admin.sys.service.UserService;
 import kg.gov.mf.loan.manage.model.debtor.Debtor;
 import kg.gov.mf.loan.manage.model.loan.Loan;
+import kg.gov.mf.loan.manage.model.loan.LoanSummaryAct;
 import kg.gov.mf.loan.manage.model.loan.PaymentSchedule;
 import kg.gov.mf.loan.manage.model.orderterm.CurrencyRate;
 import kg.gov.mf.loan.manage.model.process.LoanDetailedSummary;
 import kg.gov.mf.loan.manage.model.process.LoanSummary;
 import kg.gov.mf.loan.manage.service.debtor.DebtorService;
 import kg.gov.mf.loan.manage.service.loan.LoanService;
+import kg.gov.mf.loan.manage.service.loan.LoanSummaryActService;
 import kg.gov.mf.loan.manage.service.loan.PaymentScheduleService;
 import kg.gov.mf.loan.manage.service.orderterm.CurrencyRateService;
 import kg.gov.mf.loan.manage.service.orderterm.OrderTermCurrencyService;
@@ -95,7 +97,10 @@ public class PrintoutGeneratorRevisionDoc{
     @Autowired
     PersonService personService;
 
-    public void generatePrintoutByTemplate(PrintoutTemplate printoutTemplate, Date onDate, long objectId, Document document){
+    @Autowired
+    LoanSummaryActService loanSummaryActService;
+
+    public void generatePrintoutByTemplate(PrintoutTemplate printoutTemplate, Date onDate, long objectId, Document document,String from){
 
         try
         {
@@ -174,28 +179,50 @@ public class PrintoutGeneratorRevisionDoc{
 
                 LinkedHashMap<Long, LoanDetailedSummary> loanDetailedSummaryList = new LinkedHashMap<>();
 
-                for (String id:name.split("-"))
-                {
-                    if(!id.equals("")) {
-                        String baseQuery="select * from loan_view where v_loan_id="+id;
-                        Query query=entityManager.createNativeQuery(baseQuery,LoanView.class);
-                        LoanView loanView= (LoanView) query.getSingleResult();
-                        loanViews.add(loanView);
+                if(from=="loan") {
+                    for (String id : name.split("-")) {
+                        if (!id.equals("")) {
+                            String baseQuery = "select * from loan_view where v_loan_id=" + id;
+                            Query query = entityManager.createNativeQuery(baseQuery, LoanView.class);
+                            LoanView loanView = (LoanView) query.getSingleResult();
+                            loanViews.add(loanView);
+                        }
+                    }
+                    loanDetailedSummaryList.putAll(calculationTool.getAllLoanDetailedSummariesByLoanViewList(loanViews, onDate));
+                    for (LoanView loanView : loanViews) {
+                        Date srokDate = null;
+
+                        if (loanView.getV_last_date() != null) srokDate = loanView.getV_last_date();
+
+                        if (srokDate == null) srokDate = loanView.getV_loan_reg_date();
+
+                        loanSummary = calculationTool.getLoanSummaryCaluculatedByLoanIdAndOnDate(loanView, loanView.getV_loan_id(), onDate, null);
+                        loanSummaryViews.add(convertLoanView(loanView, loanSummary));
+
+                        iPersonID = loanView.getV_debtor_id();
                     }
                 }
-                loanDetailedSummaryList.putAll(calculationTool.getAllLoanDetailedSummariesByLoanViewList(loanViews, onDate ));
-                for (LoanView loanView:loanViews)
-                {
-                    Date srokDate = null;
+                else if(from=="act"){
+                    LoanSummaryAct loanSummaryAct=loanSummaryActService.getById(objectId);
+                    for(LoanSummary loanSummary1:loanSummaryAct.getLoanSummaries()){
+                        LoanSummary loanSummary2=loanSummaryService.getById(loanSummary1.getId());
 
-                    if(loanView.getV_last_date()!=null) srokDate = loanView.getV_last_date();
+                        String baseQuery="select * from loan_view where v_loan_id="+loanSummary2.getLoan().getId();
+                        Query query=entityManager.createNativeQuery(baseQuery,LoanView.class);
+                        LoanView loanView= (LoanView) query.getSingleResult();
+                        loanSummary=loanSummary2;
+                        loanViews.add(loanView);
+                        Date srokDate = null;
 
-                    if(srokDate==null) srokDate = loanView.getV_loan_reg_date();
+                        if (loanView.getV_last_date() != null) srokDate = loanView.getV_last_date();
 
-                    loanSummary=calculationTool.getLoanSummaryCaluculatedByLoanIdAndOnDate(loanView,loanView.getV_loan_id(),onDate,null);
-                    loanSummaryViews.add(convertLoanView(loanView, loanSummary));
+                        if (srokDate == null) srokDate = loanView.getV_loan_reg_date();
 
-                    iPersonID = loanView.getV_debtor_id();
+                        loanSummaryViews.add(convertLoanView(loanView, loanSummary2));
+
+                        iPersonID = loanView.getV_debtor_id();
+
+                    }
                 }
             }
 

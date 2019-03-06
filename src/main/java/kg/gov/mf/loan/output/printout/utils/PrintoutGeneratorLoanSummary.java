@@ -15,11 +15,13 @@ import kg.gov.mf.loan.admin.sys.model.User;
 import kg.gov.mf.loan.admin.sys.service.UserService;
 import kg.gov.mf.loan.manage.model.debtor.Debtor;
 import kg.gov.mf.loan.manage.model.loan.Loan;
+import kg.gov.mf.loan.manage.model.loan.LoanSummaryAct;
 import kg.gov.mf.loan.manage.model.loan.PaymentSchedule;
 import kg.gov.mf.loan.manage.model.orderterm.CurrencyRate;
 import kg.gov.mf.loan.manage.model.process.LoanSummary;
 import kg.gov.mf.loan.manage.service.debtor.DebtorService;
 import kg.gov.mf.loan.manage.service.loan.LoanService;
+import kg.gov.mf.loan.manage.service.loan.LoanSummaryActService;
 import kg.gov.mf.loan.manage.service.loan.PaymentScheduleService;
 import kg.gov.mf.loan.manage.service.orderterm.CurrencyRateService;
 import kg.gov.mf.loan.manage.service.orderterm.OrderTermCurrencyService;
@@ -94,7 +96,10 @@ public class PrintoutGeneratorLoanSummary {
 	@Autowired
     PersonService personService;
 
-    public void generatePrintoutByTemplate(PrintoutTemplate printoutTemplate, Date onDate, long objectId, Document document){
+	@Autowired
+    LoanSummaryActService loanSummaryActService;
+
+    public void generatePrintoutByTemplate(PrintoutTemplate printoutTemplate, Date onDate, long objectId, Document document,String fromAct ){
 
 
                 try
@@ -166,24 +171,42 @@ public class PrintoutGeneratorLoanSummary {
 
                     String name = printoutTemplate.getName();
 
-                    for (String id:name.split("-"))
-                    {
-                        if(!id.equals("")) {
-                            String baseQuery="select * from loan_view where v_loan_id="+id;
+                    if(fromAct=="false"){
+                        for (String id:name.split("-"))
+                        {
+                            if(!id.equals("")) {
+                                String baseQuery="select * from loan_view where v_loan_id="+id;
+                                Query query=entityManager.createNativeQuery(baseQuery,LoanView.class);
+                                LoanView loanView= (LoanView) query.getSingleResult();
+                                loanViews.add(loanView);
+                            }
+                        }
+
+                        for (LoanView loanView:loanViews)
+                        {
+
+                            loanSummary=loanSummaryService.getByOnDateAndLoanId(onDate,Long.valueOf(loanView.getV_loan_id()));
+
+                            loanSummaryViews.add(convertLoanView(loanView, loanSummary));
+
+                            iPersonID = loanView.getV_debtor_id();
+                        }
+                    }
+                    else{
+                        LoanSummaryAct loanSummaryAct=loanSummaryActService.getById(objectId);
+                        for(LoanSummary loanSummary1:loanSummaryAct.getLoanSummaries()){
+                            LoanSummary loanSummary2=loanSummaryService.getById(loanSummary1.getId());
+
+                            String baseQuery="select * from loan_view where v_loan_id="+loanSummary2.getLoan().getId();
                             Query query=entityManager.createNativeQuery(baseQuery,LoanView.class);
                             LoanView loanView= (LoanView) query.getSingleResult();
                             loanViews.add(loanView);
+
+                            loanSummaryViews.add(convertLoanView(loanView, loanSummary2));
+
+                            iPersonID = loanView.getV_debtor_id();
+
                         }
-                    }
-
-                    for (LoanView loanView:loanViews)
-                    {
-
-                        loanSummary=loanSummaryService.getByOnDateAndLoanId(onDate,Long.valueOf(loanView.getV_loan_id()));
-
-                        loanSummaryViews.add(convertLoanView(loanView, loanSummary));
-
-                        iPersonID = loanView.getV_debtor_id();
                     }
 
                     Debtor debtor =  debtorService.getById(iPersonID);
