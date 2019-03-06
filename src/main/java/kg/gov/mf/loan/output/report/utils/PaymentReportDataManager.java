@@ -84,6 +84,11 @@ public class PaymentReportDataManager {
                 childA.setLevel((short)1);
 
                 currentgroupAid=reportTool.getIdByGroupType(reportTemplate.getGroupType1(),paymentView);
+                currentgroupBid=-1;
+                currentgroupCid=-1;
+                currentgroupDid=-1;
+                currentgroupEid=-1;
+
             }
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType2(),paymentView)!=currentgroupBid)
@@ -93,6 +98,10 @@ public class PaymentReportDataManager {
                 childB.setLevel((short)2);
 
                 currentgroupBid=reportTool.getIdByGroupType(reportTemplate.getGroupType2(),paymentView);
+                currentgroupCid=-1;
+                currentgroupDid=-1;
+                currentgroupEid=-1;
+
             }
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType3(),paymentView)!=currentgroupCid)
@@ -107,6 +116,9 @@ public class PaymentReportDataManager {
                 reportData.setCount(reportData.getCount()+1);
 
                 currentgroupCid=reportTool.getIdByGroupType(reportTemplate.getGroupType3(),paymentView);
+                currentgroupDid=-1;
+                currentgroupEid=-1;
+
             }
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType4(),paymentView)!=currentgroupDid)
@@ -143,6 +155,8 @@ public class PaymentReportDataManager {
                 }
 
                 currentgroupDid=reportTool.getIdByGroupType(reportTemplate.getGroupType4(),paymentView);
+                currentgroupEid=-1;
+
             }
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType5(),paymentView)!=currentgroupEid)

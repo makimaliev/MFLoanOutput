@@ -24,7 +24,7 @@ public class DocumentReportData extends ReportData
 	private long   documentID            = 0;
 	private String documentDescription   = "";
 	private Date   documentDueDate       = null;
-	private String   documentStateID       = "";
+	private String documentStateID       = "";
 	private String documentIndexNumber   = "";
 	private long   documentOwnerID       = 0;
 
@@ -284,15 +284,28 @@ public class DocumentReportData extends ReportData
 	}
 
 	public void setDocumentReceiverExecutorName(String documentReceiverExecutorName) {
-		this.documentReceiverExecutorName = documentReceiverExecutorName;
+		this.documentReceiverExecutorName = formatString(documentReceiverExecutorName);
 	}
 
 	public String getDocumentReceiverResponsibleName() {
 		return documentReceiverResponsibleName;
 	}
 
-	public void setDocumentReceiverResponsibleName(String documentReceiverResponsibleName) {
-		this.documentReceiverResponsibleName = documentReceiverResponsibleName;
+	public void setDocumentReceiverResponsibleName(String documentReceiverResponsibleName, short type)
+	{
+		String formattedString = documentReceiverResponsibleName;
+
+		if(type==1||type==4)
+		{
+			this.documentReceiverResponsibleName = formatString(documentReceiverResponsibleName);
+		}
+		else
+		{
+			this.documentReceiverResponsibleName = documentReceiverResponsibleName;
+		}
+
+
+
 	}
 
 	public String getDocumentSenderExecutorName() {
@@ -300,15 +313,25 @@ public class DocumentReportData extends ReportData
 	}
 
 	public void setDocumentSenderExecutorName(String documentSenderExecutorName) {
-		this.documentSenderExecutorName = documentSenderExecutorName;
+		this.documentSenderExecutorName = formatString(documentSenderExecutorName);
 	}
 
 	public String getDocumentSenderResponsibleName() {
 		return documentSenderResponsibleName;
 	}
 
-	public void setDocumentSenderResponsibleName(String documentSenderResponsibleName) {
-		this.documentSenderResponsibleName = documentSenderResponsibleName;
+	public void setDocumentSenderResponsibleName(String documentSenderResponsibleName, short type)
+	{
+		String formattedString = documentSenderResponsibleName;
+
+		if(type==1||type==4)
+		{
+			this.documentSenderResponsibleName = formatString(documentSenderResponsibleName);
+		}
+		else
+		{
+			this.documentSenderResponsibleName = documentSenderResponsibleName;
+		}
 	}
 
 	public long getDocumentUserID() {
@@ -341,5 +364,67 @@ public class DocumentReportData extends ReportData
 
 	public void setCount(int count) {
 		Count = count;
+	}
+
+	public String formatString(String input_text)
+	{
+		String returnText = input_text;
+
+		if(input_text==null)
+		{
+			return "";
+		}
+		else
+		{
+			String [] splittedText = input_text.split(",");
+
+			returnText = "";
+
+			int textCounter = 0;
+			for (String text: splittedText)
+			{
+				textCounter++;
+				if(text.contains(" "))
+				{
+					String[] formattedText = text.split(" ");
+
+					if(formattedText.length>1)
+					{
+						try
+						{
+							if(formattedText[0].length()>2)
+							{
+								text= formattedText[0]+" "+formattedText[1].substring(0,1)+".";
+
+							}
+							else
+							{
+								text= formattedText[0]+" "+formattedText[1];
+							}
+
+						}
+						catch (Exception ex)
+						{
+
+						}
+
+					}
+
+				}
+
+				if(textCounter<splittedText.length)
+				{
+					returnText+= text+"\n";
+				}
+				else
+				{
+					returnText+= text;
+				}
+
+			}
+		}
+
+
+		return returnText;
 	}
 }

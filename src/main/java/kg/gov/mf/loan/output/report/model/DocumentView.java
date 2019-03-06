@@ -11,33 +11,6 @@ import java.util.Date;
 @Immutable
 public class DocumentView extends ReportView
 {
-//
-//`doc`.`id`                                        AS `v_doc_id`,
-//		`doc`.`description`                               AS `v_doc_description`,
-//		`doc`.`documentDueDate`                           AS `v_doc_documentDueDate`,
-//		`doc`.`documentState`                             AS `v_doc_documentState`,
-//		`doc`.`indexNo`                                   AS `v_doc_indexNo`,
-//		`doc`.`owner`                                     AS `v_doc_owner`,
-//		`doc`.`receiverRegisteredDate`                    AS `v_doc_receiverRegisteredDate`,
-//		`doc`.`receiverRegisteredNumber`                  AS `v_doc_receiverRegisteredNumber`,
-//		`doc`.`senderRegisteredDate`                      AS `v_doc_senderRegisteredDate`,
-//		`doc`.`senderRegisteredNumber`                    AS `v_doc_senderRegisteredNumber`,
-//		`doc`.`title`                                     AS `v_doc_title`,
-//		`doc`.`documentSubType`                           AS `v_doc_documentSubType`,
-//		`doc`.`documentType`                              AS `v_doc_documentType`,
-//		`doc`.`receiverExecutor`                          AS `v_doc_receiverExecutor`,
-//		`doc`.`receiverResponsible`                       AS `v_doc_receiverResponsible`,
-//		`doc`.`senderExecutor`                            AS `v_doc_senderExecutor`,
-//		`doc`.`senderResponsible`                         AS `v_doc_senderResponsible`,
-
-//	LIMIT 1)                                         AS `v_doc_sender_responsible_name`,
-//	LIMIT 1)                                         AS `v_doc_receiver_responsible_name`,
-//	LIMIT 1)                                         AS `v_doc_sender_executor_name`,
-//	WHERE (`rev`.`e_id` = `doc`.`receiverExecutor`)) AS `v_doc_reveiver_executor_name`,
-//		`mfloan`.`df_document_users`.`users_id`           AS `v_doc_document_user_id`,
-//	LIMIT 1)                                         AS `v_doc_document_department_id`
-
-
 
 	@Id
 	@Column
@@ -99,7 +72,15 @@ public class DocumentView extends ReportView
 	private Long v_doc_senderResponsible;
 
 	@Column
+	private String v_doc_senderResponsibleName;
+
+	@Column
+	private String v_doc_receiverResponsibleName;
+
+
+	@Column
 	private String v_doc_sender_responsible_name;
+
 
 	@Column
 	private String v_doc_sender_executor_name;
@@ -299,5 +280,21 @@ public class DocumentView extends ReportView
 
 	public void setV_doc_document_department_id(Long v_doc_document_department_id) {
 		this.v_doc_document_department_id = v_doc_document_department_id;
+	}
+
+	public String getV_doc_senderResponsibleName() {
+		return v_doc_senderResponsibleName;
+	}
+
+	public void setV_doc_senderResponsibleName(String v_doc_senderResponsibleName) {
+		this.v_doc_senderResponsibleName = v_doc_senderResponsibleName;
+	}
+
+	public String getV_doc_receiverResponsibleName() {
+		return v_doc_receiverResponsibleName;
+	}
+
+	public void setV_doc_receiverResponsibleName(String v_doc_receiverResponsibleName) {
+		this.v_doc_receiverResponsibleName = v_doc_receiverResponsibleName;
 	}
 }

@@ -110,7 +110,10 @@ public class DocumentReportDataManager {
                 DocumentView lv = documentView;
 
                 childC = childB.addChild();
-                childC.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType3(),documentView));
+//                childC.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType3(),documentView));
+
+                childC.setName(lv.getV_doc_title());
+
                 childC.setLevel((short)3);
 
                 childC.setDocumentCount(1);
@@ -122,7 +125,11 @@ public class DocumentReportDataManager {
 
                 if(lv.getV_doc_documentDueDate()!=null)
                 childC.setDocumentDueDate(new java.sql.Date(lv.getV_doc_documentDueDate().getTime()));
+
+
                 childC.setDocumentStateID(lv.getV_doc_documentState());
+
+
                 childC.setDocumentIndexNumber(lv.getV_doc_indexNo());
 
                 childC.setDocumentOwnerID(lv.getV_doc_owner());
@@ -141,9 +148,62 @@ public class DocumentReportDataManager {
                 childC.setDocumentSubTypeID(lv.getV_doc_documentSubType());
 
                 childC.setDocumentReceiverExecutorName(lv.getV_doc_receiver_executor_name());
-                childC.setDocumentReceiverResponsibleName(lv.getV_doc_receiver_responsible_name());
+
+
+                String receiverName = "";
+                short receiverType = 3;
+
+                String senderName = "";
+                short senderType = 3;
+
+
+
+                if(lv.getV_doc_receiverResponsibleName()!=null)
+                {
+                    receiverName = lv.getV_doc_receiverResponsibleName();
+                    try
+                    {
+                        receiverType = Short.valueOf(receiverName.substring(receiverName.length()-1,1));
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+
+                }
+
+                childC.setDocumentReceiverResponsibleName(lv.getV_doc_receiver_responsible_name(), (short)receiverType);
+
+
+                if(lv.getV_doc_senderResponsibleName()!=null)
+                {
+                    senderName = lv.getV_doc_senderResponsibleName();
+                    try
+                    {
+                        senderType = Short.valueOf(senderName.substring(senderName.length()-1,1));
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+
+                    if(senderName.length()>2)
+                    {
+                        String text = lv.getV_doc_senderResponsibleName().substring(0,lv.getV_doc_senderResponsibleName().length()-1);
+
+                        if(lv.getV_doc_sender_responsible_name()!=null)
+                        {
+                            text=lv.getV_doc_sender_responsible_name();
+                        }
+
+                        lv.setV_doc_sender_responsible_name(text);
+                    }
+
+                }
+
+
                 childC.setDocumentSenderExecutorName(lv.getV_doc_sender_executor_name());
-                childC.setDocumentSenderResponsibleName(lv.getV_doc_sender_responsible_name());
+                childC.setDocumentSenderResponsibleName(lv.getV_doc_sender_responsible_name(),  (short)senderType);
 
                 childC.setDocumentUserID(lv.getV_doc_document_user_id());
                 childC.setDocumentDepartmentID(lv.getV_doc_document_department_id());
