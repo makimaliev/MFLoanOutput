@@ -13,6 +13,10 @@ import kg.gov.mf.loan.admin.org.model.*;
 import kg.gov.mf.loan.admin.org.service.*;
 import kg.gov.mf.loan.admin.sys.model.User;
 import kg.gov.mf.loan.admin.sys.service.UserService;
+import kg.gov.mf.loan.manage.model.collateral.CollateralAgreement;
+import kg.gov.mf.loan.manage.model.collateral.CollateralItem;
+import kg.gov.mf.loan.manage.model.collection.CollectionPhase;
+import kg.gov.mf.loan.manage.model.collection.PhaseDetails;
 import kg.gov.mf.loan.manage.model.debtor.Debtor;
 import kg.gov.mf.loan.manage.model.loan.Loan;
 import kg.gov.mf.loan.manage.model.loan.LoanSummaryAct;
@@ -20,6 +24,10 @@ import kg.gov.mf.loan.manage.model.loan.PaymentSchedule;
 import kg.gov.mf.loan.manage.model.orderterm.CurrencyRate;
 import kg.gov.mf.loan.manage.model.process.LoanDetailedSummary;
 import kg.gov.mf.loan.manage.model.process.LoanSummary;
+import kg.gov.mf.loan.manage.service.collateral.CollateralAgreementService;
+import kg.gov.mf.loan.manage.service.collateral.CollateralItemService;
+import kg.gov.mf.loan.manage.service.collection.CollectionPhaseService;
+import kg.gov.mf.loan.manage.service.collection.PhaseDetailsService;
 import kg.gov.mf.loan.manage.service.debtor.DebtorService;
 import kg.gov.mf.loan.manage.service.loan.LoanService;
 import kg.gov.mf.loan.manage.service.loan.LoanSummaryActService;
@@ -99,6 +107,18 @@ public class PrintoutGeneratorRevisionDoc{
 
     @Autowired
     LoanSummaryActService loanSummaryActService;
+
+    @Autowired
+    CollateralAgreementService collateralAgreementService;
+
+    @Autowired
+    CollateralItemService collateralItemService;
+
+    @Autowired
+    CollectionPhaseService collectionPhaseService;
+
+    @Autowired
+    PhaseDetailsService phaseDetailsService;
 
     public void generatePrintoutByTemplate(PrintoutTemplate printoutTemplate, Date onDate, long objectId, Document document,String from){
 
@@ -1132,5 +1152,1390 @@ public class PrintoutGeneratorRevisionDoc{
         convertedLoanSummaryView.setV_last_date(lv.getV_last_date());
 
         return convertedLoanSummaryView;
+    }
+
+    public void generatePersonInfo(PrintoutTemplate printoutTemplate,Date onDate,Long debtorId,Document document){
+
+        try
+        {
+            SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+
+            Date      tRasDate    = null;
+            Date      Srok        = null;
+            long      iPersonID   = 0;
+            long      iCreditID   = 0;
+            String    CreditID[]  = null;
+            Short     iCreditType = 0;
+
+            Set<Short> creditLines = new HashSet<>();
+
+            double    Rate=1;
+            int       Thousands = 1000;
+            String    sOrderNumber="";
+            String    sCreditDate="";
+            String    sCreditNumber="";
+            String    sPersonDetails = "";
+
+            String 	  sNach1 = "";
+            String 	  sNach2 = "";
+
+            String Curator1="";
+            String Curator2="";
+
+            short     iResDepartment = 0;
+
+            double SumCost=0;
+            double SumProfit=0;
+            double SumPayments=0;
+            double SumOstAll=0;
+            double SumOstMain=0;
+            double SumOstPercent=0;
+            double SumOstPenalty=0;
+            double SumProsAll=0;
+            double SumProsPrincipal=0;
+            double SumProsInterest=0;
+            double SumProsPenalty=0;
+
+            double Cost             = 0;
+            double Profit           = 0;
+            double Payments         = 0;
+            double PaymentsSom      = 0;
+            double OstAll           = 0;
+            double OstMain          = 0;
+            double OstPercent       = 0;
+            double OstPenalty       = 0;
+            double ProsAll          = 0;
+            double ProsMain         = 0;
+            double ProsPercent      = 0;
+            double ProsPenalty      = 0;
+
+            boolean isBankrot=false;
+
+            double SumSpisano=0;
+
+
+            ReportTool reportTool = new ReportTool();
+            reportTool.initReference();
+
+
+            List<LoanSummaryView> loanSummaryViews = new ArrayList<>();
+
+            LoanSummary loanSummary = null;
+
+            List<String> loansIds=new ArrayList<>();
+
+            String name = printoutTemplate.getName();
+
+            if(loanSummaryViews.size()==0)
+            {
+                CalculationTool calculationTool=new CalculationTool();
+                LoanSummary sumLoanSummary=new LoanSummary();
+                LinkedHashSet<LoanView> loanViews = new LinkedHashSet<LoanView>(0);
+                HashMap<LoanSummary,LoanSummary> summaries=new HashMap<>();
+
+                LinkedHashMap<Long, LoanDetailedSummary> loanDetailedSummaryList = new LinkedHashMap<>();
+
+                for (String id : name.split("-")) {
+                    if (!id.equals("")) {
+                        loansIds.add(id);
+                        String baseQuery = "select * from loan_view where v_loan_id=" + id;
+                        Query query = entityManager.createNativeQuery(baseQuery, LoanView.class);
+                        LoanView loanView = (LoanView) query.getSingleResult();
+                        loanViews.add(loanView);
+                    }
+                }
+                loanDetailedSummaryList.putAll(calculationTool.getAllLoanDetailedSummariesByLoanViewList(loanViews, onDate));
+                for (LoanView loanView : loanViews) {
+                    Date srokDate = null;
+
+                    if (loanView.getV_last_date() != null) srokDate = loanView.getV_last_date();
+
+                    if (srokDate == null) srokDate = loanView.getV_loan_reg_date();
+
+                    loanSummary = calculationTool.getLoanSummaryCaluculatedByLoanIdAndOnDate(loanView, loanView.getV_loan_id(), onDate, null);
+                    loanSummaryViews.add(convertLoanView(loanView, loanSummary));
+
+                    iPersonID = loanView.getV_debtor_id();
+                }
+            }
+
+            Debtor debtor =  debtorService.getById(iPersonID);
+
+            List<String> loanIds = new ArrayList<>();
+
+            for (LoanSummaryView loanSummaryView:loanSummaryViews)
+            {
+                loanIds.add(reportTool.FormatNumber(loanSummaryView.getV_loan_id()));
+            }
+
+
+
+            tRasDate  = loanSummary.getOnDate();
+
+            //*********** Document ********************************************************************************
+            //*******************************************************************************************
+
+            PdfPTable table = null;
+            PdfPCell  cell  = null;
+
+            float TitleColumnPadding  = 3;
+            int   TitleColumnBorder   = 0;
+            float FooterColumnPadding = 3;
+            int   FooterColumnBorder  = 0;
+
+            BaseFont myfont        = BaseFont.createFont("//timesNewRoman.ttf",BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+
+            Font      HeaderFont   = new  Font(myfont,8,Font.NORMAL,CMYKColor.BLACK);
+            Font      ColumnFont   = new  Font(myfont,8,Font.NORMAL,CMYKColor.BLACK);
+            Font      FooterFont   = new  Font(myfont,8,Font.NORMAL,CMYKColor.BLACK);
+            Font      TitleFont    = new  Font(myfont,12,Font.BOLD,CMYKColor.BLACK);
+            Font      SubTitleFont = new  Font(myfont,9,Font.BOLD,CMYKColor.BLACK);
+
+            CMYKColor HeaderColor = new CMYKColor(2,0,0,22);
+
+            CMYKColor ColumnColor = new CMYKColor (0,0,0,0);
+            CMYKColor ColumnColor2 = new CMYKColor (0,0,0,0);
+            CMYKColor FooterColor = new CMYKColor (2,0,0,22);
+
+            document.open();
+
+
+
+            if(loanSummaryViews.size()>0)
+            {
+                sPersonDetails = "details";
+                iResDepartment = 1;
+
+                LoanSummaryView lv = loanSummaryViews.get(0);
+                //***********Title********************************************************************************
+                //*******************************************************************************************
+                table=new PdfPTable(1);
+                table.setWidthPercentage(100);
+
+                cell = new PdfPCell (new Paragraph ("",TitleFont));
+                cell.setFixedHeight(40);
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("Расчет задолженности",TitleFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setPadding(TitleColumnPadding);
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+                String regionName = "";
+                String districtName = "";
+
+                regionName = reportTool.getNameByMapName("region", lv.getV_debtor_region_id());
+                districtName = reportTool.getNameByMapName("district",lv.getV_debtor_district_id());
+
+                cell = new PdfPCell (new Paragraph (lv.getV_debtor_name() +", "+ districtName.replace("ий","ого района")+", "+regionName.replace("ая","ой области ") +" перед Государственным агентством по управлению ",TitleFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setPadding(TitleColumnPadding);
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph (" бюджетными кредитами при Министерстве финансов Кыргызской Республики, по состоянию на "+ reportTool.DateToString(tRasDate) +" г.",TitleFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setPadding(TitleColumnPadding);
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("",TitleFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setPadding(TitleColumnPadding);
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+                document.add(table);
+
+
+                //*******************************************************************************************
+                //*******************************************************************************************
+                table=new PdfPTable(15);
+                table.setWidthPercentage(100);
+
+                int iWidth [] = new int[15];
+
+                for(int w=0;w<15;w++)
+                    iWidth[w] = 8;
+
+                iWidth[0] = 3;
+                iWidth[1] = 25;
+
+                table.setWidths(iWidth);
+
+
+                cell = new PdfPCell (new Paragraph ("№",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (HeaderColor);
+                cell.setRowspan(2);
+                table.addCell (cell);
+
+
+                cell = new PdfPCell (new Paragraph ("Вид кредита",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (HeaderColor);
+                cell.setRowspan(2);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("Линия кредита",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (HeaderColor);
+                cell.setRowspan(2);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("Основная сумма по договору",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (HeaderColor);
+                cell.setRowspan(2);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("Фактически получено",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (HeaderColor);
+                cell.setRowspan(2);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("Срок возврата",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (HeaderColor);
+                cell.setRowspan(2);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("Фактически возвращено",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (HeaderColor);
+                cell.setRowspan(2);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("Остаток задолженности по",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (HeaderColor);
+                cell.setColspan(4);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("Просроченная задолженность",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (HeaderColor);
+                cell.setColspan(4);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("Всего",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (HeaderColor);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("основной сумме",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (HeaderColor);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("процентам",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (HeaderColor);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("штрафам",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (HeaderColor);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("Всего",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (HeaderColor);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("основной сумме",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (HeaderColor);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("процентам",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (HeaderColor);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("штрафам",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (HeaderColor);
+                table.addCell (cell);
+
+
+                User curator = new User();
+
+                Staff curatorStaff = new Staff();
+
+                int x = 0;
+                for (LoanSummaryView lsv :loanSummaryViews)
+                {
+                    x++;
+
+
+                    iCreditType = lsv.getV_loan_type_id().shortValue();
+
+                    creditLines.add(iCreditType);
+
+                    String sCreditLine ="";
+
+                    switch (iCreditType)
+                    {
+                        case 1: sCreditLine="Бюджетные ссуда"; sNach1="bs";     break;
+                        case 2: sCreditLine="Иностранные кредиты"; sNach1="bs";  break;
+                        case 3: sCreditLine="Гр. Японии";   sNach2="grant";        break;
+                        case 4: sCreditLine="Гр. Швейцарии";         break;
+                        case 5: sCreditLine="Бюджетные ссуда";sNach1="bs";      break;
+                        case 6: sCreditLine="Гр. КНР";    sNach2="grant";          break;
+                        case 7: sCreditLine="Гр. Японии"; sNach2="grant";          break;
+                        case 8: sCreditLine="Гр. КНР";    sNach2="grant";          break;
+                        case 9: sCreditLine="ГМР";        sNach1="bs";          break;
+
+                    }
+
+                    sCreditNumber=lsv.getV_loan_reg_number();
+                    sCreditDate=reportTool.DateToString(lsv.getV_loan_reg_date());
+                    sOrderNumber=lsv.getV_credit_order_reg_number();
+                    Short iCurrency= Short.valueOf(lsv.getV_loan_currency_id().toString());
+
+
+
+
+
+                    if(iCurrency>1)
+                    {
+                        Rate = this.currencyRateService.findByDateAndType(tRasDate,this.currencyService.getById(lsv.getV_loan_currency_id())).getRate();
+                    }
+                    else
+                    {
+                        Rate=1;
+                    }
+
+
+                    Thousands = 1000;
+
+                    Srok = lsv.getV_last_date();
+
+                    if(lsv.getV_loan_supervisor_id()>0) curator = userService.findById(lsv.getV_loan_supervisor_id());
+
+                    if(curator.getStaff()!=null)
+                        curatorStaff = staffService.findById(curator.getStaff().getId());
+
+
+                    Cost            = lsv.getV_loan_amount();
+                    Profit          = lsv.getV_ls_total_disbursed();
+                    Payments        = lsv.getV_ls_total_paid();
+                    PaymentsSom     = lsv.getV_ls_total_paid_kgs();
+
+                    OstMain         = lsv.getV_ls_outstading_principal();
+                    OstPercent      = lsv.getV_ls_outstading_interest();
+                    OstPenalty      = lsv.getV_ls_outstading_penalty();
+
+
+                    OstAll = 0;
+
+                    if(OstMain>0) OstAll+=OstMain;
+                    if(OstPercent>0) OstAll+=OstPercent;
+                    if(OstPenalty>0) OstAll+=OstPenalty;
+
+
+                    ProsMain        = lsv.getV_ls_overdue_principal();
+                    ProsPercent     = lsv.getV_ls_overdue_interest();
+                    ProsPenalty     = lsv.getV_ls_overdue_penalty();
+
+                    ProsAll = 0;
+
+                    if(ProsMain>0) ProsAll+=ProsMain;
+                    if(ProsPercent>0) ProsAll+=ProsPercent;
+                    if(ProsPenalty>0) ProsAll+=ProsPenalty;
+
+                    if(iCurrency==1) Rate =1;
+
+
+                    if(Cost<0) Cost=0;
+                    else
+                    {
+                        SumCost+=Cost*Rate;
+                    }
+                    if(OstAll<0) OstAll=0;
+                    else
+                    {
+                        SumOstAll+=OstAll*Rate;
+                    }
+                    if(OstMain<0) OstMain=0;
+                    else
+                    {
+                        SumOstMain+=OstMain*Rate;
+                    }
+                    if(OstPercent<0) OstPercent=0;
+                    else
+                    {
+                        SumOstPercent+=OstPercent*Rate;
+                    }
+                    if(OstPenalty<0) OstPenalty=0;
+                    else
+                    {
+                        SumOstPenalty+=OstPenalty*Rate;
+                    }
+                    if(ProsAll<0) ProsAll=0;
+                    else
+                    {
+                        SumProsAll+=ProsAll*Rate;
+                    }
+                    if(ProsMain<0) ProsMain=0;
+                    else
+                    {
+                        SumProsPrincipal+=ProsMain*Rate;
+                    }
+                    if(ProsPercent<0) ProsPercent=0;
+                    else
+                    {
+                        SumProsInterest+=ProsPercent*Rate;
+                    }
+                    if(ProsPenalty<0) ProsPenalty=0;
+                    else
+                    {
+                        SumProsPenalty+=ProsPenalty*Rate;
+                    }
+
+
+                    SumProfit+=Profit*Rate;
+                    SumPayments+=PaymentsSom;
+
+
+
+                    cell = new PdfPCell (new Paragraph (Integer.toString(x),HeaderFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (ColumnColor);
+                    table.addCell (cell);
+
+                    String Det1=sOrderNumber +
+                            " №" + sCreditNumber +
+                            " от " + (sCreditDate) +"г.";
+
+
+
+
+                    if(iCurrency!=17)
+                    {
+                        Det1+=" в тыс. "+this.currencyService.getById(lsv.getV_loan_currency_id()).getName();
+                    }
+                    else
+                    {
+                        Det1+= " в тоннах ";
+                    }
+
+                    cell = new PdfPCell (new Paragraph (Det1,HeaderFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (ColumnColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph (sCreditLine,ColumnFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (ColumnColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(Cost/(Thousands)),ColumnFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (ColumnColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(Profit/(Thousands)),ColumnFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (ColumnColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph (reportTool.DateToString(Srok),ColumnFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (ColumnColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(Payments/(Thousands)),ColumnFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (ColumnColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(OstAll/(Thousands)),ColumnFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (ColumnColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(OstMain/(Thousands)),ColumnFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (ColumnColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(OstPercent/(Thousands)),ColumnFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (ColumnColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(OstPenalty/(Thousands)),ColumnFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (ColumnColor);
+                    table.addCell (cell);
+
+//                    cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(ProsAll/(Thousands)),ColumnFont));
+//                    cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+//                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+//                    cell.setBackgroundColor (ColumnColor);
+//                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(ProsAll/(Thousands)),ColumnFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (ColumnColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(ProsMain/(Thousands)),ColumnFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (ColumnColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(ProsPercent/(Thousands)),ColumnFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (ColumnColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(ProsPenalty/(Thousands)),ColumnFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (ColumnColor);
+                    table.addCell (cell);
+
+                    if(iCurrency!=1)
+                    {
+                        Thousands=1000;
+
+                        cell = new PdfPCell (new Paragraph ("",HeaderFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor (ColumnColor2);
+                        table.addCell (cell);
+
+                        String Det2="";
+
+                        if(iCurrency!=17)
+                        {
+                            Det2="в тыс. сомах по курсу "+reportTool.FormatNumber(Rate);
+                        }
+                        else
+                        {
+                            Det2="в тыс. сомах по цене "+reportTool.FormatNumber(Rate)+" за тонну";
+                        }
+
+                        cell = new PdfPCell (new Paragraph (Det2,HeaderFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor (ColumnColor2);
+                        table.addCell (cell);
+
+                        cell = new PdfPCell (new Paragraph ("",HeaderFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor (ColumnColor2);
+                        table.addCell (cell);
+
+
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(Cost*Rate/(Thousands)),ColumnFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor (ColumnColor2);
+                        table.addCell (cell);
+
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(Profit*Rate/(Thousands)),ColumnFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor (ColumnColor2);
+                        table.addCell (cell);
+
+                        cell = new PdfPCell (new Paragraph ("",ColumnFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor (ColumnColor2);
+                        table.addCell (cell);
+
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(PaymentsSom/(Thousands)),ColumnFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor (ColumnColor2);
+                        table.addCell (cell);
+
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(OstAll*Rate/(Thousands)),ColumnFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor (ColumnColor2);
+                        table.addCell (cell);
+
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(OstMain*Rate/(Thousands)),ColumnFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor (ColumnColor2);
+                        table.addCell (cell);
+
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(OstPercent*Rate/(Thousands)),ColumnFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor (ColumnColor2);
+                        table.addCell (cell);
+
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(OstPenalty*Rate/(Thousands)),ColumnFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor (ColumnColor2);
+                        table.addCell (cell);
+
+//                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(ProsAll*Rate/(Thousands)),ColumnFont));
+//                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+//                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+//                        cell.setBackgroundColor (ColumnColor2);
+//                        table.addCell (cell);
+
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(ProsAll*Rate/(Thousands)),ColumnFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor (ColumnColor2);
+                        table.addCell (cell);
+
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(ProsMain*Rate/(Thousands)),ColumnFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor (ColumnColor2);
+                        table.addCell (cell);
+
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(ProsPercent*Rate/(Thousands)),ColumnFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor (ColumnColor2);
+                        table.addCell (cell);
+
+                        cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(ProsPenalty*Rate/(Thousands)),ColumnFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor (ColumnColor2);
+                        table.addCell (cell);
+
+                    }
+                }
+
+                cell = new PdfPCell (new Paragraph ("",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
+
+                cell = new PdfPCell (new Paragraph (" ИТОГО (тыс.сом)",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("",HeaderFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
+
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumCost*1/(Thousands)),FooterFont));
+                cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumProfit*1/(Thousands)),FooterFont));
+                cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("",ColumnFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumPayments*1/(Thousands)),FooterFont));
+                cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumOstAll*1/(Thousands)),FooterFont));
+                cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumOstMain*1/(Thousands)),FooterFont));
+                cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumOstPercent*1/(Thousands)),FooterFont));
+                cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumOstPenalty*1/(Thousands)),FooterFont));
+                cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumProsAll*1/(Thousands)),FooterFont));
+                cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumProsPrincipal*1/(Thousands)),FooterFont));
+                cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
+
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumProsInterest*1/(Thousands)),FooterFont));
+                cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
+
+                cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(SumProsPenalty*1/(Thousands)),FooterFont));
+                cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                cell.setBackgroundColor (FooterColor);
+                table.addCell (cell);
+
+
+                document.add(table);
+
+
+                table=new PdfPTable(2);
+                table.setWidthPercentage(100);
+                int iWidthDet [] = new int[2];
+                iWidthDet[0] = 30;
+                iWidthDet[1] = 70;
+
+                table.setWidths(iWidthDet);
+
+
+
+                // Примечание
+
+                cell = new PdfPCell (new Paragraph ("Примечание:",TitleFont));
+//                cell.setFixedHeight(16);
+                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setBorder(FooterColumnBorder);
+//                cell.setPadding(FooterColumnPadding);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ());
+                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+//                cell.setPadding(FooterColumnPadding);
+                cell.setColspan(3);
+                cell.setBorder(FooterColumnBorder);
+                table.addCell (cell);
+//                table.setKeepTogether(true);
+
+                document.add(table);
+
+
+                table=new PdfPTable(1);
+                table.setWidthPercentage(100);
+
+                cell = new PdfPCell (new Paragraph ("",TitleFont));
+                cell.setFixedHeight(40);
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("Сведения о заловом обеспечении",TitleFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setPadding(TitleColumnPadding);
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+
+                cell = new PdfPCell (new Paragraph ("",TitleFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setPadding(TitleColumnPadding);
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+                document.add(table);
+
+                table=new PdfPTable(7);
+                table.setWidthPercentage(100);
+                int iDepositWidth [] = new int[7];
+                iDepositWidth[0] = 3;
+                iDepositWidth[1] = 50;
+                iDepositWidth[2] = 7;
+                iDepositWidth[3] = 10;
+                iDepositWidth[4] = 10;
+                iDepositWidth[5] = 10;
+                iDepositWidth[5] = 10;
+
+                table.setWidths(iDepositWidth);
+
+
+                List<CollateralItem> collateralItems=new ArrayList<>();
+                List<CollectionPhase> collectionPhases=new ArrayList<>();
+                for (String loansId:loansIds){
+                    Loan loan=loanService.getById(Long.valueOf(loansId));
+                    for(CollateralAgreement collateralAgreement:loan.getCollateralAgreements()){
+                        CollateralAgreement agreement=collateralAgreementService.getById(collateralAgreement.getId());
+                        for(CollateralItem collateralItem:agreement.getCollateralItems()){
+                            CollateralItem item=collateralItemService.getById(collateralItem.getId());
+                            if(!collateralItems.contains(item)){
+                                collateralItems.add(item);
+                            }
+                        }
+                    }
+                    for(CollectionPhase collectionPhase:loan.getCollectionPhases()){
+                        CollectionPhase phase=collectionPhaseService.getById(collectionPhase.getId());
+                        if(!collectionPhases.contains(phase)){
+                            collectionPhases.add(phase);
+                        }
+                    }
+
+                }
+
+                x=0;
+
+                if(collateralItems.size()>0) {
+                    cell = new PdfPCell(new Paragraph("№", HeaderFont));
+                    cell.setFixedHeight(20);
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(HeaderColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph("Наименование", HeaderFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(HeaderColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph("Кол-во", HeaderFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(HeaderColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph("Вид", HeaderFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(HeaderColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph("Оцен. стоим.", HeaderFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(HeaderColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph("Залог. стоим.", HeaderFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(HeaderColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph("Статус", HeaderFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(HeaderColor);
+                    table.addCell(cell);
+
+
+                    double iQuantity = 0;
+                    double iExtCost = 0;
+                    double iCost = 0;
+
+                    double iInactive_Quantity = 0;
+                    double iInactive_ExtCost = 0;
+                    double iInactive_Cost = 0;
+
+                    int iInactive_Count = 0;
+
+
+                    for (CollateralItem collateralItem : collateralItems) {
+
+                        x++;
+
+                        int iDepositStatus = collateralItem.getStatus();
+
+                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber((int) x), ColumnFont));
+                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor(ColumnColor);
+                        table.addCell(cell);
+
+
+                        cell = new PdfPCell(new Paragraph(collateralItem.getName(), ColumnFont));
+                        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor(ColumnColor);
+                        table.addCell(cell);
+
+                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(collateralItem.getQuantity()) + " " + collateralItem.getQuantityType().getName(), ColumnFont));
+                        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor(ColumnColor);
+                        table.addCell(cell);
+
+                        cell = new PdfPCell(new Paragraph(collateralItem.getItemType().getName(), ColumnFont));
+                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor(ColumnColor);
+                        table.addCell(cell);
+
+                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(collateralItem.getCollateralValue()), ColumnFont));
+                        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor(ColumnColor);
+                        table.addCell(cell);
+
+                        cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(collateralItem.getEstimatedValue()), ColumnFont));
+                        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor(ColumnColor);
+                        table.addCell(cell);
+
+                        cell = new PdfPCell(new Paragraph(String.valueOf(collateralItem.getStatus()), ColumnFont));
+                        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                        cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                        cell.setBackgroundColor(ColumnColor);
+                        table.addCell(cell);
+
+
+                        iQuantity += collateralItem.getQuantity();
+                        iExtCost += collateralItem.getEstimatedValue();
+                        iCost += collateralItem.getCollateralValue();
+
+                        if (iDepositStatus == 2) {
+                            iInactive_Quantity += collateralItem.getQuantity();
+                            iInactive_ExtCost += collateralItem.getEstimatedValue();
+                            iInactive_Cost += collateralItem.getCollateralValue();
+
+                            iInactive_Count++;
+                        }
+
+                    }
+
+                    cell = new PdfPCell(new Paragraph("", FooterFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(FooterColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph("Итого", FooterFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(FooterColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(iQuantity), FooterFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(FooterColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph("", FooterFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(FooterColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(iCost), FooterFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(FooterColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(iExtCost), FooterFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(FooterColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph("", FooterFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(FooterColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph("", FooterFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(FooterColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph("Итого снято", FooterFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(FooterColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(iInactive_Quantity), FooterFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(FooterColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph("", FooterFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(FooterColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(iInactive_Cost), FooterFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(FooterColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph(reportTool.FormatNumber(iInactive_ExtCost), FooterFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(FooterColor);
+                    table.addCell(cell);
+
+                    cell = new PdfPCell(new Paragraph("", FooterFont));
+                    cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor(FooterColor);
+                    table.addCell(cell);
+
+
+                }
+                else
+                {
+                    cell = new PdfPCell (new Paragraph ("Нет залогов",FooterFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (FooterColor);
+                    cell.setColspan(7);
+                    table.addCell (cell);
+                }
+
+                document.add(table);
+
+
+                table=new PdfPTable(1);
+                table.setWidthPercentage(100);
+
+                cell = new PdfPCell (new Paragraph ("",TitleFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setPadding(TitleColumnPadding);
+                cell.setBorder(TitleColumnBorder);
+                cell.setFixedHeight(20);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("Сведения о юридических процессах",TitleFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setPadding(TitleColumnPadding);
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("",TitleFont));
+                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setPadding(TitleColumnPadding);
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+                document.add(table);
+
+                table=new PdfPTable(11);
+                table.setWidthPercentage(100);
+                int iLegalWidth [] = new int[11];
+                iLegalWidth[0] = 2;
+                iLegalWidth[1] = 15;
+                iLegalWidth[2] = 7;
+                iLegalWidth[3] = 7;
+                iLegalWidth[4] = 10;
+                iLegalWidth[5] = 7;
+                iLegalWidth[6] = 7;
+                iLegalWidth[7] = 10;
+                iLegalWidth[8] = 7;
+                iLegalWidth[9] = 8;
+                iLegalWidth[10] = 20;
+
+
+                table.setWidths(iLegalWidth);
+
+
+                x=0;
+                if(collectionPhases.size()>0){
+
+                    cell = new PdfPCell (new Paragraph ("№",HeaderFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (HeaderColor);
+                    cell.setRowspan(2);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph ("Стадия",HeaderFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (HeaderColor);
+                    cell.setColspan(3);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph ("Результат",HeaderFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (HeaderColor);
+                    cell.setColspan(3);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph ("Статус",HeaderFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (HeaderColor);
+                    cell.setColspan(2);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph ("Куратор",HeaderFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (HeaderColor);
+                    cell.setRowspan(2);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph ("Примечание",HeaderFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (HeaderColor);
+                    cell.setRowspan(2);
+                    table.addCell (cell);
+
+
+                    cell = new PdfPCell (new Paragraph ("Стадия",HeaderFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (HeaderColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph ("Дата",HeaderFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (HeaderColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph ("Сумма",HeaderFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (HeaderColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph ("Результат",HeaderFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (HeaderColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph ("Дата",HeaderFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (HeaderColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph ("Сумма",HeaderFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (HeaderColor);
+                    table.addCell (cell);
+
+
+                    cell = new PdfPCell (new Paragraph ("Статус",HeaderFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (HeaderColor);
+                    table.addCell (cell);
+
+                    cell = new PdfPCell (new Paragraph ("Дата",HeaderFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (HeaderColor);
+                    table.addCell (cell);
+
+                    for(CollectionPhase phase : collectionPhases){
+
+                        x++;
+
+                        double iDebtMain1    = 0;
+                        double iDebtPercent1 = 0;
+                        double iDebtPenalty1 = 0;
+                        double iDebtMain2    = 0;
+                        double iDebtPercent2 = 0;
+                        double iDebtPenalty2 = 0;
+
+                        long iProcessStateID = phase.getCollectionProcedure().getId();
+
+                        for(PhaseDetails phaseDetails:phase.getPhaseDetails()){
+                            PhaseDetails details=phaseDetailsService.getById(phaseDetails.getId());
+//                            if(details.getRecord_status() == 1)
+//                            {
+                            try{
+                                iDebtMain1        += details.getStartPrincipal();
+                                iDebtPercent1     += details.getStartInterest();
+                                iDebtPenalty1     += details.getStartPenalty();
+                            }
+//                            else if(details.getRecord_status() == 2)
+                            catch(Exception e){}
+                            try{
+                                iDebtMain2        += details.getClosePrincipal();
+                                iDebtPercent2     += details.getCloseInterest();
+                                iDebtPenalty2     += details.getClosePenalty();
+                            }
+                            catch (Exception e){}
+                        }
+                            cell = new PdfPCell (new Paragraph (String.valueOf(x),ColumnFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                            cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                            cell.setBackgroundColor (ColumnColor);
+                            table.addCell (cell);
+
+                            cell = new PdfPCell (new Paragraph (phase.getPhaseType().getName(),ColumnFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                            cell.setBackgroundColor (ColumnColor);
+                            table.addCell (cell);
+
+                            cell = new PdfPCell (new Paragraph (reportTool.DateToString(phase.getStartDate()),ColumnFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                            cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                            cell.setBackgroundColor (ColumnColor);
+                            table.addCell (cell);
+
+                            cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(iDebtMain1+iDebtPercent1+iDebtPenalty1),ColumnFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                            cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                            cell.setBackgroundColor (ColumnColor);
+                            table.addCell (cell);
+
+
+                            cell = new PdfPCell (new Paragraph (phase.getResultDocNumber(),ColumnFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                            cell.setBackgroundColor (ColumnColor);
+                            table.addCell (cell);
+
+                            cell = new PdfPCell (new Paragraph (reportTool.DateToString(phase.getCloseDate()),ColumnFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                            cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                            cell.setBackgroundColor (ColumnColor);
+                            table.addCell (cell);
+
+                            cell = new PdfPCell (new Paragraph (reportTool.FormatNumber(iDebtMain2+iDebtPercent2+iDebtPenalty2),ColumnFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_RIGHT);
+                            cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                            cell.setBackgroundColor (ColumnColor);
+                            table.addCell (cell);
+
+
+                            cell = new PdfPCell (new Paragraph (phase.getPhaseStatus().getName(),ColumnFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                            cell.setBackgroundColor (ColumnColor);
+                            table.addCell (cell);
+
+                            cell = new PdfPCell (new Paragraph (reportTool.DateToString(phase.getStartDate()),ColumnFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                            cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                            cell.setBackgroundColor (ColumnColor);
+                            table.addCell (cell);
+
+
+                            cell = new PdfPCell (new Paragraph ("",ColumnFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                            cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                            cell.setBackgroundColor (ColumnColor);
+                            table.addCell (cell);
+
+                            cell = new PdfPCell (new Paragraph ("",ColumnFont));
+                            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                            cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                            cell.setBackgroundColor (ColumnColor);
+                            table.addCell (cell);
+                        }
+
+
+                }
+                else{
+                    table=new PdfPTable(1);
+                    table.setWidthPercentage(100);
+
+                    cell = new PdfPCell (new Paragraph ("Нет процессов",FooterFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                    cell.setVerticalAlignment(Element.ALIGN_CENTER);
+                    cell.setBackgroundColor (FooterColor);
+                    table.addCell (cell);
+
+
+
+                }
+
+                document.add(table);
+
+            }
+
+            document.close();
+
+        }
+        catch(Exception Ex)
+        {
+            System.out.println(Ex);
+        }
+
     }
 }
