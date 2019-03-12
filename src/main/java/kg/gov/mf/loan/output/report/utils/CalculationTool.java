@@ -216,7 +216,7 @@ public class CalculationTool
 //                                if(schedule.getPrincipalPayment()>0) principalPayment+=schedule.getPrincipalPayment();
 //                            }
 
-                            if(childrenLoanSummary.getTotalDisbursed()>0 && loanChildren.getAmount()==0 && childrenLoanSummary.getTotalFeePaid()==0)
+                            if(childrenLoanSummary.getTotalDisbursed()!=0 && loanChildren.getAmount()==0 && childrenLoanSummary.getTotalFeePaid()==0)
                             {
                                 childrenLoanSummary.setTotalDisbursed(0.0);
                                 childrenLoanSummary.setTotalOutstanding(childrenLoanSummary.getTotalOutstanding()-childrenLoanSummary.getOutstadingPrincipal());
@@ -571,7 +571,7 @@ public class CalculationTool
             penaltyCalculated+=calculateLibor(overdue,term, (short)type);
         }
 
-        if(afterSrok && interestCalculatedInPeriod>0 && (rate>0 || getRateTypeByType(type,term)!=2))
+        if(afterSrok && type==2 && interestCalculatedInPeriod>0 && (rate>0 || getRateTypeByType(type,term)!=2))
         {
             penaltyCalculated+= ((interestCalculatedInPeriod*(daysInPeriod-1)/(2*daysInPeriod)))*(rate/100)*daysInPeriod/daysInYear;
 
