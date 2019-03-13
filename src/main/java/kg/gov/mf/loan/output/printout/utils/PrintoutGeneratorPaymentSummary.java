@@ -102,6 +102,7 @@ public class PrintoutGeneratorPaymentSummary {
 
             long        iPersonID = loan.getDebtor().getId();
 
+            String currency=loan.getCurrency().getName();
             Debtor debtor =  debtorService.getById(iPersonID);
 
             User curator = new User();
@@ -283,6 +284,20 @@ public class PrintoutGeneratorPaymentSummary {
                 table.addCell (cell);
 
                 cell = new PdfPCell (new Paragraph (loanDate.toString(),SubTitleFont));
+                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setPadding(TitleColumnPadding);
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph ("Валюта кредита:",SubTitleFont));
+                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                cell.setPadding(TitleColumnPadding);
+                cell.setBorder(TitleColumnBorder);
+                table.addCell (cell);
+
+                cell = new PdfPCell (new Paragraph (currency,SubTitleFont));
                 cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setPadding(TitleColumnPadding);
