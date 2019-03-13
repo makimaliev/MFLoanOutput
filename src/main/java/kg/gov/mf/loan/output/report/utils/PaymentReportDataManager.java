@@ -194,11 +194,8 @@ public class PaymentReportDataManager {
                 }
                 else
                 {
-                    if(pv.isV_payment_in_loan_currency())
-                    {
-                        childE.setCurrency((short)loanCurrencyId);
-                        childE.setExchangeRate(pv.getV_payment_exchange_rate());
-                    }
+                    childE.setCurrency((short)loanCurrencyId);
+                    childE.setExchangeRate(pv.getV_payment_exchange_rate());
                 }
 
                 if (pv.isV_payment_in_loan_currency())
