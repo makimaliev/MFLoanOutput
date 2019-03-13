@@ -274,10 +274,6 @@ public class CalculationTool
                             returnLoanSummary.setTotalOutstanding(total_outstanding);
                             returnLoanSummary.setTotalOverdue(total_overdue);
 
-
-                            returnLoanSummary.setTotalOverdue(returnLoanSummary.getOverduePrincipal()+returnLoanSummary.getOverdueInterest()+returnLoanSummary.getOverduePenalty());
-
-
                         }
                         else
                         {
