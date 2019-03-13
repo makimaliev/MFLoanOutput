@@ -1963,7 +1963,7 @@ public class PrintoutGeneratorRevisionDoc{
 
                 // Примечание
 
-                cell = new PdfPCell (new Paragraph ("Примечание:",TitleFont));
+                cell = new PdfPCell (new Paragraph ("Примечание:",FooterFont));
 //                cell.setFixedHeight(16);
                 cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -1993,7 +1993,7 @@ public class PrintoutGeneratorRevisionDoc{
                 cell.setBorder(TitleColumnBorder);
                 table.addCell (cell);
 
-                cell = new PdfPCell (new Paragraph ("Сведения о заловом обеспечении",TitleFont));
+                cell = new PdfPCell (new Paragraph ("Сведения о залоговом обеспечении",TitleFont));
                 cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setPadding(TitleColumnPadding);

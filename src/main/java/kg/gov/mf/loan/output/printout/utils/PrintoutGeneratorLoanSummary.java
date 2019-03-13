@@ -1541,7 +1541,7 @@ int x = 0;
                 cell.setBorder(TitleColumnBorder);
                 table.addCell (cell);
 
-                cell = new PdfPCell (new Paragraph ("Карызды салыштуруу фктысы",TitleFont));
+                cell = new PdfPCell (new Paragraph ("Карызды салыштуруу актысы",TitleFont));
                 cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setPadding(TitleColumnPadding);
@@ -1561,7 +1561,7 @@ int x = 0;
                 cell.setBorder(TitleColumnBorder);
                 table.addCell (cell);
 
-                cell = new PdfPCell (new Paragraph (" бюджеттик насыяларды башкаруу агентигинин астына,  "+ reportTool.DateToString(tRasDate),TitleFont));
+                cell = new PdfPCell (new Paragraph (" бюджеттик насыяларды башкаруу агентигинин астына,  "+ reportTool.DateToString(tRasDate)+" карата",TitleFont));
                 cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setPadding(TitleColumnPadding);
@@ -2099,6 +2099,8 @@ int x = 0;
 
 
                 String debtorResponsible = "_____________________________";
+
+
 
 
 
