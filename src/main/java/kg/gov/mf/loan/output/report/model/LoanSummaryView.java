@@ -41,6 +41,10 @@ public class LoanSummaryView extends DebtorView
 	private Long v_loan_type_id;
 
 	@Column
+	private Long v_loan_fund_id;
+
+
+	@Column
 	private Long v_credit_order_type_id;
 
 	@Column
@@ -415,5 +419,13 @@ public class LoanSummaryView extends DebtorView
 
 	public void setV_loan_fin_group_id(Long v_loan_fin_group_id) {
 		this.v_loan_fin_group_id = v_loan_fin_group_id;
+	}
+
+	public Long getV_loan_fund_id() {
+		return v_loan_fund_id;
+	}
+
+	public void setV_loan_fund_id(Long v_loan_fund_id) {
+		this.v_loan_fund_id = v_loan_fund_id;
 	}
 }

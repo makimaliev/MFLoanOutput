@@ -960,6 +960,7 @@ public class CalculationTool
         convertedLoanSummaryView.setV_loan_currency_id(lv.getV_loan_currency_id());
         convertedLoanSummaryView.setV_loan_fin_group_id(lv.getV_loan_fin_group_id());
         convertedLoanSummaryView.setV_loan_state_id(lv.getV_loan_state_id());
+        convertedLoanSummaryView.setV_loan_fund_id(lv.getV_loan_fund_id());
         convertedLoanSummaryView.setV_loan_id(lv.getV_loan_id());
         convertedLoanSummaryView.setV_loan_supervisor_id(lv.getV_loan_supervisor_id());
         convertedLoanSummaryView.setV_credit_order_reg_date(lv.getV_credit_order_reg_date());

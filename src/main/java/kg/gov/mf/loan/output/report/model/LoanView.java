@@ -74,6 +74,10 @@ public class LoanView extends DebtorView
 	@Column
 	private Long v_loan_fin_group_id;
 
+	@Column
+	private Long v_loan_fund_id;
+
+
 	@DateTimeFormat(pattern = "dd.mm.yyyy")
 	@Temporal(TemporalType.DATE)
 	private Date v_credit_order_reg_date;
@@ -205,5 +209,13 @@ public class LoanView extends DebtorView
 
 	public void setV_last_date(Date v_last_date) {
 		this.v_last_date = v_last_date;
+	}
+
+	public Long getV_loan_fund_id() {
+		return v_loan_fund_id;
+	}
+
+	public void setV_loan_fund_id(Long v_loan_fund_id) {
+		this.v_loan_fund_id = v_loan_fund_id;
 	}
 }
