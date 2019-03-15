@@ -92,7 +92,11 @@ public class CollectionPhaseReportData extends ReportData
 
 	private  double collection_phase_start_total_amount = 0;
 
+	private  double collection_phase_paid_total_amount = 0;
+
 	private  double collection_phase_close_total_amount = 0;
+
+	private  double collection_phase_outstanding_total_amount = 0;
 
 	public CollectionPhaseReportData()
 	{
@@ -537,4 +541,20 @@ public class CollectionPhaseReportData extends ReportData
     public void setResultCount(int resultCount) {
         this.resultCount = resultCount;
     }
+
+	public double getCollection_phase_paid_total_amount() {
+		return collection_phase_paid_total_amount;
+	}
+
+	public void setCollection_phase_paid_total_amount(double collection_phase_paid_total_amount) {
+		this.collection_phase_paid_total_amount = collection_phase_paid_total_amount;
+	}
+
+	public double getCollection_phase_outstanding_total_amount() {
+		return collection_phase_outstanding_total_amount;
+	}
+
+	public void setCollection_phase_outstanding_total_amount(double collection_phase_outstanding_total_amount) {
+		this.collection_phase_outstanding_total_amount = collection_phase_outstanding_total_amount;
+	}
 }

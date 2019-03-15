@@ -162,6 +162,10 @@ public class CollectionPhaseView extends DebtorView
 	private Long v_cph_close_total_amount;
 
 	@Column
+	private Long v_cph_paid_total_amount;
+
+
+	@Column
 	private String v_cph_doc_number;
 
 	@Column
@@ -407,6 +411,8 @@ public class CollectionPhaseView extends DebtorView
 		this.v_cph_collectionProcedureId = v_cph_collectionProcedureId;
 	}
 
+
+
 	public Long getV_cph_phaseStatusId() {
 		return v_cph_phaseStatusId;
 	}
@@ -573,5 +579,13 @@ public class CollectionPhaseView extends DebtorView
 
 	public void setV_cph_sub_index_id(Long v_cph_sub_index_id) {
 		this.v_cph_sub_index_id = v_cph_sub_index_id;
+	}
+
+	public Long getV_cph_paid_total_amount() {
+		return v_cph_paid_total_amount;
+	}
+
+	public void setV_cph_paid_total_amount(Long v_cph_paid_total_amount) {
+		this.v_cph_paid_total_amount = v_cph_paid_total_amount;
 	}
 }
