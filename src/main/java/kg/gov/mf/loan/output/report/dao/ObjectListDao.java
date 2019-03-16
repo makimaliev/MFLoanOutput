@@ -21,6 +21,6 @@ public interface ObjectListDao {
 
 	public List<ObjectList> findAllByGroupType(GroupType groupType);
 
-
+	public List<ObjectList> findAllByGroupTypeAndUser(GroupType groupType,Long userId);
 
 }

@@ -19,5 +19,7 @@ public interface ObjectListService {
 	public List<ObjectList> findAll();
 
 	public List<ObjectList> findAllByGroupType(GroupType groupType);
+
+	public List<ObjectList> findAllByGroupTypeAndUser(GroupType groupType,Long userId);
 	
 }

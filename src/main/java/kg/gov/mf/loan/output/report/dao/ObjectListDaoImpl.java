@@ -111,6 +111,20 @@ public class ObjectListDaoImpl implements ObjectListDao {
 
 		return criteria.list();
 	}
- 
+
+	@Override
+	public List<ObjectList> findAllByGroupTypeAndUser(GroupType groupType, Long userId) {
+
+    	Session session = this.sessionFactory.getCurrentSession();
+		Criteria criteria = session.createCriteria(ObjectList.class);
+
+		criteria.add(Restrictions.eq("groupType",groupType));
+		criteria.add(Restrictions.eq("user_id",userId));
+
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		return criteria.list();
+
+	}
+
 
 }

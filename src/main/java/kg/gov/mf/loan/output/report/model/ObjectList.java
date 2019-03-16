@@ -1,10 +1,9 @@
 package kg.gov.mf.loan.output.report.model;
 
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
-import javax.persistence.*;
 
 @Entity
 @Table(name="object_list")
@@ -28,7 +27,8 @@ public class ObjectList {
 	@ManyToOne(targetEntity=GroupType.class, fetch = FetchType.EAGER)
 	@JoinColumn(name="group_type_id")
 	GroupType groupType;
-	
+
+	private Long user_id;
 	
 	
 	public long getId() {
@@ -69,6 +69,14 @@ public class ObjectList {
 
 	public void setGroupType(GroupType groupType) {
 		this.groupType = groupType;
+	}
+
+	public Long getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(Long user_id) {
+		this.user_id = user_id;
 	}
 
 	@Override
