@@ -7,7 +7,7 @@ import kg.gov.mf.loan.output.report.model.ReportTemplate;
 import kg.gov.mf.loan.output.report.service.LoanViewService;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.hssf.util.Region;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
