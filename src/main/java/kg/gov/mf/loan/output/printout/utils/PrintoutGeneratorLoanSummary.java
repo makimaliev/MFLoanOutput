@@ -455,6 +455,8 @@ int x = 0;
                             if(iCurrency>1)
                             {
                                 Rate=this.currencyRateService.findByDateAndType(tRasDate,this.currencyService.getById(lsv.getV_loan_currency_id())).getRate();
+
+                                if(lsv.getV_loan_close_rate()!=null)
                                 if(lsv.getV_loan_close_rate()>0)
                                 {
                                     Rate = lsv.getV_loan_close_rate();
