@@ -455,11 +455,17 @@ int x = 0;
                             if(iCurrency>1)
                             {
                                 Rate=this.currencyRateService.findByDateAndType(tRasDate,this.currencyService.getById(lsv.getV_loan_currency_id())).getRate();
+                                if(lsv.getV_loan_close_rate()>0)
+                                {
+                                    Rate = lsv.getV_loan_close_rate();
+                                }
                             }
                             else
                             {
                                 Rate=1;
                             }
+
+
 
                             Thousands = 1000;
 
@@ -1554,14 +1560,14 @@ int x = 0;
                 regionName = reportTool.getNameByMapName("region", lv.getV_debtor_region_id());
                 districtName = reportTool.getNameByMapName("district",lv.getV_debtor_district_id());
 
-                cell = new PdfPCell (new Paragraph (lv.getV_debtor_name() +", "+ districtName.replace("ский"," район, ")+", "+regionName.replace("ская"," областы ") +" Кыргыз Республикасынын Финансы министирлигине караштуу ",TitleFont));
+                cell = new PdfPCell (new Paragraph (lv.getV_debtor_name() +", "+ districtName.replace("ский"," району, ")+regionName.replace("ская"," областы ") +" Кыргыз Республикасынын Финансы министирлигине караштуу ",TitleFont));
                 cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setPadding(TitleColumnPadding);
                 cell.setBorder(TitleColumnBorder);
                 table.addCell (cell);
 
-                cell = new PdfPCell (new Paragraph (" бюджеттик насыяларды башкаруу агентигинин астына,  "+ reportTool.DateToString(tRasDate)+" карата",TitleFont));
+                cell = new PdfPCell (new Paragraph (" бюджеттик насыяларды башкаруу агенттигинин астына,  "+ reportTool.DateToString(tRasDate)+" карата",TitleFont));
                 cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setPadding(TitleColumnPadding);
@@ -2092,13 +2098,36 @@ int x = 0;
                 sResName2  = "_____________________";
 
 
+                String sResponsible="Жетекчинин аты-жөнү:";
+
+                String debtorResponsible = "_____________________________";
+                String debtorAccountant = "_____________________________";
+
+                if(debtor.getOwner().getOwnerType().toString()=="ORGANIZATION")
+                {
+                    Organization organization = organizationService.findById(debtor.getOwner().getEntityId());
+
+                    for (Department department: organization.getDepartment())
+                    {
+                        debtorResponsible = staffService.findAllByDepartment(department).get(0).getName();
+                        debtorAccountant  = staffService.findAllByDepartment(department).get(1).getName();
+                        break;
+                    }
+
+
+                }
+                else
+                {
+                    debtorResponsible = lv.getV_debtor_name();
+                    debtorAccountant  = "";
+                    sResponsible="Аты-жөнү:";
+                }
+
 
                 // Директор             ФИО руководителя
 
-                String sResponsible="Жетекчинин аты-жөнү:";
 
 
-                String debtorResponsible = "_____________________________";
 
 
 
@@ -2158,20 +2187,23 @@ int x = 0;
                 table.addCell (cell);
 
 
-                cell = new PdfPCell (new Paragraph ("Башкы бухгалтер:",TitleFont));
-                cell.setHorizontalAlignment (Element.ALIGN_CENTER);
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                cell.setBorder(FooterColumnBorder);
-                cell.setPadding(FooterColumnPadding);
-                table.addCell (cell);
+                if(debtorAccountant.length()>1)
+                {
+                    cell = new PdfPCell (new Paragraph ("Башкы бухгалтер:",TitleFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                    cell.setBorder(FooterColumnBorder);
+                    cell.setPadding(FooterColumnPadding);
+                    table.addCell (cell);
 
 
-                cell = new PdfPCell (new Paragraph ("_________________",TitleFont));
-                cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-                cell.setBorder(FooterColumnBorder);
-                cell.setPadding(FooterColumnPadding);
-                table.addCell (cell);
+                    cell = new PdfPCell (new Paragraph ("_________________",TitleFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                    cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                    cell.setBorder(FooterColumnBorder);
+                    cell.setPadding(FooterColumnPadding);
+                    table.addCell (cell);
+                }
 
 
 
