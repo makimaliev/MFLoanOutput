@@ -2206,6 +2206,24 @@ int x = 0;
                     cell.setPadding(FooterColumnPadding);
                     table.addCell (cell);
                 }
+                else
+                    {
+                        cell = new PdfPCell (new Paragraph ("",TitleFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        cell.setBorder(FooterColumnBorder);
+                        cell.setPadding(FooterColumnPadding);
+                        table.addCell (cell);
+
+
+                        cell = new PdfPCell (new Paragraph ("",TitleFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+                        cell.setBorder(FooterColumnBorder);
+                        cell.setPadding(FooterColumnPadding);
+                        table.addCell (cell);
+
+                    }
 
 
 
