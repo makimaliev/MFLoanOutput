@@ -1,5 +1,6 @@
 package kg.gov.mf.loan.output.report.utils;
 
+import kg.gov.mf.loan.doc.model.State;
 import kg.gov.mf.loan.output.report.model.ReportTemplate;
 import kg.gov.mf.loan.output.report.model.DocumentReportData;
 import kg.gov.mf.loan.output.report.model.DocumentView;
@@ -8,8 +9,11 @@ import kg.gov.mf.loan.output.report.service.DocumentViewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
 
 
 public class DocumentReportDataManager {
@@ -73,6 +77,13 @@ public class DocumentReportDataManager {
         DocumentReportData childF = null;
 
 
+        Map<String, String> states = new HashMap<>(0);
+        for(State state : State.values())
+        {
+            states.put(state.name(), state.text());
+        }
+
+
 
         for (DocumentView documentView:reportData.getDocumentViews())
         {
@@ -126,8 +137,11 @@ public class DocumentReportDataManager {
                 if(lv.getV_doc_documentDueDate()!=null)
                 childC.setDocumentDueDate(new java.sql.Date(lv.getV_doc_documentDueDate().getTime()));
 
+                // Parse id to string
 
-                childC.setDocumentStateID(lv.getV_doc_documentState());
+
+
+                childC.setDocumentStateID(states.get(lv.getV_doc_documentState()));
 
 
                 childC.setDocumentIndexNumber(lv.getV_doc_indexNo());
@@ -136,10 +150,14 @@ public class DocumentReportDataManager {
 
                 if(lv.getV_doc_receiverRegisteredDate()!=null)
                 childC.setDocumentReceiverRegisteredDate(new java.sql.Date(lv.getV_doc_receiverRegisteredDate().getTime()));
+
+                if(lv.getV_doc_receiverRegisteredNumber()!=null)
                 childC.setDocumentReceiverRegisteredNumber(lv.getV_doc_receiverRegisteredNumber());
 
                 if(lv.getV_doc_senderRegisteredDate()!=null)
                 childC.setDocumentSenderRegisteredDate(new java.sql.Date(lv.getV_doc_senderRegisteredDate().getTime()));
+
+                if(lv.getV_doc_senderRegisteredNumber()!=null)
                 childC.setDocumentSenderRegisteredNumber(lv.getV_doc_senderRegisteredNumber());
 
                 childC.setDocumentTitle(lv.getV_doc_title());
@@ -147,6 +165,7 @@ public class DocumentReportDataManager {
                 childC.setDocumentTypeID(lv.getV_doc_documentType());
                 childC.setDocumentSubTypeID(lv.getV_doc_documentSubType());
 
+                if(lv.getV_doc_receiver_executor_name()!=null)
                 childC.setDocumentReceiverExecutorName(lv.getV_doc_receiver_executor_name());
 
 
