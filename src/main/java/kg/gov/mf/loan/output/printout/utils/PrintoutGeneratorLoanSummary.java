@@ -14,23 +14,17 @@ import kg.gov.mf.loan.admin.org.service.*;
 import kg.gov.mf.loan.admin.sys.model.User;
 import kg.gov.mf.loan.admin.sys.service.UserService;
 import kg.gov.mf.loan.manage.model.debtor.Debtor;
-import kg.gov.mf.loan.manage.model.loan.Loan;
 import kg.gov.mf.loan.manage.model.loan.LoanSummaryAct;
-import kg.gov.mf.loan.manage.model.loan.PaymentSchedule;
-import kg.gov.mf.loan.manage.model.orderterm.CurrencyRate;
 import kg.gov.mf.loan.manage.model.process.LoanSummary;
 import kg.gov.mf.loan.manage.service.debtor.DebtorService;
 import kg.gov.mf.loan.manage.service.loan.LoanService;
 import kg.gov.mf.loan.manage.service.loan.LoanSummaryActService;
-import kg.gov.mf.loan.manage.service.loan.PaymentScheduleService;
 import kg.gov.mf.loan.manage.service.orderterm.CurrencyRateService;
 import kg.gov.mf.loan.manage.service.orderterm.OrderTermCurrencyService;
 import kg.gov.mf.loan.manage.service.process.LoanSummaryService;
 import kg.gov.mf.loan.output.printout.model.PrintoutTemplate;
 import kg.gov.mf.loan.output.report.model.LoanSummaryView;
 import kg.gov.mf.loan.output.report.model.LoanView;
-import kg.gov.mf.loan.output.report.model.PaymentScheduleView;
-import kg.gov.mf.loan.output.report.model.PaymentView;
 import kg.gov.mf.loan.output.report.service.LoanSummaryViewService;
 import kg.gov.mf.loan.output.report.service.PaymentScheduleViewService;
 import kg.gov.mf.loan.output.report.service.PaymentViewService;
@@ -41,7 +35,6 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -2100,7 +2093,7 @@ int x = 0;
                 sResName2  = "_____________________";
 
 
-                String sResponsible="Жетекчинин аты-жөнү:";
+                String sResponsible="Aты-жөнү:";
 
                 String debtorResponsible = "_____________________________";
                 String debtorAccountant = "_____________________________";
