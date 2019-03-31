@@ -51,6 +51,8 @@ public class PaymentScheduleReportDataManager {
 
         reportTool.initReference();
 
+        reportTool.initCurrencyRatesMap(reportTemplate);
+
         long groupAid=-1;
         long groupBid=-1;
         long groupCid=-1;
@@ -161,8 +163,30 @@ public class PaymentScheduleReportDataManager {
 
                 PaymentScheduleView pv = paymentScheduleView;
 
+                double rate=1;
+                double rate2=1;
+
+
+                if(pv.getV_loan_currency_id()>1)
+                {
+                    try {
+                        rate = reportTool.getCurrencyRateValueByDateAndCurrencyTypeId(reportTemplate.getOnDate(),pv.getV_loan_currency_id());
+
+                        if(reportTemplate.getAdditionalDate()!=null)
+                        {
+                            rate2 = reportTool.getCurrencyRateValueByDateAndCurrencyTypeId(reportTemplate.getAdditionalDate(),pv.getV_loan_currency_id());
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+
+                }
+
                 childE = childD.addChild();
-                childE.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType5(),paymentScheduleView));
+                childE.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType5(),paymentScheduleView)+" в тыс "+reportTool.getNameByMapName("currency_type",pv.getV_loan_currency_id()) + " по курсу "+ rate);
+
                 childE.setLevel((short)5);
 
                 childE.setPaymentCount(1);
@@ -172,6 +196,12 @@ public class PaymentScheduleReportDataManager {
                 childB.setPaymentCount(childB.getPaymentCount()+1);
                 reportData.setPaymentCount(reportData.getPaymentCount()+1);
 
+
+                pv.setV_ps_disbursement(pv.getV_ps_disbursement()*rate);
+                pv.setV_ps_principal_payment(pv.getV_ps_principal_payment()*rate);
+                pv.setV_ps_interest_payment(pv.getV_ps_interest_payment()*rate);
+                pv.setV_ps_collected_interest_payment(pv.getV_ps_collected_interest_payment()*rate);
+                pv.setV_ps_collected_penalty_payment(pv.getV_ps_collected_penalty_payment()*rate);
 
                 childE.setExpectedDate(new java.sql.Date(pv.getV_ps_expected_date().getTime()));
 
@@ -192,7 +222,7 @@ public class PaymentScheduleReportDataManager {
 
                     childD.setDisbursement(childD.getDisbursement()-lastDisbursement+pv.getV_ps_disbursement());
 
-                    childE.setDisbursement(pv.getV_ps_disbursement());
+                    childE.setDisbursement(pv.getV_ps_disbursement()/rate);
 
                     lastDisbursement  =  0;
 
@@ -214,7 +244,7 @@ public class PaymentScheduleReportDataManager {
 
                     childD.setPrincipal_payment(childD.getPrincipal_payment()-lastPrincipalPayment+pv.getV_ps_principal_payment());
 
-                    childE.setPrincipal_payment(pv.getV_ps_principal_payment());
+                    childE.setPrincipal_payment(pv.getV_ps_principal_payment()/rate);
 
                     lastPrincipalPayment  = 0;
 
@@ -236,7 +266,7 @@ public class PaymentScheduleReportDataManager {
 
                     childD.setInterest_payment(childD.getInterest_payment()-lastInterestPayment+pv.getV_ps_interest_payment());
 
-                    childE.setInterest_payment(pv.getV_ps_interest_payment());
+                    childE.setInterest_payment(pv.getV_ps_interest_payment()/rate);
 
                     lastInterestPayment  = 0;
 
@@ -258,7 +288,7 @@ public class PaymentScheduleReportDataManager {
 
                     childD.setCollected_interest_payment(childD.getCollected_interest_payment()-lastCollectedInterestPayment+pv.getV_ps_collected_interest_payment());
 
-                    childE.setCollected_interest_payment(pv.getV_ps_collected_interest_payment());
+                    childE.setCollected_interest_payment(pv.getV_ps_collected_interest_payment()/rate);
 
                     lastCollectedInterestPayment  = 0;
 
@@ -280,7 +310,7 @@ public class PaymentScheduleReportDataManager {
 
                     childD.setCollected_penalty_payment(childD.getCollected_penalty_payment()-lastCollectedPenaltyPayment+pv.getV_ps_collected_penalty_payment());
 
-                    childE.setCollected_penalty_payment(pv.getV_ps_collected_penalty_payment());
+                    childE.setCollected_penalty_payment(pv.getV_ps_collected_penalty_payment()/rate);
 
                     lastCollectedPenaltyPayment  = 0;
 
