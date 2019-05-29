@@ -4,7 +4,6 @@ import com.lowagie.text.*;
 import com.lowagie.text.Font;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.rtf.RtfWriter2;
 import com.lowagie.text.rtf.table.RtfBorder;
 import com.lowagie.text.rtf.table.RtfBorderGroup;
 import com.lowagie.text.rtf.table.RtfCell;
@@ -190,157 +189,167 @@ public class PrintoutGeneratorInspectionAct {
                     CollateralAgreement agreement = collateralAgreementService.getById(agreement1.getId());
                     for (CollateralItem item1 : agreement.getCollateralItems()) {
                         CollateralItem item=collateralItemService.getById(item1.getId());
+                        if(item.getCollateralItemArrestFree()==null) {
+                            CollateralItemDetails details = item.getCollateralItemDetails();
+                            depCount1++;
+                            iItemType = item.getItemType().getId();
 
-                        CollateralItemDetails details = item.getCollateralItemDetails();
-                        depCount1++;
-                        iItemType=item.getItemType().getId();
+                            if (iItemType == 1 || iItemType == 4 || iItemType == 5 || iItemType == 8) {
 
-                        if (iItemType == 1 || iItemType == 4 || iItemType == 5 || iItemType == 8) {
+                                DepositName = item.getName();
+                                deposit_type = item.getItemType().getName();
+                                quantity = item.getQuantity();
+                                quantity_type = item.getQuantityType().getName();
+                                Zalogodatel = item.getOwner().getName();
 
-                            DepositName = item.getName();
-                            deposit_type = item.getItemType().getName();
-                            quantity = item.getQuantity();
-                            quantity_type = item.getQuantityType().getName();
-                            Zalogodatel = item.getOwner().getName();
+                                GoodsAddress = details.getGoods_address();
+                                GoodsDate = details.getDetailsDate();
+                                Details1 = details.getDetails1();
+                                Details2 = details.getDetails2();
+                                Details3 = details.getDetails3();
+                                Details4 = details.getDetails4();
+                                Details5 = details.getDetails5();
+                                Details6 = details.getDetails6();
+                                GoodsType = details.getGoods_type();
+                                GoodsId = details.getGoods_id();
 
-                            GoodsAddress = details.getGoods_address();
-                            GoodsDate = details.getDetailsDate();
-                            Details1 = details.getDetails1();
-                            Details2 = details.getDetails2();
-                            Details3 = details.getDetails3();
-                            Details4 = details.getDetails4();
-                            Details5 = details.getDetails5();
-                            Details6 = details.getDetails6();
-                            GoodsType = details.getGoods_type();
-                            GoodsId = details.getGoods_id();
+                                String Document = details.getDocument();
 
-                            String Document = details.getDocument();
-
-                            depList += "\n";
-
-
-                            if (!(DepositName == null || DepositName == "")) depList += "\n" +depCount1+ ". Наименование залога - " + DepositName;
-                            if (deposit_type != null || deposit_type != "") depList += " ( " + deposit_type;
-                            if (quantity != 0) depList += " " + quantity;
-                            if (quantity_type != null || quantity_type != "")
-                                depList += " " + quantity_type + " )," + "\n";
-                            if (!(Zalogodatel == null || Zalogodatel == ""))
-                                depList += " Залогодатель  - " + Zalogodatel + "\n";
-
-                            if (!(Document == null || Document == ""))
-                                depList += " Правоуст. документ    - " + Document + "\n";
-                            if (GoodsDate != null)
-                                depList += " Дата выпуска  - " + reportTool.DateToString(details.getDetailsDate()) + "\n";
-                            if (!(Details1 == null || Details1 == "")) depList += " Зав. номер  - " + Details1 + "\n";
-                            if (!(Details2 == null || Details2 == "")) depList += " Двигатель  - " + Details2 + "\n";
-                            if (!(Details3 == null || Details3 == "")) depList += " номер шасси  - " + Details3 + "\n";
-                            if (!(Details4 == null || Details4 == "")) depList += " Номер кузова  - " + Details4 + "\n";
-                            if (!(Details5 == null || Details5 == "")) depList += " Инв. номер - " + Details5 + "\n";
-                            if (!(GoodsId == null || GoodsId == "")) depList += " Гос.номер  - " + GoodsId + "\n";
-                            if (!(GoodsType == null || GoodsType == ""))
-                                depList += " Марка, модификация  - " + GoodsType + "\n";
-                            if (DepositName != null || DepositName != "")
-                                depList += " Состояние: ______________________________________________ " + "\n";
-
-                        } else if (iItemType == 2) {
-                            depList += "\n";
-
-                            DepositName = item.getName();
-                            deposit_type = item.getItemType().getName();
-                            quantity = item.getQuantity();
-                            quantity_type = item.getQuantityType().getName();
+                                depList += "\n";
 
 
-                            GoodsType = details.getGoods_type();
-                            GoodsDate = details.getDetailsDate();
-                            String Expl_date = reportTool.DateToString(details.getExplDate());
-                            Details1 = details.getDocument();
-                            Details2 = details.getIncomplete_reason();
+                                if (!(DepositName == null || DepositName.equals("")))
+                                    depList += "\n" + depCount1 + ". Наименование залога - " + DepositName;
+                                if (!(deposit_type != null || deposit_type.equals("")))
+                                    depList += " ( " + deposit_type;
+                                if (quantity != 0)
+                                    depList += " " + quantity;
+                                if (!(quantity_type == null || quantity_type.equals("")))
+                                    depList += " " + quantity_type + " )," + "\n";
+                                if (!(Zalogodatel == null || Zalogodatel.equals("")))
+                                    depList += " Залогодатель  - " + Zalogodatel + "\n";
+                                if (!(Document == null || Document.equals("")))
+                                    depList += " Правоуст. документ    - " + Document + "\n";
+                                if (GoodsDate != null)
+                                    depList += " Дата выпуска  - " + reportTool.DateToString(details.getDetailsDate()) + "\n";
+                                if (!(Details1 == null || Details1.equals("")))
+                                    depList += " Зав. номер  - " + Details1 + "\n";
+                                if (!(Details2 == null || Details2.equals("")))
+                                    depList += " Двигатель  - " + Details2 + "\n";
+                                if (!(Details3 == null || Details3.equals("")))
+                                    depList += " номер шасси  - " + Details3 + "\n";
+                                if (!(Details4 == null || Details4.equals("")))
+                                    depList += " Номер кузова  - " + Details4 + "\n";
+                                if (!(Details5 == null || Details5.equals("")))
+                                    depList += " Инв. номер - " + Details5 + "\n";
+                                if (!(GoodsId == null || GoodsId.equals(""))) depList += " Гос.номер  - " + GoodsId + "\n";
+                                if (!(GoodsType == null || GoodsType.equals("")))
+                                    depList += " Марка, модификация  - " + GoodsType + "\n";
+                                if (DepositName != null || DepositName.equals(""))
+                                    depList += " Состояние: ______________________________________________ " + "\n";
+
+                            } else if (iItemType == 2) {
+                                depList += "\n";
+
+                                DepositName = item.getName();
+                                deposit_type = item.getItemType().getName();
+                                quantity = item.getQuantity();
+                                quantity_type = item.getQuantityType().getName();
 
 
-                            if (!(DepositName == null || DepositName == "")) depList += "\n" +depCount1+ ". Наименование залога - " + DepositName;
-                            if (GoodsDate != null) depList += " Дата выпуска  - " + GoodsDate + "\n";
-                            if (!(Expl_date == null || Expl_date == ""))
-                                depList += " Дата ввода в эксплуатацию  - " + Expl_date + "\n";
-                            if (!(Details1 == null || Details1 == ""))
-                                depList += " Правоуст. документ   - " + Details1 + "\n";
-                            if (!(Details2 == null || Details2 == "")) depList += " Причина  - " + Details2 + "\n";
-                            if (DepositName != null || DepositName != "")
-                                depList += " Состояние: ______________________________________________ " + "\n";
-                        } else if (iItemType == 3 || iItemType == 7) {
+                                GoodsType = details.getGoods_type();
+                                GoodsDate = details.getDetailsDate();
+                                String Expl_date = reportTool.DateToString(details.getExplDate());
+                                Details1 = details.getDocument();
+                                Details2 = details.getIncomplete_reason();
 
-                            depList += "\n";
 
-                            DepositName = item.getName();
-                            deposit_type = item.getItemType().getName();
+                                if (!(DepositName == null || DepositName.equals("")))
+                                    depList += "\n" + depCount1 + ". Наименование залога - " + DepositName;
+                                if (GoodsDate != null) depList += " Дата выпуска  - " + GoodsDate + "\n";
+                                if (!(Expl_date == null || Expl_date == ""))
+                                    depList += " Дата ввода в эксплуатацию  - " + Expl_date + "\n";
+                                if (!(Details1 == null || Details1 == ""))
+                                    depList += " Правоуст. документ   - " + Details1 + "\n";
+                                if (!(Details2 == null || Details2.equals(""))) depList += " Причина  - " + Details2 + "\n";
+                                if (!(DepositName == null || DepositName.equals("")))
+                                    depList += " Состояние: ______________________________________________ " + "\n";
+                            } else if (iItemType == 3 || iItemType == 7) {
+
+                                depList += "\n";
+
+                                DepositName = item.getName();
+                                deposit_type = item.getItemType().getName();
 //                            depList += depCount1 + ". " + deposit_type;
-                            quantity = item.getQuantity();
-                            quantity_type = item.getQuantityType().getName();
+                                quantity = item.getQuantity();
+                                quantity_type = item.getQuantityType().getName();
 //                            depList += " (" + quantity + " " + quantity_type + ")";
 
 
-                            GoodsType = details.getGoods_type();
-                            GoodsId = details.getGoods_id();
-                            GoodsDate = details.getDetailsDate();
-                            String Expl_date = reportTool.DateToString(details.getExplDate());
-                            String Document = details.getDocument();
-                            GoodsAddress = details.getGoods_address();
-                            Details1 = details.getDetails1();
-                            Details2 = details.getDetails2();
-                            Details3 = details.getDetails3();
-                            Details4 = details.getDetails4();
-                            String InCompleteReason = details.getIncomplete_reason();
+                                GoodsType = details.getGoods_type();
+                                GoodsId = details.getGoods_id();
+                                GoodsDate = details.getDetailsDate();
+                                String Expl_date = reportTool.DateToString(details.getExplDate());
+                                String Document = details.getDocument();
+                                GoodsAddress = details.getGoods_address();
+                                Details1 = details.getDetails1();
+                                Details2 = details.getDetails2();
+                                Details3 = details.getDetails3();
+                                Details4 = details.getDetails4();
+                                String InCompleteReason = details.getIncomplete_reason();
 
 
-                            if (!(DepositName == null || DepositName == "")) depList += "\n" +depCount1+ ". Наименование залога - " + DepositName;
-                            depList += " (" + quantity + " " + quantity_type + ")\n";
-                            if (GoodsType != null || GoodsType != "")
-                                depList += " Вид недвижимости  - " + GoodsType + "\n";
-                            if (GoodsId != null) depList += " Идентификационный код  - " + GoodsId + "\n";
-                            if (GoodsDate != null) depList += " Дата постройки  - " + GoodsDate + "\n";
-                            if (!(Expl_date == null || Expl_date == ""))
-                                depList += " Дата ввода в эксплуатацию  - " + Expl_date + "\n";
-                            if (!(Document == null || Document == ""))
-                                depList += " Правоуст. документ    - " + Document + "\n";
-                            if (!(GoodsAddress == null || GoodsAddress == ""))
-                                depList += " Адрес  - " + GoodsAddress + "\n";
-                            if (!(Details1 == null || Details1 == ""))
-                                depList += " Общая площадь (кв.м.)   - " + Details1 + "\n";
-                            if (!(Details2 == null || Details2 == ""))
-                                depList += " Жилая площадь (кв.м.)  - " + Details2 + "\n";
-                            if (!(Details3 == null || Details3 == ""))
-                                depList += " Площадь застройки (кв.м.)  - " + Details3 + "\n";
-                            if (!(Details4 == null || Details4 == ""))
-                                depList += " Зем.участок мерою (кв.м.)  - " + Details4 + "\n";
+                                if (!(DepositName == null || DepositName.equals("")))
+                                    depList += "\n" + depCount1 + ". Наименование залога - " + DepositName;
+                                depList += " (" + quantity + " " + quantity_type + ")\n";
+                                if (GoodsType != null || GoodsType != "")
+                                    depList += " Вид недвижимости  - " + GoodsType + "\n";
+                                if (GoodsId != null) depList += " Идентификационный код  - " + GoodsId + "\n";
+                                if (GoodsDate != null) depList += " Дата постройки  - " + GoodsDate + "\n";
+                                if (!(Expl_date == null || Expl_date.equals("")))
+                                    depList += " Дата ввода в эксплуатацию  - " + Expl_date + "\n";
+                                if (!(Document == null || Document.equals("")))
+                                    depList += " Правоуст. документ    - " + Document + "\n";
+                                if (!(GoodsAddress == null || GoodsAddress.equals("")))
+                                    depList += " Адрес  - " + GoodsAddress + "\n";
+                                if (!(Details1 == null || Details1 == ""))
+                                    depList += " Общая площадь (кв.м.)   - " + Details1 + "\n";
+                                if (!(Details2 == null || Details2 == ""))
+                                    depList += " Жилая площадь (кв.м.)  - " + Details2 + "\n";
+                                if (!(Details3 == null || Details3 == ""))
+                                    depList += " Площадь застройки (кв.м.)  - " + Details3 + "\n";
+                                if (!(Details4 == null || Details4 == ""))
+                                    depList += " Зем.участок мерою (кв.м.)  - " + Details4 + "\n";
 //                            if (!(InCompleteReason == null || InCompleteReason == ""))
 //                                depList += " Причина  - " + InCompleteReason + "\n";
-                            if (DepositName != null || DepositName != "")
-                                depList += " Состояние: ______________________________________________ " + "\n";
-                        } else {
+                                if (DepositName != null || DepositName.equals(""))
+                                    depList += " Состояние: ______________________________________________ " + "\n";
+                            } else {
 
-                            depList += "\n";
+                                depList += "\n";
 
-                            DepositName = item.getName();
-                            deposit_type = item.getItemType().getName();
+                                DepositName = item.getName();
+                                deposit_type = item.getItemType().getName();
 //                            depList += depCount1 + ". " + deposit_type;
-                            quantity = item.getQuantity();
-                            quantity_type = item.getQuantityType().getName();
+                                quantity = item.getQuantity();
+                                quantity_type = item.getQuantityType().getName();
 //                            depList += " (" + quantity + " " + quantity_type + ")";
 
 
-                            String Document = details.getDocument();
-                            Details1 = details.getDetails1();
-                            Details2 = details.getDetails2();
-                            Details3 = details.getDetails3();
-                            Details4 = details.getDetails4();
-                            Details5 = details.getDetails5();
-                            String InCompleteReason = details.getIncomplete_reason();
+                                String Document = details.getDocument();
+                                Details1 = details.getDetails1();
+                                Details2 = details.getDetails2();
+                                Details3 = details.getDetails3();
+                                Details4 = details.getDetails4();
+                                Details5 = details.getDetails5();
+                                String InCompleteReason = details.getIncomplete_reason();
 
 
-                            if (!(DepositName == null || DepositName == "")) depList += "\n" +depCount1+ ". Наименование залога - " + DepositName;
-                            depList += " (" + quantity + " " + quantity_type + ")";
-                            if (!(Document == null || Document == ""))
-                                depList += " Правоуст. документ    - " + Document + "\n";
+                                if (!(DepositName == null || DepositName.equals("")))
+                                    depList += "\n" + depCount1 + ". Наименование залога - " + DepositName;
+                                depList += " (" + quantity + " " + quantity_type + ")";
+                                if (!(Document == null || Document.equals("")))
+                                    depList += " Правоуст. документ    - " + Document + "\n";
 //                            if (!(Details1 == null || Details1 == "")) depList += " КРС   - " + Details1 + "\n";
 //                            if (!(Details2 == null || Details2 == "")) depList += " МРС  - " + Details2 + "\n";
 //                            if (!(Details3 == null || Details3 == "")) depList += " Лошади  - " + Details3 + "\n";
@@ -348,9 +357,10 @@ public class PrintoutGeneratorInspectionAct {
 //                            if (!(Details5 == null || Details5 == "")) depList += " Свиньи  - " + Details5 + "\n";
 //                            if (!(InCompleteReason == null || InCompleteReason == ""))
 //                                depList += " Причина  - " + InCompleteReason + "\n";
-                            if (DepositName != null || DepositName != "")
-                                depList += " Состояние: ______________________________________________ " + "\n";
+                                if (DepositName != null || DepositName != "")
+                                    depList += " Состояние: ______________________________________________ " + "\n";
 
+                            }
                         }
 
                     }
