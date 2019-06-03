@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CollectionPhaseViewServiceJpaImpl implements CollectionPhaseViewService {
@@ -63,7 +64,7 @@ public class CollectionPhaseViewServiceJpaImpl implements CollectionPhaseViewSer
 
 	@Override
 	@Transactional
-	public List<CollectionPhaseView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit, String sortStr, String sortField) {
+	public Set<CollectionPhaseView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit, String sortStr, String sortField) {
 		return this.collectionPhaseViewDao.findByParameter(parameters,offset,limit,sortStr,sortField);
 	}
 

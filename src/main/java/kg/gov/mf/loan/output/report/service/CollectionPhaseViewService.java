@@ -4,6 +4,7 @@ import kg.gov.mf.loan.output.report.model.CollectionPhaseView;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 public interface CollectionPhaseViewService {
 
@@ -20,5 +21,5 @@ public interface CollectionPhaseViewService {
 
 	public List<CollectionPhaseView> findByParameter(LinkedHashMap<String, List<String>> parameters);
 
-	public List<CollectionPhaseView> findByParameter(LinkedHashMap<String, List<String>> parameters,Integer offset,Integer limit,String sortStr,String sortField);
+	public Set<CollectionPhaseView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit, String sortStr, String sortField);
 }

@@ -1,22 +1,20 @@
 package kg.gov.mf.loan.output.report.dao;
 
 import kg.gov.mf.loan.output.report.model.CollectionPhaseView;
-import kg.gov.mf.loan.output.report.utils.CollectionPhaseReportDataManager;
 import kg.gov.mf.loan.output.report.utils.ReportTool;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 @Repository
 public class CollectionPhaseViewDaoImpl implements CollectionPhaseViewDao {
@@ -115,7 +113,7 @@ public class CollectionPhaseViewDaoImpl implements CollectionPhaseViewDao {
 	}
 
 	@Override
-	public List<CollectionPhaseView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit, String sortStr, String sortField) {
+	public Set<CollectionPhaseView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit, String sortStr, String sortField) {
 		Session session=sessionFactory.getCurrentSession();
 
 		Criteria criteria=session.createCriteria(CollectionPhaseView.class);
@@ -131,7 +129,9 @@ public class CollectionPhaseViewDaoImpl implements CollectionPhaseViewDao {
 
 		criteria.setFirstResult(offset);
 		criteria.setMaxResults(limit);
-		return criteria.list();
+
+		Set<CollectionPhaseView> collectionPhaseViews=new HashSet<>(criteria.list());
+		return collectionPhaseViews;
 	}
 
 
