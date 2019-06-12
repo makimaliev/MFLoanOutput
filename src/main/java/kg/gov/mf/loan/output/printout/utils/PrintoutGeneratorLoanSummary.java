@@ -827,7 +827,7 @@ int x = 0;
                             sResName  = "Ж. Торомаматов";
 
                             sResTitle2 = "Заместитель директора:";
-                            sResName2  = "Д. Наспеков";
+                            sResName2  = "Э. Доолбеков";
                         }
                         else
                         {
@@ -1159,7 +1159,7 @@ int x = 0;
                             }
                             else
                             {
-                                cell = new PdfPCell (new Paragraph ("Э. Доолбеков",TitleFont));
+                                cell = new PdfPCell (new Paragraph ("______________",TitleFont));
                             }
 
                         }

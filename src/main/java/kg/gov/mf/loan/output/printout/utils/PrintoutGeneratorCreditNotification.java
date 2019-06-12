@@ -488,7 +488,7 @@ public class PrintoutGeneratorCreditNotification {
             cell.setBorder(TitleColumnBorder);
             table.addCell (cell);
 
-            cell = new RtfCell (new Paragraph ("\n\n\n Д. Наспеков",TitleFont));
+            cell = new RtfCell (new Paragraph ("\n\n\n Э. Доолбеков",TitleFont));
 
             cell.setHorizontalAlignment (Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_TOP);

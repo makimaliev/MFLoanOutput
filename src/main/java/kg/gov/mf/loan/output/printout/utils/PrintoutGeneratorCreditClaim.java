@@ -713,7 +713,7 @@ public class PrintoutGeneratorCreditClaim {
             }
             else
             {
-                cell = new RtfCell (new Paragraph ("\nД. Наспеков",TitleFont));
+                cell = new RtfCell (new Paragraph ("\nЭ. Доолбеков",TitleFont));
             }
 
 
@@ -790,7 +790,7 @@ public class PrintoutGeneratorCreditClaim {
 
             if( iResDepartment==2)
             {
-                cell = new RtfCell (new Paragraph ("\nДоолбеков Э.",HeaderFont));
+                cell = new RtfCell (new Paragraph ("\n_______________",HeaderFont));
             }
             else
             {

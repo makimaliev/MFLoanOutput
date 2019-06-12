@@ -511,7 +511,7 @@ public class PrintoutGeneratorInspectionAct {
                     }
                     else
                     {
-                        cell = new RtfCell (new Paragraph ("\n\n\nНаспеков Д.",TitleFont));
+                        cell = new RtfCell (new Paragraph ("\n\n\nДоолбеков Э.",TitleFont));
                     }
                     cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                     cell.setVerticalAlignment(Element.ALIGN_TOP);

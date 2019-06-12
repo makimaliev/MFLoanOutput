@@ -703,7 +703,7 @@ public class PrintoutGeneratorPhaseSummary {
                     }
                     else
                     {
-                        cell = new RtfCell (new Paragraph ("Д. Наспеков",TitleFont));
+                        cell = new RtfCell (new Paragraph ("Э. Доолбеков",TitleFont));
                     }
 
 
@@ -780,7 +780,7 @@ public class PrintoutGeneratorPhaseSummary {
 
                     if( iResDepartment==2)
                     {
-                        cell = new RtfCell (new Paragraph ("\nДоолбеков Э.",HeaderFont));
+                        cell = new RtfCell (new Paragraph ("\n______________",HeaderFont));
                     }
                     else
                     {
