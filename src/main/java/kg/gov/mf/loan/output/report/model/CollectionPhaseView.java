@@ -135,6 +135,11 @@ public class CollectionPhaseView extends DebtorView
 	@Temporal(TemporalType.DATE)
 	private Date v_cph_closeDate;
 
+
+	@DateTimeFormat(pattern = "dd.mm.yyyy")
+	@Temporal(TemporalType.DATE)
+	private Date v_cph_paymentFromDate;
+
 	@Column
 	private Long v_cph_lastEvent;
 
@@ -587,5 +592,14 @@ public class CollectionPhaseView extends DebtorView
 
 	public void setV_cph_paid_total_amount(Long v_cph_paid_total_amount) {
 		this.v_cph_paid_total_amount = v_cph_paid_total_amount;
+	}
+
+
+	public Date getV_cph_paymentFromDate() {
+		return v_cph_paymentFromDate;
+	}
+
+	public void setV_cph_paymentFromDate(Date v_cph_paymentFromDate) {
+		this.v_cph_paymentFromDate = v_cph_paymentFromDate;
 	}
 }

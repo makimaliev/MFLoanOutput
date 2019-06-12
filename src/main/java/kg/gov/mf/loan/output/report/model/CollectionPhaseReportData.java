@@ -1,6 +1,7 @@
 package kg.gov.mf.loan.output.report.model;
 
 import java.sql.Date;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
@@ -17,7 +18,7 @@ public class CollectionPhaseReportData extends ReportData
 	private LinkedHashSet<CollectionPhaseView> collectionPhaseView = new LinkedHashSet<CollectionPhaseView>(0);
 
 
-
+ 	private LinkedHashMap<Long,LinkedList<MonthlyData>> phasePaymentsByPeriod = new LinkedHashMap<>();
 
 	//*************************************************************
 
@@ -556,5 +557,14 @@ public class CollectionPhaseReportData extends ReportData
 
 	public void setCollection_phase_outstanding_total_amount(double collection_phase_outstanding_total_amount) {
 		this.collection_phase_outstanding_total_amount = collection_phase_outstanding_total_amount;
+	}
+
+
+	public LinkedHashMap<Long, LinkedList<MonthlyData>> getPhasePaymentsByPeriod() {
+		return phasePaymentsByPeriod;
+	}
+
+	public void setPhasePaymentsByPeriod(LinkedHashMap<Long, LinkedList<MonthlyData>> phasePaymentsByPeriod) {
+		this.phasePaymentsByPeriod = phasePaymentsByPeriod;
 	}
 }

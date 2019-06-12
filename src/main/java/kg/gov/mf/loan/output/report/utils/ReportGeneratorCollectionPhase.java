@@ -29,7 +29,16 @@ public class ReportGeneratorCollectionPhase extends ReportGenerator{
         ReportTool reportTool = new ReportTool();
         reportTool.initReference();
 
-        collectionPhaseReportData = new CollectionPhaseReportDataManager().getReportDataGrouped(collectionPhaseReportData,reportTemplate);
+        if(reportTemplate.getName().contains("ОИП"))
+        {
+
+            collectionPhaseReportData = new CollectionPhaseSpecialReportDataManager().getReportDataGrouped(collectionPhaseReportData,reportTemplate);
+        }
+        else
+        {
+            collectionPhaseReportData = new CollectionPhaseReportDataManager().getReportDataGrouped(collectionPhaseReportData,reportTemplate);
+        }
+
 
         HSSFWorkbook     WorkBook       = new HSSFWorkbook();
 

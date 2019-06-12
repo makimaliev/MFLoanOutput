@@ -1913,6 +1913,236 @@ public class ReportTool
 
     }
 
+    public void drawDynamicCell(ReportTemplate reportTemplate, HSSFSheet Sheet, ContentParameter contentParameter , ReportData reportData)
+    {
+        try
+        {
+            int row_from = (contentParameter.getRow_from()>0) ? contentParameter.getRow_from()-1 : RowCount;
+            int row_to   = (contentParameter.getRow_to()>0) ? contentParameter.getRow_to()-1 : RowCount;
+            int col_from = (contentParameter.getCol_from()>0) ? contentParameter.getCol_from()-1 : ColumnCount;
+            int col_to   = (contentParameter.getCol_to()>0) ? contentParameter.getCol_to()-1 : ColumnCount;
+
+
+            int period_from = contentParameter.getConstantInt();
+            int period_to = contentParameter.getConstantInt();
+
+            if(col_from>100) col_from = 0;
+            if(col_to>100) col_to = 0;
+
+            if(col_to>=maxColumnCount) maxColumnCount=col_to;
+
+            if(contentParameter.getRowType().name()=="TABLE_HEADER")
+                if(row_to > lastRowCount) lastRowCount = row_to;
+
+//            if(!(row_from == row_to && col_from == col_to))
+//            {
+//                Sheet.addMergedRegion(new CellRangeAddress(row_from,row_to,col_from,col_to));
+//            }
+
+            if(contentParameter.getRowType().name()=="PAGE_TITLE" || contentParameter.getRowType().name()=="TABLE_HEADER")
+            {
+
+
+
+                if(contentParameter.getRowType().name()=="TABLE_HEADER")
+                {
+                    short dynamicCount = (short)contentParameter.getPosition();
+
+                    int startFrom = period_from;
+
+                    int finishTo = period_to;
+
+                    finishTo = new Date().getYear()+1900;
+
+                    for (int currentPeriod=startFrom;currentPeriod<=finishTo;currentPeriod++)
+                    {
+
+                        if(!(row_from == row_to && col_from == col_to))
+                        {
+                            Sheet.addMergedRegion(new CellRangeAddress(row_from,row_to,dynamicCount,dynamicCount));
+                        }
+
+                        Cell = Sheet.getRow(row_from).createCell((int)dynamicCount, HSSFCell.CELL_TYPE_STRING);
+
+                        if(contentParameter.getRowType().name()=="PAGE_TITLE")
+                            Cell.setCellStyle(TitleString);
+                        else    Cell.setCellStyle(HeaderString);
+
+                        Cell.setCellValue(currentPeriod);
+                        dynamicCount++;
+                    }
+
+
+                }
+                else
+                {
+                    Cell.setCellValue(contentParameter.getConstantText().contains("(=") ? formatText(contentParameter.getConstantText(),reportTemplate) : contentParameter.getConstantText());
+                }
+
+
+
+
+
+
+                ColumnCount++;
+            }
+            else
+            {
+
+                long level=1;
+
+                if(contentParameter.getPosition()>0)
+                {
+                    Cell = Row.createCell(contentParameter.getPosition()-1);
+                }
+                else
+                {
+                    Cell = Row.createCell(ColumnCount);
+                }
+
+
+                Object object = null;
+
+                if(contentParameter.getContentType().name()!="CONSTANT")
+                {
+                    String sMethodName = "get"+contentParameter.getFieldName().substring(0, 1).toUpperCase()+contentParameter.getFieldName().substring(1, contentParameter.getFieldName().length());
+
+                    reportData.getClass().cast(reportData);
+                    object = reportData.getClass().getMethod(sMethodName,null).invoke(reportData);
+
+
+                }
+
+                switch (contentParameter.getRowType().toString())
+                {
+                    case "TABLE_SUM": level = 12;break;
+                    case "TABLE_GROUP1": level = 1;break;
+                    case "TABLE_GROUP2": level = 2;break;
+                    case "TABLE_GROUP3": level = 3;break;
+                    case "TABLE_GROUP4": level = 4;break;
+                    case "TABLE_GROUP5": level = 5;break;
+                    case "TABLE_GROUP6": level = 6;break;
+                }
+
+
+
+                switch (contentParameter.getCellType().toString())
+                {
+                    case "TEXT" :
+                        Cell.setCellStyle(getCellStyleByLevel(level,"string"));
+                        if(object==null) object = contentParameter.getConstantText();
+                        Cell.setCellValue(String.valueOf(object));
+
+                        if(object.toString().matches("[0-9]+")&&contentParameter.getConstantInt()>0)
+                        {
+                            Cell.setCellValue(getNameByMapName(contentParameter.getConstantText(), Long.parseLong(object.toString())));
+                        }
+
+                        break;
+                    case "DATE" :
+                        Cell.setCellStyle(getCellStyleByLevel(level,"date"));
+                        if(object==null) object = contentParameter.getConstantDate();
+                        Cell.setCellValue(this.DateToString((Date)object));
+                        break;
+                    case "INTEGER" :
+                        Cell.setCellStyle(getCellStyleByLevel(level,"int"));
+                        if(object==null) object = contentParameter.getConstantInt();
+                        Cell.setCellValue(Integer.valueOf(object.toString()));
+                        break;
+                    case "DOUBLE" :
+
+                        LinkedHashMap<Long, LinkedList<MonthlyData>> payments = new LinkedHashMap<>();
+
+                        try
+                        {
+                            payments = (LinkedHashMap<Long, LinkedList<MonthlyData>>)object;
+
+                            LinkedList<MonthlyData> monthlyData = payments.get(1L);
+
+                            short dynamicCount = (short)contentParameter.getPosition();
+
+                            int startFrom = period_from;
+
+                            int finishTo = period_to;
+
+                            if(startFrom > 1980)
+                            {
+                                finishTo = new Date().getYear()+1900;
+                            }
+                            else
+                            {
+                                finishTo = new Date().getMonth();
+                            }
+
+                            Double value = 0.0;
+
+                            for (int currentPeriod=startFrom;currentPeriod<=finishTo;currentPeriod++)
+                            {
+
+                                value = 0.0;
+
+                                Cell = Row.createCell(dynamicCount);
+
+                                Cell.setCellStyle(getCellStyleByLevel(level,"double"));
+
+
+
+                                if(monthlyData!=null)
+                                {
+                                    for (MonthlyData monthlyDataInLoop:monthlyData)
+                                    {
+                                        if(monthlyDataInLoop.getYear()==currentPeriod)
+                                        {
+                                            value = monthlyDataInLoop.getAmount();
+                                        }
+                                    }
+
+                                }
+                                else
+                                {
+                                    value=0.0;
+                                }
+
+                                Cell.setCellValue(value);
+                                dynamicCount++;
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {
+                            System.out.println(" error map == "+ex);
+                        }
+
+                        Cell.setCellStyle(getCellStyleByLevel(level,"double"));
+                        if(object==null) object = contentParameter.getConstantValue();
+                        Cell.setCellValue(Double.valueOf(object.toString()));
+
+
+
+
+                        break;
+                    default :
+                        Cell.setCellStyle(getCellStyleByLevel(level,"string"));
+                        if(object==null) object = contentParameter.getConstantText();
+                        Cell.setCellValue(String.valueOf(object));
+                        break;
+                }
+
+                ColumnCount++;
+
+
+            }
+
+
+        }
+        catch (Exception ex)
+        {
+            System.out.println(ex);
+        }
+
+
+    }
+
     public void drawTitle(ReportTemplate reportTemplate, HSSFSheet Sheet, ReportData reportData )
     {
 
@@ -1952,7 +2182,16 @@ public class ReportTool
                 {
                     createRow(Sheet,contentParameter);
 
-                    drawCell(reportTemplate,Sheet,contentParameter,reportData);
+                    if(contentParameter.getConstantText().contains("dynamic"))
+                    {
+                        drawDynamicCell(reportTemplate,Sheet,contentParameter,reportData);
+                    }
+                    else
+                    {
+                        drawCell(reportTemplate,Sheet,contentParameter,reportData);
+                    }
+
+
                 }
 
             }
@@ -2015,7 +2254,15 @@ public class ReportTool
             {
                 if(contentParameter.getRowType().name().contains("TABLE_GROUP"+String.valueOf(level)))
                 {
-                    drawCell(reportTemplate,Sheet,contentParameter,reportData);
+                    if(contentParameter.getConstantText().contains("dynamic"))
+                    {
+                        drawDynamicCell(reportTemplate,Sheet,contentParameter,reportData);
+                    }
+                    else
+                    {
+                        drawCell(reportTemplate,Sheet,contentParameter,reportData);
+                    }
+
                 }
             }
 
