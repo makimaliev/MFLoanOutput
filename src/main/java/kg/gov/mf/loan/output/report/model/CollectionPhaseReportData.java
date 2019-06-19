@@ -99,6 +99,12 @@ public class CollectionPhaseReportData extends ReportData
 
 	private  double collection_phase_outstanding_total_amount = 0;
 
+	private long   collection_phase_group_id                   = 0;
+	private long   collection_phase_index_id                   = 0;
+	private long   collection_phase_sub_index_id               = 0;
+	private String collection_phase_description     			= "";
+
+
 	public CollectionPhaseReportData()
 	{
 		ChildDataList = new LinkedList<CollectionPhaseReportData>();
@@ -566,5 +572,37 @@ public class CollectionPhaseReportData extends ReportData
 
 	public void setPhasePaymentsByPeriod(LinkedHashMap<Long, LinkedList<MonthlyData>> phasePaymentsByPeriod) {
 		this.phasePaymentsByPeriod = phasePaymentsByPeriod;
+	}
+
+	public long getCollection_phase_group_id() {
+		return collection_phase_group_id;
+	}
+
+	public void setCollection_phase_group_id(long collection_phase_group_id) {
+		this.collection_phase_group_id = collection_phase_group_id;
+	}
+
+	public long getCollection_phase_index_id() {
+		return collection_phase_index_id;
+	}
+
+	public void setCollection_phase_index_id(long collection_phase_index_id) {
+		this.collection_phase_index_id = collection_phase_index_id;
+	}
+
+	public long getCollection_phase_sub_index_id() {
+		return collection_phase_sub_index_id;
+	}
+
+	public void setCollection_phase_sub_index_id(long collection_phase_sub_index_id) {
+		this.collection_phase_sub_index_id = collection_phase_sub_index_id;
+	}
+
+	public String getCollection_phase_description() {
+		return collection_phase_description;
+	}
+
+	public void setCollection_phase_description(String collection_phase_description) {
+		this.collection_phase_description = collection_phase_description;
 	}
 }

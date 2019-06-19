@@ -284,6 +284,16 @@ public class CollectionPhaseSpecialReportDataManager {
 
                 childE.setCollection_phase_status_id(collectionPhaseView.getV_cph_phaseStatusId());
 
+                childE.setCollection_phase_group_id(collectionPhaseView.getV_cph_group_id());
+                childE.setCollection_phase_index_id(collectionPhaseView.getV_cph_index_id());
+                childE.setCollection_phase_sub_index_id(collectionPhaseView.getV_cph_sub_index_id());
+
+                childE.setCollection_phase_description(collectionPhaseView.getV_cph_description());
+
+
+
+
+
                 childE.setCollection_phase_type_name(phaseTypeMap.get(collectionPhaseView.getV_cph_phaseTypeId()).getName());
 
                 if(collectionPhaseView.getV_cph_start_total_amount() != null)

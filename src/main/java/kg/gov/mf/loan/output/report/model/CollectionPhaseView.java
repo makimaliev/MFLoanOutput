@@ -185,6 +185,9 @@ public class CollectionPhaseView extends DebtorView
 	@Column
 	private Long v_cph_sub_index_id;
 
+	@Column
+	private String v_cph_description;
+
 
 	public Long getV_cp_id() {
 		return v_cp_id;
@@ -601,5 +604,13 @@ public class CollectionPhaseView extends DebtorView
 
 	public void setV_cph_paymentFromDate(Date v_cph_paymentFromDate) {
 		this.v_cph_paymentFromDate = v_cph_paymentFromDate;
+	}
+
+	public String getV_cph_description() {
+		return v_cph_description;
+	}
+
+	public void setV_cph_description(String v_cph_description) {
+		this.v_cph_description = v_cph_description;
 	}
 }
