@@ -94,6 +94,8 @@ public class PaymentScheduleReportDataManager {
                 childA.setLevel((short)1);
 
                 currentgroupAid=reportTool.getIdByGroupType(reportTemplate.getGroupType1(),paymentScheduleView);
+                currentgroupBid=-1;
+
             }
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType2(),paymentScheduleView)!=currentgroupBid)
@@ -103,6 +105,8 @@ public class PaymentScheduleReportDataManager {
                 childB.setLevel((short)2);
 
                 currentgroupBid=reportTool.getIdByGroupType(reportTemplate.getGroupType2(),paymentScheduleView);
+                currentgroupCid=-1;
+
             }
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType3(),paymentScheduleView)!=currentgroupCid)
@@ -117,6 +121,8 @@ public class PaymentScheduleReportDataManager {
                 reportData.setCount(reportData.getCount()+1);
 
                 currentgroupCid=reportTool.getIdByGroupType(reportTemplate.getGroupType3(),paymentScheduleView);
+                currentgroupDid=-1;
+
             }
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType4(),paymentScheduleView)!=currentgroupDid)
