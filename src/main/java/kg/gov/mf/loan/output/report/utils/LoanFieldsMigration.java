@@ -80,7 +80,7 @@ public class LoanFieldsMigration {
 
         try{
             Statement st = connection.createStatement();
-            ResultSet detailsResultSet=st.executeQuery("select credit_id,details,act_freed,deposit_freed from credit_details offset 100,limit 10");
+            ResultSet detailsResultSet=st.executeQuery("select credit_id,details,act_freed,deposit_freed from credit_details");
             while (detailsResultSet.next())
             {
                 try{
