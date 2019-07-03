@@ -1,9 +1,13 @@
 package kg.gov.mf.loan.output.report.utils;
 
+import kg.gov.mf.loan.admin.sys.model.User;
+import kg.gov.mf.loan.admin.sys.service.UserService;
 import kg.gov.mf.loan.manage.model.loan.Description;
 import kg.gov.mf.loan.manage.model.loan.Loan;
+import kg.gov.mf.loan.manage.model.loan.SupervisorPlan;
 import kg.gov.mf.loan.manage.service.loan.DescriptionService;
 import kg.gov.mf.loan.manage.service.loan.LoanService;
+import kg.gov.mf.loan.manage.service.loan.SupervisorPlanService;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +15,8 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.persistence.EntityManager;
 import java.sql.*;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,7 +34,14 @@ public class LoanFieldsMigration {
     @Autowired
     SessionFactory sessionFactory;
 
+    @Autowired
+    SupervisorPlanService supervisorPlanService;
+
+    @Autowired
+    UserService userService;
+
     Set<String> errorList = new HashSet<String>();
+    HashMap<Long,Long> userMap=new HashMap<>();
 
     private Connection getSourceConnection(String ip,String database,String username,String password)
     {
@@ -64,6 +77,7 @@ public class LoanFieldsMigration {
     password:armad27raptor
     */
 
+//    migrate loan fields(deposit_freed,item.inspection_needed,profitDescription,normalDescription)
     public void migrateLoanField(String ip,String database,String username,String password){
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
@@ -133,6 +147,89 @@ public class LoanFieldsMigration {
         catch (Exception e){
             System.out.println(e);
         }
+    }
+
+//    migrate supervisorPlans
+    public void migrateSupervisorPlans(String ip,String database,String username,String password){
+
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+
+        Connection connection=this.getSourceConnection(ip,database,username,password);
+
+        userMapMaker(connection);
+
+        try{
+            Statement st=connection.createStatement();
+            ResultSet plans=st.executeQuery("select * from plan where year=2019");
+            while (plans.next()){
+                Loan loan=loanService.getByVersion(plans.getLong("credit_id"));
+                Double main=0.0;
+                Double interest=0.0;
+                Double penalty=0.0;
+                Date date= new Date();
+                date.setYear(plans.getInt("year"));
+                for (int i=1;i<13;i++){
+                    SupervisorPlan supervisorPlan= new SupervisorPlan();
+                    if(i<10){
+                        main=plans.getDouble("m0"+i+"_main");
+                        interest=plans.getDouble("m0"+i+"_percent");
+                        penalty=plans.getDouble("m0"+i+"_penalty");
+                    }
+                    else{
+                        main=plans.getDouble("m"+i+"_main");
+                        interest=plans.getDouble("m"+i+"_percent");
+                        penalty=plans.getDouble("m"+i+"_penalty");
+                    }
+                    if(i==2){
+                        date.setDate(28);
+                    }
+                    else {
+                        date.setDate(30);
+                    }
+                    date.setMonth(i);
+                    supervisorPlan.setDate(date);
+
+                    supervisorPlan.setReg_date(plans.getDate("reg_date"));
+                    if(userMap.get(plans.getLong("reg_by"))!=null)
+                        supervisorPlan.setReg_by_id(userMap.get(plans.getLong("reg_by")));
+                    else
+                        supervisorPlan.setReg_by_id(1);
+
+                    supervisorPlan.setLoan(loan);
+                    supervisorPlan.setPrincipal(main);
+                    supervisorPlan.setInterest(interest);
+                    supervisorPlan.setPenalty(penalty);
+                    supervisorPlan.setFee((double)0);
+                    supervisorPlan.setAmount(main+interest+penalty);
+                    supervisorPlan.setDescription("");
+
+                    if(supervisorPlan.getAmount()>1)
+                        this.supervisorPlanService.add(supervisorPlan);
+                }
+            }
+            plans.close();
+            st.close();
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+    }
+
+    public void userMapMaker(Connection connection){
+        try{
+            Statement statement=connection.createStatement();
+            ResultSet rs=statement.executeQuery("select id,login from users");
+            while (rs.next()){
+                User user=userService.findByUsername(rs.getString("login"));
+                userMap.put(rs.getLong("id"),user.getId());
+            }
+            statement.close();
+            rs.close();
+        }
+        catch (Exception e){
+
+        }
+
     }
 
 }
