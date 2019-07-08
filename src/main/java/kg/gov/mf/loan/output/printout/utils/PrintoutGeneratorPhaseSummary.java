@@ -682,7 +682,17 @@ public class PrintoutGeneratorPhaseSummary {
                     cell.setBorder(TitleColumnBorder);
                     table.addCell (cell);
 
-                    cell = new RtfCell (new Paragraph ("Заместитель директора",TitleFont));
+
+                    if( iResDepartment==2)
+                    {
+                        cell = new RtfCell (new Paragraph ("Заместитель директора",TitleFont));
+                    }
+                    else
+                    {
+                        cell = new RtfCell (new Paragraph ("Директор",TitleFont));
+                    }
+
+
                     cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                     cell.setVerticalAlignment(Element.ALIGN_TOP);
 
@@ -703,7 +713,7 @@ public class PrintoutGeneratorPhaseSummary {
                     }
                     else
                     {
-                        cell = new RtfCell (new Paragraph ("Э. Доолбеков",TitleFont));
+                        cell = new RtfCell (new Paragraph ("Ж. Торомаматов",TitleFont));
                     }
 
 
@@ -784,7 +794,7 @@ public class PrintoutGeneratorPhaseSummary {
                     }
                     else
                     {
-                        cell = new RtfCell (new Paragraph ("\nТуркбаев Б.",HeaderFont));
+                        cell = new RtfCell (new Paragraph ("\nТуркбаев Б.К.",HeaderFont));
                     }
 
 

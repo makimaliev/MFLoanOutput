@@ -692,7 +692,16 @@ public class PrintoutGeneratorCreditClaim {
             cell.setBorder(TitleColumnBorder);
             table.addCell (cell);
 
-            cell = new RtfCell (new Paragraph ("\nДиректордун орун басары",TitleFont));
+
+            if( iResDepartment==2)
+            {
+                cell = new RtfCell (new Paragraph ("\nДиректордун орун басары",TitleFont));
+            }
+            else
+            {
+                cell = new RtfCell (new Paragraph ("\nДиректор",TitleFont));
+            }
+
             cell.setHorizontalAlignment (Element.ALIGN_LEFT);
             cell.setVerticalAlignment(Element.ALIGN_TOP);
 
@@ -713,7 +722,7 @@ public class PrintoutGeneratorCreditClaim {
             }
             else
             {
-                cell = new RtfCell (new Paragraph ("\nЭ. Доолбеков",TitleFont));
+                cell = new RtfCell (new Paragraph ("\n_________________",TitleFont));
             }
 
 
@@ -794,7 +803,7 @@ public class PrintoutGeneratorCreditClaim {
             }
             else
             {
-                cell = new RtfCell (new Paragraph ("\nТуркбаев Б.",HeaderFont));
+                cell = new RtfCell (new Paragraph ("\nТуркбаев Б.К.",HeaderFont));
             }
 
 
