@@ -766,6 +766,39 @@ public class PrintoutGeneratorPhaseSummary {
 
                     // Согласовано
 
+
+                    cell = new RtfCell (new Paragraph ("",TitleFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                    cell.setBorder(TitleColumnBorder);
+                    table.addCell (cell);
+
+                    cell = new RtfCell (new Paragraph ("",TitleFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                    cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                    cell.setBorder(TitleColumnBorder);
+                    table.addCell (cell);
+
+                    cell = new RtfCell (new Paragraph ("",TitleFont));
+                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                    cell.setVerticalAlignment(Element.ALIGN_TOP);
+
+                    cell.setBorder(TitleColumnBorder);
+                    table.addCell (cell);
+
+
+                    cell = new RtfCell (new Paragraph ("Доолбеков Э.Б.",HeaderFont));
+
+
+                    cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                    cell.setVerticalAlignment(Element.ALIGN_TOP);
+                    cell.setBorder(TitleColumnBorder);
+                    table.addCell (cell);
+
+
+
                     cell = new RtfCell (new Paragraph ("",TitleFont));
                     cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                     cell.setVerticalAlignment(Element.ALIGN_TOP);
