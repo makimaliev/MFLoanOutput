@@ -287,7 +287,7 @@ public class SecondMigrationTool {
 
     Map<Long, GoodType> goodTypeMap = new HashMap<Long,GoodType>();
 
-    private Connection getSourceConnection()
+    private Connection getSourceConnection(String ip,String database,String username,String password)
     {
         Connection connection = null;
         try
@@ -303,8 +303,8 @@ public class SecondMigrationTool {
         try
         {
             connection = DriverManager.getConnection(
-                    "jdbc:postgresql://localhost:5432/newgosstroy", "postgres",
-                    "armad27raptor");
+                    "jdbc:postgresql://"+ip+":5432/"+database, username,
+                    password);
         }
         catch (SQLException e)
         {
@@ -315,10 +315,10 @@ public class SecondMigrationTool {
         return connection;
     }
 
-    public void loanMigrate(Long oldLoansId){
+    public void loanMigrate(Long oldLoansId,String ip,String database,String username,String password){
         SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
-        Connection connection = this.getSourceConnection();
+        Connection connection = this.getSourceConnection(ip,database,username,password);
         boolean orgFormMigrationSuccess = false;
 
         boolean done = false;
