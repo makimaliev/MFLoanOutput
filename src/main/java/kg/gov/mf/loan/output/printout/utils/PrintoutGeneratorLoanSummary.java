@@ -1159,7 +1159,7 @@ int x = 0;
                             }
                             else
                             {
-                                cell = new PdfPCell (new Paragraph ("______________",TitleFont));
+                                cell = new PdfPCell (new Paragraph ("К. Асеков",TitleFont));
                             }
 
                         }
@@ -1251,7 +1251,7 @@ int x = 0;
                             if(debtor.getWorkSector().getId()==13 || debtor.getWorkSector().getId()==14)
                             {
                                 sNach="Заведующий отделом кредитов предпринимательства и ф.л.:";
-                                sNachTitle="К. Асеков";
+                                sNachTitle="______________";
 
                                 f2=51;
                             }

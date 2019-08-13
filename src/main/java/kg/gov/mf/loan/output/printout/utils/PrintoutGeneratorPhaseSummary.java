@@ -823,7 +823,7 @@ public class PrintoutGeneratorPhaseSummary {
 
                     if( iResDepartment==2)
                     {
-                        cell = new RtfCell (new Paragraph ("\n______________",HeaderFont));
+                        cell = new RtfCell (new Paragraph ("\nАсеков К.Т.",HeaderFont));
                     }
                     else
                     {
@@ -864,7 +864,7 @@ public class PrintoutGeneratorPhaseSummary {
                         table.addCell (cell);
 
 
-                        cell = new RtfCell (new Paragraph ("\nАсеков К.",HeaderFont));
+                        cell = new RtfCell (new Paragraph ("\n_____________",HeaderFont));
 
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                         cell.setVerticalAlignment(Element.ALIGN_TOP);

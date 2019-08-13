@@ -1012,7 +1012,7 @@ public class PrintoutGeneratorRevisionDoc{
                     if(debtor.getWorkSector().getId()==13 || debtor.getWorkSector().getId()==14)
                     {
                         sNach="Заведующий отделом кредитов предпринимательства и ф.л.:";
-                        sNachTitle="К. Асеков";
+                        sNachTitle="________________";
                     }
                     else
                     {

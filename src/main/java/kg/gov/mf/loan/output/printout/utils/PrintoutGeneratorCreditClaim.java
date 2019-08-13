@@ -833,7 +833,7 @@ public class PrintoutGeneratorCreditClaim {
 
             if( iResDepartment==2)
             {
-                cell = new RtfCell (new Paragraph ("\n_______________",HeaderFont));
+                cell = new RtfCell (new Paragraph ("\nАсеков К.Т.",HeaderFont));
             }
             else
             {
@@ -874,7 +874,7 @@ public class PrintoutGeneratorCreditClaim {
                 table.addCell (cell);
 
 
-                cell = new RtfCell (new Paragraph ("\nАсеков К.",HeaderFont));
+                cell = new RtfCell (new Paragraph ("\n__________________",HeaderFont));
 
                 cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                 cell.setVerticalAlignment(Element.ALIGN_TOP);
