@@ -126,12 +126,12 @@ public class CollateralItemViewDaoImpl implements CollateralItemViewDao {
 		Criteria criteria=session.createCriteria(CollateralItemView.class);
 		reportTool.applyParameters(parameters,criteria);
 
-//		if(sortStr.equals("asc")){
-//			criteria.addOrder(Order.asc(sortField));
-//		}
-//		else if(sortStr.equals("desc")){
-//			criteria.addOrder(Order.desc(sortField));
-//		}
+		if(sortStr.equals("asc")){
+			criteria.addOrder(Order.asc(sortField));
+		}
+		else if(sortStr.equals("desc")){
+			criteria.addOrder(Order.desc(sortField));
+		}
 		criteria.setFirstResult(offset);
 		criteria.setMaxResults(limit);
 
