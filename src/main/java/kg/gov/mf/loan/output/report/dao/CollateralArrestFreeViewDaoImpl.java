@@ -5,6 +5,7 @@ import kg.gov.mf.loan.output.report.utils.ReportTool;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,6 +124,10 @@ public class CollateralArrestFreeViewDaoImpl implements CollateralArrestFreeView
 
 		criteria.setFirstResult(offset);
 		criteria.setMaxResults(limit);
+
+		String sortField="v_ciaf_id";
+
+		criteria.addOrder(Order.desc(sortField));
 
 		return criteria.list();
 	}
