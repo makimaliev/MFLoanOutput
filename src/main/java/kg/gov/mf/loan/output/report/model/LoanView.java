@@ -83,6 +83,20 @@ public class LoanView extends DebtorView
 	private Date v_credit_order_reg_date;
 
 
+	@Column
+	private Long v_supervisor_description_id;
+
+	@Column
+	private Long v_collection_description_id;
+
+	@Column
+	private Long v_collateral_description_id;
+
+
+
+
+
+
 	public Long getV_loan_id() {
 		return v_loan_id;
 	}
@@ -217,5 +231,29 @@ public class LoanView extends DebtorView
 
 	public void setV_loan_fund_id(Long v_loan_fund_id) {
 		this.v_loan_fund_id = v_loan_fund_id;
+	}
+
+	public Long getV_supervisor_description_id() {
+		return v_supervisor_description_id;
+	}
+
+	public void setV_supervisor_description_id(Long v_supervisor_description_id) {
+		this.v_supervisor_description_id = v_supervisor_description_id;
+	}
+
+	public Long getV_collection_description_id() {
+		return v_collection_description_id;
+	}
+
+	public void setV_collection_description_id(Long v_collection_description_id) {
+		this.v_collection_description_id = v_collection_description_id;
+	}
+
+	public Long getV_collateral_description_id() {
+		return v_collateral_description_id;
+	}
+
+	public void setV_collateral_description_id(Long v_collateral_description_id) {
+		this.v_collateral_description_id = v_collateral_description_id;
 	}
 }

@@ -128,6 +128,30 @@ public class CollateralItemView extends DebtorView
 	@Column
 	private Long v_ci_quantityTypeId;
 
+	@Column
+	private Long v_ci_org_id;
+
+	@Column
+	private String v_ci_arestPlace;
+
+	@Column
+	private String v_ci_ownerName;
+
+	@DateTimeFormat(pattern = "dd.mm.yyyy")
+	@Temporal(TemporalType.DATE)
+	private Date v_ci_inspection_date;
+
+	@Column
+	private String v_ci_last_condition;
+
+	@Column
+	private String v_ci_details;
+
+	@Column
+	private String v_ci_collateral_description;
+
+
+
 
 	public Long getV_ca_id() {
 		return v_ca_id;
@@ -383,5 +407,61 @@ public class CollateralItemView extends DebtorView
 
 	public void setV_credit_order_reg_date(Date v_credit_order_reg_date) {
 		this.v_credit_order_reg_date = v_credit_order_reg_date;
+	}
+
+	public Long getV_ci_org_id() {
+		return v_ci_org_id;
+	}
+
+	public void setV_ci_org_id(Long v_ci_org_id) {
+		this.v_ci_org_id = v_ci_org_id;
+	}
+
+	public String getV_ci_arestPlace() {
+		return v_ci_arestPlace;
+	}
+
+	public void setV_ci_arestPlace(String v_ci_arestPlace) {
+		this.v_ci_arestPlace = v_ci_arestPlace;
+	}
+
+	public String getV_ci_ownerName() {
+		return v_ci_ownerName;
+	}
+
+	public void setV_ci_ownerName(String v_ci_ownerName) {
+		this.v_ci_ownerName = v_ci_ownerName;
+	}
+
+	public Date getV_ci_inspection_date() {
+		return v_ci_inspection_date;
+	}
+
+	public void setV_ci_inspection_date(Date v_ci_inspection_date) {
+		this.v_ci_inspection_date = v_ci_inspection_date;
+	}
+
+	public String getV_ci_last_condition() {
+		return v_ci_last_condition;
+	}
+
+	public void setV_ci_last_condition(String v_ci_last_condition) {
+		this.v_ci_last_condition = v_ci_last_condition;
+	}
+
+	public String getV_ci_details() {
+		return v_ci_details;
+	}
+
+	public void setV_ci_details(String v_ci_details) {
+		this.v_ci_details = v_ci_details;
+	}
+
+	public String getV_ci_collateral_description() {
+		return v_ci_collateral_description;
+	}
+
+	public void setV_ci_collateral_description(String v_ci_collateral_description) {
+		this.v_ci_collateral_description = v_ci_collateral_description;
 	}
 }

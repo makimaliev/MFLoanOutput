@@ -261,6 +261,9 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                 childD.setCollateralNotaryOfficeRegNumber(lv.getV_ca_notaryOfficeRegNumber());
 
 
+                if(lv.getV_ci_arestPlace()!=null)
+                    childD.setCollateralItemArrestPlace(lv.getV_ci_arestPlace());
+
                 currentgroupDid=reportTool.getIdByGroupType(reportTemplate.getGroupType4(),collateralItemView);
                 currentgroupEid=-1;
                 currentgroupFid=-1;
@@ -451,6 +454,23 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                 childF.setCollateralItemTypeId(pv.getV_ci_itemTypeId());
 
 
+                if(pv.getV_ci_ownerName()!=null)
+                    childF.setCollateralItemOwner(pv.getV_ci_ownerName());
+
+                if(pv.getV_ci_inspection_date()!=null)
+                    childF.setCollateralItemInspectionDate(new java.sql.Date(pv.getV_ci_inspection_date().getTime()));
+
+                if(pv.getV_ci_last_condition()!=null)
+                    childF.setCollateralItemLastCondition(pv.getV_ci_last_condition());
+
+                if(pv.getV_ci_details()!=null)
+                    childF.setCollateralItemDetails(pv.getV_ci_details());
+
+                if(pv.getV_ci_collateral_description()!=null)
+                    childF.setCollateralItemCollateralDescription(pv.getV_ci_collateral_description());
+
+
+
                 if(pv.getV_ci_collateralValue()>0)
                 {
                     childF.setCollateralItemCollateralValue(childF.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
@@ -460,6 +480,17 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                     childC.setCollateralItemCollateralValue(childC.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
                     childD.setCollateralItemCollateralValue(childD.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
                     reportData.setCollateralItemCollateralValue(reportData.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
+                }
+
+                if(pv.getV_ci_estimatedValue()>0)
+                {
+                    childF.setCollateralItemEstimatedValue(childF.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+                    childE.setCollateralItemEstimatedValue(childE.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+                    childA.setCollateralItemEstimatedValue(childA.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+                    childB.setCollateralItemEstimatedValue(childB.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+                    childC.setCollateralItemEstimatedValue(childC.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+                    childD.setCollateralItemEstimatedValue(childD.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+                    reportData.setCollateralItemEstimatedValue(reportData.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
                 }
 
 

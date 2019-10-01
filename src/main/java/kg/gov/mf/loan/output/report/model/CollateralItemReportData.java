@@ -108,6 +108,20 @@ public class CollateralItemReportData extends ReportData
 
 	private long collateralItemQuantityTypeId = 0;
 
+	private String collateralItemArrestPlace = "";
+
+	private String collateralItemOwner = "";
+
+	private Date   collateralItemInspectionDate          = null;
+
+	private String collateralItemLastCondition = "";
+
+	private String collateralItemDetails = "";
+
+	private String collateralItemCollateralDescription = "";
+
+
+
 
 
 	public CollateralItemReportData()
@@ -627,5 +641,53 @@ public class CollateralItemReportData extends ReportData
 
 	public void setCollateralItemTypeName(String collateralItemTypeName) {
 		this.collateralItemTypeName = collateralItemTypeName;
+	}
+
+	public String getCollateralItemArrestPlace() {
+		return collateralItemArrestPlace;
+	}
+
+	public void setCollateralItemArrestPlace(String collateralItemArrestPlace) {
+		this.collateralItemArrestPlace = collateralItemArrestPlace;
+	}
+
+	public String getCollateralItemOwner() {
+		return collateralItemOwner;
+	}
+
+	public void setCollateralItemOwner(String collateralItemOwner) {
+		this.collateralItemOwner = collateralItemOwner;
+	}
+
+	public Date getCollateralItemInspectionDate() {
+		return collateralItemInspectionDate;
+	}
+
+	public void setCollateralItemInspectionDate(Date collateralItemInspectionDate) {
+		this.collateralItemInspectionDate = collateralItemInspectionDate;
+	}
+
+	public String getCollateralItemLastCondition() {
+		return collateralItemLastCondition;
+	}
+
+	public void setCollateralItemLastCondition(String collateralItemLastCondition) {
+		this.collateralItemLastCondition = collateralItemLastCondition;
+	}
+
+	public String getCollateralItemDetails() {
+		return collateralItemDetails;
+	}
+
+	public void setCollateralItemDetails(String collateralItemDetails) {
+		this.collateralItemDetails = collateralItemDetails;
+	}
+
+	public String getCollateralItemCollateralDescription() {
+		return collateralItemCollateralDescription;
+	}
+
+	public void setCollateralItemCollateralDescription(String collateralItemCollateralDescription) {
+		this.collateralItemCollateralDescription = collateralItemCollateralDescription;
 	}
 }
