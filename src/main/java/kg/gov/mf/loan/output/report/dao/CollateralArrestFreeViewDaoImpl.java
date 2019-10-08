@@ -125,7 +125,7 @@ public class CollateralArrestFreeViewDaoImpl implements CollateralArrestFreeView
 		criteria.setFirstResult(offset);
 		criteria.setMaxResults(limit);
 
-		String sortField="v_ci_id";
+		String sortField="v_ciaf_id";
 
 		criteria.addOrder(Order.desc(sortField));
 

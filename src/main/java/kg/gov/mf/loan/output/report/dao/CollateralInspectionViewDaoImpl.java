@@ -124,7 +124,7 @@ public class CollateralInspectionViewDaoImpl implements CollateralInspectionView
 		criteria.setMaxResults(limit);
 
 
-		String sortField="v_ci_id";
+		String sortField="v_cir_id";
 
 		criteria.addOrder(Order.desc(sortField));
 
