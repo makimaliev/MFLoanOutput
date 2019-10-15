@@ -120,6 +120,10 @@ public class CollateralItemReportData extends ReportData
 
 	private String collateralItemCollateralDescription = "";
 
+	private long collateralItemInspectionStatusId = 0;
+
+	private long collateralItemArrestFreeStatusId = 0;
+
 
 
 
@@ -689,5 +693,21 @@ public class CollateralItemReportData extends ReportData
 
 	public void setCollateralItemCollateralDescription(String collateralItemCollateralDescription) {
 		this.collateralItemCollateralDescription = collateralItemCollateralDescription;
+	}
+
+	public long getCollateralItemInspectionStatusId() {
+		return collateralItemInspectionStatusId;
+	}
+
+	public void setCollateralItemInspectionStatusId(long collateralItemInspectionStatusId) {
+		this.collateralItemInspectionStatusId = collateralItemInspectionStatusId;
+	}
+
+	public long getCollateralItemArrestFreeStatusId() {
+		return collateralItemArrestFreeStatusId;
+	}
+
+	public void setCollateralItemArrestFreeStatusId(long collateralItemArrestFreeStatusId) {
+		this.collateralItemArrestFreeStatusId = collateralItemArrestFreeStatusId;
 	}
 }

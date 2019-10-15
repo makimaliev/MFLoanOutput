@@ -150,6 +150,17 @@ public class CollateralItemView extends DebtorView
 	@Column
 	private String v_ci_collateral_description;
 
+	@Column
+	private Long v_ci_inspection_status;
+
+	@Column
+	private Long v_ci_arrestFree_status;
+
+	@Column
+	private Long v_ci_condition_type;
+
+
+
 
 
 
@@ -463,5 +474,29 @@ public class CollateralItemView extends DebtorView
 
 	public void setV_ci_collateral_description(String v_ci_collateral_description) {
 		this.v_ci_collateral_description = v_ci_collateral_description;
+	}
+
+	public Long getV_ci_inspection_status() {
+		return v_ci_inspection_status;
+	}
+
+	public void setV_ci_inspection_status(Long v_ci_inspection_status) {
+		this.v_ci_inspection_status = v_ci_inspection_status;
+	}
+
+	public Long getV_ci_arrestFree_status() {
+		return v_ci_arrestFree_status;
+	}
+
+	public void setV_ci_arrestFree_status(Long v_ci_arrestFree_status) {
+		this.v_ci_arrestFree_status = v_ci_arrestFree_status;
+	}
+
+	public Long getV_ci_condition_type() {
+		return v_ci_condition_type;
+	}
+
+	public void setV_ci_condition_type(Long v_ci_condition_type) {
+		this.v_ci_condition_type = v_ci_condition_type;
 	}
 }

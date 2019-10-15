@@ -499,6 +499,15 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                 childF.setCollateralItemDescription(pv.getV_ci_description());
 
 
+                childF.setCollateralItemInspectionStatusId(pv.getV_ci_inspection_status());
+
+                childF.setCollateralItemArrestFreeStatusId(pv.getV_ci_arrestFree_status());
+
+                childF.setCollateralItemConditionTypeId((pv.getV_ci_condition_type()));
+
+
+
+
                 currentgroupFid=reportTool.getIdByGroupType(reportTemplate.getGroupType6(),collateralItemView);
             }
             else
