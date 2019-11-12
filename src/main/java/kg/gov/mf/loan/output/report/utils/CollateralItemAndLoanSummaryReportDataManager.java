@@ -256,7 +256,7 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                     childD.setCollateralNotaryOfficeRegDate(new java.sql.Date(lv.getV_ca_notaryOfficeRegDate().getTime()));
                 else
                 {
-                    System.out.println("asdf=="+lv.getV_ci_id());
+
                 }
                 childD.setCollateralNotaryOfficeRegNumber(lv.getV_ca_notaryOfficeRegNumber());
 
@@ -408,7 +408,7 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                 }
                 else
                 {
-                    System.out.println(" no ls ");
+
                 }
 
 
@@ -444,7 +444,7 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                     childF.setCollateralNotaryOfficeRegDate(new java.sql.Date(pv.getV_ca_notaryOfficeRegDate().getTime()));
                 else
                 {
-                    System.out.println("asdf=="+pv.getV_ci_id());
+
                 }
                 childF.setCollateralNotaryOfficeRegNumber(pv.getV_ca_notaryOfficeRegNumber());
 
@@ -470,6 +470,17 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                     childF.setCollateralItemCollateralDescription(pv.getV_ci_collateral_description());
 
 
+
+
+                if(pv.getV_ci_quantity()>0)
+                {
+                    childE.setCollateralItemQuantity(childE.getCollateralItemQuantity()+pv.getV_ci_quantity());
+                    childA.setCollateralItemQuantity(childA.getCollateralItemQuantity()+pv.getV_ci_quantity());
+                    childB.setCollateralItemQuantity(childB.getCollateralItemQuantity()+pv.getV_ci_quantity());
+                    childC.setCollateralItemQuantity(childC.getCollateralItemQuantity()+pv.getV_ci_quantity());
+                    childD.setCollateralItemQuantity(childD.getCollateralItemQuantity()+pv.getV_ci_quantity());
+                    reportData.setCollateralItemQuantity(reportData.getCollateralItemQuantity()+pv.getV_ci_quantity());
+                }
 
                 if(pv.getV_ci_collateralValue()>0)
                 {

@@ -42,10 +42,10 @@ public class CollateralInspectionReportDataManager {
 
         reportData.getCollateralInspectionViews().addAll(collateralInspectionViewService.findByParameter(parameterS));
 
-        for (CollateralInspectionView collateralInspectionView: reportData.getCollateralInspectionViews())
-        {
-            System.out.println(collateralInspectionView.getV_ci_name());
-        }
+//        for (CollateralInspectionView collateralInspectionView: reportData.getCollateralInspectionViews())
+//        {
+//
+//        }
 
         return groupifyData(reportData, reportTemplate, reportTool );
     }
@@ -151,7 +151,7 @@ public class CollateralInspectionReportDataManager {
                     childD.setCollateralNotaryOfficeRegDate(new java.sql.Date(lv.getV_ca_notaryOfficeRegDate().getTime()));
                 else
                 {
-                    System.out.println("asdf=="+lv.getV_ci_id());
+
                 }
                 childD.setCollateralNotaryOfficeRegNumber(lv.getV_ca_notaryOfficeRegNumber());
 
@@ -170,6 +170,14 @@ public class CollateralInspectionReportDataManager {
                 childE.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType5(),collateralInspectionView));
                 childE.setLevel((short)5);
 
+
+                childE.setPaymentCount(1);
+                childD.setPaymentCount(childD.getPaymentCount()+1);
+                childC.setPaymentCount(childC.getPaymentCount()+1);
+                childA.setPaymentCount(childA.getPaymentCount()+1);
+                childB.setPaymentCount(childB.getPaymentCount()+1);
+                reportData.setPaymentCount(reportData.getPaymentCount()+1);
+
                 if(pv.getV_ca_agreementDate()!=null)
                     childE.setCollateralAgreementDate(new java.sql.Date(pv.getV_ca_agreementDate().getTime()));
                 childE.setCollateralAgreementNumber(pv.getV_ca_agreementNumber());
@@ -186,7 +194,7 @@ public class CollateralInspectionReportDataManager {
                     childE.setCollateralNotaryOfficeRegDate(new java.sql.Date(pv.getV_ca_notaryOfficeRegDate().getTime()));
                 else
                 {
-                    System.out.println("asdf=="+pv.getV_ci_id());
+
                 }
                 childE.setCollateralNotaryOfficeRegNumber(pv.getV_ca_notaryOfficeRegNumber());
 
@@ -194,6 +202,17 @@ public class CollateralInspectionReportDataManager {
                 childE.setCollateralItemQuantity(pv.getV_ci_quantity());
                 childE.setCollateralItemQuantityTypeId(pv.getV_ci_quantityTypeId());
                 childE.setCollateralItemTypeId(pv.getV_ci_itemTypeId());
+
+
+
+                if(pv.getV_ci_quantity()>0)
+                {
+                    childA.setCollateralItemQuantity(childA.getCollateralItemQuantity()+pv.getV_ci_quantity());
+                    childB.setCollateralItemQuantity(childB.getCollateralItemQuantity()+pv.getV_ci_quantity());
+                    childC.setCollateralItemQuantity(childC.getCollateralItemQuantity()+pv.getV_ci_quantity());
+                    childD.setCollateralItemQuantity(childD.getCollateralItemQuantity()+pv.getV_ci_quantity());
+                    reportData.setCollateralItemQuantity(reportData.getCollateralItemQuantity()+pv.getV_ci_quantity());
+                }
 
 
                 if(pv.getV_ci_collateralValue()>0)
@@ -206,8 +225,15 @@ public class CollateralInspectionReportDataManager {
                     reportData.setCollateralItemCollateralValue(reportData.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
                 }
 
-
-                childE.setCollateralItemEstimatedValue(pv.getV_ci_estimatedValue());
+                if(pv.getV_ci_estimatedValue()>0)
+                {
+                    childE.setCollateralItemEstimatedValue(childE.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+                    childA.setCollateralItemEstimatedValue(childA.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+                    childB.setCollateralItemEstimatedValue(childB.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+                    childC.setCollateralItemEstimatedValue(childC.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+                    childD.setCollateralItemEstimatedValue(childD.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+                    reportData.setCollateralItemEstimatedValue(reportData.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+                }
 
                 childE.setCollateralItemDescription(pv.getV_ci_description());
 
