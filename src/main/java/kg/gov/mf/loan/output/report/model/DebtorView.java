@@ -47,6 +47,12 @@ public abstract class DebtorView extends ReportView {
 	@Column
 	private Long v_debtor_village_id;
 
+	@Column
+	private Long v_debtor_group_id;
+
+	@Column
+	private Long v_debtor_subGroup_id;
+
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
@@ -138,5 +144,21 @@ public abstract class DebtorView extends ReportView {
 
 	public void setV_debtor_village_id(Long v_debtor_village_id) {
 		this.v_debtor_village_id = v_debtor_village_id;
+	}
+
+	public Long getV_debtor_group_id() {
+		return v_debtor_group_id;
+	}
+
+	public void setV_debtor_group_id(Long v_debtor_group_id) {
+		this.v_debtor_group_id = v_debtor_group_id;
+	}
+
+	public Long getV_debtor_subGroup_id() {
+		return v_debtor_subGroup_id;
+	}
+
+	public void setV_debtor_subGroup_id(Long v_debtor_subGroup_id) {
+		this.v_debtor_subGroup_id = v_debtor_subGroup_id;
 	}
 }

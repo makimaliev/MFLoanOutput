@@ -555,12 +555,12 @@ public class PrintoutGeneratorCreditClaim {
                 {
                     case 1: sNachOtdela="Туркбаев Б.К.";      break;
                     case 2: sNachOtdela="Туркбаев Б.К.";      break;
-                    case 3: sNachOtdela="Сыдыков А.А.";      break;
+                    case 3: sNachOtdela="________________";    break;
                     case 4: sNachOtdela="Гр. Швейцарии";    break;
                     case 5: sNachOtdela="Туркбаев Б.К.";      break;
-                    case 6: sNachOtdela="Сыдыков А.А.";      break;
-                    case 7: sNachOtdela="Сыдыков А.А.";      break;
-                    case 8: sNachOtdela="Сыдыков А.А.";      break;
+                    case 6: sNachOtdela="________________";   break;
+                    case 7: sNachOtdela="________________";   break;
+                    case 8: sNachOtdela="________________";     break;
                     case 9: sNachOtdela="Туркбаев Б.К.";      break;
 
                 }
@@ -938,7 +938,7 @@ public class PrintoutGeneratorCreditClaim {
                 table.addCell (cell);
 
 
-                cell = new RtfCell (new Paragraph ("\nСыдыков А.А.",HeaderFont));
+                cell = new RtfCell (new Paragraph ("\n___________________",HeaderFont));
 
                 cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                 cell.setVerticalAlignment(Element.ALIGN_TOP);

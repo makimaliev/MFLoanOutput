@@ -291,6 +291,16 @@ public class LoanSummaryReportDataManager {
                 childA.setCount(childA.getCount()+1);
                 reportData.setCount(reportData.getCount()+1);
 
+                if(loanSummaryView.getV_debtor_group_id()!=null)
+                {
+                    childC.setDebtorGroup(loanSummaryView.getV_debtor_group_id());
+                }
+
+                if(loanSummaryView.getV_debtor_subGroup_id()!=null)
+                {
+                    childC.setDebtorSubGroup(loanSummaryView.getV_debtor_subGroup_id());
+                }
+
                 currentgroupCid=reportTool.getIdByGroupType(reportTemplate.getGroupType3(),loanSummaryView);
                 currentgroupDid=-1;
             }
@@ -848,6 +858,9 @@ public class LoanSummaryReportDataManager {
         convertedLoanSummaryView.setV_ls_overdue_interest(ls.getOverdueInterest());
         convertedLoanSummaryView.setV_ls_overdue_penalty(ls.getOverduePenalty());
         convertedLoanSummaryView.setV_last_date(ls.getCreateDate());
+
+        convertedLoanSummaryView.setV_debtor_group_id(lv.getV_debtor_group_id());
+        convertedLoanSummaryView.setV_debtor_subGroup_id(lv.getV_debtor_subGroup_id());
 
         return convertedLoanSummaryView;
     }

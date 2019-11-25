@@ -18,6 +18,7 @@ import kg.gov.mf.loan.manage.model.collateral.CollateralItem;
 import kg.gov.mf.loan.manage.model.collection.CollectionPhase;
 import kg.gov.mf.loan.manage.model.collection.PhaseDetails;
 import kg.gov.mf.loan.manage.model.debtor.Debtor;
+import kg.gov.mf.loan.manage.model.loan.CreditTerm;
 import kg.gov.mf.loan.manage.model.loan.Loan;
 import kg.gov.mf.loan.manage.model.loan.LoanSummaryAct;
 import kg.gov.mf.loan.manage.model.loan.PaymentSchedule;
@@ -29,11 +30,13 @@ import kg.gov.mf.loan.manage.service.collateral.CollateralItemService;
 import kg.gov.mf.loan.manage.service.collection.CollectionPhaseService;
 import kg.gov.mf.loan.manage.service.collection.PhaseDetailsService;
 import kg.gov.mf.loan.manage.service.debtor.DebtorService;
+import kg.gov.mf.loan.manage.service.loan.CreditTermService;
 import kg.gov.mf.loan.manage.service.loan.LoanService;
 import kg.gov.mf.loan.manage.service.loan.LoanSummaryActService;
 import kg.gov.mf.loan.manage.service.loan.PaymentScheduleService;
 import kg.gov.mf.loan.manage.service.orderterm.CurrencyRateService;
 import kg.gov.mf.loan.manage.service.orderterm.OrderTermCurrencyService;
+import kg.gov.mf.loan.manage.service.orderterm.OrderTermFloatingRateTypeService;
 import kg.gov.mf.loan.manage.service.process.LoanSummaryService;
 import kg.gov.mf.loan.output.printout.model.PrintoutTemplate;
 import kg.gov.mf.loan.output.report.model.LoanSummaryView;
@@ -119,6 +122,12 @@ public class PrintoutGeneratorRevisionDoc{
 
     @Autowired
     PhaseDetailsService phaseDetailsService;
+
+    @Autowired
+    CreditTermService creditTermService;
+
+    @Autowired
+    OrderTermFloatingRateTypeService floatingRateTypeService;
 
     public void generatePrintoutByTemplate(PrintoutTemplate printoutTemplate, Date onDate, long objectId, Document document,String from){
 
@@ -984,7 +993,7 @@ public class PrintoutGeneratorRevisionDoc{
                     else
                     {
 //                        sNach="Заведующий отделом грантов АПК:";
-                        sNachTitle="А. Сыдыков";
+                        sNachTitle="________________";
                     }
                 }
                 else
@@ -1004,7 +1013,7 @@ public class PrintoutGeneratorRevisionDoc{
                     else
                     {
                         sNach="Заведующий отделом грантов АПК:";
-                        sNachTitle="А. Сыдыков";
+                        sNachTitle="________________";
                     }
                 }
                 else
@@ -1012,7 +1021,7 @@ public class PrintoutGeneratorRevisionDoc{
                     if(debtor.getWorkSector().getId()==13 || debtor.getWorkSector().getId()==14)
                     {
                         sNach="Заведующий отделом кредитов предпринимательства и ф.л.:";
-                        sNachTitle="________________";
+                        sNachTitle="А. Озонов";
                     }
                     else
                     {
@@ -1024,7 +1033,7 @@ public class PrintoutGeneratorRevisionDoc{
 
                 if(iCreditType==5)
                 {
-                    sNach="Заведующий отделом отчуждения кредитов:";
+                    sNach="Заведующий отделом отчуждения активов:";
                     sNachTitle="И. Джумабаев";
                 }
 
@@ -1643,6 +1652,118 @@ public class PrintoutGeneratorRevisionDoc{
                             " №" + sCreditNumber +
                             " от " + (sCreditDate) +"г.";
 
+
+                    /*
+
+                    PercentRate=res.getDouble("percent_rate");
+                                    LiborRate=res.getShort("rate_type");
+
+                                    LiborMain=res.getShort("plus_penalty");
+                                    PenaltyMain=res.getDouble("penalty_main_debt");
+
+                                    sCreditLine = CStringTool.FormatNumber(PercentRate)+"%";
+                                    if(LiborRate>0)
+                                        sCreditLine+="+"+TemplateManager.getTemplateName(32,(int)LiborRate);
+
+                                    if(PenaltyMain>0)
+                                        sCreditLine+=" - "+CStringTool.FormatNumber(PenaltyMain)+"%";
+
+                                    if(LiborMain>0)
+                                        sCreditLine+="+"+TemplateManager.getTemplateName(32,(int)LiborMain);
+
+
+
+                     */
+
+
+                    Loan loan = loanService.getById(lsv.getV_loan_id());
+
+
+                    String termText = "";
+
+                    Double minInterestRate = 0.0;
+                    Double maxInterestRate = 0.0;
+
+                    Double minPenaltyRate = 0.0;
+                    Double maxPenaltyRate = 0.0;
+
+                    Long interestRateType = 2L;
+                    Long penaltyRateType = 2L;
+
+
+
+
+
+                    for (CreditTerm creditTerm: loan.getCreditTerms())
+                    {
+                        CreditTerm term = creditTermService.getById(creditTerm.getId());
+
+                        if(term.getInterestRateValue()<minInterestRate)
+                        {
+                            minInterestRate=term.getInterestRateValue();
+                        }
+
+                        if(term.getInterestRateValue()>maxInterestRate)
+                        {
+                            maxInterestRate=term.getInterestRateValue();
+                        }
+
+
+                        if(term.getPenaltyOnPrincipleOverdueRateValue()<minPenaltyRate)
+                        {
+                            minPenaltyRate=term.getPenaltyOnPrincipleOverdueRateValue();
+                        }
+
+                        if(term.getPenaltyOnPrincipleOverdueRateValue()<minPenaltyRate)
+                        {
+                            minPenaltyRate=term.getPenaltyOnInterestOverdueRateValue();
+                        }
+
+                        if(term.getPenaltyOnPrincipleOverdueRateValue()>maxPenaltyRate)
+                        {
+                            maxPenaltyRate=term.getPenaltyOnPrincipleOverdueRateValue();
+                        }
+
+                        if(term.getPenaltyOnPrincipleOverdueRateValue()<maxPenaltyRate)
+                        {
+                            maxPenaltyRate=term.getPenaltyOnInterestOverdueRateValue();
+                        }
+
+
+                        if(term.getFloatingRateType().getId()!=2)
+                        {
+                            interestRateType=term.getFloatingRateType().getId();
+                        }
+
+                        if(term.getPenaltyOnPrincipleOverdueRateType().getId()!=2)
+                        {
+                            penaltyRateType=term.getPenaltyOnPrincipleOverdueRateType().getId();
+                        }
+
+                        if(term.getPenaltyOnInterestOverdueRateType().getId()!=2)
+                        {
+                            penaltyRateType=term.getPenaltyOnInterestOverdueRateType().getId();
+                        }
+
+
+                    }
+
+
+                    if(minInterestRate>0 && minInterestRate<maxInterestRate)
+                    {
+                        termText=" от "+minInterestRate+"% до "+maxInterestRate+"%";
+                    }
+
+
+
+//                    if(maxInterestRate>0 && )
+//                    {
+//                        if(minInterestRate>0)
+//                        {
+//
+//                        }
+//                        termText=" от "+minInterestRate+"% ";
+//                    }
 
 
 

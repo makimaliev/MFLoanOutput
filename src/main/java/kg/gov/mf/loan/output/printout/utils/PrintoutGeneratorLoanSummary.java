@@ -828,6 +828,11 @@ int x = 0;
 
                             sResTitle2 = "Заместитель директора:";
                             sResName2  = "Э. Доолбеков";
+
+                            if(iCreditType==5)
+                            {
+                                sResName2  = "Дж. Сагынов";
+                            }
                         }
                         else
                         {
@@ -1114,13 +1119,23 @@ int x = 0;
 
                         if(debtor.getWorkSector().getId()==1 || debtor.getWorkSector().getId()==12)
                         {
-                            cell = new PdfPCell (new Paragraph ("Начальник управления кредитов АПК:",TitleFont));
+                            if(iCreditType==5)
+                            {
+                                cell = new PdfPCell (new Paragraph ("Начальник управления по работе с активами:",TitleFont));
+                            }
+                            else
+                            {
+                                cell = new PdfPCell (new Paragraph ("Начальник управления кредитов АПК:",TitleFont));
+                            }
+
+
+
                         }
                         else
                         {
                             if(iCreditType==5)
                             {
-                                cell = new PdfPCell (new Paragraph ("Начальник управления обеспечения кредитов:",TitleFont));
+                                cell = new PdfPCell (new Paragraph ("Начальник управления по работе с активами:",TitleFont));
                             }
                             else
                             {
@@ -1149,7 +1164,16 @@ int x = 0;
 
                         if(debtor.getWorkSector().getId()==1 || debtor.getWorkSector().getId()==12)
                         {
-                            cell = new PdfPCell (new Paragraph ("Б. Туркбаев",TitleFont));
+
+
+                            if(iCreditType==5)
+                            {
+                                cell = new PdfPCell (new Paragraph ("А. Акымбеков",TitleFont));
+                            }
+                            else
+                            {
+                                cell = new PdfPCell (new Paragraph ("Б. Туркбаев",TitleFont));
+                            }
                         }
                         else
                         {
@@ -1223,7 +1247,7 @@ int x = 0;
                             else
                                 {
                                     sNach="Заведующий отделом грантов АПК:";
-                                    sNachTitle="А. Сыдыков";
+                                    sNachTitle="________________";
                                 }
                         }
                         else
@@ -1243,7 +1267,7 @@ int x = 0;
                             else
                             {
                                 sNach="Заведующий отделом грантов АПК:";
-                                sNachTitle="А. Сыдыков";
+                                sNachTitle="________________";
                             }
                         }
                         else
@@ -1251,7 +1275,7 @@ int x = 0;
                             if(debtor.getWorkSector().getId()==13 || debtor.getWorkSector().getId()==14)
                             {
                                 sNach="Заведующий отделом кредитов предпринимательства и ф.л.:";
-                                sNachTitle="______________";
+                                sNachTitle="А. Озонов";
 
                                 f2=51;
                             }
@@ -1265,7 +1289,7 @@ int x = 0;
 
                         if(iCreditType==5)
                         {
-                            sNach="Заведующий отделом отчуждения кредитов:";
+                            sNach="Заведующий отделом отчуждения активов:";
                             sNachTitle="И. Джумабаев";
                         }
 

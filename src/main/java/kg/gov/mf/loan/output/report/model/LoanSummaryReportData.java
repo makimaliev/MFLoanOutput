@@ -52,6 +52,9 @@ public class LoanSummaryReportData extends ReportData
 
 	private long   loanFinGroup    		= 0;
 
+	private long   debtorGroup    		= 0;
+	private long   debtorSubGroup    	= 0;
+
 	private double totalPaidInCurrency    = 0;
 
 	private String details     			= "";
@@ -491,5 +494,21 @@ public class LoanSummaryReportData extends ReportData
 
 	public void setLoanFinGroup(long loanFinGroup) {
 		this.loanFinGroup = loanFinGroup;
+	}
+
+	public long getDebtorGroup() {
+		return debtorGroup;
+	}
+
+	public void setDebtorGroup(long debtorGroup) {
+		this.debtorGroup = debtorGroup;
+	}
+
+	public long getDebtorSubGroup() {
+		return debtorSubGroup;
+	}
+
+	public void setDebtorSubGroup(long debtorSubGroup) {
+		this.debtorSubGroup = debtorSubGroup;
 	}
 }
