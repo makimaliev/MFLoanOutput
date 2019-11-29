@@ -304,6 +304,7 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                         childC.setLoanAmount(childC.getLoanAmount()+ls.getLoanAmount());
                         childB.setLoanAmount(childB.getLoanAmount()+ls.getLoanAmount());
                         childA.setLoanAmount(childA.getLoanAmount()+ls.getLoanAmount());
+                        reportData.setLoanAmount(reportData.getLoanAmount()+ls.getLoanAmount());
                     }
 
 
@@ -314,6 +315,7 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                         childC.setTotalDisbursment(childC.getTotalDisbursment()+ls.getTotalDisbursed());
                         childB.setTotalDisbursment(childB.getTotalDisbursment()+ls.getTotalDisbursed());
                         childA.setTotalDisbursment(childA.getTotalDisbursment()+ls.getTotalDisbursed());
+                        reportData.setTotalDisbursment(reportData.getTotalDisbursment()+ls.getTotalDisbursed());
                     }
 
                     if(ls.getTotalPaidKGS()!=null)
@@ -323,6 +325,7 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                         childC.setTotalPaidInCurrency(childC.getTotalPaidInCurrency()+ls.getTotalPaidKGS());
                         childB.setTotalPaidInCurrency(childB.getTotalPaidInCurrency()+ls.getTotalPaidKGS());
                         childA.setTotalPaidInCurrency(childA.getTotalPaidInCurrency()+ls.getTotalPaidKGS());
+                        reportData.setTotalPaidInCurrency(reportData.getTotalPaidInCurrency()+ls.getTotalPaidKGS());
                     }
 
                     if(ls.getOnDate()!=null)
@@ -336,6 +339,7 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                         childC.setRemainingSum(childC.getRemainingSum()+ls.getTotalOutstanding());
                         childB.setRemainingSum(childB.getRemainingSum()+ls.getTotalOutstanding());
                         childA.setRemainingSum(childA.getRemainingSum()+ls.getTotalOutstanding());
+                        reportData.setRemainingSum(reportData.getRemainingSum()+ls.getTotalOutstanding());
                     }
 
                     if(ls.getOutstadingPrincipal()!=null)
@@ -345,6 +349,7 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                         childC.setRemainingPrincipal(childC.getRemainingPrincipal()+ls.getOutstadingPrincipal());
                         childB.setRemainingPrincipal(childB.getRemainingPrincipal()+ls.getOutstadingPrincipal());
                         childA.setRemainingPrincipal(childA.getRemainingPrincipal()+ls.getOutstadingPrincipal());
+                        reportData.setRemainingPrincipal(reportData.getRemainingPrincipal()+ls.getOutstadingPrincipal());
                     }
 
 
@@ -356,6 +361,7 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                         childC.setRemainingInterest(childC.getRemainingInterest()+ls.getOutstadingInterest());
                         childB.setRemainingInterest(childB.getRemainingInterest()+ls.getOutstadingInterest());
                         childA.setRemainingInterest(childA.getRemainingInterest()+ls.getOutstadingInterest());
+                        reportData.setRemainingInterest(reportData.getRemainingInterest()+ls.getOutstadingInterest());
                     }
 
                     if(ls.getOutstadingPenalty()!=null)
@@ -365,6 +371,7 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                         childC.setRemainingPenalty(childC.getRemainingPenalty()+ls.getOutstadingPenalty());
                         childB.setRemainingPenalty(childB.getRemainingPenalty()+ls.getOutstadingPenalty());
                         childA.setRemainingPenalty(childA.getRemainingPenalty()+ls.getOutstadingPenalty());
+                        reportData.setRemainingPenalty(reportData.getRemainingPenalty()+ls.getOutstadingPenalty());
                     }
 
                     if(ls.getTotalOverdue()!=null)
@@ -374,6 +381,7 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                         childC.setOverdueAll(childC.getOverdueAll()+ls.getTotalOverdue());
                         childB.setOverdueAll(childB.getOverdueAll()+ls.getTotalOverdue());
                         childA.setOverdueAll(childA.getOverdueAll()+ls.getTotalOverdue());
+                        reportData.setOverdueAll(reportData.getOverdueAll()+ls.getTotalOverdue());
                     }
 
                     if(ls.getOutstadingPrincipal()!=null)
@@ -383,6 +391,7 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                         childC.setOverduePrincipal(childC.getOverduePrincipal()+ls.getOutstadingPrincipal());
                         childB.setOverduePrincipal(childB.getOverduePrincipal()+ls.getOutstadingPrincipal());
                         childA.setOverduePrincipal(childA.getOverduePrincipal()+ls.getOutstadingPrincipal());
+                        reportData.setOverduePrincipal(reportData.getOverduePrincipal()+ls.getOutstadingPrincipal());
                     }
 
 
@@ -394,6 +403,7 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                         childC.setOverdueInterest(childC.getOverdueInterest()+ls.getOutstadingInterest());
                         childB.setOverdueInterest(childB.getOverdueInterest()+ls.getOutstadingInterest());
                         childA.setOverdueInterest(childA.getOverdueInterest()+ls.getOutstadingInterest());
+                        reportData.setOverdueInterest(reportData.getOverdueInterest()+ls.getOutstadingInterest());
                     }
 
                     if(ls.getOutstadingPenalty()!=null)
@@ -403,6 +413,7 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                         childC.setOverduePenalty(childC.getOverduePenalty()+ls.getOutstadingPenalty());
                         childB.setOverduePenalty(childB.getOverduePenalty()+ls.getOutstadingPenalty());
                         childA.setOverduePenalty(childA.getOverduePenalty()+ls.getOutstadingPenalty());
+                        reportData.setOverduePenalty(reportData.getOverduePenalty()+ls.getOutstadingPenalty());
                     }
 
                 }
