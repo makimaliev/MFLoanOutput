@@ -946,7 +946,7 @@ public class SecondMigrationTool {
 
                                                     loanCopy.setAmount(rsLoan.getDouble("cost"));
                                                     loanCopy.setCreditOrder(crditOrderMap.get((long)rsLoan.getInt("credit_order_id")));
-                                                    loanCopy.setSupervisorId(userMap.get(9L).getId());
+                                                    loanCopy.setSupervisorId(userMap.get(rsLoan.getLong("curator")).getId());
                                                     loanCopy.setLoanType(loanTypeMap.get((long)rsLoan.getInt("credit_type")));
                                                     loanCopy.setCurrency(currencyMap.get((long)rsLoan.getInt("currency")));
                                                     loanCopy.setRegDate(rsLoan.getDate("date"));
@@ -1040,7 +1040,7 @@ public class SecondMigrationTool {
                                                 loan.setAmount(rsLoan.getDouble("cost"));
                                                 loan.setCreditOrder(crditOrderMap.get((long)rsLoan.getInt("credit_order_id")));
 //                                                loan.setSupervisorId(rsLoan.getLong("curator"));
-                                                loan.setSupervisorId(userMap.get(rsLoan.getLong("curator")).getId());
+                                                loan.setSupervisorId(userMap.get(9L).getId());
                                                 loan.setLoanType(loanTypeMap.get((long)rsLoan.getInt("credit_type")));
                                                 loan.setCurrency(currencyMap.get((long)rsLoan.getInt("currency")));
                                                 loan.setRegDate(rsLoan.getDate("date"));
