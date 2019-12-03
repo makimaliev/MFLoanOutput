@@ -33,6 +33,8 @@ import java.util.Set;
 
 public class SecondMigrationTool {
 
+    //region service
+
     @Autowired
     GoodTypeService goodTypeService;
 
@@ -234,10 +236,10 @@ public class SecondMigrationTool {
     @Autowired
     BankruptService bankruptService;
 
+    //endregion
 
 
-
-
+    //region hashMaps
     Set<String> errorList = new HashSet<String>();
 
     Map<Long, OrgForm> organizationFormMap = new HashMap<Long,OrgForm>();
@@ -286,6 +288,8 @@ public class SecondMigrationTool {
     Map<Long,Long> debtorToBelinkedCollateralItemMap = new HashMap<>();
 
     Map<Long, GoodType> goodTypeMap = new HashMap<Long,GoodType>();
+
+    //endregion
 
     private Connection getSourceConnection(String ip,String database,String username,String password)
     {
