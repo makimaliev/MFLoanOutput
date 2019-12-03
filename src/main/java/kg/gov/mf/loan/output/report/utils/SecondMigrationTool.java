@@ -12,6 +12,7 @@ import kg.gov.mf.loan.manage.model.order.CreditOrder;
 import kg.gov.mf.loan.manage.model.order.CreditOrderState;
 import kg.gov.mf.loan.manage.model.order.CreditOrderType;
 import kg.gov.mf.loan.manage.model.orderterm.*;
+import kg.gov.mf.loan.manage.repository.loan.PaymentScheduleRepository;
 import kg.gov.mf.loan.manage.service.collateral.*;
 import kg.gov.mf.loan.manage.service.collection.*;
 import kg.gov.mf.loan.manage.service.debtor.*;
@@ -113,6 +114,9 @@ public class SecondMigrationTool {
 
     @Autowired
     PaymentScheduleService paymentScheduleService;
+
+    @Autowired
+    PaymentScheduleRepository paymentScheduleRepository;
 
     @Autowired
     InstallmentStateService installmentStateService;
@@ -915,7 +919,7 @@ public class SecondMigrationTool {
                                     try
                                     {
                                         Statement stLoan = connection.createStatement();
-                                        rsLoan = stLoan.executeQuery("select * from credit,credit_details where credit.id = credit_details.credit_id and credit.id = "+ 43093+ " order by id");
+                                        rsLoan = stLoan.executeQuery("select * from credit,credit_details where credit.id = credit_details.credit_id and credit.person_id = "+rs.getInt("person_id")+ " order by id");
                                         if(rsLoan != null)
                                         {
                                             while (rsLoan.next())
@@ -942,7 +946,7 @@ public class SecondMigrationTool {
 
                                                     loanCopy.setAmount(rsLoan.getDouble("cost"));
                                                     loanCopy.setCreditOrder(crditOrderMap.get((long)rsLoan.getInt("credit_order_id")));
-                                                    loanCopy.setSupervisorId(userMap.get(rsLoan.getLong("curator")).getId());
+                                                    loanCopy.setSupervisorId(userMap.get(9L).getId());
                                                     loanCopy.setLoanType(loanTypeMap.get((long)rsLoan.getInt("credit_type")));
                                                     loanCopy.setCurrency(currencyMap.get((long)rsLoan.getInt("currency")));
                                                     loanCopy.setRegDate(rsLoan.getDate("date"));
@@ -1209,7 +1213,7 @@ public class SecondMigrationTool {
                                                                             if(rsSchedule.getInt("record_status")==2)
                                                                                 paymentScheduleParent.setRecord_status(rsSchedule.getInt("record_status"));
 
-                                                                            this.paymentScheduleService.add(paymentScheduleParent);
+                                                                            this.paymentScheduleRepository.save(paymentScheduleParent);
 
                                                                         }
                                                                     }
