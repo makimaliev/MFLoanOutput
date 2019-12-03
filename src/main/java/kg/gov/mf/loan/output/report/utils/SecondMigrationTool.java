@@ -12,6 +12,7 @@ import kg.gov.mf.loan.manage.model.order.CreditOrder;
 import kg.gov.mf.loan.manage.model.order.CreditOrderState;
 import kg.gov.mf.loan.manage.model.order.CreditOrderType;
 import kg.gov.mf.loan.manage.model.orderterm.*;
+import kg.gov.mf.loan.manage.repository.loan.CreditTermRepository;
 import kg.gov.mf.loan.manage.repository.loan.PaymentScheduleRepository;
 import kg.gov.mf.loan.manage.service.collateral.*;
 import kg.gov.mf.loan.manage.service.collection.*;
@@ -105,6 +106,9 @@ public class SecondMigrationTool {
 
     @Autowired
     CreditTermService creditTermService;
+
+    @Autowired
+    CreditTermRepository creditTermRepository;
 
     @Autowired
     OrderTermTransactionOrderService orderTermTransactionOrderService;
@@ -1156,7 +1160,7 @@ public class SecondMigrationTool {
                                                                         if(rsSchedule.getInt("record_status")==2)
                                                                             paymentSchedule.setRecord_status(rsSchedule.getInt("record_status"));
 
-                                                                        this.paymentScheduleService.add(paymentSchedule);
+                                                                        this.paymentScheduleRepository.save(paymentSchedule);
 
                                                                         PaymentSchedule paymentScheduleParent = new PaymentSchedule();
 
@@ -1173,7 +1177,7 @@ public class SecondMigrationTool {
                                                                         if(rsSchedule.getInt("record_status")==2)
                                                                             paymentScheduleParent.setRecord_status(rsSchedule.getInt("record_status"));
 
-                                                                        this.paymentScheduleService.add(paymentScheduleParent);
+                                                                        this.paymentScheduleRepository.save(paymentScheduleParent);
 
                                                                     }
                                                                     else {
@@ -1189,7 +1193,7 @@ public class SecondMigrationTool {
                                                                         if(rsSchedule.getInt("record_status")==2)
                                                                             paymentSchedule.setRecord_status(rsSchedule.getInt("record_status"));
 
-                                                                        this.paymentScheduleService.add(paymentSchedule);
+                                                                        this.paymentScheduleRepository.save(paymentSchedule);
 
                                                                     }
 
@@ -1321,7 +1325,7 @@ public class SecondMigrationTool {
                                                                         if(rsTerm.getInt("record_status")==2)
                                                                             term.setRecord_status(rsTerm.getInt("record_status"));
 
-                                                                        this.creditTermService.add(term);
+                                                                        this.creditTermRepository.save(term);
 
                                                                         CreditTerm termParent = new CreditTerm();
 
@@ -1376,7 +1380,7 @@ public class SecondMigrationTool {
                                                                         if(rsTerm.getInt("record_status")==2)
                                                                             termParent.setRecord_status(rsTerm.getInt("record_status"));
 
-                                                                        this.creditTermService.add(termParent);
+                                                                        this.creditTermRepository.save(termParent);
 
 
                                                                     }
@@ -1437,7 +1441,7 @@ public class SecondMigrationTool {
                                                                         if(rsTerm.getInt("record_status")==2)
                                                                             term.setRecord_status(rsTerm.getInt("record_status"));
 
-                                                                        this.creditTermService.add(term);
+                                                                        this.creditTermRepository.save(term);
                                                                     }
 
 
@@ -1503,7 +1507,7 @@ public class SecondMigrationTool {
                                                                             if(rsTerm.getInt("record_status")==2)
                                                                                 termParent.setRecord_status(rsTerm.getInt("record_status"));
 
-                                                                            this.creditTermService.add(termParent);
+                                                                            this.creditTermRepository.save(termParent);
 
                                                                         }
                                                                     }
