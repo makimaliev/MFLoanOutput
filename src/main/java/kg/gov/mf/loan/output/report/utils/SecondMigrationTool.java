@@ -244,6 +244,9 @@ public class SecondMigrationTool {
     @Autowired
     BankruptService bankruptService;
 
+    @Autowired
+    DestinationAccountService destinationAccountService;
+
     //endregion
 
 
@@ -452,7 +455,7 @@ public class SecondMigrationTool {
                     "      * from person, person_details,address,phone\n" +
                     "where person.id = person_details.person_id AND \n" +
                     "      address.user_id = person.id AND address.contact_type = 2 AND \n" +
-                    "      phone.user_id = person.id and phone.contact_type = 2 and person.id="+oldPersonId+" order by person.id ");
+                    "      phone.user_id = person.id and phone.contact_type = 2 and person.id="+oldPersonId);
             debtorMigrate(connection,rs,st);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1032,14 +1035,8 @@ public class SecondMigrationTool {
 
                                                 }
 
-
-
-
-
-
-
-
-
+                                                DestinationAccount destinationAccount = destinationAccountService.getById(1L);
+                                                loan.setDestinationAccount(destinationAccount);
 
                                                 loan.setAmount(rsLoan.getDouble("cost"));
                                                 loan.setCreditOrder(crditOrderMap.get((long)rsLoan.getInt("credit_order_id")));
