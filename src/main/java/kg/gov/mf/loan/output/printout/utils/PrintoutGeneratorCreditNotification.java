@@ -518,7 +518,7 @@ public class PrintoutGeneratorCreditNotification {
             cell.setBorder(TitleColumnBorder);
             table.addCell (cell);
 
-            cell = new RtfCell (new Paragraph ("\n Туркбаев Б.К.",ColumnFont));
+            cell = new RtfCell (new Paragraph ("\n Юсупов А.Б.",ColumnFont));
 
             cell.setHorizontalAlignment (Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_TOP);
@@ -549,7 +549,7 @@ public class PrintoutGeneratorCreditNotification {
             cell.setBorder(TitleColumnBorder);
             table.addCell (cell);
 
-            cell = new RtfCell (new Paragraph ("\nТуркбаев Б.К.",ColumnFont));
+            cell = new RtfCell (new Paragraph ("\nЮсупов А.Б.",ColumnFont));
 
             cell.setHorizontalAlignment (Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_TOP);

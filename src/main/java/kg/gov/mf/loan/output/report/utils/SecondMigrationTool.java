@@ -449,8 +449,8 @@ public class SecondMigrationTool {
             {
                 oldPersonId=creditsResultSet.getInt("id");
             }
-            ResultSet rs = st.executeQuery("select (select aokmotu.id from aokmotu where aokmotu.region =  address.region_code and aokmotu.district = address.district_code limit 1) as aokmotu_id,\n" +
-                    "      (select selo.id from selo where selo.region = address.region_code and selo.district = address.district_code limit 1) as selo_id,\n" +
+            ResultSet rs = st.executeQuery("select (select aokmotu.id from aokmotu where aokmotu.region =  address.region_code and aokmotu.district = address.district_code and aokmotu.aokmotu = address.a_okmotu_code limit 1) as aokmotu_id,\n" +
+                    "      (select selo.id from selo where selo.region = address.region_code and selo.district = address.district_code and selo.aokmotu = address.a_okmotu_code and selo.selo_code = address.selo limit 1) as selo_id,\n" +
                     "\n" +
                     "      * from person, person_details,address,phone\n" +
                     "where person.id = person_details.person_id AND \n" +

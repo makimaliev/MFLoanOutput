@@ -827,7 +827,7 @@ public class PrintoutGeneratorPhaseSummary {
                     }
                     else
                     {
-                        cell = new RtfCell (new Paragraph ("\nТуркбаев Б.К.",HeaderFont));
+                        cell = new RtfCell (new Paragraph ("\nЮсупов А.Б.",HeaderFont));
                     }
 
 

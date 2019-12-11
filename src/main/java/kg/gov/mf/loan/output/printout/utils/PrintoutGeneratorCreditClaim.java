@@ -837,7 +837,7 @@ public class PrintoutGeneratorCreditClaim {
             }
             else
             {
-                cell = new RtfCell (new Paragraph ("\nТуркбаев Б.К.",HeaderFont));
+                cell = new RtfCell (new Paragraph ("\nЮсупов А.Б.",HeaderFont));
             }
 
 

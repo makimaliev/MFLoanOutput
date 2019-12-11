@@ -1172,7 +1172,7 @@ int x = 0;
                             }
                             else
                             {
-                                cell = new PdfPCell (new Paragraph ("Б. Туркбаев",TitleFont));
+                                cell = new PdfPCell (new Paragraph ("А. Юсупов",TitleFont));
                             }
                         }
                         else
