@@ -4725,11 +4725,15 @@ public class SecondMigrationTool {
                             if(rs.getInt("district_id")==18) district = districtMap.get((long)35);
                             if(rs.getInt("district_id")==19) district = districtMap.get((long)52);
 
-                            aokmotu.setDistrict(district);
+
 
 
                             if(aokmotu!=null)
-                            aokmotuMap.put(rs.getLong("id"),aokmotu);
+                            {
+                                aokmotu.setDistrict(district);
+                                aokmotuMap.put(rs.getLong("id"),aokmotu);
+                            }
+
 
                         }
 
