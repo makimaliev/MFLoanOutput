@@ -150,6 +150,10 @@ public class CollectionPhaseView extends DebtorView
 	@Temporal(TemporalType.DATE)
 	private Date v_cph_startDate;
 
+	@DateTimeFormat(pattern = "dd.mm.yyyy")
+	@Temporal(TemporalType.DATE)
+	private Date v_cph_regDate;
+
 
 	@Column
 	private Long v_cph_collectionProcedureId;
@@ -409,6 +413,14 @@ public class CollectionPhaseView extends DebtorView
 
 	public void setV_cph_startDate(Date v_cph_startDate) {
 		this.v_cph_startDate = v_cph_startDate;
+	}
+
+	public Date getV_cph_regDate() {
+		return v_cph_regDate;
+	}
+
+	public void setV_cph_regDate(Date v_cph_regDate) {
+		this.v_cph_regDate = v_cph_regDate;
 	}
 
 	public Long getV_cph_collectionProcedureId() {
