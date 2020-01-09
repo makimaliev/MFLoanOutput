@@ -11,7 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
 
 @Repository
 public class CollectionPhaseViewDaoImpl implements CollectionPhaseViewDao {
@@ -110,7 +113,7 @@ public class CollectionPhaseViewDaoImpl implements CollectionPhaseViewDao {
 	}
 
 	@Override
-	public List<CollectionPhaseView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit, String sortStr, String sortField) {
+	public Set<CollectionPhaseView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit, String sortStr, String sortField) {
 		Session session=sessionFactory.getCurrentSession();
 
 		Criteria criteria=session.createCriteria(CollectionPhaseView.class);
@@ -127,7 +130,7 @@ public class CollectionPhaseViewDaoImpl implements CollectionPhaseViewDao {
 		criteria.setFirstResult(offset);
 		criteria.setMaxResults(limit);
 
-		List<CollectionPhaseView> collectionPhaseViews=new LinkedList<>(criteria.list());
+		Set<CollectionPhaseView> collectionPhaseViews=new HashSet<>(criteria.list());
 		return collectionPhaseViews;
 	}
 
