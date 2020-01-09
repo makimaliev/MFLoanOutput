@@ -113,7 +113,7 @@ public class CollectionPhaseViewDaoImpl implements CollectionPhaseViewDao {
 	}
 
 	@Override
-	public Set<CollectionPhaseView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit, String sortStr, String sortField) {
+	public List<CollectionPhaseView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit, String sortStr, String sortField) {
 		Session session=sessionFactory.getCurrentSession();
 
 		Criteria criteria=session.createCriteria(CollectionPhaseView.class);
@@ -130,8 +130,7 @@ public class CollectionPhaseViewDaoImpl implements CollectionPhaseViewDao {
 		criteria.setFirstResult(offset);
 		criteria.setMaxResults(limit);
 
-		Set<CollectionPhaseView> collectionPhaseViews=new HashSet<>(criteria.list());
-		return collectionPhaseViews;
+		return criteria.list();
 	}
 
 
