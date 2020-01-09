@@ -21,5 +21,5 @@ public interface CollectionPhaseViewService {
 
 	public List<CollectionPhaseView> findByParameter(LinkedHashMap<String, List<String>> parameters);
 
-	public Set<CollectionPhaseView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit, String sortStr, String sortField);
+	public List<CollectionPhaseView> findByParameter(LinkedHashMap<String, List<String>> parameters, Integer offset, Integer limit, String sortStr, String sortField);
 }
