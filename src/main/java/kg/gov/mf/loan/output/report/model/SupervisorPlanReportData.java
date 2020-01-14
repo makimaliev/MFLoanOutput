@@ -92,6 +92,28 @@ public class SupervisorPlanReportData extends ReportData
 
 	private long sp_reg_by_id= 0;
 
+
+	private double sp_year = 0;
+
+	private double sp_quarter1 = 0;
+	private double sp_quarter2 = 0;
+	private double sp_quarter3 = 0;
+	private double sp_quarter4 = 0;
+
+	private double sp_month1 = 0;
+	private double sp_month2 = 0;
+	private double sp_month3 = 0;
+	private double sp_month4 = 0;
+	private double sp_month5 = 0;
+	private double sp_month6 = 0;
+	private double sp_month7 = 0;
+	private double sp_month8 = 0;
+	private double sp_month9 = 0;
+	private double sp_month10 = 0;
+	private double sp_month11 = 0;
+	private double sp_month12 = 0;
+
+
 	public SupervisorPlanReportData()
 	{
 		ChildDataList = new LinkedList<SupervisorPlanReportData>();
@@ -537,5 +559,141 @@ public class SupervisorPlanReportData extends ReportData
 
 	public void setSp_Count(int sp_Count) {
 		this.sp_Count = sp_Count;
+	}
+
+	public double getSp_year() {
+		return sp_year;
+	}
+
+	public void setSp_year(double sp_year) {
+		this.sp_year = sp_year;
+	}
+
+	public double getSp_quarter1() {
+		return sp_quarter1;
+	}
+
+	public void setSp_quarter1(double sp_quarter1) {
+		this.sp_quarter1 = sp_quarter1;
+	}
+
+	public double getSp_quarter2() {
+		return sp_quarter2;
+	}
+
+	public void setSp_quarter2(double sp_quarter2) {
+		this.sp_quarter2 = sp_quarter2;
+	}
+
+	public double getSp_quarter3() {
+		return sp_quarter3;
+	}
+
+	public void setSp_quarter3(double sp_quarter3) {
+		this.sp_quarter3 = sp_quarter3;
+	}
+
+	public double getSp_quarter4() {
+		return sp_quarter4;
+	}
+
+	public void setSp_quarter4(double sp_quarter4) {
+		this.sp_quarter4 = sp_quarter4;
+	}
+
+	public double getSp_month1() {
+		return sp_month1;
+	}
+
+	public void setSp_month1(double sp_month1) {
+		this.sp_month1 = sp_month1;
+	}
+
+	public double getSp_month2() {
+		return sp_month2;
+	}
+
+	public void setSp_month2(double sp_month2) {
+		this.sp_month2 = sp_month2;
+	}
+
+	public double getSp_month3() {
+		return sp_month3;
+	}
+
+	public void setSp_month3(double sp_month3) {
+		this.sp_month3 = sp_month3;
+	}
+
+	public double getSp_month4() {
+		return sp_month4;
+	}
+
+	public void setSp_month4(double sp_month4) {
+		this.sp_month4 = sp_month4;
+	}
+
+	public double getSp_month5() {
+		return sp_month5;
+	}
+
+	public void setSp_month5(double sp_month5) {
+		this.sp_month5 = sp_month5;
+	}
+
+	public double getSp_month6() {
+		return sp_month6;
+	}
+
+	public void setSp_month6(double sp_month6) {
+		this.sp_month6 = sp_month6;
+	}
+
+	public double getSp_month7() {
+		return sp_month7;
+	}
+
+	public void setSp_month7(double sp_month7) {
+		this.sp_month7 = sp_month7;
+	}
+
+	public double getSp_month8() {
+		return sp_month8;
+	}
+
+	public void setSp_month8(double sp_month8) {
+		this.sp_month8 = sp_month8;
+	}
+
+	public double getSp_month9() {
+		return sp_month9;
+	}
+
+	public void setSp_month9(double sp_month9) {
+		this.sp_month9 = sp_month9;
+	}
+
+	public double getSp_month10() {
+		return sp_month10;
+	}
+
+	public void setSp_month10(double sp_month10) {
+		this.sp_month10 = sp_month10;
+	}
+
+	public double getSp_month11() {
+		return sp_month11;
+	}
+
+	public void setSp_month11(double sp_month11) {
+		this.sp_month11 = sp_month11;
+	}
+
+	public double getSp_month12() {
+		return sp_month12;
+	}
+
+	public void setSp_month12(double sp_month12) {
+		this.sp_month12 = sp_month12;
 	}
 }
