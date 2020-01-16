@@ -162,6 +162,14 @@ public class SupervisorPlanReportDataManager {
 
                 SupervisorPlanView pv = supervisorPlanView;
 
+                double thousands = 1000;
+
+                pv.setV_sp_amount(pv.getV_sp_amount()/thousands);
+                pv.setV_sp_principal(pv.getV_sp_principal()/thousands);
+                pv.setV_sp_interest(pv.getV_sp_interest()/thousands);
+                pv.setV_sp_penalty(pv.getV_sp_penalty()/thousands);
+
+
                 childE = childD.addChild();
                 childE.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType5(),supervisorPlanView));
                 childE.setLevel((short)5);
