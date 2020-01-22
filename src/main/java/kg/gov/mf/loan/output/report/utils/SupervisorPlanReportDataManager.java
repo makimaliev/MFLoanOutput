@@ -1,15 +1,16 @@
 package kg.gov.mf.loan.output.report.utils;
 
-import kg.gov.mf.loan.output.report.model.SupervisorPlanReportData;
-import kg.gov.mf.loan.output.report.model.SupervisorPlanView;
-import kg.gov.mf.loan.output.report.model.ReportTemplate;
+import kg.gov.mf.loan.manage.model.loan.PaymentSchedule;
+import kg.gov.mf.loan.manage.model.process.LoanDetailedSummary;
+import kg.gov.mf.loan.manage.model.process.LoanSummary;
+import kg.gov.mf.loan.output.report.model.*;
 import kg.gov.mf.loan.output.report.service.LoanViewService;
+import kg.gov.mf.loan.output.report.service.PaymentScheduleViewService;
 import kg.gov.mf.loan.output.report.service.SupervisorPlanViewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 
 public class SupervisorPlanReportDataManager {
@@ -24,6 +25,16 @@ public class SupervisorPlanReportDataManager {
     @Autowired
     SupervisorPlanViewService supervisorPlanViewService;
 
+    @Autowired
+    PaymentScheduleViewService paymentScheduleViewService;
+
+
+    private LinkedHashSet<PaymentScheduleView> paymentScheduleList = new LinkedHashSet<>(0);
+
+    private LinkedHashSet<Long> paymentScheduleIdList = new LinkedHashSet<>(0);
+
+    private LinkedHashMap<Long,List<PaymentScheduleView>> paymentScheduleMapByLoanId = new LinkedHashMap<>();
+
     public SupervisorPlanReportData getReportDataGrouped(SupervisorPlanReportData reportData,ReportTemplate reportTemplate)
     {
 
@@ -33,17 +44,52 @@ public class SupervisorPlanReportDataManager {
 
         LinkedHashMap<String,List<String>> parameterS = new LinkedHashMap<>();
 
+        LinkedHashMap<String,List<String>> parameterSchedule = new LinkedHashMap<>();
+
         parameterS.putAll(reportTool.getParametersByTemplate(reportTemplate));
 
         reportData.getSupervisorPlanViews().addAll(supervisorPlanViewService.findByParameter(parameterS));
 
-        for (SupervisorPlanView supervisorPlanView: reportData.getSupervisorPlanViews())
+        for (Map.Entry<String, List<String>> parameterInLoop : parameterS.entrySet())
         {
-            System.out.println(supervisorPlanView.getV_debtor_name());
+
+            String parameterType = parameterInLoop.getKey();
+
+            List<String> ids = parameterInLoop.getValue();
+
+            String propertyName = parameterType.substring(4,parameterType.length());
+
+            if(propertyName.contains("v_sp_date"))
+            {
+                parameterType = parameterType.replace("v_sp_date","v_ps_expected_date");
+            }
+
+            parameterSchedule.put(parameterType,ids);
+        }
+
+        if(parameterSchedule.size()>0)
+        {
+            for (PaymentScheduleView scheduleInLoop:paymentScheduleViewService.findByParameter(parameterSchedule))
+            {
+                paymentScheduleList.add(scheduleInLoop);
+
+                if(paymentScheduleMapByLoanId.get(scheduleInLoop.getV_loan_id())==null)
+                {
+                    List<PaymentScheduleView> psViews = new ArrayList<>();
+
+                    psViews.add(scheduleInLoop);
+
+                    paymentScheduleMapByLoanId.put(scheduleInLoop.getV_loan_id(), psViews);
+
+                }
+                else
+                {
+                    paymentScheduleMapByLoanId.get(scheduleInLoop.getV_loan_id()).add(scheduleInLoop);
+                }
+            }
         }
 
         return groupifyData(reportData, reportTemplate, reportTool );
-
 
     }
 
@@ -51,6 +97,7 @@ public class SupervisorPlanReportDataManager {
     {
 
         reportTool.initReference();
+        reportTool.initCurrencyRatesMap(reportTemplate);
 
         long groupAid=-1;
         long groupBid=-1;
@@ -83,6 +130,11 @@ public class SupervisorPlanReportDataManager {
         double lastInterestPayment = 0;
         double lastCollectedInterestPayment = 0;
         double lastCollectedPenaltyPayment = 0;
+
+        double rate=1;
+        double rate2=1;
+
+        double thousands = 1000;
 
         for (SupervisorPlanView supervisorPlanView:reportData.getSupervisorPlanViews())
         {
@@ -145,34 +197,365 @@ public class SupervisorPlanReportDataManager {
 
                 currentgroupDid=reportTool.getIdByGroupType(reportTemplate.getGroupType4(),supervisorPlanView);
 
-                lastLoanAmount = 0;
-
-                lastDisbursement =0;
-                lastDisbursement = 0;
-                lastPrincipalPayment = 0;
-                lastInterestPayment = 0;
-                lastCollectedInterestPayment = 0;
-                lastCollectedPenaltyPayment = 0;
-
-
             }
+
+            boolean isScheduleDataSet = false;
 
             if(reportTool.getIdByGroupType(reportTemplate.getGroupType5(),supervisorPlanView)!=currentgroupEid)
             {
 
                 SupervisorPlanView pv = supervisorPlanView;
 
-                double thousands = 1000;
-
-                pv.setV_sp_amount(pv.getV_sp_amount()/thousands);
-                pv.setV_sp_principal(pv.getV_sp_principal()/thousands);
-                pv.setV_sp_interest(pv.getV_sp_interest()/thousands);
-                pv.setV_sp_penalty(pv.getV_sp_penalty()/thousands);
 
 
                 childE = childD.addChild();
                 childE.setName(reportTool.getNameByGroupType(reportTemplate.getGroupType5(),supervisorPlanView));
                 childE.setLevel((short)5);
+
+                if(childE!=null && !isScheduleDataSet)
+                {
+                    try {
+
+                        if(paymentScheduleMapByLoanId.get(pv.getV_loan_id())!=null)
+                        {
+                            for (PaymentScheduleView scheduleInLoop: paymentScheduleMapByLoanId.get(pv.getV_loan_id())) {
+
+                                double totalScheduleAmount = scheduleInLoop.getV_ps_principal_payment()/thousands+
+                                        scheduleInLoop.getV_ps_interest_payment()/thousands +
+                                        scheduleInLoop.getV_ps_collected_interest_payment()/thousands +
+                                        scheduleInLoop.getV_ps_collected_penalty_payment()/thousands;
+
+                                if(!paymentScheduleIdList.contains(scheduleInLoop.getV_ps_id()))
+                                {
+                                    paymentScheduleIdList.add(scheduleInLoop.getV_ps_id());
+
+                                    if(scheduleInLoop.getV_loan_currency_id()>1)
+                                    {
+                                        try {
+                                            rate = reportTool.getCurrencyRateValueByDateAndCurrencyTypeId(reportTemplate.getOnDate(),scheduleInLoop.getV_loan_currency_id());
+
+                                            totalScheduleAmount=totalScheduleAmount*rate;
+
+                                            if(reportTemplate.getAdditionalDate()!=null)
+                                            {
+                                                rate2 = reportTool.getCurrencyRateValueByDateAndCurrencyTypeId(reportTemplate.getAdditionalDate(),scheduleInLoop.getV_loan_currency_id());
+                                            }
+
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                        }
+
+                                    }
+
+                                    switch(scheduleInLoop.getV_ps_expected_date().getMonth())
+                                    {
+                                        case 0:
+                                            reportData.setPs_month1(reportData.getPs_month1()+totalScheduleAmount);
+                                            childA.setPs_month1(childA.getPs_month1()+totalScheduleAmount);
+                                            childB.setPs_month1(childB.getPs_month1()+totalScheduleAmount);
+                                            childC.setPs_month1(childC.getPs_month1()+totalScheduleAmount);
+                                            childD.setPs_month1(childD.getPs_month1()+totalScheduleAmount);
+                                            childE.setPs_month1(totalScheduleAmount);
+
+                                            reportData.setPs_quarter1(reportData.getPs_quarter1()+totalScheduleAmount);
+                                            childA.setPs_quarter1(childA.getPs_quarter1()+totalScheduleAmount);
+                                            childB.setPs_quarter1(childB.getPs_quarter1()+totalScheduleAmount);
+                                            childC.setPs_quarter1(childC.getPs_quarter1()+totalScheduleAmount);
+                                            childD.setPs_quarter1(childD.getPs_quarter1()+totalScheduleAmount);
+                                            childE.setPs_quarter1(totalScheduleAmount);
+
+                                            reportData.setPs_year(reportData.getPs_year()+totalScheduleAmount);
+                                            childA.setPs_year(childA.getPs_year()+totalScheduleAmount);
+                                            childB.setPs_year(childB.getPs_year()+totalScheduleAmount);
+                                            childC.setPs_year(childC.getPs_year()+totalScheduleAmount);
+                                            childD.setPs_year(childD.getPs_year()+totalScheduleAmount);
+                                            childE.setPs_year(totalScheduleAmount);
+
+                                            break;
+
+                                        case 1:
+                                            reportData.setPs_month2(reportData.getPs_month2()+totalScheduleAmount);
+                                            childA.setPs_month2(childA.getPs_month2()+totalScheduleAmount);
+                                            childB.setPs_month2(childB.getPs_month2()+totalScheduleAmount);
+                                            childC.setPs_month2(childC.getPs_month2()+totalScheduleAmount);
+                                            childD.setPs_month2(childD.getPs_month2()+totalScheduleAmount);
+                                            childE.setPs_month2(totalScheduleAmount);
+
+                                            reportData.setPs_quarter1(reportData.getPs_quarter1()+totalScheduleAmount);
+                                            childA.setPs_quarter1(childA.getPs_quarter1()+totalScheduleAmount);
+                                            childB.setPs_quarter1(childB.getPs_quarter1()+totalScheduleAmount);
+                                            childC.setPs_quarter1(childC.getPs_quarter1()+totalScheduleAmount);
+                                            childD.setPs_quarter1(childD.getPs_quarter1()+totalScheduleAmount);
+                                            childE.setPs_quarter1(totalScheduleAmount);
+
+                                            reportData.setPs_year(reportData.getPs_year()+totalScheduleAmount);
+                                            childA.setPs_year(childA.getPs_year()+totalScheduleAmount);
+                                            childB.setPs_year(childB.getPs_year()+totalScheduleAmount);
+                                            childC.setPs_year(childC.getPs_year()+totalScheduleAmount);
+                                            childD.setPs_year(childD.getPs_year()+totalScheduleAmount);
+                                            childE.setPs_year(totalScheduleAmount);
+
+                                            break;
+
+                                        case 2:
+                                            reportData.setPs_month3(reportData.getPs_month3()+totalScheduleAmount);
+                                            childA.setPs_month3(childA.getPs_month3()+totalScheduleAmount);
+                                            childB.setPs_month3(childB.getPs_month3()+totalScheduleAmount);
+                                            childC.setPs_month3(childC.getPs_month3()+totalScheduleAmount);
+                                            childD.setPs_month3(childD.getPs_month3()+totalScheduleAmount);
+                                            childE.setPs_month3(totalScheduleAmount);
+
+                                            reportData.setPs_quarter1(reportData.getPs_quarter1()+totalScheduleAmount);
+                                            childA.setPs_quarter1(childA.getPs_quarter1()+totalScheduleAmount);
+                                            childB.setPs_quarter1(childB.getPs_quarter1()+totalScheduleAmount);
+                                            childC.setPs_quarter1(childC.getPs_quarter1()+totalScheduleAmount);
+                                            childD.setPs_quarter1(childD.getPs_quarter1()+totalScheduleAmount);
+                                            childE.setPs_quarter1(totalScheduleAmount);
+
+                                            reportData.setPs_year(reportData.getPs_year()+totalScheduleAmount);
+                                            childA.setPs_year(childA.getPs_year()+totalScheduleAmount);
+                                            childB.setPs_year(childB.getPs_year()+totalScheduleAmount);
+                                            childC.setPs_year(childC.getPs_year()+totalScheduleAmount);
+                                            childD.setPs_year(childD.getPs_year()+totalScheduleAmount);
+                                            childE.setPs_year(totalScheduleAmount);
+
+                                            break;
+
+                                        case 3:
+                                            reportData.setPs_month4(reportData.getPs_month4()+totalScheduleAmount);
+                                            childA.setPs_month4(childA.getPs_month4()+totalScheduleAmount);
+                                            childB.setPs_month4(childB.getPs_month4()+totalScheduleAmount);
+                                            childC.setPs_month4(childC.getPs_month4()+totalScheduleAmount);
+                                            childD.setPs_month4(childD.getPs_month4()+totalScheduleAmount);
+                                            childE.setPs_month4(totalScheduleAmount);
+
+                                            reportData.setPs_quarter2(reportData.getPs_quarter2()+totalScheduleAmount);
+                                            childA.setPs_quarter2(childA.getPs_quarter2()+totalScheduleAmount);
+                                            childB.setPs_quarter2(childB.getPs_quarter2()+totalScheduleAmount);
+                                            childC.setPs_quarter2(childC.getPs_quarter2()+totalScheduleAmount);
+                                            childD.setPs_quarter2(childD.getPs_quarter2()+totalScheduleAmount);
+                                            childE.setPs_quarter2(totalScheduleAmount);
+
+                                            reportData.setPs_year(reportData.getPs_year()+totalScheduleAmount);
+                                            childA.setPs_year(childA.getPs_year()+totalScheduleAmount);
+                                            childB.setPs_year(childB.getPs_year()+totalScheduleAmount);
+                                            childC.setPs_year(childC.getPs_year()+totalScheduleAmount);
+                                            childD.setPs_year(childD.getPs_year()+totalScheduleAmount);
+                                            childE.setPs_year(totalScheduleAmount);
+
+                                            break;
+
+                                        case 4:
+                                            reportData.setPs_month5(reportData.getPs_month5()+totalScheduleAmount);
+                                            childA.setPs_month5(childA.getPs_month5()+totalScheduleAmount);
+                                            childB.setPs_month5(childB.getPs_month5()+totalScheduleAmount);
+                                            childC.setPs_month5(childC.getPs_month5()+totalScheduleAmount);
+                                            childD.setPs_month5(childD.getPs_month5()+totalScheduleAmount);
+                                            childE.setPs_month5(totalScheduleAmount);
+
+                                            reportData.setPs_quarter2(reportData.getPs_quarter2()+totalScheduleAmount);
+                                            childA.setPs_quarter2(childA.getPs_quarter2()+totalScheduleAmount);
+                                            childB.setPs_quarter2(childB.getPs_quarter2()+totalScheduleAmount);
+                                            childC.setPs_quarter2(childC.getPs_quarter2()+totalScheduleAmount);
+                                            childD.setPs_quarter2(childD.getPs_quarter2()+totalScheduleAmount);
+                                            childE.setPs_quarter2(totalScheduleAmount);
+
+                                            reportData.setPs_year(reportData.getPs_year()+totalScheduleAmount);
+                                            childA.setPs_year(childA.getPs_year()+totalScheduleAmount);
+                                            childB.setPs_year(childB.getPs_year()+totalScheduleAmount);
+                                            childC.setPs_year(childC.getPs_year()+totalScheduleAmount);
+                                            childD.setPs_year(childD.getPs_year()+totalScheduleAmount);
+                                            childE.setPs_year(totalScheduleAmount);
+
+                                            break;
+
+                                        case 5:
+                                            reportData.setPs_month6(reportData.getPs_month6()+totalScheduleAmount);
+                                            childA.setPs_month6(childA.getPs_month6()+totalScheduleAmount);
+                                            childB.setPs_month6(childB.getPs_month6()+totalScheduleAmount);
+                                            childC.setPs_month6(childC.getPs_month6()+totalScheduleAmount);
+                                            childD.setPs_month6(childD.getPs_month6()+totalScheduleAmount);
+                                            childE.setPs_month6(totalScheduleAmount);
+
+                                            reportData.setPs_quarter2(reportData.getPs_quarter2()+totalScheduleAmount);
+                                            childA.setPs_quarter2(childA.getPs_quarter2()+totalScheduleAmount);
+                                            childB.setPs_quarter2(childB.getPs_quarter2()+totalScheduleAmount);
+                                            childC.setPs_quarter2(childC.getPs_quarter2()+totalScheduleAmount);
+                                            childD.setPs_quarter2(childD.getPs_quarter2()+totalScheduleAmount);
+                                            childE.setPs_quarter2(totalScheduleAmount);
+
+                                            reportData.setPs_year(reportData.getPs_year()+totalScheduleAmount);
+                                            childA.setPs_year(childA.getPs_year()+totalScheduleAmount);
+                                            childB.setPs_year(childB.getPs_year()+totalScheduleAmount);
+                                            childC.setPs_year(childC.getPs_year()+totalScheduleAmount);
+                                            childD.setPs_year(childD.getPs_year()+totalScheduleAmount);
+                                            childE.setPs_year(totalScheduleAmount);
+
+                                            break;
+
+                                        case 6:
+                                            reportData.setPs_month7(reportData.getPs_month7()+totalScheduleAmount);
+                                            childA.setPs_month7(childA.getPs_month7()+totalScheduleAmount);
+                                            childB.setPs_month7(childB.getPs_month7()+totalScheduleAmount);
+                                            childC.setPs_month7(childC.getPs_month7()+totalScheduleAmount);
+                                            childD.setPs_month7(childD.getPs_month7()+totalScheduleAmount);
+                                            childE.setPs_month7(totalScheduleAmount);
+
+                                            reportData.setPs_quarter3(reportData.getPs_quarter3()+totalScheduleAmount);
+                                            childA.setPs_quarter3(childA.getPs_quarter3()+totalScheduleAmount);
+                                            childB.setPs_quarter3(childB.getPs_quarter3()+totalScheduleAmount);
+                                            childC.setPs_quarter3(childC.getPs_quarter3()+totalScheduleAmount);
+                                            childD.setPs_quarter3(childD.getPs_quarter3()+totalScheduleAmount);
+                                            childE.setPs_quarter3(totalScheduleAmount);
+
+                                            reportData.setPs_year(reportData.getPs_year()+totalScheduleAmount);
+                                            childA.setPs_year(childA.getPs_year()+totalScheduleAmount);
+                                            childB.setPs_year(childB.getPs_year()+totalScheduleAmount);
+                                            childC.setPs_year(childC.getPs_year()+totalScheduleAmount);
+                                            childD.setPs_year(childD.getPs_year()+totalScheduleAmount);
+                                            childE.setPs_year(totalScheduleAmount);
+
+                                            break;
+
+                                        case 7:
+                                            reportData.setPs_month8(reportData.getPs_month8()+totalScheduleAmount);
+                                            childA.setPs_month8(childA.getPs_month8()+totalScheduleAmount);
+                                            childB.setPs_month8(childB.getPs_month8()+totalScheduleAmount);
+                                            childC.setPs_month8(childC.getPs_month8()+totalScheduleAmount);
+                                            childD.setPs_month8(childD.getPs_month8()+totalScheduleAmount);
+                                            childE.setPs_month8(totalScheduleAmount);
+
+                                            reportData.setPs_quarter3(reportData.getPs_quarter3()+totalScheduleAmount);
+                                            childA.setPs_quarter3(childA.getPs_quarter3()+totalScheduleAmount);
+                                            childB.setPs_quarter3(childB.getPs_quarter3()+totalScheduleAmount);
+                                            childC.setPs_quarter3(childC.getPs_quarter3()+totalScheduleAmount);
+                                            childD.setPs_quarter3(childD.getPs_quarter3()+totalScheduleAmount);
+                                            childE.setPs_quarter3(totalScheduleAmount);
+
+                                            reportData.setPs_year(reportData.getPs_year()+totalScheduleAmount);
+                                            childA.setPs_year(childA.getPs_year()+totalScheduleAmount);
+                                            childB.setPs_year(childB.getPs_year()+totalScheduleAmount);
+                                            childC.setPs_year(childC.getPs_year()+totalScheduleAmount);
+                                            childD.setPs_year(childD.getPs_year()+totalScheduleAmount);
+                                            childE.setPs_year(totalScheduleAmount);
+
+                                            break;
+
+                                        case 8:
+                                            reportData.setPs_month9(reportData.getPs_month9()+totalScheduleAmount);
+                                            childA.setPs_month9(childA.getPs_month9()+totalScheduleAmount);
+                                            childB.setPs_month9(childB.getPs_month9()+totalScheduleAmount);
+                                            childC.setPs_month9(childC.getPs_month9()+totalScheduleAmount);
+                                            childD.setPs_month9(childD.getPs_month9()+totalScheduleAmount);
+                                            childE.setPs_month9(totalScheduleAmount);
+
+                                            reportData.setPs_quarter3(reportData.getPs_quarter3()+totalScheduleAmount);
+                                            childA.setPs_quarter3(childA.getPs_quarter3()+totalScheduleAmount);
+                                            childB.setPs_quarter3(childB.getPs_quarter3()+totalScheduleAmount);
+                                            childC.setPs_quarter3(childC.getPs_quarter3()+totalScheduleAmount);
+                                            childD.setPs_quarter3(childD.getPs_quarter3()+totalScheduleAmount);
+                                            childE.setPs_quarter3(totalScheduleAmount);
+
+                                            reportData.setPs_year(reportData.getPs_year()+totalScheduleAmount);
+                                            childA.setPs_year(childA.getPs_year()+totalScheduleAmount);
+                                            childB.setPs_year(childB.getPs_year()+totalScheduleAmount);
+                                            childC.setPs_year(childC.getPs_year()+totalScheduleAmount);
+                                            childD.setPs_year(childD.getPs_year()+totalScheduleAmount);
+                                            childE.setPs_year(totalScheduleAmount);
+
+                                            break;
+
+                                        case 9:
+                                            reportData.setPs_month10(reportData.getPs_month10()+totalScheduleAmount);
+                                            childA.setPs_month10(childA.getPs_month10()+totalScheduleAmount);
+                                            childB.setPs_month10(childB.getPs_month10()+totalScheduleAmount);
+                                            childC.setPs_month10(childC.getPs_month10()+totalScheduleAmount);
+                                            childD.setPs_month10(childD.getPs_month10()+totalScheduleAmount);
+                                            childE.setPs_month10(totalScheduleAmount);
+
+                                            reportData.setPs_quarter4(reportData.getPs_quarter4()+totalScheduleAmount);
+                                            childA.setPs_quarter4(childA.getPs_quarter4()+totalScheduleAmount);
+                                            childB.setPs_quarter4(childB.getPs_quarter4()+totalScheduleAmount);
+                                            childC.setPs_quarter4(childC.getPs_quarter4()+totalScheduleAmount);
+                                            childD.setPs_quarter4(childD.getPs_quarter4()+totalScheduleAmount);
+                                            childE.setPs_quarter4(totalScheduleAmount);
+
+                                            reportData.setPs_year(reportData.getPs_year()+totalScheduleAmount);
+                                            childA.setPs_year(childA.getPs_year()+totalScheduleAmount);
+                                            childB.setPs_year(childB.getPs_year()+totalScheduleAmount);
+                                            childC.setPs_year(childC.getPs_year()+totalScheduleAmount);
+                                            childD.setPs_year(childD.getPs_year()+totalScheduleAmount);
+                                            childE.setPs_year(totalScheduleAmount);
+
+                                            break;
+
+                                        case 10:
+                                            reportData.setPs_month11(reportData.getPs_month11()+totalScheduleAmount);
+                                            childA.setPs_month11(childA.getPs_month11()+totalScheduleAmount);
+                                            childB.setPs_month11(childB.getPs_month11()+totalScheduleAmount);
+                                            childC.setPs_month11(childC.getPs_month11()+totalScheduleAmount);
+                                            childD.setPs_month11(childD.getPs_month11()+totalScheduleAmount);
+                                            childE.setPs_month11(totalScheduleAmount);
+
+                                            reportData.setPs_quarter4(reportData.getPs_quarter4()+totalScheduleAmount);
+                                            childA.setPs_quarter4(childA.getPs_quarter4()+totalScheduleAmount);
+                                            childB.setPs_quarter4(childB.getPs_quarter4()+totalScheduleAmount);
+                                            childC.setPs_quarter4(childC.getPs_quarter4()+totalScheduleAmount);
+                                            childD.setPs_quarter4(childD.getPs_quarter4()+totalScheduleAmount);
+                                            childE.setPs_quarter4(totalScheduleAmount);
+
+                                            reportData.setPs_year(reportData.getPs_year()+totalScheduleAmount);
+                                            childA.setPs_year(childA.getPs_year()+totalScheduleAmount);
+                                            childB.setPs_year(childB.getPs_year()+totalScheduleAmount);
+                                            childC.setPs_year(childC.getPs_year()+totalScheduleAmount);
+                                            childD.setPs_year(childD.getPs_year()+totalScheduleAmount);
+                                            childE.setPs_year(totalScheduleAmount);
+
+                                            break;
+
+                                        case 11:
+                                            reportData.setPs_month12(reportData.getPs_month12()+totalScheduleAmount);
+                                            childA.setPs_month12(childA.getPs_month12()+totalScheduleAmount);
+                                            childB.setPs_month12(childB.getPs_month12()+totalScheduleAmount);
+                                            childC.setPs_month12(childC.getPs_month12()+totalScheduleAmount);
+                                            childD.setPs_month12(childD.getPs_month12()+totalScheduleAmount);
+                                            childE.setPs_month12(totalScheduleAmount);
+
+                                            reportData.setPs_quarter4(reportData.getPs_quarter4()+totalScheduleAmount);
+                                            childA.setPs_quarter4(childA.getPs_quarter4()+totalScheduleAmount);
+                                            childB.setPs_quarter4(childB.getPs_quarter4()+totalScheduleAmount);
+                                            childC.setPs_quarter4(childC.getPs_quarter4()+totalScheduleAmount);
+                                            childD.setPs_quarter4(childD.getPs_quarter4()+totalScheduleAmount);
+                                            childE.setPs_quarter4(totalScheduleAmount);
+
+                                            reportData.setPs_year(reportData.getPs_year()+totalScheduleAmount);
+                                            childA.setPs_year(childA.getPs_year()+totalScheduleAmount);
+                                            childB.setPs_year(childB.getPs_year()+totalScheduleAmount);
+                                            childC.setPs_year(childC.getPs_year()+totalScheduleAmount);
+                                            childD.setPs_year(childD.getPs_year()+totalScheduleAmount);
+                                            childE.setPs_year(totalScheduleAmount);
+
+                                            break;
+
+                                    }
+
+
+                                }
+
+                            }
+
+                        }
+
+
+                    }
+                    catch (Exception ex)
+                    {
+                        System.out.println(ex+" ERROR");
+                    }
+
+
+                }
 
                 childE.setSp_Count(1);
                 childD.setSp_Count(childD.getSp_Count()+1);
@@ -185,6 +568,27 @@ public class SupervisorPlanReportDataManager {
                 childE.setSp_reg_date(new java.sql.Date(pv.getV_sp_reg_date().getTime()));
                 childE.setSp_reg_by_id(pv.getV_sp_reg_by_id());
                 childE.setSp_description(pv.getV_sp_description());
+
+
+
+
+
+                if(childE.getPs_year()>0)
+                {
+                    childE.setSp_description(String.valueOf(childD.getPs_year()));
+                }
+
+
+                pv.setV_sp_amount(pv.getV_sp_amount()/thousands);
+                pv.setV_sp_principal(pv.getV_sp_principal()/thousands);
+                pv.setV_sp_interest(pv.getV_sp_interest()/thousands);
+                pv.setV_sp_penalty(pv.getV_sp_penalty()/thousands);
+
+
+
+
+
+
 
 
 

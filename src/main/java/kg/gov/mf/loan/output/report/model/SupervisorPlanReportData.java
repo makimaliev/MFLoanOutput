@@ -113,6 +113,161 @@ public class SupervisorPlanReportData extends ReportData
 	private double sp_month11 = 0;
 	private double sp_month12 = 0;
 
+	private double ps_year = 0;
+
+	private double ps_quarter1 = 0;
+	private double ps_quarter2 = 0;
+	private double ps_quarter3 = 0;
+	private double ps_quarter4 = 0;
+
+	private double ps_month1 = 0;
+	private double ps_month2 = 0;
+	private double ps_month3 = 0;
+	private double ps_month4 = 0;
+	private double ps_month5 = 0;
+	private double ps_month6 = 0;
+	private double ps_month7 = 0;
+	private double ps_month8 = 0;
+	private double ps_month9 = 0;
+	private double ps_month10 = 0;
+	private double ps_month11 = 0;
+	private double ps_month12 = 0;
+
+	public double getPs_year() {
+		return ps_year;
+	}
+
+	public void setPs_year(double ps_year) {
+		this.ps_year = ps_year;
+	}
+
+	public double getPs_quarter1() {
+		return ps_quarter1;
+	}
+
+	public void setPs_quarter1(double ps_quarter1) {
+		this.ps_quarter1 = ps_quarter1;
+	}
+
+	public double getPs_quarter2() {
+		return ps_quarter2;
+	}
+
+	public void setPs_quarter2(double ps_quarter2) {
+		this.ps_quarter2 = ps_quarter2;
+	}
+
+	public double getPs_quarter3() {
+		return ps_quarter3;
+	}
+
+	public void setPs_quarter3(double ps_quarter3) {
+		this.ps_quarter3 = ps_quarter3;
+	}
+
+	public double getPs_quarter4() {
+		return ps_quarter4;
+	}
+
+	public void setPs_quarter4(double ps_quarter4) {
+		this.ps_quarter4 = ps_quarter4;
+	}
+
+	public double getPs_month1() {
+		return ps_month1;
+	}
+
+	public void setPs_month1(double ps_month1) {
+		this.ps_month1 = ps_month1;
+	}
+
+	public double getPs_month2() {
+		return ps_month2;
+	}
+
+	public void setPs_month2(double ps_month2) {
+		this.ps_month2 = ps_month2;
+	}
+
+	public double getPs_month3() {
+		return ps_month3;
+	}
+
+	public void setPs_month3(double ps_month3) {
+		this.ps_month3 = ps_month3;
+	}
+
+	public double getPs_month4() {
+		return ps_month4;
+	}
+
+	public void setPs_month4(double ps_month4) {
+		this.ps_month4 = ps_month4;
+	}
+
+	public double getPs_month5() {
+		return ps_month5;
+	}
+
+	public void setPs_month5(double ps_month5) {
+		this.ps_month5 = ps_month5;
+	}
+
+	public double getPs_month6() {
+		return ps_month6;
+	}
+
+	public void setPs_month6(double ps_month6) {
+		this.ps_month6 = ps_month6;
+	}
+
+	public double getPs_month7() {
+		return ps_month7;
+	}
+
+	public void setPs_month7(double ps_month7) {
+		this.ps_month7 = ps_month7;
+	}
+
+	public double getPs_month8() {
+		return ps_month8;
+	}
+
+	public void setPs_month8(double ps_month8) {
+		this.ps_month8 = ps_month8;
+	}
+
+	public double getPs_month9() {
+		return ps_month9;
+	}
+
+	public void setPs_month9(double ps_month9) {
+		this.ps_month9 = ps_month9;
+	}
+
+	public double getPs_month10() {
+		return ps_month10;
+	}
+
+	public void setPs_month10(double ps_month10) {
+		this.ps_month10 = ps_month10;
+	}
+
+	public double getPs_month11() {
+		return ps_month11;
+	}
+
+	public void setPs_month11(double ps_month11) {
+		this.ps_month11 = ps_month11;
+	}
+
+	public double getPs_month12() {
+		return ps_month12;
+	}
+
+	public void setPs_month12(double ps_month12) {
+		this.ps_month12 = ps_month12;
+	}
 
 	public SupervisorPlanReportData()
 	{
