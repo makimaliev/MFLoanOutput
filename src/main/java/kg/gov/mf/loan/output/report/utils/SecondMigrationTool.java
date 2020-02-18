@@ -1231,10 +1231,12 @@ public class SecondMigrationTool {
                                                                         }
                                                                     }
 
-
-
+                                                                    if(paymentSchedule.getRecord_status() == 1) {
+                                                                        loan.setLastDate(paymentSchedule.getExpectedDate());
+                                                                    }
 
                                                                 }
+                                                                this.loanService.update(loan);
 
                                                                 migrationSuccess = true;
                                                                 stSchedule.close();
