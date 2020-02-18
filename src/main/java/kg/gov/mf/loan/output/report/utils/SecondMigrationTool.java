@@ -247,6 +247,12 @@ public class SecondMigrationTool {
     @Autowired
     DestinationAccountService destinationAccountService;
 
+    @Autowired
+    DebtorGroupService debtorGroupService;
+
+    @Autowired
+    DebtorSubGroupService debtorSubGroupService;
+
     //endregion
 
 
@@ -481,6 +487,9 @@ public class SecondMigrationTool {
 
         OrderTermTransactionOrder transactionOrder1 = this.orderTermTransactionOrderService.getById((long)1);
         OrderTermTransactionOrder transactionOrder3 = this.orderTermTransactionOrderService.getById((long)1);
+
+        DebtorGroup debtorGroup = this.debtorGroupService.getById(1L);
+        DebtorSubGroup debtorSubGroup = this.debtorSubGroupService.getById(1L);
 
         OrderTermRatePeriod ratePeriod = this.orderTermRatePeriodService.getById((long)1);
 
@@ -908,6 +917,9 @@ public class SecondMigrationTool {
                             debtor.setRecord_status(1);
                             debtor.setAddress_id(address.getId());
 
+                            debtor.setDebtorGroup(debtorGroup);
+                            debtor.setDebtorSubGroup(debtorSubGroup);
+
                             this.debtorService.add(debtor);
 
                             debtorMap.put(rs.getLong("person_id"),debtor);
@@ -1041,7 +1053,7 @@ public class SecondMigrationTool {
                                                 loan.setAmount(rsLoan.getDouble("cost"));
                                                 loan.setCreditOrder(crditOrderMap.get((long)rsLoan.getInt("credit_order_id")));
 //                                                loan.setSupervisorId(rsLoan.getLong("curator"));
-                                                loan.setSupervisorId(userMap.get(9L).getId());
+                                                loan.setSupervisorId(1L);
                                                 loan.setLoanType(loanTypeMap.get((long)rsLoan.getInt("credit_type")));
                                                 loan.setCurrency(currencyMap.get((long)rsLoan.getInt("currency")));
                                                 loan.setRegDate(rsLoan.getDate("date"));
