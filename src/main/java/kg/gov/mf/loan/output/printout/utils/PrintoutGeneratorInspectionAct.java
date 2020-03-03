@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import java.awt.*;
+import java.util.Calendar;
 import java.util.Date;
 
 public class PrintoutGeneratorInspectionAct {
@@ -157,8 +158,6 @@ public class PrintoutGeneratorInspectionAct {
                 Owner owner=loan.getDebtor().getOwner();
                 iCreditID = objectId;
 
-                System.out.println(" DEPOSIT ACT TEMPLATE == CREDIT ID - "+iCreditID);
-
 //                sQuery="select address.region, address.district, address.address_line1,  credit.person_id, credit.date as credit_date, credit.number as credit_number, person.title as person_title from credit,person,address where address.user_id = person.id and credit.id = ? and person.id = credit.person_id ";
 //
 //                prp_st = DbConnection.prepareStatement(sQuery);
@@ -182,7 +181,6 @@ public class PrintoutGeneratorInspectionAct {
                 Staff staff=staffService.findById(user.getStaff().getId());
 
                 sDistrictCurator = staff.getName();
-
 
                 depList ="";
                 for(CollateralAgreement agreement1:loan.getCollateralAgreements()) {
@@ -389,6 +387,10 @@ public class PrintoutGeneratorInspectionAct {
 
             table.setWidths(iWidth);
 
+            Date today = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(today);
+
             cell = new RtfCell (new Paragraph ("АКТ",TitleFont));
             cell.setHorizontalAlignment (Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
@@ -396,7 +398,7 @@ public class PrintoutGeneratorInspectionAct {
             cell.setColspan(2);
             table.addCell (cell);
 
-            cell = new RtfCell (new Paragraph ("от «____»_____________ 2019 года",TitleFont));
+            cell = new RtfCell (new Paragraph ("от «____»_____________ "+calendar.get(Calendar.YEAR)+" года",TitleFont));
             cell.setHorizontalAlignment (Element.ALIGN_CENTER);
             cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
             cell.setBorder(TitleColumnBorder);
@@ -471,64 +473,11 @@ public class PrintoutGeneratorInspectionAct {
             cell.setColspan(2);
             table.addCell (cell);
 
-                    /*document.add(table);
-
-                    /*
-                    table=new Table(2);
-                    table.setWidth(100);
-
-                    int iWidth3[] = new int[2];
-                    iWidth3[0] = 50;
-                    iWidth3[1] = 50;
-
-                    table.setWidths(iWidth3);
-
-                    /*
-                    cell = new RtfCell (new Paragraph ("\n     В соответствии со статьей 299 Гражданского кодекса Кыргызской Республики Вы обязаны возвратить Государственному фонду развития экономики при Министерстве финансов Кыргызской Республики полученную по кредиту сумму в срок и в порядке предусмотренными условиями договора." +
-                                                        "\n     На основании изложенного, просим погасить вышеуказанную задолженность в полном объеме в течении 10 дней со дня получения настоящей претензии." +
-                                                        "\n     В Случае не погашения задолженности в указанный срок Государственный фонд развития экономики при Министерстве финансов Кыргызской Республики, руководствуясь ст. 4 Гражданского процессуального кодекса Кыргызской Республики, будет вынужден обратиться с иском в суд для принудительного взыскания задолженности."+
-                                                        "\n     Все судебные расходы относятся на Должника.",ColumnFont));
-
-                    cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                    cell.setVerticalAlignment(Element.ALIGN_TOP);
-
-                    cell.setBorder(TitleColumnBorder);
-                    cell.setColspan(2);
-                    table.addCell (cell);
-*/
-
-                    /*
-                    cell = new RtfCell (new Paragraph ("\n\n\nЗаместитель директора",TitleFont));
-                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
-                    cell.setVerticalAlignment(Element.ALIGN_TOP);
-
-                    cell.setBorder(TitleColumnBorder);
-                    table.addCell (cell);
-
-                    if(1 == 2)
-                    {
-                        cell = new RtfCell (new Paragraph ("\n\n\nБаденов Б.О",TitleFont));
-                    }
-                    else
-                    {
-                        cell = new RtfCell (new Paragraph ("\n\n\nДоолбеков Э.",TitleFont));
-                    }
-                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
-                    cell.setVerticalAlignment(Element.ALIGN_TOP);
-
-                    cell.setBorder(TitleColumnBorder);
-                    table.addCell (cell);
-
-                    */
-
             HeaderFooter footer = new HeaderFooter(new Paragraph("Аткар.: "+"  тел: ",PerformerFont),false);
 
             document.setFooter(footer);
             document.add(table);
-            //****************************************************************************************
-            //****************************************************************************************
-            //**************************************************************************
-            //**************************************************************************
+
             document.close();
         }
         catch(Exception Ex)
