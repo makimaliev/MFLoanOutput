@@ -551,7 +551,7 @@ public class SupervisorPlanReportDataManager {
                     }
                     catch (Exception ex)
                     {
-                        System.out.println(ex+" ERROR");
+
                     }
 
 

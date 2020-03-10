@@ -137,7 +137,7 @@ public class CollectionPhaseSpecialReportDataManager {
         }
         catch (Exception ex)
         {
-            System.out.println(ex);
+
         }
 
 

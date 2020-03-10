@@ -540,7 +540,7 @@ public class ReportTool
         }
         catch (Exception ex)
         {
-            System.out.println(ex);
+
         }
 
     }
@@ -1346,7 +1346,7 @@ public class ReportTool
             }
             catch ( Exception ex )
             {
-                System.out.println(ex);
+
             }
 
             parameterS.put("onDate",Ids);
@@ -1583,7 +1583,6 @@ public class ReportTool
 //
 //                                    userParameters.remove(parameterInLoopUser);
 //
-//                                    System.out.println(parameterType+ "=="+ newIds.toString() );
 //
 //                                }
 //
@@ -1786,7 +1785,7 @@ public class ReportTool
         }
         catch (Exception ex)
         {
-            System.out.println(ex);
+
         }
 
 
@@ -1907,7 +1906,7 @@ public class ReportTool
         }
         catch (Exception ex)
         {
-            System.out.println(ex);
+
         }
 
 
@@ -2110,7 +2109,7 @@ public class ReportTool
                         }
                         catch (Exception ex)
                         {
-                            System.out.println(" error map == "+ex);
+
                         }
 
                         Cell.setCellStyle(getCellStyleByLevel(level,"double"));
@@ -2137,7 +2136,7 @@ public class ReportTool
         }
         catch (Exception ex)
         {
-            System.out.println(ex);
+
         }
 
 
@@ -2162,7 +2161,7 @@ public class ReportTool
         }
         catch (Exception ex)
         {
-            System.out.println(ex);
+
         }
 
         RowCount = lastRowCount;
@@ -2199,7 +2198,7 @@ public class ReportTool
         }
         catch (Exception ex)
         {
-            System.out.println(ex);
+
         }
 
 
@@ -2232,7 +2231,7 @@ public class ReportTool
         }
         catch (Exception ex)
         {
-            System.out.println(ex);
+
         }
 
         if(Cell!=null)
@@ -2269,7 +2268,7 @@ public class ReportTool
         }
         catch (Exception ex)
         {
-            System.out.println(ex);
+
         }
 
         if(Cell!=null)
@@ -2305,7 +2304,7 @@ public class ReportTool
         }
         catch (Exception ex)
         {
-            System.out.println(ex);
+
         }
 
     }
@@ -2482,7 +2481,7 @@ public class ReportTool
                 }
                 catch (Exception ex)
                 {
-                    System.out.println(ex);
+
 
                 }
 

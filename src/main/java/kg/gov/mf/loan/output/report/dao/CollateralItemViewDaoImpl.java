@@ -135,13 +135,11 @@ public class CollateralItemViewDaoImpl implements CollateralItemViewDao {
 		criteria.setFirstResult(offset);
 		criteria.setMaxResults(limit);
 
-//		System.out.println("======================KARA============================================================");
+
 //		Iterator it2 = list2.iterator();
 //		while (it2.hasNext()) {
 //			Object[] obj = (Object[]) it2.next();
-//			System.out.println("Id : " + obj[0]+" DeptorName: "+obj[1]);
 //		}
-//		System.out.println("==================================================================================");
 
 		return criteria.list();
 	}

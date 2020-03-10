@@ -467,12 +467,9 @@ public class SecondMigrationTool {
             e.printStackTrace();
         }
 
-        if(orgFormMigrationSuccess) System.out.println(" ORG FORM MIGRATION SUCCESS");
 
-        for (String text: errorList)
-        {
-            System.out.println(text);
-        }
+
+
 
     }
 
@@ -651,7 +648,7 @@ public class SecondMigrationTool {
                                 }
                                 catch( Exception ex)
                                 {
-                                    System.out.println(ex+person.getName());
+
                                 }
 
 
@@ -705,7 +702,7 @@ public class SecondMigrationTool {
                                 }
                                 catch( Exception ex)
                                 {
-                                    System.out.println(ex+organization.getName());
+
 
                                 }
 
@@ -713,7 +710,6 @@ public class SecondMigrationTool {
 
 //                                Responsible and Accountant Migration
                                 try {
-                                    System.out.println(organization.getId());
 
                                     String responsibleName = "";
                                     String accountantName = "";
@@ -1042,7 +1038,7 @@ public class SecondMigrationTool {
                                                     }
                                                     catch(Exception ex)
                                                     {
-                                                        System.out.println((" close date error")+ " == "+ rsLoan.getInt("credit_id"));
+
                                                     }
 
                                                 }
@@ -1245,7 +1241,7 @@ public class SecondMigrationTool {
                                                         }
                                                         catch (SQLException ex)
                                                         {
-                                                            System.out.println("payment schedule eroor " + ex);
+
                                                             ex.printStackTrace();
                                                             errorList.add(" scehdule error" + ex);
                                                         }
@@ -1259,7 +1255,7 @@ public class SecondMigrationTool {
                                                 }
                                                 catch(Exception ex)
                                                 {
-                                                    System.out.println("payment schedule eroor " + ex);
+
                                                     ex.printStackTrace();
                                                     errorList.add(" scehdule error " + ex+ " loan id == " +loan.getId());
                                                 }
@@ -1532,7 +1528,7 @@ public class SecondMigrationTool {
                                                         }
                                                         catch (SQLException ex)
                                                         {
-                                                            System.out.println("Connection Failed! Check output console");
+
                                                             ex.printStackTrace();
                                                             errorList.add(" credit term error 0" + ex);
 
@@ -1541,12 +1537,12 @@ public class SecondMigrationTool {
                                                     }
                                                     else
                                                     {
-                                                        System.out.println("Failed to make connection!");
+
                                                     }
                                                 }
                                                 catch(Exception ex)
                                                 {
-                                                    System.out.println("credit term error " + ex);
+
                                                     ex.printStackTrace();
                                                     errorList.add(" credit term error " + ex + " loan id == " +loan.getId());
                                                 }
@@ -1776,7 +1772,7 @@ public class SecondMigrationTool {
                                                         }
                                                         catch (SQLException ex)
                                                         {
-                                                            System.out.println("Connection Failed! Check output console");
+
                                                             ex.printStackTrace();
                                                             errorList.add(" payment error 0" + ex);
                                                         }
@@ -1784,12 +1780,12 @@ public class SecondMigrationTool {
                                                     }
                                                     else
                                                     {
-                                                        System.out.println("Failed to make connection!");
+
                                                     }
                                                 }
                                                 catch(Exception ex)
                                                 {
-                                                    System.out.println(ex);
+
                                                     ex.printStackTrace();
                                                     errorList.add(" payment error" + ex + " loan id == " +loan.getId());
                                                 }
@@ -2122,7 +2118,7 @@ public class SecondMigrationTool {
                                                         }
                                                         catch (SQLException ex)
                                                         {
-                                                            System.out.println("Connection Failed! Check output console");
+
                                                             ex.printStackTrace();
                                                             errorList.add(" credit term error 0" + ex);
                                                         }
@@ -2130,7 +2126,7 @@ public class SecondMigrationTool {
                                                     }
                                                     else
                                                     {
-                                                        System.out.println("Failed to make connection!");
+
                                                     }
                                                 }
                                                 catch(Exception ex)
@@ -2173,7 +2169,7 @@ public class SecondMigrationTool {
                                                         }
                                                         catch (SQLException ex)
                                                         {
-                                                            System.out.println("Connection Failed! Check output console");
+
                                                             ex.printStackTrace();
                                                             errorList.add(" credit term error 0" + ex);
                                                         }
@@ -2181,12 +2177,12 @@ public class SecondMigrationTool {
                                                     }
                                                     else
                                                     {
-                                                        System.out.println("Failed to make connection!");
+
                                                     }
                                                 }
                                                 catch(Exception ex)
                                                 {
-                                                    System.out.println("Connection Failed! Check output console");
+
                                                     ex.printStackTrace();
                                                     errorList.add(" goods error" + ex+ " loan id == " +loan.getId());
                                                 }
@@ -2237,7 +2233,7 @@ public class SecondMigrationTool {
                                                         }
                                                         catch (SQLException ex)
                                                         {
-                                                            System.out.println("Connection Failed! Check output console");
+
                                                             ex.printStackTrace();
                                                             errorList.add(" credit term error 0" + ex);
                                                         }
@@ -2245,12 +2241,12 @@ public class SecondMigrationTool {
                                                     }
                                                     else
                                                     {
-                                                        System.out.println("Failed to make connection!");
+
                                                     }
                                                 }
                                                 catch(Exception ex)
                                                 {
-                                                    System.out.println(ex);
+
                                                     ex.printStackTrace();
                                                     errorList.add(" goods error" + ex+ " loan id == " +loan.getId());
                                                 }
@@ -2265,7 +2261,7 @@ public class SecondMigrationTool {
                                     }
                                     catch (SQLException ex)
                                     {
-                                        System.out.println("Connection Failed! Check output console");
+
                                         ex.printStackTrace();
                                         errorList.add("loan error "+ex+ " debtor id = "+debtor.getId());
                                     }
@@ -2279,7 +2275,7 @@ public class SecondMigrationTool {
                             }
                             catch(Exception ex)
                             {
-                                System.out.println("Connection Failed! Check output console");
+
                                 ex.printStackTrace();
                                 errorList.add("loan error1 "+ex+ " debtor id = "+debtor.getId());
                             }
@@ -2377,7 +2373,7 @@ public class SecondMigrationTool {
                                                         }
                                                         catch (SQLException ex)
                                                         {
-                                                            System.out.println("Connection Failed! Check output console");
+
                                                             ex.printStackTrace();
                                                             errorList.add(" collateral loan error" + ex + " debtor id = "+debtor.getId());
                                                         }
@@ -2385,12 +2381,12 @@ public class SecondMigrationTool {
                                                     }
                                                     else
                                                     {
-                                                        System.out.println("Failed to make connection!");
+
                                                     }
                                                 }
                                                 catch(Exception ex)
                                                 {
-                                                    System.out.println("Connection Failed! Check output console");
+
                                                     ex.printStackTrace();
                                                     errorList.add(" collateral loan error" + ex + " debtor id = "+debtor.getId());
                                                 }
@@ -2433,7 +2429,7 @@ public class SecondMigrationTool {
                                                         }
                                                         catch (SQLException ex)
                                                         {
-                                                            System.out.println("Connection Failed! Check output console");
+
                                                             ex.printStackTrace();
                                                             errorList.add(" collateral loan error" + ex + " debtor id = "+debtor.getId());
                                                         }
@@ -2441,12 +2437,12 @@ public class SecondMigrationTool {
                                                     }
                                                     else
                                                     {
-                                                        System.out.println("Failed to make connection!");
+
                                                     }
                                                 }
                                                 catch(Exception ex)
                                                 {
-                                                    System.out.println("Connection Failed! Check output console");
+
                                                     ex.printStackTrace();
                                                     errorList.add(" collateral loan error" + ex + " debtor id = "+debtor.getId());
                                                 }
@@ -2544,7 +2540,7 @@ public class SecondMigrationTool {
                                                                                             collateralItemInspectionResult.setOnDate(rsCollateralItemInspection.getDate("date"));
                                                                                         else
                                                                                         {
-                                                                                            System.out.println(" asdf " + rsCollateralItemInspection.getLong("id"));
+
                                                                                         }
                                                                                         collateralItemInspectionResult.setInspectionResultType(inspectionResultTypeMap.get(rsCollateralItemInspection.getLong("status")));
                                                                                         collateralItemInspectionResult.setDetails(rsCollateralItemInspection.getString("details"));
@@ -2562,19 +2558,19 @@ public class SecondMigrationTool {
                                                                             }
                                                                             catch (SQLException ex)
                                                                             {
-                                                                                System.out.println("Connection Failed! Check output console");
+
                                                                                 ex.printStackTrace();
                                                                                 errorList.add(" collateral item inspection error" + ex+ " debtor id = " + debtor.getId());
                                                                             }
                                                                         }
                                                                         else
                                                                         {
-                                                                            System.out.println("Failed to make connection!");
+
                                                                         }
                                                                     }
                                                                     catch(Exception ex)
                                                                     {
-                                                                        System.out.println("Connection Failed! Check output console");
+
                                                                         ex.printStackTrace();
                                                                         errorList.add(" collateral item inspection error" + ex+ " debtor id = " + debtor.getId());
                                                                     }
@@ -2626,7 +2622,7 @@ public class SecondMigrationTool {
                                                                         }
                                                                         else
                                                                         {
-                                                                            System.out.println("Failed to make connection!");
+
                                                                         }
                                                                     }
                                                                     catch(Exception ex)
@@ -2639,7 +2635,7 @@ public class SecondMigrationTool {
 
 //                                                                    if(collateralItem.getCollateralItemArrestFree().getId()>0)
 //                                                                    {
-//                                                                        System.out.println(" Arrest Free == " + collateralItem.getCollateralItemArrestFree().getDetails());
+
 //                                                                    }
 
 
@@ -2663,7 +2659,7 @@ public class SecondMigrationTool {
                                                     }
                                                     else
                                                     {
-                                                        System.out.println("Failed to make connection!");
+
                                                     }
                                                 }
                                                 catch(Exception ex)
@@ -2704,7 +2700,7 @@ public class SecondMigrationTool {
                                     }
                                     catch (SQLException ex)
                                     {
-                                        System.out.println("Connection Failed! Check output console");
+
                                         ex.printStackTrace();
                                         errorList.add(" collateral agreement error " + ex+ " debtor id = " + debtor.getId());
                                     }
@@ -2712,12 +2708,12 @@ public class SecondMigrationTool {
                                 }
                                 else
                                 {
-                                    System.out.println("Failed to make connection!");
+
                                 }
                             }
                             catch(Exception ex)
                             {
-                                System.out.println("Connection Failed! Check output console");
+
                                 ex.printStackTrace();
                                 errorList.add(" collateral agreement error " + ex+ " debtor id = " + debtor.getId());
                             }
@@ -2865,7 +2861,7 @@ public class SecondMigrationTool {
                                                                     }
                                                                     catch (SQLException ex)
                                                                     {
-                                                                        System.out.println("Connection Failed! Check output console");
+
                                                                         ex.printStackTrace();
                                                                         errorList.add(" collection phase details error " + ex + " debtor id = " +debtor.getId());
                                                                     }
@@ -2881,7 +2877,7 @@ public class SecondMigrationTool {
                                                         }
                                                         catch (SQLException ex)
                                                         {
-                                                            System.out.println("Connection Failed! Check output console");
+
                                                             ex.printStackTrace();
                                                             errorList.add(" collection error " + ex + " debtor id == "+debtor.getId());
                                                         }
@@ -2895,12 +2891,12 @@ public class SecondMigrationTool {
                                                     }
                                                     else
                                                     {
-                                                        System.out.println("Failed to make connection!");
+
                                                     }
                                                 }
                                                 catch(Exception ex)
                                                 {
-                                                    System.out.println("Connection Failed! Check output console");
+
                                                     ex.printStackTrace();
                                                     errorList.add(" collection error " + ex + " debtor id == "+debtor.getId());
                                                 }
@@ -2916,7 +2912,7 @@ public class SecondMigrationTool {
                                     }
                                     catch (SQLException ex)
                                     {
-                                        System.out.println("Connection Failed! Check output console");
+
                                         ex.printStackTrace();
                                         errorList.add(" collection error " + ex + " debtor id == "+debtor.getId());
                                     }
@@ -2924,12 +2920,12 @@ public class SecondMigrationTool {
                                 }
                                 else
                                 {
-                                    System.out.println("Failed to make connection!");
+
                                 }
                             }
                             catch(Exception ex)
                             {
-                                System.out.println("Connection Failed! Check output console");
+
                                 ex.printStackTrace();
                                 errorList.add(" collection error " + ex + " debtor id == "+debtor.getId());
                             }
@@ -2961,7 +2957,7 @@ public class SecondMigrationTool {
                             }
                             catch(Exception ex)
                             {
-                                System.out.println(" bankrupt error");
+
                             }
 
                         }
@@ -2992,12 +2988,6 @@ public class SecondMigrationTool {
                     }
                     catch (Exception ex)
                     {
-                        System.out.println(" debt transfer person migration error");
-                        System.out.println(" debt transfer person migration error");
-                        System.out.println(" debt transfer person migration error");
-                        System.out.println(" debt transfer person migration error");
-                        System.out.println(" debt transfer person migration error");
-                        System.out.println(" debt transfer person migration error");
                     }
 
 
@@ -3034,12 +3024,6 @@ public class SecondMigrationTool {
                     }
                     catch (Exception ex)
                     {
-                        System.out.println(" collateral item person migration error");
-                        System.out.println(" collateral item person migration error");
-                        System.out.println(" collateral item person migration error");
-                        System.out.println(" collateral item person migration error");
-                        System.out.println(" collateral item person migration error");
-                        System.out.println(" collateral item person migration error");
 
                     }
 
@@ -3049,7 +3033,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     errorList.add("debtor migration error: query ="+ex);
                 }
@@ -3057,14 +3041,14 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
                 errorList.add("debtor migration error: connection");
             }
         }
         catch(Exception ex)
         {
 
-            System.out.println(" Error in User migration "+ex);
+
             errorList.add("debtor migration error: connection"+ex);
         }
 
@@ -3175,7 +3159,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
 
                     errorList.add(ex.toString());
@@ -3186,12 +3170,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -3253,7 +3237,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     errorList.add(ex.toString());
                     return false;
@@ -3262,12 +3246,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
             errorList.add(ex.toString());
             return false;
 
@@ -3318,7 +3302,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     errorList.add(ex.toString());
                     return false;
@@ -3327,12 +3311,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in currency rate migration "+ex);
+
             errorList.add(ex.toString());
             return false;
 
@@ -3384,7 +3368,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     errorList.add(ex.toString());
                     return false;
@@ -3393,12 +3377,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in currency rate migration "+ex);
+
             errorList.add(ex.toString());
             return false;
 
@@ -3440,7 +3424,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -3448,12 +3432,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -3494,7 +3478,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -3502,12 +3486,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -3549,7 +3533,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -3557,12 +3541,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -3602,7 +3586,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -3610,12 +3594,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -3653,7 +3637,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -3661,12 +3645,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -3704,7 +3688,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -3712,12 +3696,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -3756,7 +3740,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -3764,12 +3748,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in goodType migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -3807,7 +3791,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -3815,12 +3799,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -3858,7 +3842,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -3866,12 +3850,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -3909,7 +3893,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -3917,12 +3901,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -3960,7 +3944,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -3968,12 +3952,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -4021,7 +4005,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -4029,12 +4013,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -4072,7 +4056,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -4080,12 +4064,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -4123,7 +4107,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -4131,12 +4115,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -4173,7 +4157,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -4181,12 +4165,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -4223,7 +4207,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -4231,12 +4215,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -4290,7 +4274,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     errorList.add("user migration error: query error"+ex);
                     return migrationSuccess;
@@ -4299,12 +4283,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
             errorList.add("user migration error: query error"+ex);
         }
 
@@ -4349,7 +4333,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     errorList.add("position migration error: query error"+ex);
                     return migrationSuccess;
@@ -4358,12 +4342,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
             errorList.add("position migration error: query error"+ex);
         }
 
@@ -4403,7 +4387,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     errorList.add("department migration error: query error"+ex);
                     ex.printStackTrace();
                     return migrationSuccess;
@@ -4412,13 +4396,13 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
                 errorList.add("department migration error: query error");
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
             errorList.add("department migration error: query error"+ex);
         }
 
@@ -4495,7 +4479,7 @@ public class SecondMigrationTool {
                     }
                     catch (SQLException ex)
                     {
-                        System.out.println(ex);
+
                     }
 
 
@@ -4504,7 +4488,7 @@ public class SecondMigrationTool {
                 }
                 catch (Exception ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     errorList.add("gaubk migration error: query error"+ex);
                     return migrationSuccess;
@@ -4513,12 +4497,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
             errorList.add("gaubk migration error: query error"+ex);
         }
 
@@ -4550,7 +4534,7 @@ public class SecondMigrationTool {
                 }
                 catch (Exception ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -4558,12 +4542,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -4604,7 +4588,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -4612,12 +4596,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -4669,8 +4653,8 @@ public class SecondMigrationTool {
                             }
                             catch (Exception ex)
                             {
-                                System.out.println(ex);
-                                System.out.println(count);
+
+
                             }
                         }
 
@@ -4681,7 +4665,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -4689,12 +4673,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -4758,7 +4742,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -4766,12 +4750,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -4827,7 +4811,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
                     return migrationSuccess;
                 }
@@ -4835,12 +4819,12 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
         }
 
         return migrationSuccess;
@@ -4880,7 +4864,7 @@ public class SecondMigrationTool {
                 }
                 catch (SQLException ex)
                 {
-                    System.out.println("Connection Failed! Check output console");
+
                     ex.printStackTrace();
 
                     errorList.add("region migration error: query"+ex);
@@ -4890,13 +4874,13 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
                 errorList.add("region migration error: connection");
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in User migration "+ex);
+
             errorList.add("region migration error: connection"+ex);
         }
 
@@ -4943,13 +4927,13 @@ public class SecondMigrationTool {
             }
             else
             {
-                System.out.println("Failed to make connection!");
+
                 errorList.add("orgFrom migration error: no connection");
             }
         }
         catch(Exception ex)
         {
-            System.out.println(" Error in OrgForm migration "+ex);
+
             errorList.add("orgFrom migration error"+ex);
         }
 

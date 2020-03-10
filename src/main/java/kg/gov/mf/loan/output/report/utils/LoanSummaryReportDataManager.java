@@ -78,7 +78,7 @@ public class LoanSummaryReportDataManager {
             }
             catch ( Exception ex )
             {
-                System.out.println(ex);
+
             }
 
             parameterS.put("r=odv_ls_on_date",Ids);
@@ -115,12 +115,11 @@ public class LoanSummaryReportDataManager {
 //
 //                checkCalculation( loanSummaryView, calculationTool);
 //
-////            System.out.println(loanSummaryView.getV_debtor_name());
+
 //        }
 //
 //        if(errorStringGlobal.length()>0)
 //        {
-//            System.out.println(errorStringGlobal);
 //        }
 
 
@@ -154,7 +153,7 @@ public class LoanSummaryReportDataManager {
             }
             catch (Exception ex)
             {
-                System.out.println(ex);
+
             }
 
         }

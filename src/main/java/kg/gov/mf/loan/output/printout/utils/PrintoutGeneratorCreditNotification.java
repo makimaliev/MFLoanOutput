@@ -578,7 +578,7 @@ public class PrintoutGeneratorCreditNotification {
 
         catch(Exception Ex)
         {
-            System.out.println(Ex);
+
         }
 
 

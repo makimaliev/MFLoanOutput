@@ -37,10 +37,7 @@ public class LoanDebtTransferReportDataManager {
 
         reportData.getLoanDebtTransferViews().addAll(loanDebtTransferViewService.findByParameter(parameterS));
 
-        for (LoanDebtTransferView loanDebtTransferView: reportData.getLoanDebtTransferViews())
-        {
-            System.out.println(loanDebtTransferView.getV_debtor_name());
-        }
+
 
         return groupifyData(reportData, reportTemplate, reportTool );
 

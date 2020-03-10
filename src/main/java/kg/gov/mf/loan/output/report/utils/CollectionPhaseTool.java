@@ -63,7 +63,7 @@ public class CollectionPhaseTool
 //
 //            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 //            Date startDate = new Date();
-//            System.out.println(" START == "+dateFormat.format(startDate)); //2016/11/16 12:08:43
+
 //
 //            String baseQuery="select * from loanDetailedSummary";
 //
@@ -71,13 +71,12 @@ public class CollectionPhaseTool
 //            result=query.getResultList();
 //
 //            Date finishDate = new Date();
-//            System.out.println(" FINISH == "+String.valueOf(finishDate.getTime()-startDate.getTime()));
 
             List<CollectionPhase> items = new ArrayList<>();
 
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             Date startDate = new Date();
-            System.out.println(" START == "+dateFormat.format(startDate)); //2016/11/16 12:08:43
+
 
             String baseQuery="select * from mfloan.collectionPhase where id = 36881 order by id";
 
@@ -170,14 +169,11 @@ public class CollectionPhaseTool
         }
         catch (Exception ex)
         {
-            System.out.println(ex);
+
         }
 
 
-        for (String text: errorList)
-        {
-            System.out.println(text);
-        }
+
 
         return errorList;
     }

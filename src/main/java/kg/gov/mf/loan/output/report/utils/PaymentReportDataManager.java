@@ -38,10 +38,7 @@ public class PaymentReportDataManager {
 
         reportData.getPaymentViews().addAll(paymentViewService.findByParameter(parameterS));
 
-        for (PaymentView paymentView: reportData.getPaymentViews())
-        {
-            System.out.println(paymentView.getV_debtor_name());
-        }
+
 
         return groupifyData(reportData, reportTemplate, reportTool );
     }

@@ -91,7 +91,7 @@ public class CalculationTool
 
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             java.util.Date startDate = new Date();
-            System.out.println(" START == "+dateFormat.format(startDate)); //2016/11/16 12:08:43
+
 
             String baseQuery="select * from loanDetailedSummary";
 
@@ -100,16 +100,16 @@ public class CalculationTool
 
 //            for (LoanDetailedSummary lds: result)
 //            {
-//                System.out.println(lds.getOnDate()+ " "+ lds.getTotalDisbursement());
+
 //
 //            }
 
             java.util.Date finishDate = new Date();
-            System.out.println(" FINISH == "+String.valueOf(finishDate.getTime()-startDate.getTime()));
+
         }
         catch (Exception ex)
         {
-            System.out.println(ex);
+
         }
     }
 
@@ -129,7 +129,7 @@ public class CalculationTool
 
             if(loanID==3680)
             {
-                System.out.println("asdfasdfa");
+
             }
 
 
@@ -499,7 +499,7 @@ public class CalculationTool
         }
         catch (Exception ex)
         {
-            System.out.println(ex+lv.getV_loan_id().toString());
+
         }
 
 
@@ -761,7 +761,7 @@ public class CalculationTool
 
         if(loanIdList.size()>0)
         {
-            System.out.println(loanIdList.toString());
+
         }
 
 

@@ -31,10 +31,7 @@ public class EntityDocumentReportDataManager {
 
         reportData.getEntityDocumentViews().addAll(entityDocumentViewService.findByParameter(parameterS));
 
-        for (EntityDocumentView entityDocumentView: reportData.getEntityDocumentViews())
-        {
-            System.out.println(entityDocumentView.getV_owner_name());
-        }
+
 
         return groupifyData(reportData, reportTemplate, reportTool );
     }

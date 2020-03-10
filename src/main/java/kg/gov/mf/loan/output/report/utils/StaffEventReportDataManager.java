@@ -37,10 +37,7 @@ public class StaffEventReportDataManager {
 
         reportData.getStaffEventViews().addAll(staffEventViewService.findByParameter(parameterS));
 
-        for (StaffEventView staffEventView: reportData.getStaffEventViews())
-        {
-            System.out.println(staffEventView.getV_s_name());
-        }
+
 
         return groupifyData(reportData, reportTemplate, reportTool );
     }

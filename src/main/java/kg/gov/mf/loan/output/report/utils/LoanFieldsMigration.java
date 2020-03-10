@@ -145,7 +145,7 @@ public class LoanFieldsMigration {
             session.createSQLQuery(updateItemQuery).executeUpdate();
         }
         catch (Exception e){
-            System.out.println(e);
+
         }
     }
 
@@ -211,7 +211,7 @@ public class LoanFieldsMigration {
             st.close();
         }
         catch (Exception e){
-            System.out.println(e);
+
         }
     }
 

@@ -671,7 +671,7 @@ public class PrintoutGeneratorPaymentSummary {
         }
         catch(Exception Ex)
         {
-            System.out.println(Ex);
+
         }
 
 

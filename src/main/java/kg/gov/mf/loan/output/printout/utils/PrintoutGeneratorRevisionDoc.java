@@ -1118,7 +1118,7 @@ public class PrintoutGeneratorRevisionDoc{
         }
         catch(Exception Ex)
         {
-            System.out.println(Ex);
+
         }
 
 
@@ -2662,7 +2662,7 @@ public class PrintoutGeneratorRevisionDoc{
         }
         catch(Exception Ex)
         {
-            System.out.println(Ex);
+
         }
 
     }

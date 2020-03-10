@@ -493,7 +493,7 @@ public class PrintoutGeneratorCollateralDocDamaged {
                 }
                 catch (Exception ex)
                 {
-                    System.out.println(ex);
+
 
                 }
 
@@ -681,7 +681,7 @@ public class PrintoutGeneratorCollateralDocDamaged {
 
             catch(Exception Ex)
             {
-                System.out.println(Ex);
+
             }
 
 

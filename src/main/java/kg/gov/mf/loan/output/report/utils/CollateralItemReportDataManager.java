@@ -40,10 +40,7 @@ public class CollateralItemReportDataManager {
 
         reportData.getCollateralItemViews().addAll(collateralItemViewService.findByParameter(parameterS));
 
-        for (CollateralItemView collateralItemView: reportData.getCollateralItemViews())
-        {
-            System.out.println(collateralItemView.getV_ci_name());
-        }
+
 
         return groupifyData(reportData, reportTemplate, reportTool );
     }
@@ -167,7 +164,7 @@ public class CollateralItemReportDataManager {
                     childD.setCollateralNotaryOfficeRegDate(new java.sql.Date(lv.getV_ca_notaryOfficeRegDate().getTime()));
                 else
                 {
-                    System.out.println("asdf=="+lv.getV_ci_id());
+
                 }
                 childD.setCollateralNotaryOfficeRegNumber(lv.getV_ca_notaryOfficeRegNumber());
 
@@ -230,7 +227,7 @@ public class CollateralItemReportDataManager {
                     childF.setCollateralNotaryOfficeRegDate(new java.sql.Date(pv.getV_ca_notaryOfficeRegDate().getTime()));
                 else
                 {
-                    System.out.println("asdf=="+pv.getV_ci_id());
+
                 }
                 childF.setCollateralNotaryOfficeRegNumber(pv.getV_ca_notaryOfficeRegNumber());
 

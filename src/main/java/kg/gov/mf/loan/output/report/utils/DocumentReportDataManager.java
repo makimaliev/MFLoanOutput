@@ -41,10 +41,7 @@ public class DocumentReportDataManager {
 
         reportData.getDocumentViews().addAll(documentViewService.findByParameter(parameterS));
 
-        for (DocumentView documentView: reportData.getDocumentViews())
-        {
-            System.out.println(documentView.getV_doc_title());
-        }
+
 
         return groupifyData(reportData, reportTemplate, reportTool );
     }

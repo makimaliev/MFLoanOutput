@@ -37,10 +37,7 @@ public class LoanAccrueReportDataManager {
 
         reportData.getLoanAccrueViews().addAll(loanAccrueViewService.findByParameter(parameterS));
 
-        for (LoanAccrueView loanAccrueView: reportData.getLoanAccrueViews())
-        {
-            System.out.println(loanAccrueView.getV_debtor_name());
-        }
+
 
         return groupifyData(reportData, reportTemplate, reportTool );
 

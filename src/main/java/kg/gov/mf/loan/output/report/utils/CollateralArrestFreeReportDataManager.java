@@ -37,10 +37,7 @@ public class CollateralArrestFreeReportDataManager {
 
         reportData.getCollateralArrestFreeViews().addAll(collateralArrestFreeViewService.findByParameter(parameterS));
 
-        for (CollateralArrestFreeView collateralArrestFreeView: reportData.getCollateralArrestFreeViews())
-        {
-            System.out.println(collateralArrestFreeView.getV_ci_name());
-        }
+
 
         return groupifyData(reportData, reportTemplate, reportTool );
     }
@@ -146,7 +143,7 @@ public class CollateralArrestFreeReportDataManager {
                     childD.setCollateralNotaryOfficeRegDate(new java.sql.Date(lv.getV_ca_notaryOfficeRegDate().getTime()));
                 else
                 {
-                    System.out.println("asdf=="+lv.getV_ci_id());
+
                 }
                 childD.setCollateralNotaryOfficeRegNumber(lv.getV_ca_notaryOfficeRegNumber());
 
@@ -181,7 +178,7 @@ public class CollateralArrestFreeReportDataManager {
                     childE.setCollateralNotaryOfficeRegDate(new java.sql.Date(pv.getV_ca_notaryOfficeRegDate().getTime()));
                 else
                 {
-                    System.out.println("asdf=="+pv.getV_ci_id());
+
                 }
                 childE.setCollateralNotaryOfficeRegNumber(pv.getV_ca_notaryOfficeRegNumber());
 

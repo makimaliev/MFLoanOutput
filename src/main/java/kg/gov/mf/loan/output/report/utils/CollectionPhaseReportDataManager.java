@@ -58,10 +58,7 @@ public class CollectionPhaseReportDataManager {
 
         reportData.getCollectionPhaseViews().addAll(collectionPhaseViewService.findByParameter(parameterS));
 
-        for (CollectionPhaseView collectionPhaseView: reportData.getCollectionPhaseViews())
-        {
-            System.out.println(collectionPhaseView.getV_debtor_name());
-        }
+
 
         return groupifyData(reportData,reportTemplate, reportTool);
     }

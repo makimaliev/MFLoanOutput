@@ -36,10 +36,7 @@ public class PaymentScheduleReportDataManager {
 
         reportData.getPaymentScheduleViews().addAll(paymentScheduleViewService.findByParameter(parameterS));
 
-        for (PaymentScheduleView paymentScheduleView: reportData.getPaymentScheduleViews())
-        {
-            System.out.println(paymentScheduleView.getV_debtor_name());
-        }
+
 
         return groupifyData(reportData, reportTemplate, reportTool );
 

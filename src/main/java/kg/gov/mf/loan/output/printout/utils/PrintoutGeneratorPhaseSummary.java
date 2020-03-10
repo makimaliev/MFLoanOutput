@@ -308,7 +308,7 @@ public class PrintoutGeneratorPhaseSummary {
                     {
                         step++;
                         finishDate=new Date();
-                        System.out.println(step + " == "+startDate.getTime()+ " === "+ (startDate.getTime()-finishDate.getTime()));
+
                         startDate = new Date();
                     }
 
@@ -523,7 +523,7 @@ public class PrintoutGeneratorPhaseSummary {
                         {
                             step++;
                             finishDate=new Date();
-                            System.out.println(step + " == "+startDate.getTime()+ " === "+ (startDate.getTime()-finishDate.getTime()));
+
                             startDate = new Date();
                         }
 
@@ -990,7 +990,7 @@ public class PrintoutGeneratorPhaseSummary {
 
                 catch(Exception Ex)
                 {
-                   System.out.println(Ex);
+
                 }
 
 

@@ -37,10 +37,7 @@ public class LoanWriteOffReportDataManager {
 
         reportData.getLoanWriteOffViews().addAll(LoanWriteOffViewService.findByParameter(parameterS));
 
-        for (LoanWriteOffView LoanWriteOffView: reportData.getLoanWriteOffViews())
-        {
-            System.out.println(LoanWriteOffView.getV_debtor_name());
-        }
+
 
         return groupifyData(reportData, reportTemplate, reportTool );
 

@@ -367,7 +367,7 @@ public class PrintoutGeneratorInspectionAct {
             }
             catch (Exception Ex)
             {
-                System.out.println(" DEPOSIT ACT TEMPLATE == ERROR = "+Ex);
+
             }
 
 
@@ -482,7 +482,7 @@ public class PrintoutGeneratorInspectionAct {
         }
         catch(Exception Ex)
         {
-            System.out.println(Ex);
+
 
         }
 

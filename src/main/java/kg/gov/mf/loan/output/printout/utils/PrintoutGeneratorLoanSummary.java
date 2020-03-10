@@ -245,7 +245,7 @@ int counter= 0;
                     if(loanSummaryViews.size()>0)
                     {
                         counter++;
-                        System.out.println(counter);
+
 
                         sPersonDetails = "details";
                         iResDepartment = 1;
@@ -1389,7 +1389,7 @@ int x = 0;
                 }
                 catch(Exception Ex)
                 {
-                   System.out.println(Ex);
+
                 }
 
 
@@ -1548,7 +1548,7 @@ int x = 0;
             if(loanSummaryViews.size()>0)
             {
                 counter++;
-                System.out.println(counter);
+
 
                 sPersonDetails = "details";
                 iResDepartment = 1;
@@ -2262,7 +2262,7 @@ int x = 0;
         }
         catch(Exception Ex)
         {
-            System.out.println(Ex);
+
         }
 
 

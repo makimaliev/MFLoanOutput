@@ -1000,7 +1000,7 @@ public class PrintoutGeneratorCreditClaim {
 
         catch(Exception Ex)
         {
-            System.out.println(Ex);
+
         }
 
 
