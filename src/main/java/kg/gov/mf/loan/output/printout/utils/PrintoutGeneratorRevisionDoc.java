@@ -993,13 +993,13 @@ public class PrintoutGeneratorRevisionDoc{
                     else
                     {
 //                        sNach="Заведующий отделом грантов АПК:";
-                        sNachTitle="________________";
+                        sNachTitle="У. Гайыпов";
                     }
                 }
                 else
                 {
 //                    sNach="Заведующий отделом кредитов промышленности:";
-                    sNachTitle="Ж. Жапаркулова";
+                    sNachTitle="Ж. Джумагулова";
                 }
 
 
@@ -1013,7 +1013,7 @@ public class PrintoutGeneratorRevisionDoc{
                     else
                     {
                         sNach="Заведующий отделом грантов АПК:";
-                        sNachTitle="________________";
+                        sNachTitle="У. Гайыпов";
                     }
                 }
                 else
@@ -1026,7 +1026,7 @@ public class PrintoutGeneratorRevisionDoc{
                     else
                     {
                         sNach="Заведующий отделом кредитов промышленности:";
-                        sNachTitle="Ж. Жапаркулова";
+                        sNachTitle="Ж. Джумагулова";
                     }
 
                 }

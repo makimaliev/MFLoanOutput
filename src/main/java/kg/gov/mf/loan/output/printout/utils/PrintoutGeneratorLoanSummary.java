@@ -839,7 +839,7 @@ int x = 0;
                             upravlenie = 2;
                             if(iCreditType==5) upravlenie=3;
 
-                            if(OstAll>1)
+                            if(SumOstAll>1)
                             {
                                 sResTitle = "Заместитель директора:";
                                 sResName  = "Дж. Сагынов";
@@ -1199,7 +1199,7 @@ int x = 0;
 
 
 
-                       if(OstAll<=1)
+                       if(SumOstAll<=1)
                        {
                            cell = new PdfPCell (new Paragraph (" Заведующий сектором информационных технологий (в части кредитных условий)",TitleFont));
                            cell.setFixedHeight(51);
@@ -1247,13 +1247,13 @@ int x = 0;
                             else
                                 {
                                     sNach="Заведующий отделом грантов АПК:";
-                                    sNachTitle="________________";
+                                    sNachTitle="У. Гайыпов";
                                 }
                         }
                         else
                             {
                                 sNach="Заведующий отделом кредитов промышленности:";
-                                sNachTitle="Ж. Жапаркулова";
+                                sNachTitle="Ж. Джумагулова";
                             }
 
 
@@ -1267,7 +1267,7 @@ int x = 0;
                             else
                             {
                                 sNach="Заведующий отделом грантов АПК:";
-                                sNachTitle="________________";
+                                sNachTitle="У. Гайыпов";
                             }
                         }
                         else
@@ -1282,7 +1282,7 @@ int x = 0;
                             else
                             {
                                 sNach="Заведующий отделом кредитов промышленности:";
-                                sNachTitle="Ж. Жапаркулова";
+                                sNachTitle="Ж. Джумагулова";
                             }
 
                         }

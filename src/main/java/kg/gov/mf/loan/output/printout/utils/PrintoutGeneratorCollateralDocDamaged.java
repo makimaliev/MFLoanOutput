@@ -43,6 +43,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.awt.*;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.List;
 
@@ -514,11 +515,21 @@ public class PrintoutGeneratorCollateralDocDamaged {
 
                 table.setWidths(iWidth3);
 
+                Date date = new Date();
+                DecimalFormat dFormat= new DecimalFormat("00");
+
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(date);
+
+                String day = dFormat.format(cal.get(Calendar.DAY_OF_MONTH));
+                String month = dFormat.format(cal.get(Calendar.MONTH) + 1);
+                String year = String.valueOf(cal.get(Calendar.YEAR));
+
                 cell = new RtfCell (new Paragraph ("       Күрөө келишиминин шарттары боюнча Күрөө коюучу катары күрөө предметин сактоо жана оң абалда пайдалануу боюнча, " +
                         "эгерде, күрөө мүлкү жоголсо же жараксыз абалга келсе, " +
                         "күрөө мүлкүн ордуна коюу же карызды төлөп берүүгө милдеттенме алгандыгыңызды эскертет.\n" +
                         "       Күрөө келишиминин шарттары бузулгандыгына байланыштуу, Агенттик," +
-                        "2020-жылдын 1-апрелине " +
+                        day+"."+month+"."+year+"ж. га "+
                         "чейин жоголгон күрөө мүлкүн ордуна коюуну же карызды кайтарып берүүнү талап кылат.\n" +
                         "       Жогорудагы талап мөөнөтүндө аткарылбаса, Агенттик, мамлекеттик зайымдык каражаттарды кайтаруу " +
                         "максатында укук коргоо жана сот органдарына кайрылууга мажбур боло тургандыгын билдирет.\n" +
