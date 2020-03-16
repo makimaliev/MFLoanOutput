@@ -53,6 +53,9 @@ public abstract class DebtorView extends ReportView {
 	@Column
 	private Long v_debtor_subGroup_id;
 
+	@Column
+	private Long v_debtor_act_status_id;
+
 
 	public static long getSerialVersionUID() {
 		return serialVersionUID;
@@ -160,5 +163,13 @@ public abstract class DebtorView extends ReportView {
 
 	public void setV_debtor_subGroup_id(Long v_debtor_subGroup_id) {
 		this.v_debtor_subGroup_id = v_debtor_subGroup_id;
+	}
+
+	public Long getV_debtor_act_status_id() {
+		return v_debtor_act_status_id;
+	}
+
+	public void setV_debtor_act_status_id(Long v_debtor_act_status_id) {
+		this.v_debtor_act_status_id = v_debtor_act_status_id;
 	}
 }
