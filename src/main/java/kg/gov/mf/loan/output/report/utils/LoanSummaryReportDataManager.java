@@ -321,6 +321,8 @@ public class LoanSummaryReportDataManager {
                 childD.setID(loanSummaryView.getV_loan_id());
                 childD.setName(loanSummaryView.getV_credit_order_reg_number()+", "+loanSummaryView.getV_loan_reg_number()+" от "+loanSummaryView.getV_loan_reg_date()+" в тыс. сомах");
 
+                childD.setDetails(" test");
+                childD.setDetails(loanSummaryView.getV_loan_description());
 
 
                 childD.setCurrency(loanSummaryView.getV_loan_currency_id().shortValue());
@@ -860,6 +862,8 @@ public class LoanSummaryReportDataManager {
 
         convertedLoanSummaryView.setV_debtor_group_id(lv.getV_debtor_group_id());
         convertedLoanSummaryView.setV_debtor_subGroup_id(lv.getV_debtor_subGroup_id());
+
+        convertedLoanSummaryView.setV_loan_description(lv.getV_loan_description());
 
         return convertedLoanSummaryView;
     }

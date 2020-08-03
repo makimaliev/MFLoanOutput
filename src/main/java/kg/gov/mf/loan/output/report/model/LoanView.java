@@ -92,10 +92,16 @@ public class LoanView extends DebtorView
 	@Column
 	private Long v_collateral_description_id;
 
+	@Column
+	private String v_loan_description;
 
+	public String getV_loan_description() {
+		return v_loan_description;
+	}
 
-
-
+	public void setV_loan_description(String v_loan_description) {
+		this.v_loan_description = v_loan_description;
+	}
 
 	public Long getV_loan_id() {
 		return v_loan_id;
