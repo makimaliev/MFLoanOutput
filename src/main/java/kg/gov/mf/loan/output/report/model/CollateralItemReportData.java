@@ -16,7 +16,10 @@ public class CollateralItemReportData extends ReportData
 
 	private LinkedHashSet<CollateralItemView> collateralItemViews = new LinkedHashSet<CollateralItemView>(0);
 
-
+	private LinkedHashSet<Integer> debtorIds = new LinkedHashSet<>(0);
+	private LinkedHashSet<Integer> loanIds = new LinkedHashSet<>(0);
+	private LinkedHashSet<Integer> agreementIds = new LinkedHashSet<>(0);
+	private LinkedHashSet<Integer> itemIds = new LinkedHashSet<>(0);
 
 
 	//*************************************************************
@@ -149,6 +152,37 @@ public class CollateralItemReportData extends ReportData
 		return  (CollateralItemReportData[])ChildDataList.toArray(new CollateralItemReportData[ChildDataList.size()]);
 	}
 
+	public LinkedHashSet<Integer> getDebtorIds() {
+		return debtorIds;
+	}
+
+	public void setDebtorIds(LinkedHashSet<Integer> debtorIds) {
+		this.debtorIds = debtorIds;
+	}
+
+	public LinkedHashSet<Integer> getLoanIds() {
+		return loanIds;
+	}
+
+	public void setLoanIds(LinkedHashSet<Integer> loanIds) {
+		this.loanIds = loanIds;
+	}
+
+	public LinkedHashSet<Integer> getAgreementIds() {
+		return agreementIds;
+	}
+
+	public void setAgreementIds(LinkedHashSet<Integer> agreementIds) {
+		this.agreementIds = agreementIds;
+	}
+
+	public LinkedHashSet<Integer> getItemIds() {
+		return itemIds;
+	}
+
+	public void setItemIds(LinkedHashSet<Integer> itemIds) {
+		this.itemIds = itemIds;
+	}
 
 	public LinkedList<CollateralItemReportData> getChildDataList() {
 		return ChildDataList;

@@ -9,6 +9,8 @@ import kg.gov.mf.loan.output.report.model.*;
 import kg.gov.mf.loan.output.report.service.CollateralItemViewService;
 import kg.gov.mf.loan.output.report.service.LoanSummaryViewService;
 import kg.gov.mf.loan.output.report.service.LoanViewService;
+import org.springframework.beans.PropertyAccessor;
+import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
@@ -205,9 +207,31 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                 childC.setLevel((short)3);
 
                 childC.setCount(1);
-                childB.setCount(childB.getCount()+1);
-                childA.setCount(childA.getCount()+1);
-                reportData.setCount(reportData.getCount()+1);
+
+
+
+
+                Integer debtorId = collateralItemView.getV_debtor_id().intValue();
+
+                if(!reportData.getDebtorIds().contains(debtorId))
+                {
+                    reportData.getDebtorIds().add(debtorId);
+                    reportData.setCount(reportData.getCount()+1);
+                }
+
+                if(!childA.getDebtorIds().contains(debtorId))
+                {
+                    childA.getDebtorIds().add(debtorId);
+                    childA.setCount(childA.getCount()+1);
+                }
+
+                if(!childB.getDebtorIds().contains(debtorId))
+                {
+                    childB.getDebtorIds().add(debtorId);
+                    childB.setCount(childB.getCount()+1);
+                }
+
+
 
                 currentgroupCid=reportTool.getIdByGroupType(reportTemplate.getGroupType3(),collateralItemView);
                 currentgroupDid=-1;
@@ -227,10 +251,32 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                 childD.setLevel((short)4);
 
                 childD.setDetailsCount(1);
-                childC.setDetailsCount(childC.getDetailsCount()+1);
-                childA.setDetailsCount(childA.getDetailsCount()+1);
-                childB.setDetailsCount(childB.getDetailsCount()+1);
-                reportData.setDetailsCount(reportData.getDetailsCount()+1);
+
+                Integer agreementId = collateralItemView.getV_ca_id().intValue();
+
+                if(!reportData.getAgreementIds().contains(agreementId))
+                {
+                    reportData.getAgreementIds().add(agreementId);
+                    reportData.setDetailsCount(reportData.getDetailsCount()+1);
+                }
+
+                if(!childA.getAgreementIds().contains(agreementId))
+                {
+                    childA.getAgreementIds().add(agreementId);
+                    childA.setDetailsCount(childA.getDetailsCount()+1);
+                }
+
+                if(!childB.getAgreementIds().contains(agreementId))
+                {
+                    childB.getAgreementIds().add(agreementId);
+                    childB.setDetailsCount(childB.getDetailsCount()+1);
+                }
+
+                if(!childC.getAgreementIds().contains(agreementId))
+                {
+                    childC.getAgreementIds().add(agreementId);
+                    childC.setDetailsCount(childC.getDetailsCount()+1);
+                }
 
 
                 childD.setID(lv.getV_ca_id());
@@ -335,11 +381,13 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                     if(ls.getTotalOutstanding()!=null)
                     {
                         childE.setRemainingSum(ls.getTotalOutstanding());
-                        childD.setRemainingSum(childD.getRemainingSum()+ls.getTotalOutstanding());
-                        childC.setRemainingSum(childC.getRemainingSum()+ls.getTotalOutstanding());
-                        childB.setRemainingSum(childB.getRemainingSum()+ls.getTotalOutstanding());
-                        childA.setRemainingSum(childA.getRemainingSum()+ls.getTotalOutstanding());
-                        reportData.setRemainingSum(reportData.getRemainingSum()+ls.getTotalOutstanding());
+//                        childD.setRemainingSum(childD.getRemainingSum()+ls.getTotalOutstanding());
+//                        childC.setRemainingSum(childC.getRemainingSum()+ls.getTotalOutstanding());
+//                        childB.setRemainingSum(childB.getRemainingSum()+ls.getTotalOutstanding());
+//                        childA.setRemainingSum(childA.getRemainingSum()+ls.getTotalOutstanding());
+//                        reportData.setRemainingSum(reportData.getRemainingSum()+ls.getTotalOutstanding());
+
+                        sumOperation(reportData, childA, childB, childC , childD,null, null, childD, true, lv.getV_loan_id().intValue(), "loanIds", "RemainingSum", ls.getTotalOutstanding());
                     }
 
                     if(ls.getOutstadingPrincipal()!=null)
@@ -483,36 +531,43 @@ public class CollateralItemAndLoanSummaryReportDataManager {
 
 
 
-                if(pv.getV_ci_quantity()>0)
+                if(pv.getV_ci_quantity()>=0)
                 {
-                    childE.setCollateralItemQuantity(childE.getCollateralItemQuantity()+pv.getV_ci_quantity());
-                    childA.setCollateralItemQuantity(childA.getCollateralItemQuantity()+pv.getV_ci_quantity());
-                    childB.setCollateralItemQuantity(childB.getCollateralItemQuantity()+pv.getV_ci_quantity());
-                    childC.setCollateralItemQuantity(childC.getCollateralItemQuantity()+pv.getV_ci_quantity());
-                    childD.setCollateralItemQuantity(childD.getCollateralItemQuantity()+pv.getV_ci_quantity());
-                    reportData.setCollateralItemQuantity(reportData.getCollateralItemQuantity()+pv.getV_ci_quantity());
+//                    childE.setCollateralItemQuantity(childE.getCollateralItemQuantity()+pv.getV_ci_quantity());
+//                    childA.setCollateralItemQuantity(childA.getCollateralItemQuantity()+pv.getV_ci_quantity());
+//                    childB.setCollateralItemQuantity(childB.getCollateralItemQuantity()+pv.getV_ci_quantity());
+//                    childC.setCollateralItemQuantity(childC.getCollateralItemQuantity()+pv.getV_ci_quantity());
+//                    childD.setCollateralItemQuantity(childD.getCollateralItemQuantity()+pv.getV_ci_quantity());
+//                    reportData.setCollateralItemQuantity(reportData.getCollateralItemQuantity()+pv.getV_ci_quantity());
+
+
+                    this.sumOperation(reportData, childA, childB, childC , childD,childE, null, childE, false, pv.getV_ci_id().intValue(), "itemIds", "collateralItemQuantity", pv.getV_ci_quantity());
                 }
 
-                if(pv.getV_ci_collateralValue()>0)
+                if(pv.getV_ci_collateralValue()>=0)
                 {
                     childF.setCollateralItemCollateralValue(childF.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
-                    childE.setCollateralItemCollateralValue(childE.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
-                    childA.setCollateralItemCollateralValue(childA.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
-                    childB.setCollateralItemCollateralValue(childB.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
-                    childC.setCollateralItemCollateralValue(childC.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
-                    childD.setCollateralItemCollateralValue(childD.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
-                    reportData.setCollateralItemCollateralValue(reportData.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
+//                    childE.setCollateralItemCollateralValue(childE.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
+//                    childA.setCollateralItemCollateralValue(childA.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
+//                    childB.setCollateralItemCollateralValue(childB.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
+//                    childC.setCollateralItemCollateralValue(childC.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
+//                    childD.setCollateralItemCollateralValue(childD.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
+//                    reportData.setCollateralItemCollateralValue(reportData.getCollateralItemCollateralValue()+pv.getV_ci_collateralValue());
+
+                    this.sumOperation(reportData, childA, childB, childC , childD,childE, null , childE,false,  pv.getV_ci_id().intValue(), "itemIds", "collateralItemCollateralValue", pv.getV_ci_collateralValue());
                 }
 
-                if(pv.getV_ci_estimatedValue()>0)
+                if(pv.getV_ci_estimatedValue()>=0)
                 {
                     childF.setCollateralItemEstimatedValue(childF.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
-                    childE.setCollateralItemEstimatedValue(childE.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
-                    childA.setCollateralItemEstimatedValue(childA.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
-                    childB.setCollateralItemEstimatedValue(childB.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
-                    childC.setCollateralItemEstimatedValue(childC.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
-                    childD.setCollateralItemEstimatedValue(childD.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
-                    reportData.setCollateralItemEstimatedValue(reportData.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+//                    childE.setCollateralItemEstimatedValue(childE.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+//                    childA.setCollateralItemEstimatedValue(childA.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+//                    childB.setCollateralItemEstimatedValue(childB.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+//                    childC.setCollateralItemEstimatedValue(childC.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+//                    childD.setCollateralItemEstimatedValue(childD.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+//                    reportData.setCollateralItemEstimatedValue(reportData.getCollateralItemEstimatedValue()+pv.getV_ci_estimatedValue());
+
+                    this.sumOperation(reportData, childA, childB, childC , childD,childE, null, childE, true,pv.getV_ci_id().intValue(), "itemIds", "collateralItemEstimatedValue", pv.getV_ci_estimatedValue());
                 }
 
 
@@ -552,6 +607,82 @@ public class CollateralItemAndLoanSummaryReportDataManager {
 
 
         return reportData;
+    }
+
+
+    private void sumOperation(CollateralItemReportData reportData,
+                              CollateralItemReportData childA,
+                              CollateralItemReportData childB,
+                              CollateralItemReportData childC,
+                              CollateralItemReportData childD,
+                              CollateralItemReportData childE,
+                              CollateralItemReportData childF,
+                              CollateralItemReportData lastChild,
+                              Boolean isLast,
+                              Integer uniqueId,
+                              String checkedField,
+                              String sumField,
+                              Double amount)
+    {
+
+        if(reportData!=null) checkForExistense(reportData, checkedField,sumField, uniqueId, amount, lastChild, isLast);
+        if(childA!=null) checkForExistense(childA, checkedField,sumField, uniqueId, amount, lastChild, isLast);
+        if(childB!=null) checkForExistense(childB, checkedField,sumField, uniqueId, amount, lastChild, isLast);
+        if(childC!=null) checkForExistense(childC, checkedField,sumField, uniqueId, amount, lastChild, isLast);
+        if(childD!=null) checkForExistense(childD, checkedField,sumField, uniqueId, amount, lastChild, isLast);
+        if(childE!=null) checkForExistense(childE, checkedField,sumField, uniqueId, amount, lastChild, isLast);
+        if(childF!=null) checkForExistense(childF, checkedField,sumField, uniqueId, amount, lastChild, isLast);
+
+
+    }
+
+    private void checkForExistense(CollateralItemReportData checkedObject,
+                                   String checkedField,
+                                   String sumField,
+                                   Integer uniqueId,
+                                   Double amount,
+                                   CollateralItemReportData lastChild,
+                                   Boolean isLast)
+    {
+        try {
+
+            Object object;
+
+            if(checkedObject!=null)
+            {
+                PropertyAccessor myAccessor = PropertyAccessorFactory.forDirectFieldAccess(checkedObject);
+
+                Set<Integer> Ids = (HashSet<Integer>)myAccessor.getPropertyValue(checkedField);
+
+//                Double amountOld = (Double)myAccessor.getPropertyValue(sumField);
+
+                String sMethodName = "get"+sumField.substring(0, 1).toUpperCase()+sumField.substring(1, sumField.length());
+
+                checkedObject.getClass().cast(checkedObject);
+                object = checkedObject.getClass().getMethod(sMethodName,null).invoke(checkedObject);
+
+                Double amountOld = (Double)object;
+
+
+
+                Double amountNew = amount + amountOld;
+
+                if (!Ids.contains(uniqueId))
+                {
+//                    if(checkedObject.equals(lastChild))
+                    if(isLast)
+                        Ids.add(uniqueId);
+                    myAccessor.setPropertyValue(sumField, amountNew);
+                }
+
+            }
+
+        }
+        catch (Exception ex)
+        {
+System.out.println(ex);
+        }
+
     }
 
 
