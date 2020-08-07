@@ -20,4 +20,6 @@ public interface ReportService {
 
 	public List<Report> findByUser(User user);
 
+	public void clone(Report report);
+
 }

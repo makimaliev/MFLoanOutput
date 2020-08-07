@@ -29,7 +29,14 @@ public class ReportGeneratorLoanSummary extends ReportGenerator
         ReportTool reportTool = new ReportTool();
         reportTool.initReference();
 
-        LoanSummary = new LoanSummaryReportDataManager().getReportDataGrouped(LoanSummary,reportTemplate);
+        if(reportTemplate.getName().contains("для аналитики"))
+        {
+            LoanSummary = new LoanSummaryForAnalyticsReportDataManager().getReportDataGrouped(LoanSummary,reportTemplate);
+        }
+        else
+        {
+            LoanSummary = new LoanSummaryReportDataManager().getReportDataGrouped(LoanSummary,reportTemplate);
+        }
 
         ReportData reportData = LoanSummary;
 

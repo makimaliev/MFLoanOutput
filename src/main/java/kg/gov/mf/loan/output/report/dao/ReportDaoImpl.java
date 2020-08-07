@@ -1,5 +1,6 @@
 package kg.gov.mf.loan.output.report.dao;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -118,6 +119,53 @@ public class ReportDaoImpl implements ReportDao {
 		criteria.add(Restrictions.eq("usersAlias.id", user.getId()));
 
 		return criteria.list() ;
+
+	}
+
+	@Override
+	public void clone(Report report) {
+
+		Report clonedReport = new Report();
+
+
+		clonedReport.setName(report.getName()+" копия ");
+		clonedReport.setReportType(report.getReportType());
+
+
+//		Set<ReportTemplate> reportTemplates= new HashSet<>();
+//		reportTemplates.addAll(report.getReportTemplates());
+//		clonedReport.setReportTemplates(reportTemplates);
+
+
+		Set<GroupType> groupTypes= new HashSet<>();
+		groupTypes.addAll(report.getGroupTypes());
+		clonedReport.setGroupTypes(groupTypes);
+
+
+
+		Set<ContentParameter> contentParameters= new HashSet<>();
+		contentParameters.addAll(report.getContentParameters());
+		clonedReport.setContentParameters(contentParameters);
+
+
+
+		Set<FilterParameter> filterParameters= new HashSet<>();
+		filterParameters.addAll(report.getFilterParameters());
+		clonedReport.setFilterParameters(filterParameters);
+
+
+		Set<OutputParameter> outputParameters = new HashSet<>();
+		outputParameters.addAll(report.getOutputParameters());
+		clonedReport.setOutputParameters(outputParameters);
+
+		Set<User> users = new HashSet<>();
+		users.addAll(report.getUsers());
+		clonedReport.setUsers(users);
+
+		Session session = this.sessionFactory.getCurrentSession();
+		session.persist(clonedReport);
+
+		logger.info("Report cloned == "+report);
 
 	}
 

@@ -82,6 +82,20 @@ public class LoanSummaryReportData extends ReportData
 	private Double loanCloseRate   		= 1.0;
 
 
+	private double loanAmountInCurrency           = 0;
+	private double TotalDisbursmentInCurrency     = 0;
+
+	private double RemainingSumInCurrency   		= 0;
+	private double RemainingPrincipalInCurrency 	= 0;
+	private double RemainingInterestInCurrency  	= 0;
+	private double RemainingPenaltyInCurrency 	= 0;
+
+	private double OverdueAllInCurrency      		= 0;
+	private double OverduePrincipalInCurrency     = 0;
+	private double OverdueInterestInCurrency      = 0;
+	private double OverduePenaltyInCurrency      	= 0;
+
+
 	public LoanSummaryReportData()
 	{
 		ChildDataList = new LinkedList<LoanSummaryReportData>();
@@ -510,5 +524,86 @@ public class LoanSummaryReportData extends ReportData
 
 	public void setDebtorSubGroup(long debtorSubGroup) {
 		this.debtorSubGroup = debtorSubGroup;
+	}
+
+
+	public double getLoanAmountInCurrency() {
+		return loanAmountInCurrency;
+	}
+
+	public void setLoanAmountInCurrency(double loanAmountInCurrency) {
+		this.loanAmountInCurrency = loanAmountInCurrency;
+	}
+
+	public double getTotalDisbursmentInCurrency() {
+		return TotalDisbursmentInCurrency;
+	}
+
+	public void setTotalDisbursmentInCurrency(double totalDisbursmentInCurrency) {
+		TotalDisbursmentInCurrency = totalDisbursmentInCurrency;
+	}
+
+	public double getRemainingSumInCurrency() {
+		return RemainingSumInCurrency;
+	}
+
+	public void setRemainingSumInCurrency(double remainingSumInCurrency) {
+		RemainingSumInCurrency = remainingSumInCurrency;
+	}
+
+	public double getRemainingPrincipalInCurrency() {
+		return RemainingPrincipalInCurrency;
+	}
+
+	public void setRemainingPrincipalInCurrency(double remainingPrincipalInCurrency) {
+		RemainingPrincipalInCurrency = remainingPrincipalInCurrency;
+	}
+
+	public double getRemainingInterestInCurrency() {
+		return RemainingInterestInCurrency;
+	}
+
+	public void setRemainingInterestInCurrency(double remainingInterestInCurrency) {
+		RemainingInterestInCurrency = remainingInterestInCurrency;
+	}
+
+	public double getRemainingPenaltyInCurrency() {
+		return RemainingPenaltyInCurrency;
+	}
+
+	public void setRemainingPenaltyInCurrency(double remainingPenaltyInCurrency) {
+		RemainingPenaltyInCurrency = remainingPenaltyInCurrency;
+	}
+
+	public double getOverdueAllInCurrency() {
+		return OverdueAllInCurrency;
+	}
+
+	public void setOverdueAllInCurrency(double overdueAllInCurrency) {
+		OverdueAllInCurrency = overdueAllInCurrency;
+	}
+
+	public double getOverduePrincipalInCurrency() {
+		return OverduePrincipalInCurrency;
+	}
+
+	public void setOverduePrincipalInCurrency(double overduePrincipalInCurrency) {
+		OverduePrincipalInCurrency = overduePrincipalInCurrency;
+	}
+
+	public double getOverdueInterestInCurrency() {
+		return OverdueInterestInCurrency;
+	}
+
+	public void setOverdueInterestInCurrency(double overdueInterestInCurrency) {
+		OverdueInterestInCurrency = overdueInterestInCurrency;
+	}
+
+	public double getOverduePenaltyInCurrency() {
+		return OverduePenaltyInCurrency;
+	}
+
+	public void setOverduePenaltyInCurrency(double overduePenaltyInCurrency) {
+		OverduePenaltyInCurrency = overduePenaltyInCurrency;
 	}
 }

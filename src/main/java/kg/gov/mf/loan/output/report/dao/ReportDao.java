@@ -22,4 +22,6 @@ public interface ReportDao {
 
 	public List<Report> findByUser(User user);
 
+	public void clone(Report report);
+
 }

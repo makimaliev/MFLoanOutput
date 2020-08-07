@@ -60,4 +60,11 @@ public class ReportServiceJpaImpl implements ReportService {
 	public List<Report> findByUser(User user) {
 		return this.reportDao.findByUser(user);
 	}
+
+	@Override
+	@Transactional
+	public void clone(Report report) {
+		this.reportDao.clone(report);
+
+	}
 }
