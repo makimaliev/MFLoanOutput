@@ -95,6 +95,12 @@ public class LoanSummaryReportData extends ReportData
 	private double OverdueInterestInCurrency      = 0;
 	private double OverduePenaltyInCurrency      	= 0;
 
+	private short  region    			= 0;
+	private short  district    			= 0;
+	private short  workSector    			= 0;
+	private short  creditLine    			= 0;
+
+	private String debtorName        = "";
 
 	public LoanSummaryReportData()
 	{
@@ -605,5 +611,45 @@ public class LoanSummaryReportData extends ReportData
 
 	public void setOverduePenaltyInCurrency(double overduePenaltyInCurrency) {
 		OverduePenaltyInCurrency = overduePenaltyInCurrency;
+	}
+
+	public short getRegion() {
+		return region;
+	}
+
+	public void setRegion(short region) {
+		this.region = region;
+	}
+
+	public short getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(short district) {
+		this.district = district;
+	}
+
+	public short getWorkSector() {
+		return workSector;
+	}
+
+	public void setWorkSector(short workSector) {
+		this.workSector = workSector;
+	}
+
+	public short getCreditLine() {
+		return creditLine;
+	}
+
+	public void setCreditLine(short creditLine) {
+		this.creditLine = creditLine;
+	}
+
+	public String getDebtorName() {
+		return debtorName;
+	}
+
+	public void setDebtorName(String debtorName) {
+		this.debtorName = debtorName;
 	}
 }

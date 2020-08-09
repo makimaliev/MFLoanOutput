@@ -286,6 +286,12 @@ public class LoanSummaryForAnalyticsReportDataManager {
                 childD.setDetails(" test");
                 childD.setDetails(loanSummaryView.getV_loan_description());
 
+                childD.setDebtorName(loanSummaryView.getV_debtor_name());
+                childD.setRegion(loanSummaryView.getV_debtor_region_id().shortValue());
+                childD.setDistrict(loanSummaryView.getV_debtor_district_id().shortValue());
+                childD.setWorkSector(loanSummaryView.getV_debtor_work_sector_id().shortValue());
+                childD.setCreditLine(loanSummaryView.getV_loan_fund_id() != null ? loanSummaryView.getV_loan_fund_id().shortValue() : 30); // if null setting default value
+
 
                 childD.setCurrency(loanSummaryView.getV_loan_currency_id().shortValue());
                 childD.setLoanRegNumber(loanSummaryView.getV_loan_reg_number());
@@ -343,6 +349,8 @@ public class LoanSummaryForAnalyticsReportDataManager {
 
 
                 }
+
+                childD.setExchangeRate(rate);
                 childD.getChildDataList().removeAll(childD.getChildDataList());
 
                 childE = childD.addChild();
