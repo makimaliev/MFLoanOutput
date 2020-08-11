@@ -362,6 +362,17 @@ public class LoanSummaryReportDataManager {
                 double rate = 1;
                 double rate2 = 1;
 
+                try{
+                    if(reportTemplate.getInThousands()!=null)
+                    {
+                        thousands = reportTemplate.getInThousands();
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+
                 if(loanSummaryView.getV_loan_currency_id()>1)
                 {
 

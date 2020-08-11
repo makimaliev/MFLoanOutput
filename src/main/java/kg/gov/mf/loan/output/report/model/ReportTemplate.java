@@ -22,6 +22,9 @@ public class ReportTemplate {
     @Column(name="name", nullable=false)
     private String name;
 
+    @Column(name="inThousands", nullable=true)
+    private Double inThousands = 1000.0;
+
 	@Column(name="showGroup1", columnDefinition = "boolean default true")
 	private Boolean showGroup1 = true;
 
@@ -299,6 +302,14 @@ public class ReportTemplate {
 
 	public void setUsers(Set<User> users) {
 		this.users = users;
+	}
+
+	public Double getInThousands() {
+		return inThousands;
+	}
+
+	public void setInThousands(Double inThousands) {
+		this.inThousands = inThousands;
 	}
 
 	@Override
