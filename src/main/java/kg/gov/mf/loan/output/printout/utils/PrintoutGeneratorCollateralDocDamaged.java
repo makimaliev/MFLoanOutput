@@ -23,6 +23,7 @@ import kg.gov.mf.loan.manage.model.collection.PhaseDetails;
 import kg.gov.mf.loan.manage.model.debtor.Debtor;
 import kg.gov.mf.loan.manage.model.debtor.Owner;
 import kg.gov.mf.loan.manage.model.loan.Loan;
+import kg.gov.mf.loan.manage.model.process.LoanSummary;
 import kg.gov.mf.loan.manage.service.collateral.CollateralAgreementService;
 import kg.gov.mf.loan.manage.service.collateral.CollateralItemService;
 import kg.gov.mf.loan.manage.service.collection.CollectionPhaseService;
@@ -452,6 +453,8 @@ public class PrintoutGeneratorCollateralDocDamaged {
 
                 int x=0;
 
+                double remainingAll= 0;
+
                 try {
 
                     String baseQuery="select distinct i.* from loanCollateralAgreement lca\n" +
@@ -490,7 +493,6 @@ public class PrintoutGeneratorCollateralDocDamaged {
                         table.addCell (cell);
                     }
 
-
                 }
                 catch (Exception ex)
                 {
@@ -498,6 +500,34 @@ public class PrintoutGeneratorCollateralDocDamaged {
 
                 }
 
+
+                try {
+
+                    String baseQuery="select distinct ls.* from loanSummary ls\n" +
+                            "  join loan l ON ls.loanId = l.id\n" +
+                            "  join debtor d on d.id = l.debtorId\n" +
+                            "                            where d.id = "+String.valueOf(objectId) +
+                            "and loanSummaryType = 'DAILY'\n" +
+                            "                                   and dayofmonth(ls.onDate)=dayofmonth(now())\n" +
+                            "                                  and month(ls.onDate)=month(now())\n" +
+                            "                                  and year(ls.onDate)=year(now())";
+
+                    Query query=entityManager.createNativeQuery(baseQuery, LoanSummary.class);
+
+                    List<LoanSummary> lsList = query.getResultList();
+
+                    for (LoanSummary ls: lsList)
+                    {
+                        remainingAll+=ls.getTotalOutstanding();
+                    }
+
+
+                }
+                catch (Exception ex)
+                {
+
+
+                }
 
 
 
@@ -522,7 +552,7 @@ public class PrintoutGeneratorCollateralDocDamaged {
                 cal.setTime(date);
 
                 String day = dFormat.format(cal.get(Calendar.DAY_OF_MONTH));
-                String month = dFormat.format(cal.get(Calendar.MONTH) + 1);
+                String month = dFormat.format(cal.get(Calendar.MONTH) + 2);
                 String year = String.valueOf(cal.get(Calendar.YEAR));
 
                 cell = new RtfCell (new Paragraph ("       Күрөө келишиминин шарттары боюнча Күрөө коюучу катары күрөө предметин сактоо жана оң абалда пайдалануу боюнча, " +
@@ -530,7 +560,7 @@ public class PrintoutGeneratorCollateralDocDamaged {
                         "күрөө мүлкүн ордуна коюу же карызды төлөп берүүгө милдеттенме алгандыгыңызды эскертет.\n" +
                         "       Күрөө келишиминин шарттары бузулгандыгына байланыштуу, Агенттик," +
                         day+"."+month+"."+year+"ж. га "+
-                        "чейин жоголгон күрөө мүлкүн ордуна коюуну же карызды кайтарып берүүнү талап кылат.\n" +
+                        "чейин жоголгон күрөө мүлкүн ордуна коюуну же " + reportTool.FormatNumber(remainingAll/1000) + " миң сом карызды кайтарып берүүнү талап кылат.\n" +
                         "       Жогорудагы талап мөөнөтүндө аткарылбаса, Агенттик, мамлекеттик зайымдык каражаттарды кайтаруу " +
                         "максатында укук коргоо жана сот органдарына кайрылууга мажбур боло тургандыгын билдирет.\n" +
                         "\n       Экинчи дарекке маалымат иретинде.",ColumnFont));
