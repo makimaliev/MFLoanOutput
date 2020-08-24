@@ -75,6 +75,14 @@ public class LoanView extends DebtorView
 	private Long v_loan_fin_group_id;
 
 	@Column
+	private Long v_loan_group_by_loan_period_id;
+
+	@Column
+	private Long v_loan_group_by_collateral_existense_id;
+
+
+
+	@Column
 	private Long v_loan_fund_id;
 
 
@@ -261,5 +269,21 @@ public class LoanView extends DebtorView
 
 	public void setV_collateral_description_id(Long v_collateral_description_id) {
 		this.v_collateral_description_id = v_collateral_description_id;
+	}
+
+	public Long getV_loan_group_by_loan_period_id() {
+		return v_loan_group_by_loan_period_id;
+	}
+
+	public void setV_loan_group_by_loan_period_id(Long v_loan_group_by_loan_period_id) {
+		this.v_loan_group_by_loan_period_id = v_loan_group_by_loan_period_id;
+	}
+
+	public Long getV_loan_group_by_collateral_existense_id() {
+		return v_loan_group_by_collateral_existense_id;
+	}
+
+	public void setV_loan_group_by_collateral_existense_id(Long v_loan_group_by_collateral_existense_id) {
+		this.v_loan_group_by_collateral_existense_id = v_loan_group_by_collateral_existense_id;
 	}
 }
