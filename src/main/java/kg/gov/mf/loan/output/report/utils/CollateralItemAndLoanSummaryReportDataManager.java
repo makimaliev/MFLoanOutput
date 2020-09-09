@@ -55,6 +55,9 @@ public class CollateralItemAndLoanSummaryReportDataManager {
 
         ReportTool reportTool = new ReportTool();
 
+        reportTool.initReference();
+        reportTool.initCurrencyRatesMap(reportTemplate);
+
         LinkedHashMap<String,List<String>> parameterS = new LinkedHashMap<>();
 
         parameterS.putAll(reportTool.getParametersByTemplate(reportTemplate));
@@ -115,12 +118,43 @@ public class CollateralItemAndLoanSummaryReportDataManager {
                 {
                     if(calculationTool.checkFilterOptions(ls,reportTemplate))
                     {
+
+                        double thousands = 1;
+                        double rate = 1;
+//                        double rate2 = 1;
+//
+//                        try{
+//                            if(reportTemplate.getInThousands()!=null)
+//                            {
+//                                thousands = reportTemplate.getInThousands();
+//                            }
+//                        }
+//                        catch (Exception ex)
+//                        {
+//
+//                        }
+
+                        if(loanView.getV_loan_currency_id()>1)
+                        {
+
+                            rate = reportTool.getCurrencyRateValueByDateAndCurrencyTypeId(reportTemplate.getOnDate(),loanView.getV_loan_currency_id());
+
+
+                            if(loanView.getV_loan_close_rate()!=null )
+                            {
+                                rate = loanView.getV_loan_close_rate();
+                            }
+                        }
+
+                        ls.setTotalOutstanding(ls.getTotalOutstanding()*rate);
+
                         loanSummaryMap.put(loanView.getV_loan_id(),ls);
                     }
                 }
             }
             catch (Exception ex)
             {
+                System.out.println(ex);
             }
         }
 
@@ -142,7 +176,9 @@ public class CollateralItemAndLoanSummaryReportDataManager {
     public CollateralItemReportData groupifyData(CollateralItemReportData reportData, ReportTemplate reportTemplate, ReportTool reportTool)
     {
 
-        reportTool.initReference();
+
+
+
 
         long groupAid=-1;
         long groupBid=-1;
