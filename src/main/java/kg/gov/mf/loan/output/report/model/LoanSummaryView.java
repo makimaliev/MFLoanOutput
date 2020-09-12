@@ -70,6 +70,10 @@ public class LoanSummaryView extends DebtorView
 	@Column
 	private  Long v_loan_group_by_loan_period_id;
 
+	@Column
+	private  Long v_loan_group_by_disbursement_id;
+
+
 
 
 	@DateTimeFormat(pattern = "dd.mm.yyyy")
@@ -459,5 +463,13 @@ public class LoanSummaryView extends DebtorView
 
 	public void setV_loan_group_by_collateral_existense_id(Long v_loan_group_by_collateral_existense_id) {
 		this.v_loan_group_by_collateral_existense_id = v_loan_group_by_collateral_existense_id;
+	}
+
+	public Long getV_loan_group_by_disbursement_id() {
+		return v_loan_group_by_disbursement_id;
+	}
+
+	public void setV_loan_group_by_disbursement_id(Long v_loan_group_by_disbursement_id) {
+		this.v_loan_group_by_disbursement_id = v_loan_group_by_disbursement_id;
 	}
 }

@@ -876,6 +876,7 @@ public class LoanSummaryReportDataManager {
 
         convertedLoanSummaryView.setV_loan_group_by_loan_period_id(lv.getV_loan_group_by_loan_period_id());
         convertedLoanSummaryView.setV_loan_group_by_collateral_existense_id(lv.getV_loan_group_by_collateral_existense_id());
+        convertedLoanSummaryView.setV_loan_group_by_disbursement_id(lv.getV_loan_group_by_disbursement_id());
 
         convertedLoanSummaryView.setV_loan_description(lv.getV_loan_description());
 
