@@ -121,14 +121,14 @@ public class PrintoutGeneratorPhaseSummary {
 
                     String UPLOADED_FOLDER =  SystemUtils.IS_OS_LINUX ? "/opt/uploads/" : "c://temp//";
 
-                    String sTitle1   = "КЫРГЫЗ РЕСПУБЛИКАСЫНЫН ФИНАНСЫ МИНИСТИРЛИГИНЕ КАРАШТУУ БЮДЖЕТТИК НАСЫЯЛАРДЫ БАШКАРУУ БОЮНЧА МАМЛЕКЕТТИК АГЕНТТИГИ \n \n";
+                    String sTitle1   = "КЫРГЫЗ РЕСПУБЛИКАСЫНЫН ФИНАНСЫ МИНИСТИРЛИГИНЕ КАРАШТУУ БЮДЖЕТТИК НАСЫЯЛАРДЫ БАШКАРУУ БОЮНЧА МАМЛЕКЕТТИК АГЕНТТИГИ \n ";
                     String sTitle2   = "ГОСУДАРСТВЕННОЕ АГЕНТСТВО ПО УПРАВЛЕНИЮ БЮДЖЕТНЫМИ КРЕДИТАМИ ПРИ МИНИСТЕРСТВЕ ФИНАНСОВ КЫРГЫЗСКОЙ РЕСПУБЛИКИ";
                     String sTitle3   = "STATE AGENCY FOR MANAGEMENT OF BUDGET LOANS UNDER\n THE MINISTRY OF FINANCE OF THE KYRGYZ REPUBLIC";
 
                     String sAddress1 = "720040, Бишкек ш. Эркиндик бул. 58а\nтел:66-43-34,62-07-44\nфакс:66-40-33\nwww:minfin.kg\nE-mail: gosagentstvo@minfin.kg";
                     String sAddress2 = "58а Boulevard Erkindik Bishkek 720040\ntel: +996 312 66-43-34, 62-07-44\nfax:+996 312 66-40-33\nwww:minfin.kg\nE-mail: gosagentstvo@minfin.kg";
                     String sAddress3 = "720040, г. Бишкек бул. Эркиндик 58а\nтел:66-43-34,62-07-44\nфакс:66-40-33\nwww:minfin.kg\nE-mail: gosagentstvo@minfin.kg";
-                    String sNumber   = "№ _______________________________\n\nот \"____\" _________________\" 20____ г.";
+                    String sNumber   = "\n№ _______________________________\n\nот \"____\" _________________\" 20____ г.";
 
                     String    sRasDate      = "";
                     String    sPersonTitle  = "";
@@ -209,7 +209,7 @@ public class PrintoutGeneratorPhaseSummary {
                     String    sFileName   = UPLOADED_FOLDER+"/gaubk.png";
                     Image image1 = Image.getInstance(sFileName);
 
-                    image1.scalePercent(70);
+                    image1.scalePercent(60);
                     cell = new RtfCell (image1);
                     cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                     cell.setVerticalAlignment(Element.ALIGN_TOP);
@@ -480,7 +480,7 @@ public class PrintoutGeneratorPhaseSummary {
                     cell.setBorders(TbBorder);
                     table.addCell (cell);
 
-                    cell = new RtfCell (new Paragraph (" Задолженность \n(тыс.сом)",TitleFont2));
+                    cell = new RtfCell (new Paragraph (" Задолженность",TitleFont2));
                     cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                     cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                     cell.setBorders(TbBorder);
@@ -607,7 +607,7 @@ public class PrintoutGeneratorPhaseSummary {
                         cell.setBorders(TbBorder);
                         table.addCell (cell);
 
-                        cell = new RtfCell (new Paragraph (reportTool.FormatNumber(iDebtAll/(Thousands)),HeaderFont));
+                        cell = new RtfCell (new Paragraph (reportTool.FormatNumber(iDebtAll),HeaderFont));
                         cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                         cell.setVerticalAlignment(Element.ALIGN_CENTER);
                         cell.setBorders(TbBorder);
@@ -629,7 +629,7 @@ public class PrintoutGeneratorPhaseSummary {
                     cell.setBorders(TbBorder);
                     table.addCell (cell);
 
-                    cell = new RtfCell (new Paragraph (reportTool.FormatNumber(SumProsAll/(Thousands)),TitleFont2));
+                    cell = new RtfCell (new Paragraph (reportTool.FormatNumber(SumProsAll),TitleFont2));
                     cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                     cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                     cell.setBorders(TbBorder);
@@ -766,36 +766,39 @@ public class PrintoutGeneratorPhaseSummary {
 
                     // Согласовано
 
+                    if( iResDepartment!=2)
+                    {
+                        cell = new RtfCell (new Paragraph ("",TitleFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                        cell.setVerticalAlignment(Element.ALIGN_TOP);
 
-                    cell = new RtfCell (new Paragraph ("",TitleFont));
-                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
-                    cell.setVerticalAlignment(Element.ALIGN_TOP);
+                        cell.setBorder(TitleColumnBorder);
+                        table.addCell (cell);
 
-                    cell.setBorder(TitleColumnBorder);
-                    table.addCell (cell);
+                        cell = new RtfCell (new Paragraph ("",TitleFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                        cell.setVerticalAlignment(Element.ALIGN_TOP);
 
-                    cell = new RtfCell (new Paragraph ("",TitleFont));
-                    cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                    cell.setVerticalAlignment(Element.ALIGN_TOP);
+                        cell.setBorder(TitleColumnBorder);
+                        table.addCell (cell);
 
-                    cell.setBorder(TitleColumnBorder);
-                    table.addCell (cell);
+                        cell = new RtfCell (new Paragraph ("",TitleFont));
+                        cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+                        cell.setVerticalAlignment(Element.ALIGN_TOP);
 
-                    cell = new RtfCell (new Paragraph ("",TitleFont));
-                    cell.setHorizontalAlignment (Element.ALIGN_CENTER);
-                    cell.setVerticalAlignment(Element.ALIGN_TOP);
-
-                    cell.setBorder(TitleColumnBorder);
-                    table.addCell (cell);
-
-
-                    cell = new RtfCell (new Paragraph ("Доолбеков Э.Б.",HeaderFont));
+                        cell.setBorder(TitleColumnBorder);
+                        table.addCell (cell);
 
 
-                    cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-                    cell.setVerticalAlignment(Element.ALIGN_TOP);
-                    cell.setBorder(TitleColumnBorder);
-                    table.addCell (cell);
+                        cell = new RtfCell (new Paragraph ("Доолбеков Э.Б.",HeaderFont));
+
+
+                        cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+                        cell.setVerticalAlignment(Element.ALIGN_TOP);
+                        cell.setBorder(TitleColumnBorder);
+                        table.addCell (cell);
+                    }
+
 
 
 
@@ -864,7 +867,7 @@ public class PrintoutGeneratorPhaseSummary {
                         table.addCell (cell);
 
 
-                        cell = new RtfCell (new Paragraph ("\n_____________",HeaderFont));
+                        cell = new RtfCell (new Paragraph ("\nОзонов А.К.",HeaderFont));
 
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                         cell.setVerticalAlignment(Element.ALIGN_TOP);
