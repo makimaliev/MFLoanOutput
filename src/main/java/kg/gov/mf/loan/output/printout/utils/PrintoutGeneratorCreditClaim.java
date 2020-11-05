@@ -359,10 +359,10 @@ public class PrintoutGeneratorCreditClaim {
 
                 address = addressService.findById(debtor.getAddress_id());
 
-                sAdres         =  address.getLine();
-                sAokmotu = address.getAokmotu().getName();
                 RegionName = address.getRegion().getName();
                 DistrictName = address.getDistrict().getName();
+                sAdres         =  address.getLine();
+                sAokmotu = address.getAokmotu().getName();
 
 
             }
@@ -437,19 +437,23 @@ public class PrintoutGeneratorCreditClaim {
 
 
             String sText1 = "";
-            if(iResDepartment == 2)
+            String sText2 = "";
+            if(workSector==1 || workSector==12)
             {
-                sText1= "бюджеттик ссуда(лар)";
+                sText1= "товардык кредит(тер)";
+                sText2= "төлөө мөөнөтү өткөн ";
+
             }
             else
             {
-                sText1= "товардык кредит(тер)";
+                sText1= "бюджеттик ссуда(лар)";
+                sText2= "";
             }
 
 
 
 
-            cell = new RtfCell (new Paragraph ("        Кыргыз Республикасынын Финансы министирлигине караштуу Бюджеттик насыяларды башкаруу боюнча мамлекеттик агенттиги, төмөндө көрсөтүлгөн  "+sText1+" боюнча "+sRasDate+"-ж. карата, Сиздин суммасы "+reportTool.FormatNumber(SumProsAll)+" сом болгон, төлөө мөөнөтү өткөн карызыңыз бар экендигин билдирет:",ColumnFont));
+            cell = new RtfCell (new Paragraph ("        Кыргыз Республикасынын Финансы министирлигине караштуу Бюджеттик насыяларды башкаруу боюнча мамлекеттик агенттиги, төмөндө көрсөтүлгөн  "+sText1+" боюнча "+sRasDate+"-ж. карата, Сиздин суммасы "+reportTool.FormatNumber(SumProsAll)+" сом болгон, "+sText2+" карызыңыз бар экендигин билдирет:",ColumnFont));
             cell.setHorizontalAlignment (Element.ALIGN_JUSTIFIED);
             cell.setVerticalAlignment(Element.ALIGN_TOP);
             cell.setBorder(TitleColumnBorder);
@@ -478,9 +482,9 @@ public class PrintoutGeneratorCreditClaim {
             cell.setBorders(TbBorder);
             table.addCell (cell);
 
-            if(iResDepartment == 2)
+            if(workSector==1 || workSector==12)
             {
-                cell = new RtfCell (new Paragraph ("Бюджеттик ссуда",HeaderFont));
+                cell = new RtfCell (new Paragraph ("Товардык кредит",HeaderFont));
                 cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setBorders(TbBorder);
@@ -488,7 +492,7 @@ public class PrintoutGeneratorCreditClaim {
             }
             else
             {
-                cell = new RtfCell (new Paragraph ("Товардык кредит",HeaderFont));
+                cell = new RtfCell (new Paragraph ("Бюджеттик ссуда",HeaderFont));
                 cell.setHorizontalAlignment (Element.ALIGN_CENTER);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setBorders(TbBorder);
@@ -578,21 +582,33 @@ public class PrintoutGeneratorCreditClaim {
 
                 }
 
-                if(bankData!=null)
+                if(iResDepartment==2 && (workSector==13||workSector==134|iCreditType==10||iCreditType==11||iCreditType==12))
                 {
-                    sPaymentRequsites  = bankData.getRecipient();
-                    sPaymentRequsites += bankData.getRecipient_bank()+" ";
-                    sPaymentRequsites += "\nБик: "+bankData.getBik()+" ";
-                    sPaymentRequsites += "\nРасчетный счет: "+bankData.getAccount_number();
-
+                    sPaymentRequsites  = "Алуучу: Түздөн-түз кирешелер - БНБМА";
+                    sPaymentRequsites += "\nБик: 440001"+" ";
+                    sPaymentRequsites += "\nАлуучу банк: КР ФМ Борбордук казынасы"+" ";
+                    sPaymentRequsites += "\nЭсеп: 4400011001000240"+" ";
+                    sPaymentRequsites += "\nТөлөө коду: негизги сумма үчүн - 32142130";
                 }
                 else
                 {
-                    sPaymentRequsites  = "Центральное казначейство МФ КР"+" ";
-                    sPaymentRequsites += "Национальный банк КР"+" ";
-                    sPaymentRequsites += "\nБик: 101001"+" ";
-                    sPaymentRequsites += "\nРасчетный счет: 1013710000000102";
+                    if(bankData!=null)
+                    {
+                        sPaymentRequsites  = bankData.getRecipient();
+                        sPaymentRequsites += bankData.getRecipient_bank()+" ";
+                        sPaymentRequsites += "\nБик: "+bankData.getBik()+" ";
+                        sPaymentRequsites += "\nРасчетный счет: "+bankData.getAccount_number();
+
+                    }
+                    else
+                    {
+                        sPaymentRequsites  = "Центральное казначейство МФ КР"+" ";
+                        sPaymentRequsites += "Национальный банк КР"+" ";
+                        sPaymentRequsites += "\nБик: 101001"+" ";
+                        sPaymentRequsites += "\nРасчетный счет: 1013710000000102";
+                    }
                 }
+
 
 
                 cell = new RtfCell (new Paragraph (Integer.toString(x),HeaderFont));
@@ -777,37 +793,37 @@ public class PrintoutGeneratorCreditClaim {
 
 
 
-            cell = new RtfCell (new Paragraph ("",TitleFont));
-            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
-            cell.setVerticalAlignment(Element.ALIGN_TOP);
-
-            cell.setBorder(TitleColumnBorder);
-            table.addCell (cell);
-
-            cell = new RtfCell (new Paragraph ("",TitleFont));
-            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-            cell.setVerticalAlignment(Element.ALIGN_TOP);
-
-            cell.setBorder(TitleColumnBorder);
-            table.addCell (cell);
-
-            cell = new RtfCell (new Paragraph ("",TitleFont));
-            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
-            cell.setVerticalAlignment(Element.ALIGN_TOP);
-
-            cell.setBorder(TitleColumnBorder);
-            table.addCell (cell);
-
-
-
-            cell = new RtfCell (new Paragraph ("\nДоолбеков Э.Б.",HeaderFont));
-
-
-
-            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
-            cell.setVerticalAlignment(Element.ALIGN_TOP);
-            cell.setBorder(TitleColumnBorder);
-            table.addCell (cell);
+//            cell = new RtfCell (new Paragraph ("",TitleFont));
+//            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+//            cell.setVerticalAlignment(Element.ALIGN_TOP);
+//
+//            cell.setBorder(TitleColumnBorder);
+//            table.addCell (cell);
+//
+//            cell = new RtfCell (new Paragraph ("",TitleFont));
+//            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+//            cell.setVerticalAlignment(Element.ALIGN_TOP);
+//
+//            cell.setBorder(TitleColumnBorder);
+//            table.addCell (cell);
+//
+//            cell = new RtfCell (new Paragraph ("",TitleFont));
+//            cell.setHorizontalAlignment (Element.ALIGN_CENTER);
+//            cell.setVerticalAlignment(Element.ALIGN_TOP);
+//
+//            cell.setBorder(TitleColumnBorder);
+//            table.addCell (cell);
+//
+//
+//
+//            cell = new RtfCell (new Paragraph ("\nДоолбеков Э.Б.",HeaderFont));
+//
+//
+//
+//            cell.setHorizontalAlignment (Element.ALIGN_LEFT);
+//            cell.setVerticalAlignment(Element.ALIGN_TOP);
+//            cell.setBorder(TitleColumnBorder);
+//            table.addCell (cell);
 
             cell = new RtfCell (new Paragraph ("",TitleFont));
             cell.setHorizontalAlignment (Element.ALIGN_CENTER);
@@ -874,7 +890,7 @@ public class PrintoutGeneratorCreditClaim {
                 table.addCell (cell);
 
 
-                cell = new RtfCell (new Paragraph ("\n__________________",HeaderFont));
+                cell = new RtfCell (new Paragraph ("\nОзонов А.К.",HeaderFont));
 
                 cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                 cell.setVerticalAlignment(Element.ALIGN_TOP);

@@ -372,9 +372,10 @@ public class PrintoutGeneratorPhaseSummary {
                         address = addressService.findById(debtor.getAddress_id());
 
                         sAdres         =  address.getLine();
-                        sAokmotu = address.getAokmotu().getName();
+
                         RegionName = address.getRegion().getName();
                         DistrictName = address.getDistrict().getName();
+                        sAokmotu = address.getAokmotu().getName();
 
 
                     }
