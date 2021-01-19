@@ -429,11 +429,14 @@ int x = 0;
                                 case 2: sCreditLine="Иностранные кредиты"; sNach1="bs";  break;
                                 case 3: sCreditLine="Гр. Японии";   sNach2="grant";        break;
                                 case 4: sCreditLine="Гр. Швейцарии";         break;
-                                case 5: sCreditLine="Бюджетные ссуда";sNach1="bs";      break;
+                                case 5: sCreditLine="Им. активы";sNach1="bs";      break;
                                 case 6: sCreditLine="Гр. КНР";    sNach2="grant";          break;
                                 case 7: sCreditLine="Гр. Японии"; sNach2="grant";          break;
                                 case 8: sCreditLine="Гр. КНР";    sNach2="grant";          break;
                                 case 9: sCreditLine="ГМР";        sNach1="bs";          break;
+                                case 10: sCreditLine="Ипотечная ссуда";        sNach1="bs";          break;
+                                case 11: sCreditLine="БП 50т.с.";        sNach1="bs";          break;
+                                case 12: sCreditLine="БП 10т.с.";        sNach1="bs";          break;
 
                             }
 
