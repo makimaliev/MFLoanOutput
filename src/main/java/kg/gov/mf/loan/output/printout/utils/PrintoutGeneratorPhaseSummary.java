@@ -791,7 +791,7 @@ public class PrintoutGeneratorPhaseSummary {
                         table.addCell (cell);
 
 
-                        cell = new RtfCell (new Paragraph ("Доолбеков Э.Б.",HeaderFont));
+                        cell = new RtfCell (new Paragraph (" Э. Доолбеков",HeaderFont));
 
 
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
@@ -827,11 +827,11 @@ public class PrintoutGeneratorPhaseSummary {
 
                     if( iResDepartment==2)
                     {
-                        cell = new RtfCell (new Paragraph ("\nАсеков К.Т.",HeaderFont));
+                        cell = new RtfCell (new Paragraph ("\nК. Асеков",HeaderFont));
                     }
                     else
                     {
-                        cell = new RtfCell (new Paragraph ("\nЮсупов А.Б.",HeaderFont));
+                        cell = new RtfCell (new Paragraph ("\nА. Юсупов",HeaderFont));
                     }
 
 
@@ -868,7 +868,7 @@ public class PrintoutGeneratorPhaseSummary {
                         table.addCell (cell);
 
 
-                        cell = new RtfCell (new Paragraph ("\nОзонов А.К.",HeaderFont));
+                        cell = new RtfCell (new Paragraph ("\nА. Озонов",HeaderFont));
 
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                         cell.setVerticalAlignment(Element.ALIGN_TOP);
@@ -901,7 +901,7 @@ public class PrintoutGeneratorPhaseSummary {
                         table.addCell (cell);
 
 
-                        cell = new RtfCell (new Paragraph ("\nДжумагулова Ж.",HeaderFont));
+                        cell = new RtfCell (new Paragraph ("\nЖ. Джумагулова ",HeaderFont));
 
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                         cell.setVerticalAlignment(Element.ALIGN_TOP);
@@ -932,7 +932,7 @@ public class PrintoutGeneratorPhaseSummary {
                         table.addCell (cell);
 
 
-                        cell = new RtfCell (new Paragraph ("\nУ.Гайыпов",HeaderFont));
+                        cell = new RtfCell (new Paragraph ("\nУ. Гайыпов",HeaderFont));
 
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                         cell.setVerticalAlignment(Element.ALIGN_TOP);
@@ -963,7 +963,7 @@ public class PrintoutGeneratorPhaseSummary {
                         table.addCell (cell);
 
 
-                        cell = new RtfCell (new Paragraph ("\nАзимов А.",HeaderFont));
+                        cell = new RtfCell (new Paragraph ("\nА. Азимов",HeaderFont));
 
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                         cell.setVerticalAlignment(Element.ALIGN_TOP);
