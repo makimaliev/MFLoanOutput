@@ -932,7 +932,7 @@ public class PrintoutGeneratorPhaseSummary {
                         table.addCell (cell);
 
 
-                        cell = new RtfCell (new Paragraph ("\n_________________",HeaderFont));
+                        cell = new RtfCell (new Paragraph ("\nУ.Гайыпов",HeaderFont));
 
                         cell.setHorizontalAlignment (Element.ALIGN_LEFT);
                         cell.setVerticalAlignment(Element.ALIGN_TOP);
